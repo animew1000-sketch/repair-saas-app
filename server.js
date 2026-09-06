@@ -98,15 +98,6 @@ async function initDatabase() {
   try {
     await pool.query(schema);
 
-    // Safe patch table columns if updating an existing database
-    try {
-      await pool.query("ALTER TABLE users MODIFY COLUMN role ENUM('manager', 'service_advisor', 'technician', 'parts_manager', 'billing', 'customer') NOT NULL;");
-      await pool.query("ALTER TABLE users ADD COLUMN email VARCHAR(255) NULL UNIQUE AFTER username;");
-      await pool.query("ALTER TABLE users ADD COLUMN pin_code VARCHAR(6) NULL UNIQUE AFTER password;");
-    } catch (e) {
-      // Columns already set up
-    }
-
     // Seed default accounts
     await pool.query(`
       INSERT INTO users (id, username, email, password, pin_code, role, customer_id) VALUES
@@ -123,7 +114,7 @@ async function initDatabase() {
         role=VALUES(role);
     `);
 
-    console.log('Database initialized successfully.');
+    console.log('Database initialized successfully with default test accounts.');
   } catch (err) {
     console.error('Database setup error details:', err.message);
   }
