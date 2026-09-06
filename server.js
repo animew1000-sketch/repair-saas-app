@@ -25,6 +25,7 @@ async function initDatabase() {
     CREATE TABLE IF NOT EXISTS users (
         id INT AUTO_INCREMENT PRIMARY KEY,
         username VARCHAR(100) NOT NULL UNIQUE,
+        email VARCHAR(255) NULL UNIQUE,
         password VARCHAR(255) NOT NULL,
         pin_code VARCHAR(6) NULL UNIQUE,
         role ENUM('manager', 'service_advisor', 'technician', 'parts_manager', 'billing', 'customer') NOT NULL,
@@ -97,26 +98,32 @@ async function initDatabase() {
   try {
     await pool.query(schema);
 
-    // Safe patch table enum and column if updating an existing database
+    // Safe patch table columns if updating an existing database
     try {
       await pool.query("ALTER TABLE users MODIFY COLUMN role ENUM('manager', 'service_advisor', 'technician', 'parts_manager', 'billing', 'customer') NOT NULL;");
+      await pool.query("ALTER TABLE users ADD COLUMN email VARCHAR(255) NULL UNIQUE AFTER username;");
       await pool.query("ALTER TABLE users ADD COLUMN pin_code VARCHAR(6) NULL UNIQUE AFTER password;");
     } catch (e) {
-      // Columns/Enums updated
+      // Columns already set up
     }
 
-    // Seed/Update default test accounts with 6-digit PIN codes and Manager role
+    // Seed default accounts
     await pool.query(`
-      INSERT INTO users (id, username, password, pin_code, role, customer_id) VALUES
-      (1, 'manager', 'manager123', '111111', 'manager', NULL),
-      (2, 'advisor', 'pass123', '222222', 'service_advisor', NULL),
-      (3, 'tech', 'pass123', '333333', 'technician', NULL),
-      (4, 'billing', 'pass123', '444444', 'billing', NULL),
-      (5, 'client', 'pass123', '555555', 'customer', 1)
-      ON DUPLICATE KEY UPDATE username=VALUES(username), pin_code=VALUES(pin_code), role=VALUES(role);
+      INSERT INTO users (id, username, email, password, pin_code, role, customer_id) VALUES
+      (1, 'manager', 'manager@apex.com', 'manager123', '111111', 'manager', NULL),
+      (2, 'advisor', 'advisor@apex.com', 'pass123', '222222', 'service_advisor', NULL),
+      (3, 'tech', 'tech@apex.com', 'pass123', '333333', 'technician', NULL),
+      (4, 'billing', 'billing@apex.com', 'pass123', '444444', 'billing', NULL),
+      (5, 'client', 'client@example.com', 'pass123', NULL, 'customer', 1)
+      ON DUPLICATE KEY UPDATE 
+        username=VALUES(username), 
+        email=VALUES(email),
+        password=VALUES(password),
+        pin_code=VALUES(pin_code), 
+        role=VALUES(role);
     `);
 
-    console.log('Database initialized successfully with Manager role and default PINs.');
+    console.log('Database initialized successfully.');
   } catch (err) {
     console.error('Database setup error details:', err.message);
   }
@@ -135,7 +142,7 @@ function authenticateToken(req, res, next) {
   });
 }
 
-// Role Permissions Matrix (Updated admin -> manager)
+// Role Permissions Matrix
 const ROLE_PERMISSIONS = {
   customer: [],
   service_advisor: ['customer', 'vehicle', 'appointment', 'repair_order', 'estimate'],
@@ -157,65 +164,65 @@ function authorizeDepartment(req, res, next) {
   next();
 }
 
-// API: Customer Registration
+// API: Customer Registration (With Email)
 app.post('/api/register', async (req, res) => {
-  const { username, password, first_name, last_name, phone } = req.body;
+  const { username, email, password, first_name, last_name, phone } = req.body;
   try {
     const jobNum = `JOB-${Date.now().toString().slice(-6)}`;
     const [jobRes] = await pool.query('INSERT INTO repair_jobs (job_number, status) VALUES (?, ?)', [jobNum, 'Requested']);
     const jobId = jobRes.insertId;
 
-    const randomPin = Math.floor(100000 + Math.random() * 900000).toString();
-
-    await pool.query('INSERT INTO customers (repair_job_id, first_name, last_name, phone) VALUES (?, ?, ?, ?)', [jobId, first_name, last_name, phone]);
-    await pool.query('INSERT INTO users (username, password, pin_code, role, customer_id) VALUES (?, ?, ?, ?, ?)', [
-      username, password, randomPin, 'customer', jobId
+    await pool.query('INSERT INTO customers (repair_job_id, first_name, last_name, phone, email) VALUES (?, ?, ?, ?, ?)', [jobId, first_name, last_name, phone, email]);
+    await pool.query('INSERT INTO users (username, email, password, role, customer_id) VALUES (?, ?, ?, ?, ?)', [
+      username, email, password, 'customer', jobId
     ]);
 
-    res.json({ success: true, message: `Account created! Your login PIN is ${randomPin}. You can log in using your PIN or username.` });
+    res.json({ success: true, message: 'Account created successfully! You can now log in using your Email Address and Password.' });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-// API: 6-Digit PIN or Username Login
+// API: Login Handler (Staff 6-Digit PIN or Customer Email/Username)
 app.post('/api/login', async (req, res) => {
   const { login_input, password } = req.body;
+  const inputStr = (login_input || '').trim();
+
   try {
     let rows = [];
 
-    // 1. Try logging in by 6-Digit PIN Code
-    if (/^\d{6}$/.test(login_input.trim())) {
-      [rows] = await pool.query('SELECT * FROM users WHERE pin_code = ?', [login_input.trim()]);
+    // 1. Employee Login via 6-Digit PIN
+    if (/^\d{6}$/.test(inputStr)) {
+      [rows] = await pool.query('SELECT * FROM users WHERE pin_code = ?', [inputStr]);
     }
 
-    // 2. Fallback to Username + Password match
+    // 2. Customer or Staff Login via Email or Username + Password
     if (rows.length === 0) {
-      [rows] = await pool.query('SELECT * FROM users WHERE username = ? AND password = ?', [login_input, password]);
+      [rows] = await pool.query('SELECT * FROM users WHERE (email = ? OR username = ?) AND password = ?', [inputStr, inputStr, password]);
     }
 
     if (rows.length === 0) {
-      return res.status(401).json({ error: 'Invalid 6-Digit PIN or Username/Password combination.' });
+      return res.status(401).json({ error: 'Invalid Credentials. Use a 6-digit Staff PIN, or enter your Customer Email and Password.' });
     }
 
     const user = rows[0];
     const token = jwt.sign(
-      { id: user.id, username: user.username, role: user.role, customer_id: user.customer_id },
+      { id: user.id, username: user.username, email: user.email, role: user.role, customer_id: user.customer_id },
       JWT_SECRET,
       { expiresIn: '8h' }
     );
 
-    res.json({ token, role: user.role, username: user.username, customer_id: user.customer_id, pin_code: user.pin_code });
+    res.json({ token, role: user.role, username: user.username, email: user.email, customer_id: user.customer_id, pin_code: user.pin_code });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-// API: Manager Staff List & PIN Assignment
+// API: Manager Staff Roster & PIN Assignment
 app.get('/api/manager/employees', authenticateToken, async (req, res) => {
   if (req.user.role !== 'manager') return res.status(403).json({ error: 'Only Managers can access employee rosters.' });
   try {
-    const [rows] = await pool.query('SELECT id, username, pin_code, role, created_at FROM users ORDER BY id ASC');
+    const [rows] = await pool.query('SELECT id, username, email, pin_code, role, created_at FROM users WHERE role != "customer" ORDER BY id ASC');
     res.json(rows);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -225,17 +232,17 @@ app.get('/api/manager/employees', authenticateToken, async (req, res) => {
 app.post('/api/manager/create-employee', authenticateToken, async (req, res) => {
   if (req.user.role !== 'manager') return res.status(403).json({ error: 'Only Managers can create employee profiles.' });
   
-  const { username, pin_code, role } = req.body;
+  const { username, email, pin_code, role } = req.body;
   
   if (!/^\d{6}$/.test(pin_code)) {
     return res.status(400).json({ error: 'PIN Code must be exactly 6 digits.' });
   }
 
   try {
-    await pool.query('INSERT INTO users (username, password, pin_code, role) VALUES (?, ?, ?, ?)', [
-      username, 'pass123', pin_code, role
+    await pool.query('INSERT INTO users (username, email, password, pin_code, role) VALUES (?, ?, ?, ?, ?)', [
+      username, email || null, 'pass123', pin_code, role
     ]);
-    res.json({ success: true, message: `Staff account created for ${username} with 6-digit PIN ${pin_code} (${role})` });
+    res.json({ success: true, message: `Staff profile created for ${username} with 6-digit PIN ${pin_code}` });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -342,14 +349,15 @@ app.put('/api/customer/update-profile', authenticateToken, async (req, res) => {
   if (req.user.role !== 'customer') return res.status(403).json({ error: 'Access denied.' });
 
   const jobId = req.user.customer_id;
-  const { first_name, last_name, phone, vin, make, model, year, issue_description } = req.body;
+  const { first_name, last_name, phone, email, vin, make, model, year, issue_description } = req.body;
 
   if (!vin || vin.length !== 17) {
     return res.status(400).json({ error: 'Please enter a valid 17-digit VIN.' });
   }
 
   try {
-    await pool.query('UPDATE customers SET first_name = ?, last_name = ?, phone = ? WHERE repair_job_id = ?', [first_name, last_name, phone, jobId]);
+    await pool.query('UPDATE customers SET first_name = ?, last_name = ?, phone = ?, email = ? WHERE repair_job_id = ?', [first_name, last_name, phone, email, jobId]);
+    await pool.query('UPDATE users SET email = ? WHERE id = ?', [email, req.user.id]);
     await pool.query('UPDATE vehicles SET vin = ?, make = ?, model = ?, year = ? WHERE repair_job_id = ?', [vin, make, model, year, jobId]);
     await pool.query('UPDATE repair_orders SET issue_description = ? WHERE repair_job_id = ?', [issue_description, jobId]);
 
@@ -501,6 +509,7 @@ app.get('/', (req, res) => {
       </div>
     </div>
 
+    <!-- 0. PUBLIC LANDING PAGE (DEFAULT VIEW) -->
     <div id="landingSection">
       <div class="hero">
         <h1>Precision Auto Service & <span>Repair Management</span></h1>
@@ -513,8 +522,12 @@ app.get('/', (req, res) => {
 
       <div class="grid">
         <div class="feature-card">
-          <h3>🔑 6-Digit Staff PIN Security</h3>
+          <h3>🔑 Staff 6-Digit PIN Login</h3>
           <p>Employees log in instantly using their Manager-assigned 6-digit PIN code. Access permissions are automatically mapped to their role.</p>
+        </div>
+        <div class="feature-card">
+          <h3>✉️ Customer Email Login</h3>
+          <p>Clients log in securely using their email address and account password to manage service requests and view invoices.</p>
         </div>
         <div class="feature-card">
           <h3>👥 Manager Roster Control</h3>
@@ -524,13 +537,10 @@ app.get('/', (req, res) => {
           <h3>🔍 VIN Decoding & Parts Catalog</h3>
           <p>Technicians can automatically decode any 17-digit VIN to verify vehicle specifications and lookup vehicle-matched replacement parts.</p>
         </div>
-        <div class="feature-card">
-          <h3>🧾 Live Invoice & Progress Tracking</h3>
-          <p>Clients can log in to view their active repair status, work performed summaries, and itemized billing invoices in real-time.</p>
-        </div>
       </div>
     </div>
 
+    <!-- 1. REGISTRATION -->
     <div id="registerSection" class="card hidden">
       <h2>Create Customer Account</h2>
       <p style="color: var(--text-muted);">Please create an account to schedule an appointment or manage repairs.</p>
@@ -541,27 +551,30 @@ app.get('/', (req, res) => {
           <div><label>Phone Number</label><input type="text" id="reg_phone" required /></div>
         </div>
         <div class="grid">
-          <div><label>Desired Username</label><input type="text" id="reg_username" required /></div>
-          <div><label>Password</label><input type="password" id="reg_password" required /></div>
+          <div><label>Email Address (Your Login ID)</label><input type="email" id="reg_email" placeholder="e.g. user@domain.com" required /></div>
+          <div><label>Username</label><input type="text" id="reg_username" required /></div>
         </div>
+        <div><label>Password</label><input type="password" id="reg_password" required /></div>
         <button type="submit">Register Account</button>
       </form>
     </div>
 
+    <!-- 2. LOGIN PAGE -->
     <div id="loginSection" class="card hidden">
       <h2>Portal Login</h2>
-      <p style="color:var(--text-muted);">Employees enter your Manager-Assigned 6-Digit PIN Code below:</p>
+      <p style="color:var(--text-muted);">Staff log in using your 6-Digit PIN. Customers log in using your Email Address & Password.</p>
       <form onsubmit="handleLogin(event)">
-        <label>6-Digit PIN Code (or Username)</label>
-        <input type="text" id="login_input" placeholder="e.g. 111111 (Manager), 222222 (Advisor), 333333 (Tech)" required />
+        <label>Customer Email / Username OR Staff 6-Digit PIN</label>
+        <input type="text" id="login_input" placeholder="e.g. user@domain.com (Customer) or 111111 (Staff PIN)" required />
         
-        <label style="margin-top:12px;">Password (Optional if logging in with 6-Digit PIN)</label>
-        <input type="password" id="password" placeholder="Password for username login" />
+        <label style="margin-top:12px;">Password (Required for Customer Email Login)</label>
+        <input type="password" id="password" placeholder="Password for email/username login" />
         
         <button type="submit">Log In</button>
       </form>
     </div>
 
+    <!-- 3. CUSTOMER DASHBOARD -->
     <div id="customerDashboard" class="card hidden">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
         <h2>Customer Portal & Dashboard</h2>
@@ -577,6 +590,7 @@ app.get('/', (req, res) => {
         <div id="tab-contact-us" class="portal-tab" onclick="switchCustomerTab('contact-us')">📞 Contact Us & Support</div>
       </div>
 
+      <!-- TAB 1: VIEW SERVICE REQUESTS -->
       <div id="customerTab-view-requests">
         <div id="statusBadge" style="margin: 12px 0;"></div>
         <div id="invoiceContainer" class="invoice-box">
@@ -592,7 +606,10 @@ app.get('/', (req, res) => {
             <div><label>Phone Number</label><input type="text" id="cust_phone" required /></div>
           </div>
           <div class="grid">
+            <div><label>Email Address</label><input type="email" id="cust_email" required /></div>
             <div><label>VIN Number (17 Digits)</label><input type="text" id="cust_vin" maxlength="17" required /></div>
+          </div>
+          <div class="grid">
             <div><label>Vehicle Make</label><input type="text" id="cust_make" required /></div>
             <div><label>Vehicle Model</label><input type="text" id="cust_model" required /></div>
             <div><label>Year</label><input type="number" id="cust_year" required /></div>
@@ -604,6 +621,7 @@ app.get('/', (req, res) => {
         </form>
       </div>
 
+      <!-- TAB 2: CREATE REQUEST -->
       <div id="customerTab-create-request" class="invoice-box hidden">
         <h3>Submit New Vehicle Repair / Maintenance Request</h3>
         <form onsubmit="handleBookAppointment(event)">
@@ -621,6 +639,7 @@ app.get('/', (req, res) => {
         </form>
       </div>
 
+      <!-- TAB 3: CONTACT US -->
       <div id="customerTab-contact-us" class="invoice-box hidden">
         <h3>Contact Apex Mechanics Support</h3>
         <div class="grid" style="margin-top:20px;">
@@ -636,12 +655,14 @@ app.get('/', (req, res) => {
       </div>
     </div>
 
+    <!-- 4. EMPLOYEE & MANAGER DASHBOARD -->
     <div id="employeeDashboard" class="card hidden">
       <div style="display:flex; justify-content:space-between; align-items:center;">
         <h2>Shop Operations Portal</h2>
         <div>User: <span id="userRoleBadge" class="badge"></span> <button onclick="logout()" class="nav-btn">Logout</button></div>
       </div>
 
+      <!-- MANAGER STAFF PIN & ROLE MANAGER -->
       <div id="managerControlPanel" class="invoice-box hidden" style="margin-bottom:24px;">
         <h3 style="color:var(--primary);">👑 Manager Dashboard: Staff PIN & Role Manager</h3>
         <p style="color:var(--text-muted); font-size:0.9rem;">Create staff profiles, assign 6-digit login PINs, and update employee roles.</p>
@@ -649,7 +670,8 @@ app.get('/', (req, res) => {
         <form onsubmit="handleCreateEmployee(event)" style="margin-bottom:20px;">
           <h4>Add New Employee Profile</h4>
           <div class="grid">
-            <div><label>Employee Name / ID</label><input type="text" id="new_emp_username" placeholder="e.g. john_tech" required /></div>
+            <div><label>Employee Name / Username</label><input type="text" id="new_emp_username" placeholder="e.g. john_tech" required /></div>
+            <div><label>Employee Email (Optional)</label><input type="email" id="new_emp_email" placeholder="john@apex.com" /></div>
             <div><label>Assign 6-Digit PIN</label><input type="text" id="new_emp_pin" maxlength="6" placeholder="e.g. 654321" required /></div>
             <div>
               <label>Assign Role</label>
@@ -669,18 +691,20 @@ app.get('/', (req, res) => {
           <thead>
             <tr>
               <th>ID</th>
-              <th>Username / Name</th>
+              <th>Username</th>
+              <th>Email</th>
               <th>6-Digit PIN Code</th>
               <th>Role</th>
               <th>Action</th>
             </tr>
           </thead>
           <tbody id="employeeRosterBody">
-            <tr><td colspan="5">Loading employee records...</td></tr>
+            <tr><td colspan="6">Loading employee records...</td></tr>
           </tbody>
         </table>
       </div>
 
+      <!-- WORKFLOW OPERATIONS -->
       <label style="color:var(--primary); font-size:1rem;">Select Customer (Auto-fills Customer & Vehicle Data)</label>
       <select id="customerSelector" onchange="autoFillCustomerData()">
         <option value="">-- Choose Existing Customer Record --</option>
@@ -783,6 +807,7 @@ app.get('/', (req, res) => {
         <tr>
           <td>\${emp.id}</td>
           <td><strong>\${emp.username}</strong></td>
+          <td>\${emp.email || 'N/A'}</td>
           <td><input type="text" id="pin_\${emp.id}" value="\${emp.pin_code || ''}" maxlength="6" style="width:100px; padding:6px;" /></td>
           <td>
             <select id="role_\${emp.id}" style="padding:6px;">
@@ -790,7 +815,6 @@ app.get('/', (req, res) => {
               <option value="service_advisor" \${emp.role === 'service_advisor' ? 'selected' : ''}>Service Advisor</option>
               <option value="technician" \${emp.role === 'technician' ? 'selected' : ''}>Technician</option>
               <option value="billing" \${emp.role === 'billing' ? 'selected' : ''}>Billing Clerk</option>
-              <option value="customer" \${emp.role === 'customer' ? 'selected' : ''}>Customer</option>
             </select>
           </td>
           <td>
@@ -804,6 +828,7 @@ app.get('/', (req, res) => {
       e.preventDefault();
       const payload = {
         username: document.getElementById('new_emp_username').value,
+        email: document.getElementById('new_emp_email').value,
         pin_code: document.getElementById('new_emp_pin').value,
         role: document.getElementById('new_emp_role').value
       };
@@ -893,6 +918,7 @@ app.get('/', (req, res) => {
         first_name: document.getElementById('reg_first_name').value,
         last_name: document.getElementById('reg_last_name').value,
         phone: document.getElementById('reg_phone').value,
+        email: document.getElementById('reg_email').value,
         username: document.getElementById('reg_username').value,
         password: document.getElementById('reg_password').value
       };
@@ -956,6 +982,7 @@ app.get('/', (req, res) => {
       document.getElementById('cust_first_name').value = data.customer.first_name || '';
       document.getElementById('cust_last_name').value = data.customer.last_name || '';
       document.getElementById('cust_phone').value = data.customer.phone || '';
+      document.getElementById('cust_email').value = data.customer.email || '';
       document.getElementById('cust_vin').value = data.vehicle.vin || '';
       document.getElementById('cust_make').value = data.vehicle.make || '';
       document.getElementById('cust_model').value = data.vehicle.model || '';
@@ -991,6 +1018,7 @@ app.get('/', (req, res) => {
         first_name: document.getElementById('cust_first_name').value,
         last_name: document.getElementById('cust_last_name').value,
         phone: document.getElementById('cust_phone').value,
+        email: document.getElementById('cust_email').value,
         vin: vin,
         make: document.getElementById('cust_make').value,
         model: document.getElementById('cust_model').value,
@@ -1084,7 +1112,6 @@ app.get('/', (req, res) => {
         showScreen('employeeDashboard');
         document.getElementById('userRoleBadge').textContent = \`\${localStorage.getItem('username')} (\${role})\`;
         
-        // Show Manager Control Panel if logged in as Manager
         if (role === 'manager') {
           document.getElementById('managerControlPanel').classList.remove('hidden');
           loadManagerStaffTable();
