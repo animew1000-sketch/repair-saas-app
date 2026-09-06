@@ -26,7 +26,8 @@ async function initDatabase() {
         id INT AUTO_INCREMENT PRIMARY KEY,
         username VARCHAR(100) NOT NULL UNIQUE,
         password VARCHAR(255) NOT NULL,
-        role ENUM('admin', 'service_advisor', 'technician', 'parts_manager', 'billing', 'customer') NOT NULL,
+        pin_code VARCHAR(6) NULL UNIQUE,
+        role ENUM('manager', 'service_advisor', 'technician', 'parts_manager', 'billing', 'customer') NOT NULL,
         customer_id INT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
@@ -92,23 +93,32 @@ async function initDatabase() {
         FOREIGN KEY (repair_job_id) REFERENCES repair_jobs(id) ON DELETE CASCADE
     );
   `;
+
   try {
     await pool.query(schema);
 
-    const [users] = await pool.query('SELECT * FROM users');
-    if (users.length === 0) {
-      await pool.query(`
-        INSERT INTO users (username, password, role, customer_id) VALUES
-        ('admin', 'admin123', 'admin', NULL),
-        ('advisor', 'pass123', 'service_advisor', NULL),
-        ('tech', 'pass123', 'technician', NULL),
-        ('billing', 'pass123', 'billing', NULL),
-        ('client', 'pass123', 'customer', 1);
-      `);
-      console.log('Default project test accounts created.');
+    // Safe patch table enum and column if updating an existing database
+    try {
+      await pool.query("ALTER TABLE users MODIFY COLUMN role ENUM('manager', 'service_advisor', 'technician', 'parts_manager', 'billing', 'customer') NOT NULL;");
+      await pool.query("ALTER TABLE users ADD COLUMN pin_code VARCHAR(6) NULL UNIQUE AFTER password;");
+    } catch (e) {
+      // Columns/Enums updated
     }
+
+    // Seed/Update default test accounts with 6-digit PIN codes and Manager role
+    await pool.query(`
+      INSERT INTO users (id, username, password, pin_code, role, customer_id) VALUES
+      (1, 'manager', 'manager123', '111111', 'manager', NULL),
+      (2, 'advisor', 'pass123', '222222', 'service_advisor', NULL),
+      (3, 'tech', 'pass123', '333333', 'technician', NULL),
+      (4, 'billing', 'pass123', '444444', 'billing', NULL),
+      (5, 'client', 'pass123', '555555', 'customer', 1)
+      ON DUPLICATE KEY UPDATE username=VALUES(username), pin_code=VALUES(pin_code), role=VALUES(role);
+    `);
+
+    console.log('Database initialized successfully with Manager role and default PINs.');
   } catch (err) {
-    console.error('Database setup error:', err.message);
+    console.error('Database setup error details:', err.message);
   }
 }
 
@@ -125,20 +135,20 @@ function authenticateToken(req, res, next) {
   });
 }
 
-// Strictly Defined Role Permissions Matrix
+// Role Permissions Matrix (Updated admin -> manager)
 const ROLE_PERMISSIONS = {
   customer: [],
   service_advisor: ['customer', 'vehicle', 'appointment', 'repair_order', 'estimate'],
   technician: ['parts_labor', 'repair'],
   billing: ['estimate', 'invoice'],
-  admin: ['customer', 'vehicle', 'appointment', 'repair_order', 'parts_labor', 'estimate', 'repair', 'invoice']
+  manager: ['customer', 'vehicle', 'appointment', 'repair_order', 'parts_labor', 'estimate', 'repair', 'invoice']
 };
 
 function authorizeDepartment(req, res, next) {
   const userRole = req.user.role;
   const dept = req.params.name;
 
-  if (userRole === 'admin') return next();
+  if (userRole === 'manager') return next();
   
   const allowedDepts = ROLE_PERMISSIONS[userRole] || [];
   if (!allowedDepts.includes(dept)) {
@@ -155,23 +165,38 @@ app.post('/api/register', async (req, res) => {
     const [jobRes] = await pool.query('INSERT INTO repair_jobs (job_number, status) VALUES (?, ?)', [jobNum, 'Requested']);
     const jobId = jobRes.insertId;
 
+    const randomPin = Math.floor(100000 + Math.random() * 900000).toString();
+
     await pool.query('INSERT INTO customers (repair_job_id, first_name, last_name, phone) VALUES (?, ?, ?, ?)', [jobId, first_name, last_name, phone]);
-    await pool.query('INSERT INTO users (username, password, role, customer_id) VALUES (?, ?, ?, ?)', [
-      username, password, 'customer', jobId
+    await pool.query('INSERT INTO users (username, password, pin_code, role, customer_id) VALUES (?, ?, ?, ?, ?)', [
+      username, password, randomPin, 'customer', jobId
     ]);
 
-    res.json({ success: true, message: 'Account created successfully! Log in to schedule an appointment.' });
+    res.json({ success: true, message: `Account created! Your login PIN is ${randomPin}. You can log in using your PIN or username.` });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-// API: Login
+// API: 6-Digit PIN or Username Login
 app.post('/api/login', async (req, res) => {
-  const { username, password } = req.body;
+  const { login_input, password } = req.body;
   try {
-    const [rows] = await pool.query('SELECT * FROM users WHERE username = ? AND password = ?', [username, password]);
-    if (rows.length === 0) return res.status(401).json({ error: 'Invalid username or password' });
+    let rows = [];
+
+    // 1. Try logging in by 6-Digit PIN Code
+    if (/^\d{6}$/.test(login_input.trim())) {
+      [rows] = await pool.query('SELECT * FROM users WHERE pin_code = ?', [login_input.trim()]);
+    }
+
+    // 2. Fallback to Username + Password match
+    if (rows.length === 0) {
+      [rows] = await pool.query('SELECT * FROM users WHERE username = ? AND password = ?', [login_input, password]);
+    }
+
+    if (rows.length === 0) {
+      return res.status(401).json({ error: 'Invalid 6-Digit PIN or Username/Password combination.' });
+    }
 
     const user = rows[0];
     const token = jwt.sign(
@@ -180,20 +205,66 @@ app.post('/api/login', async (req, res) => {
       { expiresIn: '8h' }
     );
 
-    res.json({ token, role: user.role, username: user.username, customer_id: user.customer_id });
+    res.json({ token, role: user.role, username: user.username, customer_id: user.customer_id, pin_code: user.pin_code });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-// API: Offline Simulated VIN Decoder (Does NOT Query Real Road Vehicles)
+// API: Manager Staff List & PIN Assignment
+app.get('/api/manager/employees', authenticateToken, async (req, res) => {
+  if (req.user.role !== 'manager') return res.status(403).json({ error: 'Only Managers can access employee rosters.' });
+  try {
+    const [rows] = await pool.query('SELECT id, username, pin_code, role, created_at FROM users ORDER BY id ASC');
+    res.json(rows);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.post('/api/manager/create-employee', authenticateToken, async (req, res) => {
+  if (req.user.role !== 'manager') return res.status(403).json({ error: 'Only Managers can create employee profiles.' });
+  
+  const { username, pin_code, role } = req.body;
+  
+  if (!/^\d{6}$/.test(pin_code)) {
+    return res.status(400).json({ error: 'PIN Code must be exactly 6 digits.' });
+  }
+
+  try {
+    await pool.query('INSERT INTO users (username, password, pin_code, role) VALUES (?, ?, ?, ?)', [
+      username, 'pass123', pin_code, role
+    ]);
+    res.json({ success: true, message: `Staff account created for ${username} with 6-digit PIN ${pin_code} (${role})` });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.put('/api/manager/update-employee', authenticateToken, async (req, res) => {
+  if (req.user.role !== 'manager') return res.status(403).json({ error: 'Only Managers can edit employee PINs and roles.' });
+
+  const { id, pin_code, role } = req.body;
+
+  if (!/^\d{6}$/.test(pin_code)) {
+    return res.status(400).json({ error: 'PIN Code must be exactly 6 digits.' });
+  }
+
+  try {
+    await pool.query('UPDATE users SET pin_code = ?, role = ? WHERE id = ?', [pin_code, role, id]);
+    res.json({ success: true, message: 'Employee PIN code and role updated successfully!' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// API: Offline Simulated VIN Decoder
 app.get('/api/vehicle/vin-lookup/:vin', authenticateToken, async (req, res) => {
   const vin = req.params.vin.toUpperCase();
   if (vin.length !== 17) {
     return res.status(400).json({ error: 'VIN must be exactly 17 characters long.' });
   }
 
-  // School project simulated make/model generator
   const projectMakes = ['Apex-Motors', 'Project-Auto', 'Titan-Drive', 'Vanguard-EV', 'Hyperion-Motors'];
   const projectModels = ['Interceptor', 'Courier', 'Falcon-X', 'Omni-Truck', 'Pioneer-SUV'];
   
@@ -260,7 +331,7 @@ app.post('/api/customer/request-appointment', authenticateToken, async (req, res
       [jobId, roNum, issue_description, issue_description]
     );
 
-    res.json({ success: true, message: 'Appointment booked successfully!' });
+    res.json({ success: true, message: 'Service request created successfully!' });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -387,11 +458,11 @@ app.get('/', (req, res) => {
     body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; }
     .container { max-width: 1050px; margin: 0 auto; }
     .header { display: flex; justify-content: space-between; align-items: center; padding: 16px 0; border-bottom: 2px solid var(--primary); margin-bottom: 24px; }
-    .brand { font-size: 1.5rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
+    .brand { font-size: 1.5rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; }
     .brand span { color: var(--primary); }
     .card { background: var(--card-bg); padding: 24px; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
     .hidden { display: none !important; }
-    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
     label { font-size: 0.85rem; font-weight: 600; color: var(--text-muted); display: block; margin-top: 10px; margin-bottom: 4px; }
     input, select, textarea, button { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 6px; box-sizing: border-box; background: #0f172a; color: white; }
     button { background: var(--primary); color: white; font-weight: bold; text-transform: uppercase; border: none; cursor: pointer; margin-top: 16px; transition: 0.2s; }
@@ -402,21 +473,65 @@ app.get('/', (req, res) => {
     .badge { background: var(--primary); color: white; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; font-weight: bold; }
     .nav-btn { background: transparent; border: 1px solid var(--border); color: var(--text-muted); width: auto; margin: 0 4px; }
     .invoice-box { background: #0f172a; padding: 20px; border-radius: 6px; border: 1px dashed var(--primary); margin-top: 20px; }
+    
+    .hero { text-align: center; padding: 40px 20px; background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%); border-radius: 8px; border: 1px solid var(--border); margin-bottom: 24px; }
+    .hero h1 { font-size: 2.2rem; margin-bottom: 12px; }
+    .hero h1 span { color: var(--primary); }
+    .hero p { color: var(--text-muted); max-width: 650px; margin: 0 auto 24px auto; font-size: 1.05rem; }
+    .feature-card { background: #0f172a; padding: 20px; border-radius: 6px; border: 1px solid var(--border); }
+    .feature-card h3 { color: var(--primary); margin-top: 0; }
+    .portal-tab-bar { display: flex; gap: 12px; border-bottom: 1px solid var(--border); padding-bottom: 12px; margin-bottom: 20px; }
+    .portal-tab { padding: 10px 18px; border-radius: 6px; cursor: pointer; background: #0f172a; font-weight: bold; border: 1px solid var(--border); color: var(--text-muted); }
+    .portal-tab.active { background: var(--primary); color: white; border-color: var(--primary); }
+    
+    .staff-table { width: 100%; border-collapse: collapse; margin-top: 12px; }
+    .staff-table th, .staff-table td { padding: 10px; border: 1px solid var(--border); text-align: left; }
+    .staff-table th { background: #0f172a; color: var(--primary); }
   </style>
 </head>
 <body>
   <div class="container">
     
     <div class="header">
-      <div class="brand">🔧 Apex <span>Mechanics</span></div>
+      <div class="brand" onclick="showScreen('landingSection')">🔧 Apex <span>Mechanics</span></div>
       <div>
+        <button class="nav-btn" onclick="showScreen('landingSection')">Home</button>
         <button class="nav-btn" onclick="showScreen('registerSection')">Create Account</button>
         <button class="nav-btn" onclick="showScreen('loginSection')">Portal Login</button>
       </div>
     </div>
 
-    <!-- 1. REGISTRATION -->
-    <div id="registerSection" class="card">
+    <div id="landingSection">
+      <div class="hero">
+        <h1>Precision Auto Service & <span>Repair Management</span></h1>
+        <p>Apex Mechanics provides a synchronized digital portal connecting vehicle owners, service advisors, technicians, and billing departments in one seamless repair workflow.</p>
+        <div style="display:flex; justify-content:center; gap:12px;">
+          <button style="width:auto; padding:12px 24px;" onclick="showScreen('registerSection')">Book Appointment / Create Account</button>
+          <button style="width:auto; padding:12px 24px; background:transparent; border:1px solid var(--primary);" onclick="showScreen('loginSection')">Employee & Client Login</button>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div class="feature-card">
+          <h3>🔑 6-Digit Staff PIN Security</h3>
+          <p>Employees log in instantly using their Manager-assigned 6-digit PIN code. Access permissions are automatically mapped to their role.</p>
+        </div>
+        <div class="feature-card">
+          <h3>👥 Manager Roster Control</h3>
+          <p>Managers can create new employee profiles, assign 6-digit PIN codes, and adjust role permissions in real-time.</p>
+        </div>
+        <div class="feature-card">
+          <h3>🔍 VIN Decoding & Parts Catalog</h3>
+          <p>Technicians can automatically decode any 17-digit VIN to verify vehicle specifications and lookup vehicle-matched replacement parts.</p>
+        </div>
+        <div class="feature-card">
+          <h3>🧾 Live Invoice & Progress Tracking</h3>
+          <p>Clients can log in to view their active repair status, work performed summaries, and itemized billing invoices in real-time.</p>
+        </div>
+      </div>
+    </div>
+
+    <div id="registerSection" class="card hidden">
       <h2>Create Customer Account</h2>
       <p style="color: var(--text-muted);">Please create an account to schedule an appointment or manage repairs.</p>
       <form onsubmit="handleRegister(event)">
@@ -433,29 +548,64 @@ app.get('/', (req, res) => {
       </form>
     </div>
 
-    <!-- 2. LOGIN -->
     <div id="loginSection" class="card hidden">
       <h2>Portal Login</h2>
+      <p style="color:var(--text-muted);">Employees enter your Manager-Assigned 6-Digit PIN Code below:</p>
       <form onsubmit="handleLogin(event)">
-        <label>Username</label>
-        <input type="text" id="username" required />
-        <label>Password</label>
-        <input type="password" id="password" required />
+        <label>6-Digit PIN Code (or Username)</label>
+        <input type="text" id="login_input" placeholder="e.g. 111111 (Manager), 222222 (Advisor), 333333 (Tech)" required />
+        
+        <label style="margin-top:12px;">Password (Optional if logging in with 6-Digit PIN)</label>
+        <input type="password" id="password" placeholder="Password for username login" />
+        
         <button type="submit">Log In</button>
       </form>
     </div>
 
-    <!-- 3. CUSTOMER DASHBOARD -->
     <div id="customerDashboard" class="card hidden">
-      <div style="display:flex; justify-content:space-between; align-items:center;">
-        <h2>Customer Portal & Appointments</h2>
-        <button onclick="logout()" class="nav-btn">Logout</button>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+        <h2>Customer Portal & Dashboard</h2>
+        <div>
+          Welcome, <strong id="clientWelcomeName" style="color:var(--primary);"></strong>!
+          <button onclick="logout()" class="nav-btn" style="margin-left:12px;">Logout</button>
+        </div>
       </div>
-      
-      <div id="statusBadge" style="margin: 12px 0;"></div>
 
-      <div class="invoice-box">
-        <h3>Book / Schedule Mechanic Appointment</h3>
+      <div class="portal-tab-bar">
+        <div id="tab-view-requests" class="portal-tab active" onclick="switchCustomerTab('view-requests')">📋 View Service Requests & Invoices</div>
+        <div id="tab-create-request" class="portal-tab" onclick="switchCustomerTab('create-request')">➕ Create New Service Request</div>
+        <div id="tab-contact-us" class="portal-tab" onclick="switchCustomerTab('contact-us')">📞 Contact Us & Support</div>
+      </div>
+
+      <div id="customerTab-view-requests">
+        <div id="statusBadge" style="margin: 12px 0;"></div>
+        <div id="invoiceContainer" class="invoice-box">
+          <h3>Active Repair Job & Invoicing Details</h3>
+          <div id="invoiceContent">Loading records...</div>
+        </div>
+
+        <form onsubmit="handleUpdateCustomerProfile(event)" style="margin-top: 24px;">
+          <h3>Update Profile & Vehicle Details</h3>
+          <div class="grid">
+            <div><label>First Name</label><input type="text" id="cust_first_name" required /></div>
+            <div><label>Last Name</label><input type="text" id="cust_last_name" required /></div>
+            <div><label>Phone Number</label><input type="text" id="cust_phone" required /></div>
+          </div>
+          <div class="grid">
+            <div><label>VIN Number (17 Digits)</label><input type="text" id="cust_vin" maxlength="17" required /></div>
+            <div><label>Vehicle Make</label><input type="text" id="cust_make" required /></div>
+            <div><label>Vehicle Model</label><input type="text" id="cust_model" required /></div>
+            <div><label>Year</label><input type="number" id="cust_year" required /></div>
+          </div>
+          <label>Reported Problem / Symptoms</label>
+          <textarea id="cust_issue" rows="3" required></textarea>
+          
+          <button type="submit">Save Updated Profile</button>
+        </form>
+      </div>
+
+      <div id="customerTab-create-request" class="invoice-box hidden">
+        <h3>Submit New Vehicle Repair / Maintenance Request</h3>
         <form onsubmit="handleBookAppointment(event)">
           <div class="grid">
             <div><label>VIN Number (17 Digits)</label><input type="text" id="book_vin" maxlength="17" placeholder="e.g. 1FA6P8CF0H1234567" required /></div>
@@ -465,42 +615,70 @@ app.get('/', (req, res) => {
           </div>
           <label>Preferred Appointment Date & Time</label>
           <input type="datetime-local" id="book_datetime" required />
-          <label>Vehicle Symptoms / Problem</label>
-          <textarea id="book_issue" rows="3" placeholder="Describe faults..." required></textarea>
-          <button type="submit">Schedule Appointment</button>
+          <label>Describe Vehicle Issue / Symptoms</label>
+          <textarea id="book_issue" rows="3" placeholder="Describe symptoms..." required></textarea>
+          <button type="submit">Submit Service Request</button>
         </form>
       </div>
 
-      <div id="invoiceContainer" class="invoice-box">
-        <h3>Current Scheduled Appointment & Invoice</h3>
-        <div id="invoiceContent">Loading records...</div>
+      <div id="customerTab-contact-us" class="invoice-box hidden">
+        <h3>Contact Apex Mechanics Support</h3>
+        <div class="grid" style="margin-top:20px;">
+          <div class="feature-card">
+            <h4>📍 Main Service Shop</h4>
+            <p>100 Industrial Parkway, CA 90001</p>
+          </div>
+          <div class="feature-card">
+            <h4>📞 Phone Support</h4>
+            <p>(555) 019-2834</p>
+          </div>
+        </div>
       </div>
-
-      <form onsubmit="handleUpdateCustomerProfile(event)" style="margin-top: 24px;">
-        <h3>Edit Personal Profile & Vehicle VIN</h3>
-        <div class="grid">
-          <div><label>First Name</label><input type="text" id="cust_first_name" required /></div>
-          <div><label>Last Name</label><input type="text" id="cust_last_name" required /></div>
-          <div><label>Phone Number</label><input type="text" id="cust_phone" required /></div>
-        </div>
-        <div class="grid">
-          <div><label>VIN Number (17 Digits)</label><input type="text" id="cust_vin" maxlength="17" required /></div>
-          <div><label>Vehicle Make</label><input type="text" id="cust_make" required /></div>
-          <div><label>Vehicle Model</label><input type="text" id="cust_model" required /></div>
-          <div><label>Year</label><input type="number" id="cust_year" required /></div>
-        </div>
-        <label>Reported Problem / Symptoms</label>
-        <textarea id="cust_issue" rows="3" required></textarea>
-        
-        <button type="submit">Save Updated Profile</button>
-      </form>
     </div>
 
-    <!-- 4. EMPLOYEE DASHBOARD -->
     <div id="employeeDashboard" class="card hidden">
-      <div style="display:flex; justify-between; align-items:center;">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
         <h2>Shop Operations Portal</h2>
         <div>User: <span id="userRoleBadge" class="badge"></span> <button onclick="logout()" class="nav-btn">Logout</button></div>
+      </div>
+
+      <div id="managerControlPanel" class="invoice-box hidden" style="margin-bottom:24px;">
+        <h3 style="color:var(--primary);">👑 Manager Dashboard: Staff PIN & Role Manager</h3>
+        <p style="color:var(--text-muted); font-size:0.9rem;">Create staff profiles, assign 6-digit login PINs, and update employee roles.</p>
+        
+        <form onsubmit="handleCreateEmployee(event)" style="margin-bottom:20px;">
+          <h4>Add New Employee Profile</h4>
+          <div class="grid">
+            <div><label>Employee Name / ID</label><input type="text" id="new_emp_username" placeholder="e.g. john_tech" required /></div>
+            <div><label>Assign 6-Digit PIN</label><input type="text" id="new_emp_pin" maxlength="6" placeholder="e.g. 654321" required /></div>
+            <div>
+              <label>Assign Role</label>
+              <select id="new_emp_role" required>
+                <option value="service_advisor">Service Advisor</option>
+                <option value="technician">Technician</option>
+                <option value="billing">Billing Clerk</option>
+                <option value="manager">Manager</option>
+              </select>
+            </div>
+          </div>
+          <button type="submit" style="width:auto; padding:10px 20px;">Create Employee Profile</button>
+        </form>
+
+        <h4>Assigned Employee Roster & PIN Codes</h4>
+        <table class="staff-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Username / Name</th>
+              <th>6-Digit PIN Code</th>
+              <th>Role</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="employeeRosterBody">
+            <tr><td colspan="5">Loading employee records...</td></tr>
+          </tbody>
+        </table>
       </div>
 
       <label style="color:var(--primary); font-size:1rem;">Select Customer (Auto-fills Customer & Vehicle Data)</label>
@@ -539,7 +717,7 @@ app.get('/', (req, res) => {
       service_advisor: ['customer', 'vehicle', 'appointment', 'repair_order', 'estimate'],
       technician: ['parts_labor', 'repair'],
       billing: ['estimate', 'invoice'],
-      admin: ['customer', 'vehicle', 'appointment', 'repair_order', 'parts_labor', 'estimate', 'repair', 'invoice']
+      manager: ['customer', 'vehicle', 'appointment', 'repair_order', 'parts_labor', 'estimate', 'repair', 'invoice']
     };
 
     const DEPT_FIELDS = {
@@ -554,11 +732,121 @@ app.get('/', (req, res) => {
     };
 
     function showScreen(screenId) {
+      document.getElementById('landingSection').classList.add('hidden');
       document.getElementById('registerSection').classList.add('hidden');
       document.getElementById('loginSection').classList.add('hidden');
       document.getElementById('customerDashboard').classList.add('hidden');
       document.getElementById('employeeDashboard').classList.add('hidden');
       document.getElementById(screenId).classList.remove('hidden');
+    }
+
+    function switchCustomerTab(tabName) {
+      document.getElementById('customerTab-view-requests').classList.add('hidden');
+      document.getElementById('customerTab-create-request').classList.add('hidden');
+      document.getElementById('customerTab-contact-us').classList.add('hidden');
+
+      document.querySelectorAll('.portal-tab').forEach(el => el.classList.remove('active'));
+
+      document.getElementById(\`customerTab-\${tabName}\`).classList.remove('hidden');
+      document.getElementById(\`tab-\${tabName}\`).classList.add('active');
+    }
+
+    async function handleLogin(e) {
+      e.preventDefault();
+      const login_input = document.getElementById('login_input').value;
+      const password = document.getElementById('password').value;
+
+      const res = await fetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ login_input, password })
+      });
+      const data = await res.json();
+      if (!res.ok) return alert(data.error);
+
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('role', data.role);
+      localStorage.setItem('username', data.username);
+      
+      renderDashboard();
+    }
+
+    async function loadManagerStaffTable() {
+      const res = await fetch('/api/manager/employees', {
+        headers: { 'Authorization': \`Bearer \${localStorage.getItem('token')}\` }
+      });
+      if (!res.ok) return;
+
+      const employees = await res.json();
+      const tbody = document.getElementById('employeeRosterBody');
+      tbody.innerHTML = employees.map(emp => \`
+        <tr>
+          <td>\${emp.id}</td>
+          <td><strong>\${emp.username}</strong></td>
+          <td><input type="text" id="pin_\${emp.id}" value="\${emp.pin_code || ''}" maxlength="6" style="width:100px; padding:6px;" /></td>
+          <td>
+            <select id="role_\${emp.id}" style="padding:6px;">
+              <option value="manager" \${emp.role === 'manager' ? 'selected' : ''}>Manager</option>
+              <option value="service_advisor" \${emp.role === 'service_advisor' ? 'selected' : ''}>Service Advisor</option>
+              <option value="technician" \${emp.role === 'technician' ? 'selected' : ''}>Technician</option>
+              <option value="billing" \${emp.role === 'billing' ? 'selected' : ''}>Billing Clerk</option>
+              <option value="customer" \${emp.role === 'customer' ? 'selected' : ''}>Customer</option>
+            </select>
+          </td>
+          <td>
+            <button onclick="saveEmployeeChanges(\${emp.id})" style="margin:0; padding:6px 12px; font-size:0.8rem;">Save PIN & Role</button>
+          </td>
+        </tr>
+      \`).join('');
+    }
+
+    async function handleCreateEmployee(e) {
+      e.preventDefault();
+      const payload = {
+        username: document.getElementById('new_emp_username').value,
+        pin_code: document.getElementById('new_emp_pin').value,
+        role: document.getElementById('new_emp_role').value
+      };
+
+      const res = await fetch('/api/manager/create-employee', {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': \`Bearer \${localStorage.getItem('token')}\`
+        },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        alert(data.message);
+        e.target.reset();
+        loadManagerStaffTable();
+      } else {
+        alert('Error: ' + data.error);
+      }
+    }
+
+    async function saveEmployeeChanges(empId) {
+      const pin_code = document.getElementById(\`pin_\${empId}\`).value;
+      const role = document.getElementById(\`role_\${empId}\`).value;
+
+      const res = await fetch('/api/manager/update-employee', {
+        method: 'PUT',
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': \`Bearer \${localStorage.getItem('token')}\`
+        },
+        body: JSON.stringify({ id: empId, pin_code, role })
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        alert(data.message);
+        loadManagerStaffTable();
+      } else {
+        alert('Error: ' + data.error);
+      }
     }
 
     async function lookupVinOnline() {
@@ -624,26 +912,6 @@ app.get('/', (req, res) => {
       }
     }
 
-    async function handleLogin(e) {
-      e.preventDefault();
-      const res = await fetch('/api/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          username: document.getElementById('username').value,
-          password: document.getElementById('password').value
-        })
-      });
-      const data = await res.json();
-      if (!res.ok) return alert(data.error);
-
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('role', data.role);
-      localStorage.setItem('username', data.username);
-      
-      renderDashboard();
-    }
-
     async function handleBookAppointment(e) {
       e.preventDefault();
       const vin = document.getElementById('book_vin').value;
@@ -670,6 +938,7 @@ app.get('/', (req, res) => {
       const data = await res.json();
       if (res.ok) {
         alert(data.message);
+        switchCustomerTab('view-requests');
         loadCustomerProfile();
       } else {
         alert('Error: ' + data.error);
@@ -682,7 +951,8 @@ app.get('/', (req, res) => {
       });
       const data = await res.json();
       
-      document.getElementById('statusBadge').innerHTML = \`Current Repair Status: <span class="badge">\${data.status}</span>\`;
+      document.getElementById('clientWelcomeName').textContent = data.customer.first_name ? \`\${data.customer.first_name} \${data.customer.last_name}\` : localStorage.getItem('username');
+      document.getElementById('statusBadge').innerHTML = \`Current Service Status: <span class="badge">\${data.status}</span>\`;
       document.getElementById('cust_first_name').value = data.customer.first_name || '';
       document.getElementById('cust_last_name').value = data.customer.last_name || '';
       document.getElementById('cust_phone').value = data.customer.phone || '';
@@ -802,16 +1072,26 @@ app.get('/', (req, res) => {
       const role = localStorage.getItem('role');
 
       if (!token) {
-        showScreen('registerSection');
+        showScreen('landingSection');
         return;
       }
 
       if (role === 'customer') {
         showScreen('customerDashboard');
+        switchCustomerTab('view-requests');
         loadCustomerProfile();
       } else {
         showScreen('employeeDashboard');
         document.getElementById('userRoleBadge').textContent = \`\${localStorage.getItem('username')} (\${role})\`;
+        
+        // Show Manager Control Panel if logged in as Manager
+        if (role === 'manager') {
+          document.getElementById('managerControlPanel').classList.remove('hidden');
+          loadManagerStaffTable();
+        } else {
+          document.getElementById('managerControlPanel').classList.add('hidden');
+        }
+
         fetchCustomerList();
         applyRolePermissions(role);
       }
