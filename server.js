@@ -134,7 +134,7 @@ async function initDatabase() {
     try { await pool.query("ALTER TABLE companies ADD COLUMN hero_text TEXT NULL;"); } catch (e) {}
     try { await pool.query("ALTER TABLE companies ADD COLUMN primary_color VARCHAR(10) DEFAULT '#f97316';"); } catch (e) {}
 
-    // Seed default companies with distinct themes
+    // Seed default companies
     await pool.query(`
       INSERT INTO companies (id, company_name, slug, tagline, hero_text, primary_color) VALUES
       (1, 'Apex Precision Mechanics', 'apex-mechanics', 'Precision Auto Service & Complete Repair Workflow', 'Apex Precision Mechanics provides top-tier diagnostic, engine repair, and routine maintenance solutions.', '#f97316'),
@@ -164,7 +164,7 @@ async function initDatabase() {
         role=VALUES(role);
     `);
 
-    console.log('Multi-Tenant Database initialized with full theme synchronization.');
+    console.log('Multi-Tenant Database initialized with marketing showcase content.');
   } catch (err) {
     console.error('Database setup error details:', err.message);
   }
@@ -244,7 +244,7 @@ app.post('/api/register', async (req, res) => {
   }
 });
 
-// API: Multi-Tenant Login Handler (Returns Theme Colors)
+// API: Multi-Tenant Login Handler
 app.post('/api/login', async (req, res) => {
   const { company_id, login_input, password } = req.body;
   const inputStr = (login_input || '').trim();
@@ -560,7 +560,7 @@ app.get(['/', '/:slug'], (req, res) => {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Apex Mechanics & Auto SaaS</title>
+  <title>Apex SaaS | Multi-Tenant Auto Repair Operating System</title>
   <style>
     :root {
       --bg: #0f172a;
@@ -590,10 +590,11 @@ app.get(['/', '/:slug'], (req, res) => {
     .nav-btn { background: transparent; border: 1px solid var(--border); color: var(--text-muted); width: auto; margin: 0 4px; }
     .invoice-box { background: #0f172a; padding: 20px; border-radius: 6px; border: 1px dashed var(--primary); margin-top: 20px; }
     
-    .hero { text-align: center; padding: 40px 20px; background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%); border-radius: 8px; border: 1px solid var(--border); margin-bottom: 24px; }
-    .hero h1 { font-size: 2.2rem; margin-bottom: 12px; }
+    .hero { text-align: center; padding: 48px 24px; background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%); border-radius: 8px; border: 1px solid var(--border); margin-bottom: 24px; }
+    .hero h1 { font-size: 2.3rem; margin-bottom: 12px; line-height: 1.2; }
     .hero h1 span { color: var(--primary); }
-    .hero p { color: var(--text-muted); max-width: 650px; margin: 0 auto 24px auto; font-size: 1.05rem; }
+    .hero p { color: var(--text-muted); max-width: 720px; margin: 0 auto 24px auto; font-size: 1.1rem; line-height: 1.5; }
+    
     .feature-card { background: #0f172a; padding: 20px; border-radius: 6px; border: 1px solid var(--border); }
     .feature-card h3 { color: var(--primary); margin-top: 0; }
     .portal-tab-bar { display: flex; gap: 12px; border-bottom: 1px solid var(--border); padding-bottom: 12px; margin-bottom: 20px; }
@@ -603,59 +604,92 @@ app.get(['/', '/:slug'], (req, res) => {
     .staff-table { width: 100%; border-collapse: collapse; margin-top: 12px; }
     .staff-table th, .staff-table td { padding: 10px; border: 1px solid var(--border); text-align: left; }
     .staff-table th { background: #0f172a; color: var(--primary); }
-    .shop-switcher { display: flex; justify-content: center; gap: 10px; margin-top: 12px; }
-    .shop-chip { padding: 6px 14px; border-radius: 20px; background: #1e293b; border: 1px solid var(--border); color: var(--text-muted); text-decoration: none; font-size: 0.85rem; font-weight: bold; }
+    .shop-switcher { display: flex; justify-content: center; gap: 10px; margin-top: 16px; flex-wrap: wrap; }
+    .shop-chip { padding: 8px 16px; border-radius: 20px; background: #1e293b; border: 1px solid var(--border); color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: bold; transition: 0.2s; }
     .shop-chip:hover { border-color: var(--primary); color: white; }
     
     .shop-title-text { color: var(--primary); font-weight: bold; }
+    
+    /* Presentation Marketing Banner Styles */
+    .marketing-pill { display: inline-block; background: rgba(249, 115, 22, 0.15); border: 1px solid var(--primary); color: var(--primary); padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: bold; margin-bottom: 16px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .marketing-stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 24px 0; }
+    .stat-box { background: #0f172a; border: 1px solid var(--border); padding: 16px; border-radius: 6px; text-align: center; }
+    .stat-number { font-size: 1.8rem; font-weight: 800; color: var(--primary); }
+    .stat-label { font-size: 0.85rem; color: var(--text-muted); margin-top: 4px; }
   </style>
 </head>
 <body>
   <div class="container">
     
     <div class="header">
-      <div class="brand" id="navBrand" onclick="showScreen('landingSection')">🔧 <span id="brandName">Apex Mechanics</span></div>
+      <div class="brand" id="navBrand" onclick="showScreen('landingSection')">🔧 <span id="brandName">Apex Auto SaaS</span></div>
       <div>
-        <button class="nav-btn" onclick="showScreen('landingSection')">Home</button>
-        <button class="nav-btn" onclick="showScreen('registerSection')">Create Account</button>
+        <button class="nav-btn" onclick="showScreen('landingSection')">Platform Overview</button>
+        <button class="nav-btn" onclick="showScreen('registerSection')">Client Signup</button>
         <button class="nav-btn" onclick="showScreen('loginSection')">Portal Login</button>
       </div>
     </div>
 
-    <!-- 0. PUBLIC DYNAMIC LANDING PAGE -->
+    <!-- 0. PUBLIC MARKETING LANDING PAGE -->
     <div id="landingSection">
       <div class="hero">
-        <h1 id="heroTitle">Precision Auto Service & <span>SaaS Management</span></h1>
-        <p id="heroSubtitle">Apex SaaS automatically routes managers, technicians, and customers directly into their registered shop portal with complete data isolation.</p>
-        <div style="display:flex; justify-content:center; gap:12px;">
-          <button style="width:auto; padding:12px 24px;" onclick="showScreen('registerSection')">Book Appointment / Create Account</button>
-          <button style="width:auto; padding:12px 24px; background:transparent; border:1px solid var(--primary);" onclick="showScreen('loginSection')">Employee & Client Login</button>
+        <div class="marketing-pill">⚡ Next-Gen Auto Repair Operating System</div>
+        <h1 id="heroTitle">Cloud-Native Management Built for <span>Independent Auto Shops</span></h1>
+        <p id="heroSubtitle">Streamline customer intake, vehicle diagnostic tracking, technician workflow, parts lookup, and automated invoicing in one secure, multi-tenant SaaS platform.</p>
+        
+        <div style="display:flex; justify-content:center; gap:12px; flex-wrap:wrap;">
+          <button style="width:auto; padding:12px 24px;" onclick="showScreen('registerSection')">Book Appointment / Signup</button>
+          <button style="width:auto; padding:12px 24px; background:transparent; border:1px solid var(--primary);" onclick="showScreen('loginSection')">Staff & Client Portal Login</button>
         </div>
 
         <div class="shop-switcher">
-          <span style="font-size:0.85rem; color:var(--text-muted); line-height:30px;">Switch Shop View:</span>
+          <span style="font-size:0.85rem; color:var(--text-muted); line-height:34px;">Interactive Demo Shop Pages:</span>
           <a href="/apex-mechanics" class="shop-chip">🍊 Apex Precision Mechanics</a>
           <a href="/vanguard-auto" class="shop-chip">🔹 Vanguard Auto Performance</a>
         </div>
       </div>
 
-      <div class="grid">
+      <!-- KEY PLATFORM METRICS SHOWCASE -->
+      <div class="marketing-stat-grid">
+        <div class="stat-box">
+          <div class="stat-number">100%</div>
+          <div class="stat-label">Multi-Tenant Data Isolation</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-number">6-Digit</div>
+          <div class="stat-label">Fast Staff PIN Authentication</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-number">8-Step</div>
+          <div class="stat-label">End-to-End Shop Workflow</div>
+        </div>
+      </div>
+
+      <div class="grid" style="margin-bottom: 24px;">
         <div class="feature-card">
-          <h3>🏢 Shop-Specific Landing & Data</h3>
-          <p>Employees and clients visiting this dedicated URL are automatically routed to this shop location.</p>
+          <h3>🏢 Multi-Tenant SaaS Architecture</h3>
+          <p>Instantly onboard auto repair businesses with individual branding, custom theme colors, dedicated URLs, and isolated database schemas.</p>
         </div>
         <div class="feature-card">
-          <h3>🔑 Staff 6-Digit PIN Login</h3>
-          <p>Employees log in instantly using their Manager-assigned 6-digit PIN code to access their shop's active workflow.</p>
+          <h3>⚡ Staff 6-Digit PIN System</h3>
+          <p>Technicians and service advisors log in within seconds via shop-assigned PINs, eliminating complex passwords on the shop floor.</p>
         </div>
         <div class="feature-card">
-          <h3>✉️ Customer Email Login</h3>
-          <p>Clients log in securely using their email address and account password to manage service requests and view invoices.</p>
+          <h3>✉️ Client Portal & Status Tracking</h3>
+          <p>Vehicle owners receive live job status updates, view digital repair estimates, and review transparent invoices from any device.</p>
         </div>
         <div class="feature-card">
-          <h3>👥 Manager Roster Control</h3>
-          <p>Shop managers can create new employee profiles, assign 6-digit PIN codes, and adjust role permissions in real-time.</p>
+          <h3>🔍 Integrated VIN & Parts Lookup</h3>
+          <p>Automated 17-digit VIN decoding matches vehicle makes and models with real-time market pricing for parts and labor billing.</p>
         </div>
+      </div>
+
+      <!-- PRESENTATION HIGHLIGHT CARD -->
+      <div class="card" style="border-left: 4px solid var(--primary);">
+        <h3 style="margin-top:0; color:var(--primary);">🎯 Ready-to-Present Project Architecture</h3>
+        <p style="color:var(--text-muted); margin-bottom:12px;">
+          This software solution demonstrates a production-grade Web Application featuring Node.js Express API endpoints, MySQL multi-tenant database normalization, JWT authentication with role-based access control (RBAC), and custom frontend CSS variable theme synchronization.
+        </p>
       </div>
     </div>
 
