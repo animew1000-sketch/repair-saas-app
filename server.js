@@ -22,75 +22,107 @@ const pool = mysql.createPool({
 // Automatic Schema Migration & Setup
 async function initDatabase() {
   const schema = `
+    CREATE TABLE IF NOT EXISTS companies (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        company_name VARCHAR(150) NOT NULL,
+        slug VARCHAR(100) NOT NULL UNIQUE,
+        tagline VARCHAR(255) NULL,
+        hero_text TEXT NULL,
+        primary_color VARCHAR(10) DEFAULT '#f97316',
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+
     CREATE TABLE IF NOT EXISTS users (
         id INT AUTO_INCREMENT PRIMARY KEY,
-        username VARCHAR(100) NOT NULL UNIQUE,
-        email VARCHAR(255) NULL UNIQUE,
+        company_id INT NOT NULL,
+        username VARCHAR(100) NOT NULL,
+        email VARCHAR(255) NULL,
         password VARCHAR(255) NOT NULL,
-        pin_code VARCHAR(6) NULL UNIQUE,
+        pin_code VARCHAR(6) NULL,
         role ENUM('manager', 'service_advisor', 'technician', 'parts_manager', 'billing', 'customer') NOT NULL,
         customer_id INT NULL,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (company_id) REFERENCES companies(id) ON DELETE CASCADE,
+        UNIQUE KEY unique_company_user (company_id, username),
+        UNIQUE KEY unique_company_pin (company_id, pin_code)
     );
 
     CREATE TABLE IF NOT EXISTS repair_jobs (
         id INT AUTO_INCREMENT PRIMARY KEY,
-        job_number VARCHAR(50) NOT NULL UNIQUE,
+        company_id INT NOT NULL,
+        job_number VARCHAR(50) NOT NULL,
         status ENUM('Requested', 'Scheduled', 'In Progress', 'Invoiced', 'Completed') DEFAULT 'Requested',
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (company_id) REFERENCES companies(id) ON DELETE CASCADE
     );
 
     CREATE TABLE IF NOT EXISTS customers (
         id INT AUTO_INCREMENT PRIMARY KEY,
+        company_id INT NOT NULL,
         repair_job_id INT NOT NULL,
         first_name VARCHAR(100) NOT NULL,
         last_name VARCHAR(100) NOT NULL,
         phone VARCHAR(50) NOT NULL,
         email VARCHAR(255),
+        FOREIGN KEY (company_id) REFERENCES companies(id) ON DELETE CASCADE,
         FOREIGN KEY (repair_job_id) REFERENCES repair_jobs(id) ON DELETE CASCADE
     );
 
     CREATE TABLE IF NOT EXISTS vehicles (
         id INT AUTO_INCREMENT PRIMARY KEY,
+        company_id INT NOT NULL,
         repair_job_id INT NOT NULL,
         vin VARCHAR(17) NOT NULL, make VARCHAR(100) NOT NULL, model VARCHAR(100) NOT NULL, year INT NOT NULL,
+        FOREIGN KEY (company_id) REFERENCES companies(id) ON DELETE CASCADE,
         FOREIGN KEY (repair_job_id) REFERENCES repair_jobs(id) ON DELETE CASCADE
     );
 
     CREATE TABLE IF NOT EXISTS appointments (
         id INT AUTO_INCREMENT PRIMARY KEY,
+        company_id INT NOT NULL,
         repair_job_id INT NOT NULL, scheduled_datetime DATETIME NOT NULL, service_advisor VARCHAR(100),
+        FOREIGN KEY (company_id) REFERENCES companies(id) ON DELETE CASCADE,
         FOREIGN KEY (repair_job_id) REFERENCES repair_jobs(id) ON DELETE CASCADE
     );
 
     CREATE TABLE IF NOT EXISTS repair_orders (
         id INT AUTO_INCREMENT PRIMARY KEY,
-        repair_job_id INT NOT NULL, ro_number VARCHAR(100) NOT NULL UNIQUE, issue_description TEXT NOT NULL,
+        company_id INT NOT NULL,
+        repair_job_id INT NOT NULL, ro_number VARCHAR(100) NOT NULL, issue_description TEXT NOT NULL,
+        FOREIGN KEY (company_id) REFERENCES companies(id) ON DELETE CASCADE,
         FOREIGN KEY (repair_job_id) REFERENCES repair_jobs(id) ON DELETE CASCADE
     );
 
     CREATE TABLE IF NOT EXISTS parts_and_labor (
         id INT AUTO_INCREMENT PRIMARY KEY,
+        company_id INT NOT NULL,
         repair_job_id INT NOT NULL, item_type ENUM('Part', 'Labor') NOT NULL, description VARCHAR(255) NOT NULL, unit_cost DECIMAL(10, 2) NOT NULL,
+        FOREIGN KEY (company_id) REFERENCES companies(id) ON DELETE CASCADE,
         FOREIGN KEY (repair_job_id) REFERENCES repair_jobs(id) ON DELETE CASCADE
     );
 
     CREATE TABLE IF NOT EXISTS estimates (
         id INT AUTO_INCREMENT PRIMARY KEY,
+        company_id INT NOT NULL,
         repair_job_id INT NOT NULL, estimated_total DECIMAL(10, 2) NOT NULL, approved BOOLEAN DEFAULT FALSE,
+        FOREIGN KEY (company_id) REFERENCES companies(id) ON DELETE CASCADE,
         FOREIGN KEY (repair_job_id) REFERENCES repair_jobs(id) ON DELETE CASCADE
     );
 
     CREATE TABLE IF NOT EXISTS repair_executions (
         id INT AUTO_INCREMENT PRIMARY KEY,
+        company_id INT NOT NULL,
         repair_job_id INT NOT NULL, work_summary TEXT NOT NULL,
+        FOREIGN KEY (company_id) REFERENCES companies(id) ON DELETE CASCADE,
         FOREIGN KEY (repair_job_id) REFERENCES repair_jobs(id) ON DELETE CASCADE
     );
 
     CREATE TABLE IF NOT EXISTS invoices (
         id INT AUTO_INCREMENT PRIMARY KEY,
-        repair_job_id INT NOT NULL, invoice_number VARCHAR(100) NOT NULL UNIQUE, subtotal DECIMAL(10, 2) NOT NULL, total_amount DECIMAL(10, 2) NOT NULL,
+        company_id INT NOT NULL,
+        repair_job_id INT NOT NULL, invoice_number VARCHAR(100) NOT NULL, subtotal DECIMAL(10, 2) NOT NULL, total_amount DECIMAL(10, 2) NOT NULL,
         payment_status ENUM('Unpaid', 'Paid') DEFAULT 'Unpaid',
+        FOREIGN KEY (company_id) REFERENCES companies(id) ON DELETE CASCADE,
         FOREIGN KEY (repair_job_id) REFERENCES repair_jobs(id) ON DELETE CASCADE
     );
   `;
@@ -98,15 +130,33 @@ async function initDatabase() {
   try {
     await pool.query(schema);
 
+    try { await pool.query("ALTER TABLE companies ADD COLUMN tagline VARCHAR(255) NULL;"); } catch (e) {}
+    try { await pool.query("ALTER TABLE companies ADD COLUMN hero_text TEXT NULL;"); } catch (e) {}
+    try { await pool.query("ALTER TABLE companies ADD COLUMN primary_color VARCHAR(10) DEFAULT '#f97316';"); } catch (e) {}
+
+    // Seed default companies with distinct themes
+    await pool.query(`
+      INSERT INTO companies (id, company_name, slug, tagline, hero_text, primary_color) VALUES
+      (1, 'Apex Precision Mechanics', 'apex-mechanics', 'Precision Auto Service & Complete Repair Workflow', 'Apex Precision Mechanics provides top-tier diagnostic, engine repair, and routine maintenance solutions.', '#f97316'),
+      (2, 'Vanguard Auto Performance', 'vanguard-auto', 'High Performance Tuning & Custom Mechanical Engineering', 'Vanguard Auto Performance specializes in dyno tuning, custom exhaust systems, track prep, and high-performance upgrades.', '#3b82f6')
+      ON DUPLICATE KEY UPDATE 
+        company_name=VALUES(company_name),
+        tagline=VALUES(tagline),
+        hero_text=VALUES(hero_text),
+        primary_color=VALUES(primary_color);
+    `);
+
     // Seed default accounts
     await pool.query(`
-      INSERT INTO users (id, username, email, password, pin_code, role, customer_id) VALUES
-      (1, 'manager', 'manager@apex.com', 'manager123', '111111', 'manager', NULL),
-      (2, 'advisor', 'advisor@apex.com', 'pass123', '222222', 'service_advisor', NULL),
-      (3, 'tech', 'tech@apex.com', 'pass123', '333333', 'technician', NULL),
-      (4, 'billing', 'billing@apex.com', 'pass123', '444444', 'billing', NULL),
-      (5, 'client', 'client@example.com', 'pass123', NULL, 'customer', 1)
+      INSERT INTO users (id, company_id, username, email, password, pin_code, role, customer_id) VALUES
+      (1, 1, 'manager', 'manager@apex.com', 'manager123', '111111', 'manager', NULL),
+      (2, 1, 'advisor', 'advisor@apex.com', 'pass123', '222222', 'service_advisor', NULL),
+      (3, 1, 'tech', 'tech@apex.com', 'pass123', '333333', 'technician', NULL),
+      (4, 1, 'billing', 'billing@apex.com', 'pass123', '444444', 'billing', NULL),
+      (5, 1, 'client', 'client@example.com', 'pass123', NULL, 'customer', 1),
+      (6, 2, 'vanguard_mgr', 'manager@vanguard.com', 'manager123', '999999', 'manager', NULL)
       ON DUPLICATE KEY UPDATE 
+        company_id=VALUES(company_id),
         username=VALUES(username), 
         email=VALUES(email),
         password=VALUES(password),
@@ -114,7 +164,7 @@ async function initDatabase() {
         role=VALUES(role);
     `);
 
-    console.log('Database initialized successfully with default test accounts.');
+    console.log('Multi-Tenant Database initialized with full theme synchronization.');
   } catch (err) {
     console.error('Database setup error details:', err.message);
   }
@@ -124,7 +174,7 @@ async function initDatabase() {
 function authenticateToken(req, res, next) {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
-  if (!token) return res.status(401).json({ error: 'Access denied. Please register or log in first.' });
+  if (!token) return res.status(401).json({ error: 'Access denied. Please log in first.' });
 
   jwt.verify(token, JWT_SECRET, (err, user) => {
     if (err) return res.status(403).json({ error: 'Session expired. Please log in again.' });
@@ -155,65 +205,126 @@ function authorizeDepartment(req, res, next) {
   next();
 }
 
-// API: Customer Registration (With Email)
-app.post('/api/register', async (req, res) => {
-  const { username, email, password, first_name, last_name, phone } = req.body;
+// API: Fetch Companies
+app.get('/api/companies', async (req, res) => {
   try {
-    const jobNum = `JOB-${Date.now().toString().slice(-6)}`;
-    const [jobRes] = await pool.query('INSERT INTO repair_jobs (job_number, status) VALUES (?, ?)', [jobNum, 'Requested']);
-    const jobId = jobRes.insertId;
-
-    await pool.query('INSERT INTO customers (repair_job_id, first_name, last_name, phone, email) VALUES (?, ?, ?, ?, ?)', [jobId, first_name, last_name, phone, email]);
-    await pool.query('INSERT INTO users (username, email, password, role, customer_id) VALUES (?, ?, ?, ?, ?)', [
-      username, email, password, 'customer', jobId
-    ]);
-
-    res.json({ success: true, message: 'Account created successfully! You can now log in using your Email Address and Password.' });
+    const [companies] = await pool.query('SELECT * FROM companies ORDER BY id ASC');
+    res.json(companies);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-// API: Login Handler (Staff 6-Digit PIN or Customer Email/Username)
+app.get('/api/companies/:slug', async (req, res) => {
+  try {
+    const [companies] = await pool.query('SELECT * FROM companies WHERE slug = ?', [req.params.slug]);
+    if (companies.length === 0) return res.status(404).json({ error: 'Company not found' });
+    res.json(companies[0]);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// API: Registration
+app.post('/api/register', async (req, res) => {
+  const { company_id, username, email, password, first_name, last_name, phone } = req.body;
+  try {
+    const jobNum = `JOB-${Date.now().toString().slice(-6)}`;
+    const [jobRes] = await pool.query('INSERT INTO repair_jobs (company_id, job_number, status) VALUES (?, ?, ?)', [company_id, jobNum, 'Requested']);
+    const jobId = jobRes.insertId;
+
+    await pool.query('INSERT INTO customers (company_id, repair_job_id, first_name, last_name, phone, email) VALUES (?, ?, ?, ?, ?, ?)', [company_id, jobId, first_name, last_name, phone, email]);
+    await pool.query('INSERT INTO users (company_id, username, email, password, role, customer_id) VALUES (?, ?, ?, ?, ?, ?)', [
+      company_id, username, email, password, 'customer', jobId
+    ]);
+
+    res.json({ success: true, message: 'Account created successfully! You can now log in.' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// API: Multi-Tenant Login Handler (Returns Theme Colors)
 app.post('/api/login', async (req, res) => {
-  const { login_input, password } = req.body;
+  const { company_id, login_input, password } = req.body;
   const inputStr = (login_input || '').trim();
 
   try {
     let rows = [];
 
-    // 1. Employee Login via 6-Digit PIN
     if (/^\d{6}$/.test(inputStr)) {
-      [rows] = await pool.query('SELECT * FROM users WHERE pin_code = ?', [inputStr]);
+      if (company_id) {
+        [rows] = await pool.query(
+          'SELECT u.*, c.company_name, c.primary_color FROM users u JOIN companies c ON u.company_id = c.id WHERE u.pin_code = ? AND u.company_id = ?',
+          [inputStr, company_id]
+        );
+      } else {
+        [rows] = await pool.query(
+          'SELECT u.*, c.company_name, c.primary_color FROM users u JOIN companies c ON u.company_id = c.id WHERE u.pin_code = ?',
+          [inputStr]
+        );
+      }
     }
 
-    // 2. Customer or Staff Login via Email or Username + Password
     if (rows.length === 0) {
-      [rows] = await pool.query('SELECT * FROM users WHERE (email = ? OR username = ?) AND password = ?', [inputStr, inputStr, password]);
+      if (company_id) {
+        [rows] = await pool.query(
+          'SELECT u.*, c.company_name, c.primary_color FROM users u JOIN companies c ON u.company_id = c.id WHERE (u.email = ? OR u.username = ?) AND u.password = ? AND u.company_id = ?',
+          [inputStr, inputStr, password, company_id]
+        );
+      } else {
+        [rows] = await pool.query(
+          'SELECT u.*, c.company_name, c.primary_color FROM users u JOIN companies c ON u.company_id = c.id WHERE (u.email = ? OR u.username = ?) AND u.password = ?',
+          [inputStr, inputStr, password]
+        );
+      }
     }
 
     if (rows.length === 0) {
-      return res.status(401).json({ error: 'Invalid Credentials. Use a 6-digit Staff PIN, or enter your Customer Email and Password.' });
+      return res.status(401).json({ error: 'Invalid Credentials for the selected shop.' });
     }
 
     const user = rows[0];
+    
     const token = jwt.sign(
-      { id: user.id, username: user.username, email: user.email, role: user.role, customer_id: user.customer_id },
+      { 
+        id: user.id, 
+        company_id: user.company_id, 
+        company_name: user.company_name, 
+        primary_color: user.primary_color,
+        username: user.username, 
+        email: user.email, 
+        role: user.role, 
+        customer_id: user.customer_id 
+      },
       JWT_SECRET,
       { expiresIn: '8h' }
     );
 
-    res.json({ token, role: user.role, username: user.username, email: user.email, customer_id: user.customer_id, pin_code: user.pin_code });
+    res.json({ 
+      token, 
+      company_id: user.company_id,
+      company_name: user.company_name,
+      primary_color: user.primary_color || '#f97316',
+      role: user.role, 
+      username: user.username, 
+      email: user.email, 
+      customer_id: user.customer_id, 
+      pin_code: user.pin_code 
+    });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-// API: Manager Staff Roster & PIN Assignment
+// API: Manager Roster
 app.get('/api/manager/employees', authenticateToken, async (req, res) => {
   if (req.user.role !== 'manager') return res.status(403).json({ error: 'Only Managers can access employee rosters.' });
   try {
-    const [rows] = await pool.query('SELECT id, username, email, pin_code, role, created_at FROM users WHERE role != "customer" ORDER BY id ASC');
+    const [rows] = await pool.query(
+      'SELECT id, username, email, pin_code, role, created_at FROM users WHERE company_id = ? AND role != "customer" ORDER BY id ASC',
+      [req.user.company_id]
+    );
     res.json(rows);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -230,8 +341,8 @@ app.post('/api/manager/create-employee', authenticateToken, async (req, res) => 
   }
 
   try {
-    await pool.query('INSERT INTO users (username, email, password, pin_code, role) VALUES (?, ?, ?, ?, ?)', [
-      username, email || null, 'pass123', pin_code, role
+    await pool.query('INSERT INTO users (company_id, username, email, password, pin_code, role) VALUES (?, ?, ?, ?, ?, ?)', [
+      req.user.company_id, username, email || null, 'pass123', pin_code, role
     ]);
     res.json({ success: true, message: `Staff profile created for ${username} with 6-digit PIN ${pin_code}` });
   } catch (err) {
@@ -249,7 +360,7 @@ app.put('/api/manager/update-employee', authenticateToken, async (req, res) => {
   }
 
   try {
-    await pool.query('UPDATE users SET pin_code = ?, role = ? WHERE id = ?', [pin_code, role, id]);
+    await pool.query('UPDATE users SET pin_code = ?, role = ? WHERE id = ? AND company_id = ?', [pin_code, role, id, req.user.company_id]);
     res.json({ success: true, message: 'Employee PIN code and role updated successfully!' });
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -279,11 +390,11 @@ app.get('/api/vehicle/vin-lookup/:vin', authenticateToken, async (req, res) => {
   });
 });
 
-// API: Vehicle Parts Catalog Lookup
+// API: Parts Catalog
 app.get('/api/parts/catalog-lookup', authenticateToken, async (req, res) => {
   const { jobId, partName } = req.query;
   try {
-    const [vehicles] = await pool.query('SELECT * FROM vehicles WHERE repair_job_id = ?', [jobId]);
+    const [vehicles] = await pool.query('SELECT * FROM vehicles WHERE repair_job_id = ? AND company_id = ?', [jobId, req.user.company_id]);
     const car = vehicles[0] || { make: 'Project-Auto', model: 'Vehicle', year: '2022' };
 
     let basePrice = 50.00;
@@ -309,6 +420,7 @@ app.post('/api/customer/request-appointment', authenticateToken, async (req, res
   if (req.user.role !== 'customer') return res.status(403).json({ error: 'Only customers can schedule appointments.' });
 
   const jobId = req.user.customer_id;
+  const companyId = req.user.company_id;
   const { vin, make, model, year, scheduled_datetime, issue_description } = req.body;
   
   if (!vin || vin.length !== 17) {
@@ -317,16 +429,16 @@ app.post('/api/customer/request-appointment', authenticateToken, async (req, res
 
   try {
     await pool.query(
-      'INSERT INTO vehicles (repair_job_id, vin, make, model, year) VALUES (?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE vin=?, make=?, model=?, year=?',
-      [jobId, vin, make, model, year, vin, make, model, year]
+      'INSERT INTO vehicles (company_id, repair_job_id, vin, make, model, year) VALUES (?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE vin=?, make=?, model=?, year=?',
+      [companyId, jobId, vin, make, model, year, vin, make, model, year]
     );
 
-    await pool.query('INSERT INTO appointments (repair_job_id, scheduled_datetime) VALUES (?, ?)', [jobId, scheduled_datetime]);
+    await pool.query('INSERT INTO appointments (company_id, repair_job_id, scheduled_datetime) VALUES (?, ?, ?)', [companyId, jobId, scheduled_datetime]);
 
     const roNum = `RO-${Date.now().toString().slice(-6)}`;
     await pool.query(
-      'INSERT INTO repair_orders (repair_job_id, ro_number, issue_description) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE issue_description=?',
-      [jobId, roNum, issue_description, issue_description]
+      'INSERT INTO repair_orders (company_id, repair_job_id, ro_number, issue_description) VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE issue_description=?',
+      [companyId, jobId, roNum, issue_description, issue_description]
     );
 
     res.json({ success: true, message: 'Service request created successfully!' });
@@ -340,6 +452,7 @@ app.put('/api/customer/update-profile', authenticateToken, async (req, res) => {
   if (req.user.role !== 'customer') return res.status(403).json({ error: 'Access denied.' });
 
   const jobId = req.user.customer_id;
+  const companyId = req.user.company_id;
   const { first_name, last_name, phone, email, vin, make, model, year, issue_description } = req.body;
 
   if (!vin || vin.length !== 17) {
@@ -347,10 +460,10 @@ app.put('/api/customer/update-profile', authenticateToken, async (req, res) => {
   }
 
   try {
-    await pool.query('UPDATE customers SET first_name = ?, last_name = ?, phone = ?, email = ? WHERE repair_job_id = ?', [first_name, last_name, phone, email, jobId]);
-    await pool.query('UPDATE users SET email = ? WHERE id = ?', [email, req.user.id]);
-    await pool.query('UPDATE vehicles SET vin = ?, make = ?, model = ?, year = ? WHERE repair_job_id = ?', [vin, make, model, year, jobId]);
-    await pool.query('UPDATE repair_orders SET issue_description = ? WHERE repair_job_id = ?', [issue_description, jobId]);
+    await pool.query('UPDATE customers SET first_name = ?, last_name = ?, phone = ?, email = ? WHERE repair_job_id = ? AND company_id = ?', [first_name, last_name, phone, email, jobId, companyId]);
+    await pool.query('UPDATE users SET email = ? WHERE id = ? AND company_id = ?', [email, req.user.id, companyId]);
+    await pool.query('UPDATE vehicles SET vin = ?, make = ?, model = ?, year = ? WHERE repair_job_id = ? AND company_id = ?', [vin, make, model, year, jobId, companyId]);
+    await pool.query('UPDATE repair_orders SET issue_description = ? WHERE repair_job_id = ? AND company_id = ?', [issue_description, jobId, companyId]);
 
     res.json({ success: true, message: 'Profile updated!' });
   } catch (err) {
@@ -358,20 +471,21 @@ app.put('/api/customer/update-profile', authenticateToken, async (req, res) => {
   }
 });
 
-// API: Fetch Customer View
+// API: Customer View
 app.get('/api/customer/my-repair', authenticateToken, async (req, res) => {
   if (req.user.role !== 'customer') return res.status(403).json({ error: 'Access denied.' });
 
   const jobId = req.user.customer_id;
+  const companyId = req.user.company_id;
   try {
-    const [job] = await pool.query('SELECT * FROM repair_jobs WHERE id = ?', [jobId]);
-    const [customer] = await pool.query('SELECT * FROM customers WHERE repair_job_id = ?', [jobId]);
-    const [vehicle] = await pool.query('SELECT * FROM vehicles WHERE repair_job_id = ?', [jobId]);
-    const [appointment] = await pool.query('SELECT * FROM appointments WHERE repair_job_id = ?', [jobId]);
-    const [repairOrder] = await pool.query('SELECT * FROM repair_orders WHERE repair_job_id = ?', [jobId]);
-    const [partsLabor] = await pool.query('SELECT * FROM parts_and_labor WHERE repair_job_id = ?', [jobId]);
-    const [repairExec] = await pool.query('SELECT * FROM repair_executions WHERE repair_job_id = ?', [jobId]);
-    const [invoice] = await pool.query('SELECT * FROM invoices WHERE repair_job_id = ?', [jobId]);
+    const [job] = await pool.query('SELECT * FROM repair_jobs WHERE id = ? AND company_id = ?', [jobId, companyId]);
+    const [customer] = await pool.query('SELECT * FROM customers WHERE repair_job_id = ? AND company_id = ?', [jobId, companyId]);
+    const [vehicle] = await pool.query('SELECT * FROM vehicles WHERE repair_job_id = ? AND company_id = ?', [jobId, companyId]);
+    const [appointment] = await pool.query('SELECT * FROM appointments WHERE repair_job_id = ? AND company_id = ?', [jobId, companyId]);
+    const [repairOrder] = await pool.query('SELECT * FROM repair_orders WHERE repair_job_id = ? AND company_id = ?', [jobId, companyId]);
+    const [partsLabor] = await pool.query('SELECT * FROM parts_and_labor WHERE repair_job_id = ? AND company_id = ?', [jobId, companyId]);
+    const [repairExec] = await pool.query('SELECT * FROM repair_executions WHERE repair_job_id = ? AND company_id = ?', [jobId, companyId]);
+    const [invoice] = await pool.query('SELECT * FROM invoices WHERE repair_job_id = ? AND company_id = ?', [jobId, companyId]);
 
     res.json({
       status: job[0] ? job[0].status : 'Pending',
@@ -395,9 +509,10 @@ app.get('/api/customers/list', authenticateToken, async (req, res) => {
       SELECT c.repair_job_id, c.first_name, c.last_name, c.phone, c.email, 
              v.make, v.model, v.year, v.vin
       FROM customers c
-      LEFT JOIN vehicles v ON v.repair_job_id = c.repair_job_id
+      LEFT JOIN vehicles v ON v.repair_job_id = c.repair_job_id AND v.company_id = c.company_id
+      WHERE c.company_id = ?
       ORDER BY c.id DESC
-    `);
+    `, [req.user.company_id]);
     res.json(rows);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -408,6 +523,7 @@ app.get('/api/customers/list', authenticateToken, async (req, res) => {
 app.post('/api/department/:name', authenticateToken, authorizeDepartment, async (req, res) => {
   const dept = req.params.name;
   const data = req.body;
+  const companyId = req.user.company_id;
 
   const tableMap = {
     customer: 'customers', vehicle: 'vehicles', appointment: 'appointments',
@@ -418,11 +534,12 @@ app.post('/api/department/:name', authenticateToken, authorizeDepartment, async 
   const table = tableMap[dept];
   try {
     const jobId = data.repair_job_id;
-    const [existingJobs] = await pool.query('SELECT id FROM repair_jobs WHERE id = ?', [jobId]);
+    const [existingJobs] = await pool.query('SELECT id FROM repair_jobs WHERE id = ? AND company_id = ?', [jobId, companyId]);
     if (existingJobs.length === 0) {
-      await pool.query('INSERT INTO repair_jobs (id, job_number) VALUES (?, ?)', [jobId, `JOB-${jobId}`]);
+      await pool.query('INSERT INTO repair_jobs (id, company_id, job_number) VALUES (?, ?, ?)', [jobId, companyId, `JOB-${jobId}`]);
     }
 
+    data.company_id = companyId;
     const keys = Object.keys(data);
     const values = Object.values(data);
     const placeholders = keys.map(() => '?').join(', ');
@@ -436,14 +553,14 @@ app.post('/api/department/:name', authenticateToken, authorizeDepartment, async 
 });
 
 // Serve Web Interface
-app.get('/', (req, res) => {
-  res.send(`
+app.get(['/', '/:slug'], (req, res) => {
+  const htmlContent = `
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Apex Precision Mechanics & Auto Service</title>
+  <title>Apex Mechanics & Auto SaaS</title>
   <style>
     :root {
       --bg: #0f172a;
@@ -486,13 +603,18 @@ app.get('/', (req, res) => {
     .staff-table { width: 100%; border-collapse: collapse; margin-top: 12px; }
     .staff-table th, .staff-table td { padding: 10px; border: 1px solid var(--border); text-align: left; }
     .staff-table th { background: #0f172a; color: var(--primary); }
+    .shop-switcher { display: flex; justify-content: center; gap: 10px; margin-top: 12px; }
+    .shop-chip { padding: 6px 14px; border-radius: 20px; background: #1e293b; border: 1px solid var(--border); color: var(--text-muted); text-decoration: none; font-size: 0.85rem; font-weight: bold; }
+    .shop-chip:hover { border-color: var(--primary); color: white; }
+    
+    .shop-title-text { color: var(--primary); font-weight: bold; }
   </style>
 </head>
 <body>
   <div class="container">
     
     <div class="header">
-      <div class="brand" onclick="showScreen('landingSection')">🔧 Apex <span>Mechanics</span></div>
+      <div class="brand" id="navBrand" onclick="showScreen('landingSection')">🔧 <span id="brandName">Apex Mechanics</span></div>
       <div>
         <button class="nav-btn" onclick="showScreen('landingSection')">Home</button>
         <button class="nav-btn" onclick="showScreen('registerSection')">Create Account</button>
@@ -500,21 +622,31 @@ app.get('/', (req, res) => {
       </div>
     </div>
 
-    <!-- 0. PUBLIC LANDING PAGE (DEFAULT VIEW) -->
+    <!-- 0. PUBLIC DYNAMIC LANDING PAGE -->
     <div id="landingSection">
       <div class="hero">
-        <h1>Precision Auto Service & <span>Repair Management</span></h1>
-        <p>Apex Mechanics provides a synchronized digital portal connecting vehicle owners, service advisors, technicians, and billing departments in one seamless repair workflow.</p>
+        <h1 id="heroTitle">Precision Auto Service & <span>SaaS Management</span></h1>
+        <p id="heroSubtitle">Apex SaaS automatically routes managers, technicians, and customers directly into their registered shop portal with complete data isolation.</p>
         <div style="display:flex; justify-content:center; gap:12px;">
           <button style="width:auto; padding:12px 24px;" onclick="showScreen('registerSection')">Book Appointment / Create Account</button>
           <button style="width:auto; padding:12px 24px; background:transparent; border:1px solid var(--primary);" onclick="showScreen('loginSection')">Employee & Client Login</button>
+        </div>
+
+        <div class="shop-switcher">
+          <span style="font-size:0.85rem; color:var(--text-muted); line-height:30px;">Switch Shop View:</span>
+          <a href="/apex-mechanics" class="shop-chip">🍊 Apex Precision Mechanics</a>
+          <a href="/vanguard-auto" class="shop-chip">🔹 Vanguard Auto Performance</a>
         </div>
       </div>
 
       <div class="grid">
         <div class="feature-card">
+          <h3>🏢 Shop-Specific Landing & Data</h3>
+          <p>Employees and clients visiting this dedicated URL are automatically routed to this shop location.</p>
+        </div>
+        <div class="feature-card">
           <h3>🔑 Staff 6-Digit PIN Login</h3>
-          <p>Employees log in instantly using their Manager-assigned 6-digit PIN code. Access permissions are automatically mapped to their role.</p>
+          <p>Employees log in instantly using their Manager-assigned 6-digit PIN code to access their shop's active workflow.</p>
         </div>
         <div class="feature-card">
           <h3>✉️ Customer Email Login</h3>
@@ -522,11 +654,7 @@ app.get('/', (req, res) => {
         </div>
         <div class="feature-card">
           <h3>👥 Manager Roster Control</h3>
-          <p>Managers can create new employee profiles, assign 6-digit PIN codes, and adjust role permissions in real-time.</p>
-        </div>
-        <div class="feature-card">
-          <h3>🔍 VIN Decoding & Parts Catalog</h3>
-          <p>Technicians can automatically decode any 17-digit VIN to verify vehicle specifications and lookup vehicle-matched replacement parts.</p>
+          <p>Shop managers can create new employee profiles, assign 6-digit PIN codes, and adjust role permissions in real-time.</p>
         </div>
       </div>
     </div>
@@ -534,8 +662,12 @@ app.get('/', (req, res) => {
     <!-- 1. REGISTRATION -->
     <div id="registerSection" class="card hidden">
       <h2>Create Customer Account</h2>
-      <p style="color: var(--text-muted);">Please create an account to schedule an appointment or manage repairs.</p>
+      <p style="color: var(--text-muted);">Please confirm your shop location and create an account to schedule service.</p>
       <form onsubmit="handleRegister(event)">
+        <label>Selected Auto Repair Shop Location</label>
+        <select id="reg_company_id" required>
+          <option value="">Loading shop locations...</option>
+        </select>
         <div class="grid">
           <div><label>First Name</label><input type="text" id="reg_first_name" required /></div>
           <div><label>Last Name</label><input type="text" id="reg_last_name" required /></div>
@@ -555,7 +687,12 @@ app.get('/', (req, res) => {
       <h2>Portal Login</h2>
       <p style="color:var(--text-muted);">Staff log in using your 6-Digit PIN. Customers log in using your Email Address & Password.</p>
       <form onsubmit="handleLogin(event)">
-        <label>Customer Email / Username OR Staff 6-Digit PIN</label>
+        <label>Shop Location</label>
+        <select id="login_company_id">
+          <option value="">-- Auto-Detect Shop by PIN/Account --</option>
+        </select>
+
+        <label style="margin-top:12px;">Customer Email / Username OR Staff 6-Digit PIN</label>
         <input type="text" id="login_input" placeholder="e.g. user@domain.com (Customer) or 111111 (Staff PIN)" required />
         
         <label style="margin-top:12px;">Password (Required for Customer Email Login)</label>
@@ -568,7 +705,10 @@ app.get('/', (req, res) => {
     <!-- 3. CUSTOMER DASHBOARD -->
     <div id="customerDashboard" class="card hidden">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
-        <h2>Customer Portal & Dashboard</h2>
+        <div>
+          <h2>Customer Portal</h2>
+          <small class="shop-title-text" id="clientShopBanner"></small>
+        </div>
         <div>
           Welcome, <strong id="clientWelcomeName" style="color:var(--primary);"></strong>!
           <button onclick="logout()" class="nav-btn" style="margin-left:12px;">Logout</button>
@@ -632,11 +772,11 @@ app.get('/', (req, res) => {
 
       <!-- TAB 3: CONTACT US -->
       <div id="customerTab-contact-us" class="invoice-box hidden">
-        <h3>Contact Apex Mechanics Support</h3>
+        <h3>Contact Shop Support</h3>
         <div class="grid" style="margin-top:20px;">
           <div class="feature-card">
-            <h4>📍 Main Service Shop</h4>
-            <p>100 Industrial Parkway, CA 90001</p>
+            <h4>📍 Service Location</h4>
+            <p id="shopAddressText">100 Industrial Parkway, Mechanics Hub</p>
           </div>
           <div class="feature-card">
             <h4>📞 Phone Support</h4>
@@ -649,14 +789,17 @@ app.get('/', (req, res) => {
     <!-- 4. EMPLOYEE & MANAGER DASHBOARD -->
     <div id="employeeDashboard" class="card hidden">
       <div style="display:flex; justify-content:space-between; align-items:center;">
-        <h2>Shop Operations Portal</h2>
+        <div>
+          <h2>Shop Operations Portal</h2>
+          <small class="shop-title-text" style="font-size:1.05rem;" id="empShopBanner"></small>
+        </div>
         <div>User: <span id="userRoleBadge" class="badge"></span> <button onclick="logout()" class="nav-btn">Logout</button></div>
       </div>
 
       <!-- MANAGER STAFF PIN & ROLE MANAGER -->
       <div id="managerControlPanel" class="invoice-box hidden" style="margin-bottom:24px;">
-        <h3 style="color:var(--primary);">👑 Manager Dashboard: Staff PIN & Role Manager</h3>
-        <p style="color:var(--text-muted); font-size:0.9rem;">Create staff profiles, assign 6-digit login PINs, and update employee roles.</p>
+        <h3 class="shop-title-text">👑 Manager Dashboard: Staff PIN & Role Manager</h3>
+        <p style="color:var(--text-muted); font-size:0.9rem;">Create staff profiles, assign 6-digit login PINs, and update employee roles for this shop.</p>
         
         <form onsubmit="handleCreateEmployee(event)" style="margin-bottom:20px;">
           <h4>Add New Employee Profile</h4>
@@ -696,7 +839,7 @@ app.get('/', (req, res) => {
       </div>
 
       <!-- WORKFLOW OPERATIONS -->
-      <label style="color:var(--primary); font-size:1rem;">Select Customer (Auto-fills Customer & Vehicle Data)</label>
+      <label class="shop-title-text" style="font-size:1rem;">Select Customer (Auto-fills Customer & Vehicle Data)</label>
       <select id="customerSelector" onchange="autoFillCustomerData()">
         <option value="">-- Choose Existing Customer Record --</option>
       </select>
@@ -727,6 +870,7 @@ app.get('/', (req, res) => {
   <script>
     let activeDept = 'customer';
     let loadedCustomerList = [];
+    let currentShop = null;
 
     const ROLE_MAP = {
       service_advisor: ['customer', 'vehicle', 'appointment', 'repair_order', 'estimate'],
@@ -745,6 +889,58 @@ app.get('/', (req, res) => {
       repair: '<textarea name="work_summary" placeholder="Summary of performed repairs" required></textarea>',
       invoice: '<input name="invoice_number" placeholder="Invoice #" required/><input name="subtotal" type="number" step="0.01" placeholder="Subtotal ($)" required/><input name="total_amount" type="number" step="0.01" placeholder="Total ($)" required/>'
     };
+
+    function applyShopThemeColor(colorHex) {
+      if (colorHex) {
+        document.documentElement.style.setProperty('--primary', colorHex);
+        
+        let hoverColor = colorHex;
+        if (colorHex === '#3b82f6') hoverColor = '#2563eb';
+        if (colorHex === '#f97316') hoverColor = '#ea580c';
+        document.documentElement.style.setProperty('--primary-hover', hoverColor);
+      }
+    }
+
+    async function loadShopLandingContext() {
+      const slug = window.location.pathname.replace('/', '').trim();
+      if (!slug) return loadCompaniesDropdown();
+
+      const res = await fetch(\`/api/companies/\${slug}\`);
+      if (!res.ok) return loadCompaniesDropdown();
+
+      currentShop = await res.json();
+
+      document.getElementById('brandName').textContent = currentShop.company_name;
+      document.getElementById('heroTitle').innerHTML = \`\${currentShop.company_name} <span>Portal</span>\`;
+      document.getElementById('heroSubtitle').textContent = currentShop.hero_text || currentShop.tagline;
+
+      applyShopThemeColor(currentShop.primary_color);
+
+      await loadCompaniesDropdown();
+      if (currentShop) {
+        document.getElementById('reg_company_id').value = currentShop.id;
+        document.getElementById('login_company_id').value = currentShop.id;
+      }
+    }
+
+    async function loadCompaniesDropdown() {
+      const res = await fetch('/api/companies');
+      if (!res.ok) return;
+      const companies = await res.json();
+      
+      const regSelect = document.getElementById('reg_company_id');
+      const loginSelect = document.getElementById('login_company_id');
+      
+      const optionsHtml = companies.map(c => \`<option value="\${c.id}">\${c.company_name}</option>\`).join('');
+      
+      if (regSelect) regSelect.innerHTML = optionsHtml;
+      if (loginSelect) loginSelect.innerHTML = '<option value="">-- Auto-Detect Shop by PIN/Account --</option>' + optionsHtml;
+
+      if (currentShop) {
+        if (regSelect) regSelect.value = currentShop.id;
+        if (loginSelect) loginSelect.value = currentShop.id;
+      }
+    }
 
     function showScreen(screenId) {
       document.getElementById('landingSection').classList.add('hidden');
@@ -768,13 +964,14 @@ app.get('/', (req, res) => {
 
     async function handleLogin(e) {
       e.preventDefault();
+      const company_id = document.getElementById('login_company_id').value;
       const login_input = document.getElementById('login_input').value;
       const password = document.getElementById('password').value;
 
       const res = await fetch('/api/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ login_input, password })
+        body: JSON.stringify({ company_id, login_input, password })
       });
       const data = await res.json();
       if (!res.ok) return alert(data.error);
@@ -782,6 +979,8 @@ app.get('/', (req, res) => {
       localStorage.setItem('token', data.token);
       localStorage.setItem('role', data.role);
       localStorage.setItem('username', data.username);
+      localStorage.setItem('company_name', data.company_name);
+      localStorage.setItem('primary_color', data.primary_color || '#f97316');
       
       renderDashboard();
     }
@@ -906,6 +1105,7 @@ app.get('/', (req, res) => {
     async function handleRegister(e) {
       e.preventDefault();
       const payload = {
+        company_id: document.getElementById('reg_company_id').value,
         first_name: document.getElementById('reg_first_name').value,
         last_name: document.getElementById('reg_last_name').value,
         phone: document.getElementById('reg_phone').value,
@@ -968,6 +1168,7 @@ app.get('/', (req, res) => {
       });
       const data = await res.json();
       
+      document.getElementById('clientShopBanner').textContent = \`Shop: \${localStorage.getItem('company_name') || ''}\`;
       document.getElementById('clientWelcomeName').textContent = data.customer.first_name ? \`\${data.customer.first_name} \${data.customer.last_name}\` : localStorage.getItem('username');
       document.getElementById('statusBadge').innerHTML = \`Current Service Status: <span class="badge">\${data.status}</span>\`;
       document.getElementById('cust_first_name').value = data.customer.first_name || '';
@@ -1089,9 +1290,15 @@ app.get('/', (req, res) => {
     function renderDashboard() {
       const token = localStorage.getItem('token');
       const role = localStorage.getItem('role');
+      const primaryColor = localStorage.getItem('primary_color');
+
+      if (primaryColor) {
+        applyShopThemeColor(primaryColor);
+      }
 
       if (!token) {
         showScreen('landingSection');
+        loadShopLandingContext();
         return;
       }
 
@@ -1101,6 +1308,7 @@ app.get('/', (req, res) => {
         loadCustomerProfile();
       } else {
         showScreen('employeeDashboard');
+        document.getElementById('empShopBanner').textContent = \`Shop: \${localStorage.getItem('company_name') || ''}\`;
         document.getElementById('userRoleBadge').textContent = \`\${localStorage.getItem('username')} (\${role})\`;
         
         if (role === 'manager') {
@@ -1162,11 +1370,12 @@ app.get('/', (req, res) => {
   </script>
 </body>
 </html>
-  `);
+  `;
+  res.send(htmlContent);
 });
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, async () => {
   await initDatabase();
-  console.log(`School Project Application live on http://localhost:${PORT}`);
+  console.log(`Multi-Tenant SaaS Application live on http://localhost:${PORT}`);
 });
