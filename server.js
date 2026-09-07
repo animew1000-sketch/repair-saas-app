@@ -1,10 +1,14 @@
 const express = require('express');
 const mysql = require('mysql2/promise');
 const jwt = require('jsonwebtoken');
+const path = require('path');
 require('dotenv').config();
 
 const app = express();
 app.use(express.json());
+
+// Serve static assets from the "public" folder
+app.use(express.static(path.join(__dirname, 'public')));
 
 const JWT_SECRET = process.env.JWT_SECRET || 'super_secret_school_project_key_2026';
 
@@ -134,7 +138,6 @@ async function initDatabase() {
     try { await pool.query("ALTER TABLE companies ADD COLUMN hero_text TEXT NULL;"); } catch (e) {}
     try { await pool.query("ALTER TABLE companies ADD COLUMN primary_color VARCHAR(10) DEFAULT '#f97316';"); } catch (e) {}
 
-    // Seed default companies
     await pool.query(`
       INSERT INTO companies (id, company_name, slug, tagline, hero_text, primary_color) VALUES
       (1, 'Apex Precision Mechanics', 'apex-mechanics', 'Precision Auto Service & Complete Repair Workflow', 'Apex Precision Mechanics provides top-tier diagnostic, engine repair, and routine maintenance solutions.', '#f97316'),
@@ -146,7 +149,6 @@ async function initDatabase() {
         primary_color=VALUES(primary_color);
     `);
 
-    // Seed default accounts
     await pool.query(`
       INSERT INTO users (id, company_id, username, email, password, pin_code, role, customer_id) VALUES
       (1, 1, 'manager', 'manager@apex.com', 'manager123', '111111', 'manager', NULL),
@@ -164,13 +166,12 @@ async function initDatabase() {
         role=VALUES(role);
     `);
 
-    console.log('Multi-Tenant Database initialized with marketing showcase content.');
+    console.log('Multi-Tenant Database initialized.');
   } catch (err) {
     console.error('Database setup error details:', err.message);
   }
 }
 
-// Authentication Middleware
 function authenticateToken(req, res, next) {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
@@ -183,7 +184,6 @@ function authenticateToken(req, res, next) {
   });
 }
 
-// Role Permissions Matrix
 const ROLE_PERMISSIONS = {
   customer: [],
   service_advisor: ['customer', 'vehicle', 'appointment', 'repair_order', 'estimate'],
@@ -205,7 +205,6 @@ function authorizeDepartment(req, res, next) {
   next();
 }
 
-// API: Fetch Companies
 app.get('/api/companies', async (req, res) => {
   try {
     const [companies] = await pool.query('SELECT * FROM companies ORDER BY id ASC');
@@ -225,7 +224,6 @@ app.get('/api/companies/:slug', async (req, res) => {
   }
 });
 
-// API: Registration
 app.post('/api/register', async (req, res) => {
   const { company_id, username, email, password, first_name, last_name, phone } = req.body;
   try {
@@ -244,7 +242,6 @@ app.post('/api/register', async (req, res) => {
   }
 });
 
-// API: Multi-Tenant Login Handler
 app.post('/api/login', async (req, res) => {
   const { company_id, login_input, password } = req.body;
   const inputStr = (login_input || '').trim();
@@ -317,7 +314,6 @@ app.post('/api/login', async (req, res) => {
   }
 });
 
-// API: Manager Roster
 app.get('/api/manager/employees', authenticateToken, async (req, res) => {
   if (req.user.role !== 'manager') return res.status(403).json({ error: 'Only Managers can access employee rosters.' });
   try {
@@ -367,7 +363,6 @@ app.put('/api/manager/update-employee', authenticateToken, async (req, res) => {
   }
 });
 
-// API: Offline Simulated VIN Decoder
 app.get('/api/vehicle/vin-lookup/:vin', authenticateToken, async (req, res) => {
   const vin = req.params.vin.toUpperCase();
   if (vin.length !== 17) {
@@ -390,7 +385,6 @@ app.get('/api/vehicle/vin-lookup/:vin', authenticateToken, async (req, res) => {
   });
 });
 
-// API: Parts Catalog
 app.get('/api/parts/catalog-lookup', authenticateToken, async (req, res) => {
   const { jobId, partName } = req.query;
   try {
@@ -415,7 +409,6 @@ app.get('/api/parts/catalog-lookup', authenticateToken, async (req, res) => {
   }
 });
 
-// API: Customer Schedule Appointment
 app.post('/api/customer/request-appointment', authenticateToken, async (req, res) => {
   if (req.user.role !== 'customer') return res.status(403).json({ error: 'Only customers can schedule appointments.' });
 
@@ -447,7 +440,6 @@ app.post('/api/customer/request-appointment', authenticateToken, async (req, res
   }
 });
 
-// API: Update Customer Profile
 app.put('/api/customer/update-profile', authenticateToken, async (req, res) => {
   if (req.user.role !== 'customer') return res.status(403).json({ error: 'Access denied.' });
 
@@ -471,7 +463,6 @@ app.put('/api/customer/update-profile', authenticateToken, async (req, res) => {
   }
 });
 
-// API: Customer View
 app.get('/api/customer/my-repair', authenticateToken, async (req, res) => {
   if (req.user.role !== 'customer') return res.status(403).json({ error: 'Access denied.' });
 
@@ -502,7 +493,6 @@ app.get('/api/customer/my-repair', authenticateToken, async (req, res) => {
   }
 });
 
-// API: List Customers
 app.get('/api/customers/list', authenticateToken, async (req, res) => {
   try {
     const [rows] = await pool.query(`
@@ -519,7 +509,6 @@ app.get('/api/customers/list', authenticateToken, async (req, res) => {
   }
 });
 
-// API: Save Department Data
 app.post('/api/department/:name', authenticateToken, authorizeDepartment, async (req, res) => {
   const dept = req.params.name;
   const data = req.body;
@@ -552,7 +541,6 @@ app.post('/api/department/:name', authenticateToken, authorizeDepartment, async 
   }
 });
 
-// Serve Web Interface
 app.get(['/', '/:slug'], (req, res) => {
   const htmlContent = `
 <!DOCTYPE html>
@@ -561,62 +549,7 @@ app.get(['/', '/:slug'], (req, res) => {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Apex SaaS | Multi-Tenant Auto Repair Operating System</title>
-  <style>
-    :root {
-      --bg: #0f172a;
-      --card-bg: #1e293b;
-      --border: #334155;
-      --primary: #f97316;
-      --primary-hover: #ea580c;
-      --text: #f8fafc;
-      --text-muted: #94a3b8;
-    }
-    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; }
-    .container { max-width: 1050px; margin: 0 auto; }
-    .header { display: flex; justify-content: space-between; align-items: center; padding: 16px 0; border-bottom: 2px solid var(--primary); margin-bottom: 24px; }
-    .brand { font-size: 1.5rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; }
-    .brand span { color: var(--primary); }
-    .card { background: var(--card-bg); padding: 24px; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
-    .hidden { display: none !important; }
-    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
-    label { font-size: 0.85rem; font-weight: 600; color: var(--text-muted); display: block; margin-top: 10px; margin-bottom: 4px; }
-    input, select, textarea, button { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 6px; box-sizing: border-box; background: #0f172a; color: white; }
-    button { background: var(--primary); color: white; font-weight: bold; text-transform: uppercase; border: none; cursor: pointer; margin-top: 16px; transition: 0.2s; }
-    button:hover { background: var(--primary-hover); }
-    .workflow-bar { display: flex; gap: 8px; overflow-x: auto; margin-bottom: 20px; }
-    .step-card { flex: 1; padding: 12px 6px; text-align: center; border-radius: 4px; font-weight: bold; cursor: pointer; background: #0f172a; border: 1px solid var(--border); font-size: 0.85rem; }
-    .step-card.active { border-color: var(--primary); background: #334155; color: var(--primary); }
-    .badge { background: var(--primary); color: white; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; font-weight: bold; }
-    .nav-btn { background: transparent; border: 1px solid var(--border); color: var(--text-muted); width: auto; margin: 0 4px; }
-    .invoice-box { background: #0f172a; padding: 20px; border-radius: 6px; border: 1px dashed var(--primary); margin-top: 20px; }
-    
-    .hero { text-align: center; padding: 48px 24px; background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%); border-radius: 8px; border: 1px solid var(--border); margin-bottom: 24px; }
-    .hero h1 { font-size: 2.3rem; margin-bottom: 12px; line-height: 1.2; }
-    .hero h1 span { color: var(--primary); }
-    .hero p { color: var(--text-muted); max-width: 720px; margin: 0 auto 24px auto; font-size: 1.1rem; line-height: 1.5; }
-    
-    .feature-card { background: #0f172a; padding: 20px; border-radius: 6px; border: 1px solid var(--border); }
-    .feature-card h3 { color: var(--primary); margin-top: 0; }
-    .portal-tab-bar { display: flex; gap: 12px; border-bottom: 1px solid var(--border); padding-bottom: 12px; margin-bottom: 20px; }
-    .portal-tab { padding: 10px 18px; border-radius: 6px; cursor: pointer; background: #0f172a; font-weight: bold; border: 1px solid var(--border); color: var(--text-muted); }
-    .portal-tab.active { background: var(--primary); color: white; border-color: var(--primary); }
-    
-    .staff-table { width: 100%; border-collapse: collapse; margin-top: 12px; }
-    .staff-table th, .staff-table td { padding: 10px; border: 1px solid var(--border); text-align: left; }
-    .staff-table th { background: #0f172a; color: var(--primary); }
-    .shop-switcher { display: flex; justify-content: center; gap: 10px; margin-top: 16px; flex-wrap: wrap; }
-    .shop-chip { padding: 8px 16px; border-radius: 20px; background: #1e293b; border: 1px solid var(--border); color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: bold; transition: 0.2s; }
-    .shop-chip:hover { border-color: var(--primary); color: white; }
-    
-    .shop-title-text { color: var(--primary); font-weight: bold; }
-    
-    /* Presentation Marketing Banner Styles */
-    .marketing-pill { display: inline-block; background: rgba(249, 115, 22, 0.15); border: 1px solid var(--primary); color: var(--primary); padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: bold; margin-bottom: 16px; text-transform: uppercase; letter-spacing: 0.5px; }
-    .marketing-stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 24px 0; }
-    .stat-box { background: #0f172a; border: 1px solid var(--border); padding: 16px; border-radius: 6px; text-align: center; }
-    .stat-number { font-size: 1.8rem; font-weight: 800; color: var(--primary); }
-    .stat-label { font-size: 0.85rem; color: var(--text-muted); margin-top: 4px; }
-  </style>
+  <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
   <div class="container">
@@ -649,7 +582,6 @@ app.get(['/', '/:slug'], (req, res) => {
         </div>
       </div>
 
-      <!-- KEY PLATFORM METRICS SHOWCASE -->
       <div class="marketing-stat-grid">
         <div class="stat-box">
           <div class="stat-number">100%</div>
@@ -684,7 +616,6 @@ app.get(['/', '/:slug'], (req, res) => {
         </div>
       </div>
 
-      <!-- PRESENTATION HIGHLIGHT CARD -->
       <div class="card" style="border-left: 4px solid var(--primary);">
         <h3 style="margin-top:0; color:var(--primary);">🎯 Ready-to-Present Project Architecture</h3>
         <p style="color:var(--text-muted); margin-bottom:12px;">
@@ -755,7 +686,6 @@ app.get(['/', '/:slug'], (req, res) => {
         <div id="tab-contact-us" class="portal-tab" onclick="switchCustomerTab('contact-us')">📞 Contact Us & Support</div>
       </div>
 
-      <!-- TAB 1: VIEW SERVICE REQUESTS -->
       <div id="customerTab-view-requests">
         <div id="statusBadge" style="margin: 12px 0;"></div>
         <div id="invoiceContainer" class="invoice-box">
@@ -786,7 +716,6 @@ app.get(['/', '/:slug'], (req, res) => {
         </form>
       </div>
 
-      <!-- TAB 2: CREATE REQUEST -->
       <div id="customerTab-create-request" class="invoice-box hidden">
         <h3>Submit New Vehicle Repair / Maintenance Request</h3>
         <form onsubmit="handleBookAppointment(event)">
@@ -804,7 +733,6 @@ app.get(['/', '/:slug'], (req, res) => {
         </form>
       </div>
 
-      <!-- TAB 3: CONTACT US -->
       <div id="customerTab-contact-us" class="invoice-box hidden">
         <h3>Contact Shop Support</h3>
         <div class="grid" style="margin-top:20px;">
@@ -830,7 +758,6 @@ app.get(['/', '/:slug'], (req, res) => {
         <div>User: <span id="userRoleBadge" class="badge"></span> <button onclick="logout()" class="nav-btn">Logout</button></div>
       </div>
 
-      <!-- MANAGER STAFF PIN & ROLE MANAGER -->
       <div id="managerControlPanel" class="invoice-box hidden" style="margin-bottom:24px;">
         <h3 class="shop-title-text">👑 Manager Dashboard: Staff PIN & Role Manager</h3>
         <p style="color:var(--text-muted); font-size:0.9rem;">Create staff profiles, assign 6-digit login PINs, and update employee roles for this shop.</p>
@@ -872,7 +799,6 @@ app.get(['/', '/:slug'], (req, res) => {
         </table>
       </div>
 
-      <!-- WORKFLOW OPERATIONS -->
       <label class="shop-title-text" style="font-size:1rem;">Select Customer (Auto-fills Customer & Vehicle Data)</label>
       <select id="customerSelector" onchange="autoFillCustomerData()">
         <option value="">-- Choose Existing Customer Record --</option>
