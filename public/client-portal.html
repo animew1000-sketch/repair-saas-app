@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Apex Client Portal - Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans">
+
+  <!-- TOP HEADER -->
+  <header class="bg-slate-900 border-b border-slate-800 px-6 py-4 flex justify-between items-center sticky top-0 z-50">
+    <div class="flex items-center space-x-3">
+      <span class="text-2xl">🚗</span>
+      <div>
+        <span class="font-extrabold text-white text-lg tracking-wider block">APEX CLIENT PORTAL</span>
+        <span id="clientUserBadge" class="text-xs text-orange-400 font-bold block">Welcome</span>
+      </div>
+    </div>
+    <button onclick="logoutClient()" class="text-xs font-bold text-red-400 hover:text-red-300 bg-red-950/40 px-3 py-1.5 rounded-lg border border-red-900">Sign Out</button>
+  </header>
+
+  <main class="flex-1 max-w-5xl w-full mx-auto p-4 md:p-6 space-y-6">
+
+    <!-- SUBMIT NEW WORK ORDER SECTION -->
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4 shadow-xl">
+      <h2 class="text-base font-bold text-orange-500 uppercase tracking-wider">Request a New Repair Work Order</h2>
+      <form onsubmit="submitNewJob(event)" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div>
+          <label class="text-xs font-bold text-slate-400 block mb-1">Vehicle Make</label>
+          <input type="text" id="job_make" required placeholder="e.g. Ford" class="input-dark bg-slate-950 w-full">
+        </div>
+        <div>
+          <label class="text-xs font-bold text-slate-400 block mb-1">Vehicle Model</label>
+          <input type="text" id="job_model" required placeholder="e.g. F-150" class="input-dark bg-slate-950 w-full">
+        </div>
+        <div>
+          <label class="text-xs font-bold text-slate-400 block mb-1">17-Digit VIN (Optional)</label>
+          <input type="text" id="job_vin" placeholder="VIN Number" class="input-dark bg-slate-950 w-full">
+        </div>
+        <div class="md:col-span-3">
+          <label class="text-xs font-bold text-slate-400 block mb-1">Issue Description / Symptoms</label>
+          <textarea id="job_desc" rows="2" required placeholder="Describe what's wrong with the vehicle..." class="input-dark bg-slate-950 w-full"></textarea>
+        </div>
+        <button type="submit" class="md:col-span-3 py-3 bg-orange-500 hover:bg-orange-600 text-white font-bold text-xs uppercase rounded-lg shadow transition">
+          SUBMIT WORK ORDER REQUEST
+        </button>
+      </form>
+    </div>
+
+    <!-- CLIENT WORK ORDERS LIST -->
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4 shadow-xl">
+      <h2 class="text-base font-bold text-slate-200 uppercase tracking-wider">Your Active Repair Orders</h2>
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-sm border-collapse">
+          <thead>
+            <tr class="text-xs font-bold text-slate-400 border-b border-slate-800 uppercase">
+              <th class="py-3 px-3">Job ID</th>
+              <th class="py-3 px-3">Tracking #</th>
+              <th class="py-3 px-3">Vehicle</th>
+              <th class="py-3 px-3">Status</th>
+              <th class="py-3 px-3 text-right">Estimate Cost</th>
+            </tr>
+          </thead>
+          <tbody id="client-jobs-body" class="divide-y divide-slate-800">
+            <tr><td colspan="5" class="p-4 text-center text-slate-500">Loading your work orders...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    let currentClient = JSON.parse(localStorage.getItem('clientUser') || 'null');
+
+    if (!currentClient) {
+      window.location.href = '/client-signup';
+    } else {
+      document.getElementById('clientUserBadge').textContent = `${currentClient.first_name} ${currentClient.last_name}`;
+      loadClientJobs();
+    }
+
+    function logoutClient() {
+      localStorage.removeItem('clientUser');
+      window.location.href = '/client-signup';
+    }
+
+    async function loadClientJobs() {
+      try {
+        const response = await fetch(`/api/client/jobs?customer_id=${currentClient.customer_id}`);
+        const data = await response.json();
+
+        if (data.success) {
+          const tbody = document.getElementById('client-jobs-body');
+          if (data.jobs.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-slate-500">No repair orders found. Submit your first request above!</td></tr>`;
+            return;
+          }
+
+          tbody.innerHTML = data.jobs.map(job => `
+            <tr class="hover:bg-slate-800/40">
+              <td class="py-3 px-3 font-bold text-white">#${job.id}</td>
+              <td class="py-3 px-3 font-mono text-orange-400">${job.job_number}</td>
+              <td class="py-3 px-3">${job.vehicle_make} ${job.vehicle_model}</td>
+              <td class="py-3 px-3"><span class="px-2 py-1 text-xs font-bold rounded-full bg-blue-900/40 text-blue-400 border border-blue-800">${job.status}</span></td>
+              <td class="py-3 px-3 text-right font-extrabold text-orange-500">$${parseFloat(job.total_cost || 0).toFixed(2)}</td>
+            </tr>
+          `).join('');
+        }
+      } catch (err) {
+        console.error('Error loading client jobs:', err);
+      }
+    }
+
+    async function submitNewJob(e) {
+      e.preventDefault();
+      const payload = {
+        company_id: currentClient.company_id || 1,
+        customer_id: currentClient.customer_id,
+        vehicle_make: document.getElementById('job_make').value,
+        vehicle_model: document.getElementById('job_model').value,
+        vehicle_vin: document.getElementById('job_vin').value,
+        issue_description: document.getElementById('job_desc').value
+      };
+
+      try {
+        const response = await fetch('/api/client/submit-job', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const result = await response.json();
+
+        if (result.success) {
+          alert('Work order request submitted successfully!');
+          document.getElementById('job_make').value = '';
+          document.getElementById('job_model').value = '';
+          document.getElementById('job_vin').value = '';
+          document.getElementById('job_desc').value = '';
+          loadClientJobs();
+        } else {
+          alert(result.error || 'Failed to submit work order.');
+        }
+      } catch (err) {
+        alert('Server communication error.');
+      }
+    }
+  </script>
+</body>
+</html>

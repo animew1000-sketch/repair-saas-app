@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RepairSaaS - Staff Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans">
+
+  <!-- TOP GLOBAL HEADER -->
+  <header class="bg-slate-900 border-b border-slate-800 px-6 py-4 flex justify-between items-center sticky top-0 z-50">
+    <div class="flex items-center space-x-3">
+      <a href="/" class="text-xs font-bold text-slate-400 hover:text-white mr-2">← SaaS Home</a>
+      <div class="w-9 h-9 rounded-lg bg-orange-500 text-white font-extrabold flex items-center justify-center text-xl shadow">R</div>
+      <div>
+        <span class="font-bold text-white text-lg block leading-tight">Apex Precision Mechanics</span>
+        <span id="userBadge" class="text-xs text-orange-400 font-bold block">Staff Terminal</span>
+      </div>
+    </div>
+
+    <div id="staffNav" class="hidden flex items-center space-x-2 bg-slate-950 p-1 rounded-lg border border-slate-800 text-xs font-semibold">
+      <button onclick="switchView('dashboard')" id="btn-dashboard" class="px-3 py-1.5 rounded-md bg-slate-800 text-white">1. Dashboard</button>
+      <button onclick="switchView('departments')" id="btn-departments" class="px-3 py-1.5 rounded-md text-slate-400 hover:text-white">2. Departments & Forms</button>
+      <button onclick="logoutStaff()" class="px-3 py-1.5 rounded-md text-red-400 hover:text-red-300">Sign Out</button>
+    </div>
+  </header>
+
+  <main class="flex-1 max-w-7xl w-full mx-auto p-4 md:p-6 space-y-6">
+
+    <!-- VIEW 0: KEYPAD PIN AUTHENTICATION -->
+    <section id="view-pin" class="py-8">
+      <div class="bg-slate-900 p-8 rounded-2xl border border-slate-800 max-w-md w-full mx-auto shadow-2xl">
+        <h2 class="text-xl font-bold text-white text-center mb-1">Staff PIN Access</h2>
+        <p class="text-xs text-slate-400 text-center mb-6">Enter your 6-digit staff terminal code</p>
+
+        <input type="password" id="pinDisplay" readonly maxlength="6" placeholder="• • • • • •" class="input-dark text-center text-3xl font-mono tracking-widest py-3 mb-6">
+
+        <div class="grid grid-cols-3 gap-3 mb-4">
+          <button onclick="pressNum('1')" class="py-3 text-xl font-bold bg-slate-950 hover:bg-slate-800 rounded-lg border border-slate-800">1</button>
+          <button onclick="pressNum('2')" class="py-3 text-xl font-bold bg-slate-950 hover:bg-slate-800 rounded-lg border border-slate-800">2</button>
+          <button onclick="pressNum('3')" class="py-3 text-xl font-bold bg-slate-950 hover:bg-slate-800 rounded-lg border border-slate-800">3</button>
+          <button onclick="pressNum('4')" class="py-3 text-xl font-bold bg-slate-950 hover:bg-slate-800 rounded-lg border border-slate-800">4</button>
+          <button onclick="pressNum('5')" class="py-3 text-xl font-bold bg-slate-950 hover:bg-slate-800 rounded-lg border border-slate-800">5</button>
+          <button onclick="pressNum('6')" class="py-3 text-xl font-bold bg-slate-950 hover:bg-slate-800 rounded-lg border border-slate-800">6</button>
+          <button onclick="pressNum('7')" class="py-3 text-xl font-bold bg-slate-950 hover:bg-slate-800 rounded-lg border border-slate-800">7</button>
+          <button onclick="pressNum('8')" class="py-3 text-xl font-bold bg-slate-950 hover:bg-slate-800 rounded-lg border border-slate-800">8</button>
+          <button onclick="pressNum('9')" class="py-3 text-xl font-bold bg-slate-950 hover:bg-slate-800 rounded-lg border border-slate-800">9</button>
+          <button onclick="clearPin()" class="py-3 text-xs font-bold text-red-400 bg-red-950/40 hover:bg-red-900/50 rounded-lg border border-red-800">CLR</button>
+          <button onclick="pressNum('0')" class="py-3 text-xl font-bold bg-slate-950 hover:bg-slate-800 rounded-lg border border-slate-800">0</button>
+          <button onclick="submitPin()" class="py-3 text-xs font-bold text-white bg-orange-500 hover:opacity-90 rounded-lg shadow-sm">ENTER</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 1: WORK ORDER DASHBOARD -->
+    <section id="view-dashboard" class="hidden space-y-6">
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+        <div class="bg-slate-900 p-5 rounded-xl border border-slate-800"><p class="text-xs font-bold text-slate-400 uppercase">Active Jobs</p><p id="stat-active" class="text-3xl font-extrabold text-white mt-1">0</p></div>
+        <div class="bg-slate-900 p-5 rounded-xl border border-slate-800"><p class="text-xs font-bold text-slate-400 uppercase">Awaiting Parts</p><p class="text-3xl font-extrabold text-amber-500 mt-1">0</p></div>
+        <div class="bg-slate-900 p-5 rounded-xl border border-slate-800"><p class="text-xs font-bold text-slate-400 uppercase">Completed Today</p><p class="text-3xl font-extrabold text-green-500 mt-1">0</p></div>
+        <div id="stat-revenue-card" class="bg-slate-900 p-5 rounded-xl border border-slate-800"><p class="text-xs font-bold text-slate-400 uppercase">Shop Revenue</p><p id="stat-revenue" class="text-3xl font-extrabold text-white mt-1">$0.00</p></div>
+      </div>
+
+      <div class="bg-slate-900 rounded-xl border border-slate-800 overflow-hidden">
+        <table class="w-full text-left border-collapse">
+          <thead>
+            <tr class="bg-slate-950 border-b border-slate-800 text-xs font-bold text-slate-400 uppercase">
+              <th class="p-4">Job ID</th>
+              <th class="p-4">Customer</th>
+              <th class="p-4">Vehicle</th>
+              <th class="p-4">Tech</th>
+              <th class="p-4">Status</th>
+              <th class="p-4 text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="jobs-table-body" class="divide-y divide-slate-800 text-sm">
+            <tr><td colspan="6" class="p-4 text-center text-slate-500">Loading work orders...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- VIEW 2: DEPARTMENTS & FORMS -->
+    <section id="view-departments" class="hidden space-y-6 max-w-6xl mx-auto">
+      
+      <!-- MANAGER CONTROL PANEL -->
+      <div id="managerControlPanel" class="hidden space-y-6">
+        <div class="bg-slate-900 border border-slate-800 rounded-xl p-6 space-y-4">
+          <div class="flex items-center space-x-2">
+            <span class="text-xl">👑</span>
+            <h3 class="text-base font-bold text-orange-500 uppercase tracking-wider">Manager Dashboard: Staff PIN & Role Manager</h3>
+          </div>
+          <p class="text-xs text-slate-400">Create staff profiles, assign 6-digit login PINs, and update employee roles for this shop.</p>
+
+          <form onsubmit="createNewEmployee(event)" class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end pt-2">
+            <div>
+              <label class="text-xs font-bold text-slate-400 block mb-1">Employee Username</label>
+              <input type="text" id="new_emp_username" required placeholder="e.g. john_tech" class="input-dark bg-slate-950">
+            </div>
+            <div>
+              <label class="text-xs font-bold text-slate-400 block mb-1">Email (Optional)</label>
+              <input type="email" id="new_emp_email" placeholder="john@apex.com" class="input-dark bg-slate-950">
+            </div>
+            <div>
+              <label class="text-xs font-bold text-slate-400 block mb-1">Assign 6-Digit PIN</label>
+              <input type="text" id="new_emp_pin" maxlength="6" required placeholder="e.g. 654321" class="input-dark font-mono bg-slate-950">
+            </div>
+            <div>
+              <label class="text-xs font-bold text-slate-400 block mb-1">Assign Role</label>
+              <select id="new_emp_role" class="input-dark bg-slate-950">
+                <option value="Service Advisor">Service Advisor</option>
+                <option value="Technician">Technician</option>
+                <option value="Billing Clerk">Billing Clerk</option>
+                <option value="Manager">Manager</option>
+              </select>
+            </div>
+            <button type="submit" class="md:col-span-1 py-3 bg-orange-500 hover:bg-orange-600 text-white font-bold text-xs uppercase rounded-lg shadow transition">
+              CREATE EMPLOYEE PROFILE
+            </button>
+          </form>
+        </div>
+
+        <div class="bg-slate-900 border border-slate-800 rounded-xl p-6 space-y-4">
+          <h3 class="text-sm font-bold text-slate-300 uppercase tracking-wider">Assigned Employee Roster & PIN Codes</h3>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-sm border-collapse">
+              <thead>
+                <tr class="text-xs font-bold text-slate-400 border-b border-slate-800 uppercase">
+                  <th class="py-3 px-2">ID</th>
+                  <th class="py-3 px-2">Username</th>
+                  <th class="py-3 px-2">Email</th>
+                  <th class="py-3 px-2">6-Digit PIN Code</th>
+                  <th class="py-3 px-2">Role</th>
+                  <th class="py-3 px-2 text-right">Action</th>
+                </tr>
+              </thead>
+              <tbody id="employee-roster-body" class="divide-y divide-slate-800"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- 8-STEP DEPARTMENT FORM CONTAINER -->
+      <div class="bg-slate-900 border border-slate-800 rounded-xl p-6 space-y-6">
+        <div>
+          <label class="text-xs font-bold text-orange-500 uppercase block mb-2">SELECT CUSTOMER (AUTO-FILLS CUSTOMER & VEHICLE DATA)</label>
+          <select id="customerDropdown" onchange="autofillFromCustomer(this.value)" class="input-dark w-full text-slate-200 bg-slate-950">
+            <option value="">-- Choose Existing Customer Record --</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="text-xs font-bold text-slate-400 uppercase block mb-2">ACTIVE REPAIR JOB ID</label>
+          <div id="activeJobId" class="input-dark bg-slate-950 text-slate-200 font-bold">1</div>
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-8 gap-2 text-xs font-bold pt-2">
+          <button onclick="setDepartment('customer')" id="tab-customer" class="dept-tab py-2.5 rounded-lg border border-orange-500 bg-orange-500 text-white shadow">1. Customer</button>
+          <button onclick="setDepartment('vehicle')" id="tab-vehicle" class="dept-tab py-2.5 rounded-lg border border-slate-800 bg-slate-950 text-slate-400 hover:text-white">2. Vehicle</button>
+          <button onclick="setDepartment('appointment')" id="tab-appointment" class="dept-tab py-2.5 rounded-lg border border-slate-800 bg-slate-950 text-slate-400 hover:text-white">3. Appointment</button>
+          <button onclick="setDepartment('repair_order')" id="tab-repair_order" class="dept-tab py-2.5 rounded-lg border border-slate-800 bg-slate-950 text-slate-400 hover:text-white">4. Repair Order</button>
+          <button onclick="setDepartment('parts_labor')" id="tab-parts_labor" class="dept-tab py-2.5 rounded-lg border border-slate-800 bg-slate-950 text-slate-400 hover:text-white">5. Parts + Labor</button>
+          <button onclick="setDepartment('estimate')" id="tab-estimate" class="dept-tab py-2.5 rounded-lg border border-slate-800 bg-slate-950 text-slate-400 hover:text-white">6. Estimate</button>
+          <button onclick="setDepartment('repair')" id="tab-repair" class="dept-tab py-2.5 rounded-lg border border-slate-800 bg-slate-950 text-slate-400 hover:text-white">7. Repair</button>
+          <button onclick="setDepartment('invoice')" id="tab-invoice" class="dept-tab py-2.5 rounded-lg border border-slate-800 bg-slate-950 text-slate-400 hover:text-white">8. Invoice</button>
+        </div>
+
+        <h3 id="currentDeptHeading" class="text-lg font-bold text-white pt-2 border-t border-slate-800">Department: CUSTOMER</h3>
+
+        <form id="departmentForm" onsubmit="saveDepartmentRecord(event)" class="space-y-4">
+          
+          <!-- 1. CUSTOMER -->
+          <div id="dept-fields-customer" class="dept-field-group space-y-3">
+            <input type="text" id="cust_first_name" placeholder="First Name" class="input-dark bg-slate-950">
+            <input type="text" id="cust_last_name" placeholder="Last Name" class="input-dark bg-slate-950">
+            <input type="text" id="cust_phone" placeholder="Phone Number" class="input-dark bg-slate-950">
+          </div>
+
+          <!-- 2. VEHICLE -->
+          <div id="dept-fields-vehicle" class="dept-field-group hidden space-y-3">
+            <input type="text" id="veh_make" placeholder="Vehicle Make (e.g. Ford)" class="input-dark bg-slate-950">
+            <input type="text" id="veh_model" placeholder="Vehicle Model (e.g. F-150)" class="input-dark bg-slate-950">
+            <input type="text" id="veh_vin" placeholder="17-Digit VIN Number" class="input-dark bg-slate-950">
+          </div>
+
+          <!-- 3. APPOINTMENT -->
+          <div id="dept-fields-appointment" class="dept-field-group hidden space-y-3">
+            <label class="text-xs font-bold text-slate-400 block">Scheduled Appointment Date (Defaults to Next Available Date)</label>
+            <input type="date" id="appt_date" class="input-dark bg-slate-950 text-slate-200">
+            <input type="time" id="appt_time" value="09:00" class="input-dark bg-slate-950 text-slate-200">
+            <input type="text" id="appt_notes" placeholder="Appointment Notes" class="input-dark bg-slate-950">
+          </div>
+
+          <!-- 4. REPAIR ORDER (AUTO-FILLED FROM CLIENT PORTAL) -->
+          <div id="dept-fields-repair_order" class="dept-field-group hidden space-y-3">
+            <label class="text-xs font-bold text-slate-400 block">Customer Stated Issue / Repair Needed (Auto-filled from Client Request)</label>
+            <textarea id="ro_complaint" rows="3" placeholder="Describe issue based on client statements..." class="input-dark bg-slate-950"></textarea>
+            
+            <label class="text-xs font-bold text-slate-400 block">Initial Diagnostic Findings</label>
+            <textarea id="ro_diagnosis" rows="2" placeholder="Tech initial findings..." class="input-dark bg-slate-950"></textarea>
+          </div>
+
+          <!-- 5. PARTS + LABOR -->
+          <div id="dept-fields-parts_labor" class="dept-field-group hidden space-y-4">
+            <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-3">
+              <label class="text-xs font-bold text-orange-500 uppercase block">🔍 Live Internet Parts Lookup</label>
+              <div class="flex gap-2">
+                <input type="text" id="partSearchQuery" placeholder="Search real-world parts online (e.g., Ford F-150 battery)" class="input-dark bg-slate-900 flex-1">
+                <button type="button" onclick="searchOnlineParts()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs rounded-lg border border-slate-700">SEARCH</button>
+              </div>
+              <div id="partsSearchResults" class="hidden text-xs space-y-2 bg-slate-900 p-3 rounded-lg border border-slate-800 max-h-48 overflow-y-auto"></div>
+            </div>
+
+            <div>
+              <label class="text-xs font-bold text-slate-400 block mb-2">Selected Parts & Labor Line Items</label>
+              <div id="partsList" class="space-y-2">
+                <div class="flex gap-2 items-center">
+                  <input type="text" placeholder="Part Description" class="part-desc input-dark bg-slate-950 flex-2">
+                  <input type="number" step="0.01" placeholder="Cost ($)" oninput="calcTotalEstimate()" class="part-cost input-dark bg-slate-950 w-28">
+                  <input type="number" value="1" placeholder="Qty" oninput="calcTotalEstimate()" class="part-qty input-dark bg-slate-950 w-20">
+                </div>
+              </div>
+              <button type="button" onclick="addPartRow()" class="mt-2 text-xs text-orange-500 font-bold hover:underline">+ Add Another Part Line Item</button>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="text-xs font-bold text-slate-400 block mb-1">Labor Rate ($/hr)</label>
+                <input type="number" id="labor_rate" value="120.00" oninput="calcTotalEstimate()" class="input-dark bg-slate-950">
+              </div>
+              <div>
+                <label class="text-xs font-bold text-slate-400 block mb-1">Estimated Labor Hours</label>
+                <input type="number" step="0.5" id="labor_hours" value="1.5" oninput="calcTotalEstimate()" class="input-dark bg-slate-950">
+              </div>
+            </div>
+          </div>
+
+          <!-- 6. ESTIMATE -->
+          <div id="dept-fields-estimate" class="dept-field-group hidden bg-slate-950 p-6 rounded-xl border border-slate-800 space-y-4">
+            <h4 class="text-sm font-bold text-orange-500 uppercase border-b border-slate-800 pb-2">Estimated Total Breakout</h4>
+            <div class="grid grid-cols-2 gap-4 text-sm">
+              <div><p class="text-slate-500 text-xs uppercase font-bold">Total Parts Cost</p><p id="est-parts-subtotal" class="font-bold text-slate-200">$0.00</p></div>
+              <div><p class="text-slate-500 text-xs uppercase font-bold">Total Labor Cost</p><p id="est-labor-subtotal" class="font-bold text-slate-200">$0.00</p></div>
+              <div><p class="text-slate-500 text-xs uppercase font-bold">Estimated Tax (8%)</p><p id="est-tax-subtotal" class="font-bold text-slate-200">$0.00</p></div>
+              <div><p class="text-slate-500 text-xs uppercase font-bold">Grand Estimate Total</p><p id="est-grand-total" class="font-extrabold text-orange-500 text-xl">$0.00</p></div>
+            </div>
+            <input type="hidden" id="item_cost" value="0.00">
+          </div>
+
+          <!-- 7. REPAIR -->
+          <div id="dept-fields-repair" class="dept-field-group hidden space-y-3">
+            <label class="text-xs font-bold text-slate-400 block">Completed Repair Details (Describe Work Performed)</label>
+            <textarea id="repair_work_log" rows="4" placeholder="Describe what was repaired and tested..." class="input-dark bg-slate-950"></textarea>
+          </div>
+
+          <!-- 8. INVOICE -->
+          <div id="dept-fields-invoice" class="dept-field-group hidden bg-slate-950 p-6 rounded-xl border border-slate-800 space-y-4 print-card">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+              <h3 class="text-lg font-bold text-white">FINAL SERVICE INVOICE SUMMARY</h3>
+              <button type="button" onclick="window.print()" class="px-4 py-1.5 bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-200 rounded-lg border border-slate-700">PRINT INVOICE</button>
+            </div>
+            <div class="grid grid-cols-2 gap-4 text-sm">
+              <div><p class="text-slate-500 text-xs uppercase font-bold">Client Name</p><p id="inv-client" class="font-bold text-slate-200">N/A</p></div>
+              <div><p class="text-slate-500 text-xs uppercase font-bold">Vehicle Details</p><p id="inv-vehicle" class="font-bold text-slate-200">N/A</p></div>
+              <div><p class="text-slate-500 text-xs uppercase font-bold">Phone Contact</p><p id="inv-phone" class="font-bold text-slate-200">N/A</p></div>
+              <div><p class="text-slate-500 text-xs uppercase font-bold">Total Repair Cost</p><p id="inv-total" class="font-extrabold text-orange-500 text-xl">$0.00</p></div>
+            </div>
+          </div>
+
+          <button type="submit" id="saveDeptBtn" class="w-full py-4 bg-orange-500 hover:bg-orange-600 text-white font-bold text-xs uppercase tracking-wider rounded-lg shadow transition">
+            SAVE DEPARTMENT RECORD
+          </button>
+        </form>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    let currentPin = '';
+    let currentUser = null;
+    let currentDept = 'customer';
+
+    const rolePermissions = {
+      'Manager': ['customer', 'vehicle', 'appointment', 'repair_order', 'parts_labor', 'estimate', 'repair', 'invoice'],
+      'Service Advisor': ['customer', 'vehicle', 'appointment', 'repair_order', 'estimate'],
+      'Technician': ['vehicle', 'parts_labor', 'repair'],
+      'Billing Clerk': ['parts_labor', 'estimate', 'invoice']
+    };
+
+    function setNextAvailableDate() {
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      const year = tomorrow.getFullYear();
+      const month = String(tomorrow.getMonth() + 1).padStart(2, '0');
+      const day = String(tomorrow.getDate()).padStart(2, '0');
+      const apptInput = document.getElementById('appt_date');
+      if (apptInput && !apptInput.value) apptInput.value = `${year}-${month}-${day}`;
+    }
+
+    function pressNum(num) {
+      if (currentPin.length < 6) {
+        currentPin += num;
+        document.getElementById('pinDisplay').value = currentPin;
+      }
+    }
+
+    function clearPin() {
+      currentPin = '';
+      document.getElementById('pinDisplay').value = '';
+    }
+
+    async function submitPin() {
+      if (currentPin.length !== 6) return alert('Please enter a 6-digit PIN');
+
+      try {
+        const response = await fetch('/api/auth/pin', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ pin: currentPin })
+        });
+        const data = await response.json();
+
+        if (data.success) {
+          currentUser = data.user;
+          clearPin();
+
+          document.getElementById('userBadge').textContent = `${currentUser.username} (${currentUser.role})`;
+          document.getElementById('staffNav').classList.remove('hidden');
+          document.getElementById('view-pin').classList.add('hidden');
+
+          applyRolePermissions(currentUser.role);
+          loadDashboardJobs(currentUser.company_id);
+          switchView('dashboard');
+          setNextAvailableDate();
+        } else {
+          alert(data.message || 'Invalid PIN code');
+          clearPin();
+        }
+      } catch (err) {
+        alert('Authentication connection error.');
+      }
+    }
+
+    function applyRolePermissions(role) {
+      const formattedRole = Object.keys(rolePermissions).find(
+        r => r.toLowerCase() === (role || '').toLowerCase()
+      ) || 'Manager';
+
+      const allowedTabs = rolePermissions[formattedRole] || rolePermissions['Manager'];
+      const managerPanel = document.getElementById('managerControlPanel');
+      const revenueCard = document.getElementById('stat-revenue-card');
+
+      if ((role || '').toLowerCase() === 'manager') {
+        managerPanel.classList.remove('hidden');
+        revenueCard.classList.remove('hidden');
+        loadEmployeeRoster(currentUser.company_id);
+      } else {
+        managerPanel.classList.add('hidden');
+        revenueCard.classList.add('hidden');
+      }
+
+      const allTabs = ['customer', 'vehicle', 'appointment', 'repair_order', 'parts_labor', 'estimate', 'repair', 'invoice'];
+      allTabs.forEach(dept => {
+        const tabBtn = document.getElementById(`tab-${dept}`);
+        if (tabBtn) {
+          if (allowedTabs.includes(dept)) tabBtn.classList.remove('hidden');
+          else tabBtn.classList.add('hidden');
+        }
+      });
+
+      setDepartment(allowedTabs[0]);
+    }
+
+    async function createNewEmployee(e) {
+      e.preventDefault();
+      const payload = {
+        company_id: currentUser.company_id || 1,
+        username: document.getElementById('new_emp_username').value,
+        email: document.getElementById('new_emp_email').value,
+        pin_code: document.getElementById('new_emp_pin').value,
+        role: document.getElementById('new_emp_role').value
+      };
+
+      try {
+        const response = await fetch('/api/employees', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const result = await response.json();
+        if (result.success) {
+          alert('Employee created!');
+          document.getElementById('new_emp_username').value = '';
+          document.getElementById('new_emp_email').value = '';
+          document.getElementById('new_emp_pin').value = '';
+          loadEmployeeRoster(currentUser.company_id);
+        } else {
+          alert(result.error);
+        }
+      } catch (err) {
+        alert('Failed to create profile.');
+      }
+    }
+
+    async function loadEmployeeRoster(companyId) {
+      try {
+        const response = await fetch(`/api/employees?company_id=${companyId}`);
+        const data = await response.json();
+
+        if (data.success && document.getElementById('employee-roster-body')) {
+          const tbody = document.getElementById('employee-roster-body');
+          tbody.innerHTML = data.employees.map(emp => `
+            <tr>
+              <td class="py-3 px-2 text-slate-400 font-bold">${emp.id}</td>
+              <td class="py-3 px-2 font-bold text-slate-200">${emp.username}</td>
+              <td class="py-3 px-2 text-slate-400">${emp.email || 'N/A'}</td>
+              <td class="py-3 px-2"><input type="text" id="emp-pin-${emp.id}" value="${emp.pin_code || ''}" class="input-dark text-xs w-28 font-mono bg-slate-950"></td>
+              <td class="py-3 px-2">
+                <select id="emp-role-${emp.id}" class="input-dark text-xs w-36 bg-slate-950">
+                  <option value="Manager" ${(emp.role || '').toLowerCase() === 'manager' ? 'selected' : ''}>Manager</option>
+                  <option value="Service Advisor" ${(emp.role || '').toLowerCase() === 'service advisor' ? 'selected' : ''}>Service Advisor</option>
+                  <option value="Technician" ${(emp.role || '').toLowerCase() === 'technician' ? 'selected' : ''}>Technician</option>
+                  <option value="Billing Clerk" ${(emp.role || '').toLowerCase() === 'billing clerk' ? 'selected' : ''}>Billing Clerk</option>
+                </select>
+              </td>
+              <td class="py-3 px-2 text-right">
+                <button onclick="saveEmployeePin(${emp.id})" class="px-3 py-1.5 bg-orange-500 hover:bg-orange-600 text-white font-bold text-xs rounded shadow transition">SAVE PIN & ROLE</button>
+              </td>
+            </tr>
+          `).join('');
+        }
+      } catch (err) {
+        console.error('Roster error:', err);
+      }
+    }
+
+    async function saveEmployeePin(empId) {
+      const pin = document.getElementById(`emp-pin-${empId}`).value.trim();
+      const role = document.getElementById(`emp-role-${empId}`).value;
+
+      try {
+        const response = await fetch(`/api/employees/${empId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ pin_code: pin, role: role })
+        });
+        const result = await response.json();
+        if (result.success) {
+          alert('Employee updated!');
+          loadEmployeeRoster(currentUser.company_id);
+        } else {
+          alert('Failed: ' + result.error);
+        }
+      } catch (err) {
+        alert('Server error.');
+      }
+    }
+
+    function logoutStaff() {
+      currentUser = null;
+      document.getElementById('userBadge').textContent = 'Staff Terminal';
+      document.getElementById('staffNav').classList.add('hidden');
+      document.getElementById('view-dashboard').classList.add('hidden');
+      document.getElementById('view-departments').classList.add('hidden');
+      document.getElementById('view-pin').classList.remove('hidden');
+      clearPin();
+    }
+
+    function switchView(viewName) {
+      ['dashboard', 'departments'].forEach(v => {
+        const sec = document.getElementById(`view-${v}`);
+        if (sec) sec.classList.add('hidden');
+        const btn = document.getElementById(`btn-${v}`);
+        if (btn) {
+          btn.classList.remove('bg-slate-800', 'text-white');
+          btn.classList.add('text-slate-400');
+        }
+      });
+
+      document.getElementById(`view-${viewName}`).classList.remove('hidden');
+      const targetBtn = document.getElementById(`btn-${viewName}`);
+      targetBtn.classList.add('bg-slate-800', 'text-white');
+      targetBtn.classList.remove('text-slate-400');
+    }
+
+    async function loadDashboardJobs(companyId) {
+      try {
+        const response = await fetch(`/api/jobs?company_id=${companyId}`);
+        const data = await response.json();
+
+        if (data.success) {
+          const tbody = document.getElementById('jobs-table-body');
+          const dropdown = document.getElementById('customerDropdown');
+          document.getElementById('stat-active').textContent = data.jobs.length;
+
+          if (data.jobs.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-500">No active work orders found.</td></tr>`;
+            return;
+          }
+
+          dropdown.innerHTML = `<option value="">-- Choose Existing Customer Record --</option>` +
+            data.jobs.map(job => `<option value="${job.id}">Job #${job.id} - ${job.customer_name} (${job.vehicle_make} ${job.vehicle_model})</option>`).join('');
+
+          const isManager = (currentUser.role || '').toLowerCase() === 'manager';
+
+          tbody.innerHTML = data.jobs.map(job => `
+            <tr class="hover:bg-slate-800/50">
+              <td class="p-4 font-bold text-white">#${job.id}</td>
+              <td class="p-4">${job.customer_name}</td>
+              <td class="p-4">${job.vehicle_make} ${job.vehicle_model}</td>
+              <td class="p-4">${job.tech_name || 'Unassigned'}</td>
+              <td class="p-4"><span class="px-2.5 py-1 text-xs font-bold rounded-full bg-blue-900/40 text-blue-400 border border-blue-800">${job.status}</span></td>
+              <td class="p-4 text-right space-x-2">
+                <button onclick="editJobInDept(${job.id})" class="text-orange-500 font-bold hover:underline">Edit</button>
+                ${isManager ? `<button onclick="deleteJob(${job.id})" class="text-red-400 font-bold hover:underline">Delete</button>` : ''}
+              </td>
+            </tr>
+          `).join('');
+        }
+      } catch (err) {
+        console.error('Failed to load jobs:', err);
+      }
+    }
+
+    async function deleteJob(jobId) {
+      if (!confirm(`Are you sure you want to delete work order #${jobId}? (Completed or cancelled by client)`)) return;
+      try {
+        const response = await fetch(`/api/jobs/${jobId}`, { method: 'DELETE' });
+        const result = await response.json();
+        if (result.success) {
+          alert('Work order deleted successfully.');
+          loadDashboardJobs(currentUser.company_id);
+        } else {
+          alert(result.error || 'Failed to delete job.');
+        }
+      } catch (err) {
+        alert('Server communication error.');
+      }
+    }
+
+    async function autofillFromCustomer(jobId) {
+      if (!jobId) return;
+      await editJobInDept(jobId);
+    }
+
+    async function editJobInDept(jobId) {
+      document.getElementById('activeJobId').textContent = jobId;
+      document.getElementById('customerDropdown').value = jobId;
+
+      try {
+        const response = await fetch(`/api/jobs/${jobId}/invoice`);
+        const data = await response.json();
+
+        if (data.success && data.invoice) {
+          const job = data.invoice;
+          // Full Autofill across departments
+          if (document.getElementById('cust_first_name')) document.getElementById('cust_first_name').value = job.first_name || '';
+          if (document.getElementById('cust_last_name')) document.getElementById('cust_last_name').value = job.last_name || '';
+          if (document.getElementById('cust_phone')) document.getElementById('cust_phone').value = job.phone || '';
+          if (document.getElementById('veh_make')) document.getElementById('veh_make').value = job.vehicle_make || '';
+          if (document.getElementById('veh_model')) document.getElementById('veh_model').value = job.vehicle_model || '';
+          if (document.getElementById('veh_vin')) document.getElementById('veh_vin').value = job.vehicle_vin || '';
+          if (document.getElementById('ro_complaint')) document.getElementById('ro_complaint').value = job.issue_description || '';
+          if (document.getElementById('repair_work_log')) document.getElementById('repair_work_log').value = job.repair_work_log || '';
+          if (document.getElementById('item_cost')) document.getElementById('item_cost').value = job.total_cost || 0.00;
+        }
+      } catch (err) {
+        console.error('Autofill error:', err);
+      }
+
+      switchView('departments');
+      const allowed = rolePermissions[(currentUser.role || '').toLowerCase() === 'manager' ? 'Manager' : currentUser.role] || rolePermissions['Manager'];
+      setDepartment(allowed[0]);
+    }
+
+    function setDepartment(dept) {
+      currentDept = dept;
+
+      document.querySelectorAll('.dept-tab').forEach(tab => {
+        tab.classList.remove('bg-orange-500', 'text-white', 'border-orange-500', 'shadow');
+        tab.classList.add('bg-slate-950', 'text-slate-400', 'border-slate-800');
+      });
+
+      const activeTab = document.getElementById(`tab-${dept}`);
+      if (activeTab) {
+        activeTab.classList.remove('bg-slate-950', 'text-slate-400', 'border-slate-800');
+        activeTab.classList.add('bg-orange-500', 'text-white', 'border-orange-500', 'shadow');
+      }
+
+      document.querySelectorAll('.dept-field-group').forEach(group => group.classList.add('hidden'));
+      const activeFields = document.getElementById(`dept-fields-${dept}`);
+      if (activeFields) activeFields.classList.remove('hidden');
+
+      document.getElementById('currentDeptHeading').textContent = `Department: ${dept.toUpperCase().replace('_', ' ')}`;
+
+      if (dept === 'estimate') calcTotalEstimate();
+
+      if (dept === 'invoice') {
+        document.getElementById('saveDeptBtn').classList.add('hidden');
+        loadFinalInvoice();
+      } else {
+        document.getElementById('saveDeptBtn').classList.remove('hidden');
+      }
+    }
+
+    async function searchOnlineParts() {
+      const q = document.getElementById('partSearchQuery').value.trim();
+      const resContainer = document.getElementById('partsSearchResults');
+      if (!q) return alert('Please enter a search term for auto parts');
+
+      resContainer.classList.remove('hidden');
+      resContainer.innerHTML = 'Searching live parts catalog...';
+
+      try {
+        const response = await fetch(`/api/parts/search?query=${encodeURIComponent(q)}`);
+        const data = await response.json();
+
+        if (data.success && data.parts.length > 0) {
+          resContainer.innerHTML = data.parts.map(part => `
+            <div class="flex justify-between items-center p-2 hover:bg-slate-800 rounded">
+              <div>
+                <p class="font-bold text-white">${part.name}</p>
+                <p class="text-slate-400 text-xs">${part.source} - Part #${part.part_number}</p>
+              </div>
+              <button type="button" onclick="selectOnlinePart('${part.name.replace(/'/g, "\\'")}', ${part.price})" class="px-2 py-1 bg-orange-500 text-white font-bold text-xs rounded">Select ($${part.price})</button>
+            </div>
+          `).join('');
+        } else {
+          resContainer.innerHTML = 'No matching parts found.';
+        }
+      } catch (err) {
+        resContainer.innerHTML = 'Error looking up parts.';
+      }
+    }
+
+    function selectOnlinePart(name, price) {
+      addPartRow(name, price);
+      document.getElementById('partsSearchResults').classList.add('hidden');
+    }
+
+    function addPartRow(name = '', price = '') {
+      const list = document.getElementById('partsList');
+      const div = document.createElement('div');
+      div.className = 'flex gap-2 items-center';
+      div.innerHTML = `
+        <input type="text" value="${name}" placeholder="Part Description" class="part-desc input-dark bg-slate-950 flex-2">
+        <input type="number" step="0.01" value="${price}" placeholder="Cost ($)" oninput="calcTotalEstimate()" class="part-cost input-dark bg-slate-950 w-28">
+        <input type="number" value="1" placeholder="Qty" oninput="calcTotalEstimate()" class="part-qty input-dark bg-slate-950 w-20">
+      `;
+      list.appendChild(div);
+      calcTotalEstimate();
+    }
+
+    function calcTotalEstimate() {
+      let partsTotal = 0;
+      const costs = document.querySelectorAll('.part-cost');
+      const qtys = document.querySelectorAll('.part-qty');
+
+      costs.forEach((cInput, idx) => {
+        const cost = parseFloat(cInput.value) || 0;
+        const qty = parseFloat(qtys[idx]?.value) || 1;
+        partsTotal += (cost * qty);
+      });
+
+      const rate = parseFloat(document.getElementById('labor_rate').value) || 0;
+      const hours = parseFloat(document.getElementById('labor_hours').value) || 0;
+      const laborTotal = rate * hours;
+      const tax = (partsTotal + laborTotal) * 0.08;
+      const grandTotal = partsTotal + laborTotal + tax;
+
+      document.getElementById('est-parts-subtotal').textContent = `$${partsTotal.toFixed(2)}`;
+      document.getElementById('est-labor-subtotal').textContent = `$${laborTotal.toFixed(2)}`;
+      document.getElementById('est-tax-subtotal').textContent = `$${tax.toFixed(2)}`;
+      document.getElementById('est-grand-total').textContent = `$${grandTotal.toFixed(2)}`;
+      document.getElementById('item_cost').value = grandTotal.toFixed(2);
+    }
+
+    async function saveDepartmentRecord(e) {
+      e.preventDefault();
+      const jobId = document.getElementById('activeJobId').textContent;
+
+      let payload = {};
+      if (currentDept === 'customer') {
+        payload = {
+          first_name: document.getElementById('cust_first_name').value,
+          last_name: document.getElementById('cust_last_name').value,
+          phone: document.getElementById('cust_phone').value
+        };
+      } else if (currentDept === 'vehicle') {
+        payload = {
+          make: document.getElementById('veh_make').value,
+          model: document.getElementById('veh_model').value,
+          vin: document.getElementById('veh_vin').value
+        };
+      } else if (currentDept === 'repair_order') {
+        payload = {
+          complaint: document.getElementById('ro_complaint').value
+        };
+      } else if (currentDept === 'parts_labor' || currentDept === 'estimate') {
+        payload = {
+          total_cost: document.getElementById('item_cost').value
+        };
+      } else if (currentDept === 'repair') {
+        payload = {
+          work_log: document.getElementById('repair_work_log').value
+        };
+      }
+
+      try {
+        const response = await fetch('/api/jobs/save-step', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ job_id: jobId, step: currentDept, data: payload })
+        });
+        const result = await response.json();
+        alert(result.message || 'Department step saved!');
+      } catch (err) {
+        console.error('Save step error:', err);
+      }
+    }
+
+    async function loadFinalInvoice() {
+      const jobId = document.getElementById('activeJobId').textContent;
+      try {
+        const response = await fetch(`/api/jobs/${jobId}/invoice`);
+        const data = await response.json();
+
+        if (data.success) {
+          const inv = data.invoice;
+          document.getElementById('inv-client').textContent = `${inv.first_name} ${inv.last_name}`;
+          document.getElementById('inv-vehicle').textContent = `${inv.vehicle_make} ${inv.vehicle_model}`;
+          document.getElementById('inv-phone').textContent = inv.phone || 'N/A';
+          document.getElementById('inv-total').textContent = `$${parseFloat(inv.total_cost || 0).toFixed(2)}`;
+        }
+      } catch (err) {
+        console.error('Failed to load invoice:', err);
+      }
+    }
+  </script>
+</body>
+</html>
