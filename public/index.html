@@ -4,20 +4,39 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Apex SaaS | Multi-Tenant Auto Repair Operating System</title>
-  <link rel="stylesheet" href="/styles.css">
+<link rel="stylesheet" href="/styles-reworked.css">
 </head>
 <body>
   <div class="container">
     
-    <div class="header">
-      <div class="brand" id="navBrand" onclick="showScreen('landingSection')">🔧 <span id="brandName">Apex Auto SaaS</span></div>
-      <div>
-        <button class="nav-btn" onclick="showScreen('landingSection')">Platform Overview</button>
-        <button class="nav-btn" onclick="showScreen('registerSection')">Client Signup</button>
-        <button class="nav-btn" onclick="showScreen('loginSection')">Portal Login</button>
-      </div>
-    </div>
+<div class="header">
+  <div
+    class="brand"
+    id="navBrand"
+    onclick="window.location.href='/'"
+  >
+    <span id="brandName">Apex Auto SaaS</span>
+  </div>
 
+  <div>
+    <a class="nav-btn" href="/overview.html">Platform Overview</a>
+    <a class="nav-btn" href="/contact.html">Contact</a>
+
+    <button
+      class="nav-btn"
+      onclick="showScreen('registerSection')"
+    >
+      Sign Up
+    </button>
+
+    <button
+      class="nav-btn nav-login"
+      onclick="showScreen('loginSection')"
+    >
+      Portal Login
+    </button>
+  </div>
+</div>
     <!-- 0. PUBLIC MARKETING LANDING PAGE -->
     <div id="landingSection">
       <div class="hero">
