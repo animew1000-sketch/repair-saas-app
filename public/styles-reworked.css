@@ -100,7 +100,7 @@ body::before { background: linear-gradient( var(--navy), #08243d); content: ""; 
 .header-nav {
   display: flex;
   align-items: center;
-  gap: 34px;
+  gap: 28px;
 }
 
 .header-links {
@@ -140,7 +140,7 @@ body::before { background: linear-gradient( var(--navy), #08243d); content: ""; 
 .header-actions {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 28px;
 }
 
 .header-signup,
@@ -1065,4 +1065,17 @@ body.dark-mode .btn-secondary:hover {
   .settings-grid {
     grid-template-columns: 1fr;
   }
+}
+.header-action-link {
+  width: auto;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+}
+
+.header-action-link:hover {
+  background: transparent;
+  transform: none;
 }
