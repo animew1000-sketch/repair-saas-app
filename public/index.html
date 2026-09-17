@@ -18,43 +18,111 @@
     <span id="brandName">Apex Auto SaaS</span>
   </div>
 
-  <div>
-    <a class="nav-btn" href="/overview.html">Platform Overview</a>
-    <a class="nav-btn" href="/contact.html">Contact</a>
+  <div class="header-nav">
+    <div class="header-links">
+      <a class="header-link" href="/overview.html">
+        Platform Overview
+      </a>
 
-    <button
-      class="nav-btn"
-      onclick="showScreen('registerSection')"
-    >
-      Sign Up
-    </button>
+      <a class="header-link" href="/contact.html">
+        Contact
+      </a>
+    </div>
 
-    <button
-      class="nav-btn nav-login"
-      onclick="showScreen('loginSection')"
-    >
-      Portal Login
-    </button>
+    <div class="header-actions">
+<button
+  class="btn-secondary"
+  type="button"
+  onclick="showScreen('registerSection')"
+>
+  Sign Up
+</button>
+
+<button
+  class="btn-primary"
+  type="button"
+  onclick="showScreen('loginSection')"
+>
+  Portal Login
+</button>
+    </div>
   </div>
-</div>
-    <!-- 0. PUBLIC MARKETING LANDING PAGE -->
+</div>    <!-- 0. PUBLIC MARKETING LANDING PAGE -->
     <div id="landingSection">
-      <div class="hero">
-        <div class="marketing-pill">⚡ Next-Gen Auto Repair Operating System</div>
-        <h1 id="heroTitle">Cloud-Native Management Built for <span>Independent Auto Shops</span></h1>
-        <p id="heroSubtitle">Streamline customer intake, vehicle diagnostic tracking, technician workflow, parts lookup, and automated invoicing in one secure, multi-tenant SaaS platform.</p>
-        
-        <div style="display:flex; justify-content:center; gap:12px; flex-wrap:wrap;">
-          <button style="width:auto; padding:12px 24px;" onclick="showScreen('registerSection')">Book Appointment / Signup</button>
-          <button style="width:auto; padding:12px 24px; background:transparent; border:1px solid var(--primary);" onclick="showScreen('loginSection')">Staff & Client Portal Login</button>
-        </div>
+<div class="hero hero-slider">
 
-        <div class="shop-switcher">
-          <span style="font-size:0.85rem; color:var(--text-muted); line-height:34px;">Interactive Demo Shop Pages:</span>
-          <a href="/apex-mechanics" class="shop-chip">🍊 Apex Precision Mechanics</a>
-          <a href="/vanguard-auto" class="shop-chip">🔹 Vanguard Auto Performance</a>
-        </div>
-      </div>
+  <div class="hero-slides">
+    <div
+      class="hero-slide active"
+      style="background-image: url('/images/Neon.jpg');"
+    ></div>
+
+    <div
+      class="hero-slide"
+      style="background-image: url('/images/Smokey-lift.jpg');"
+    ></div>
+
+    <div
+      class="hero-slide"
+      style="background-image: url('/images/Disk-Break.jpg');"
+    ></div>
+  </div>
+
+  <div class="hero-overlay"></div>
+
+  <button
+    class="hero-arrow hero-arrow-left"
+    type="button"
+    onclick="previousHeroSlide()"
+    aria-label="Previous slide"
+  >
+    &#10094;
+  </button>
+
+  <div class="hero-content">
+
+    <div class="marketing-pill">
+      NEXT-GEN AUTO REPAIR SYSTEM
+    </div>
+
+    <h1 id="heroTitle">
+      Cloud-Native Management Built for
+      <span>Independent Auto Shops</span>
+    </h1>
+
+    <p id="heroSubtitle">
+      Manage customers, vehicles, technicians, parts,
+      estimates, and invoices — all in one place.
+    </p>
+
+    <div class="hero-actions">
+      <button
+        class="hero-primary-btn"
+        onclick="showScreen('registerSection')"
+      >
+        Get Started →
+      </button>
+
+      <button
+        class="hero-secondary-btn"
+        onclick="showScreen('loginSection')"
+      >
+        Portal Login
+      </button>
+    </div>
+
+  </div>
+
+  <button
+    class="hero-arrow hero-arrow-right"
+    type="button"
+    onclick="nextHeroSlide()"
+    aria-label="Next slide"
+  >
+    &#10095;
+  </button>
+
+</div>
 
       <div class="marketing-stat-grid">
         <div class="stat-box">
@@ -117,7 +185,9 @@
           <div><label>Username</label><input type="text" id="reg_username" required /></div>
         </div>
         <div><label>Password</label><input type="password" id="reg_password" required /></div>
-        <button type="submit">Register Account</button>
+<button class="btn-primary" type="submit">
+  Register Account
+</button>
       </form>
     </div>
 
@@ -136,30 +206,69 @@
         
         <label style="margin-top:12px;">Password (Required for Customer Email Login)</label>
         <input type="password" id="password" placeholder="Password for email/username login" />
-        
-        <button type="submit">Log In</button>
+       <button class="btn-primary" type="submit">
+  Log In
+</button> 
       </form>
     </div>
 
     <!-- 3. CUSTOMER DASHBOARD -->
     <div id="customerDashboard" class="card hidden">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
-        <div>
+<div id="customerPortalHeader" class="customer-portal-header">        <div>
           <h2>Customer Portal</h2>
           <small class="shop-title-text" id="clientShopBanner"></small>
         </div>
         <div>
           Welcome, <strong id="clientWelcomeName" style="color:var(--primary);"></strong>!
-          <button onclick="logout()" class="nav-btn" style="margin-left:12px;">Logout</button>
+<button
+  onclick="logout()"
+  class="btn-secondary"
+  style="margin-left:12px;"
+>
+  Logout
+</button>
         </div>
       </div>
 
-      <div class="portal-tab-bar">
-        <div id="tab-view-requests" class="portal-tab active" onclick="switchCustomerTab('view-requests')">📋 View Service Requests & Invoices</div>
-        <div id="tab-create-request" class="portal-tab" onclick="switchCustomerTab('create-request')">➕ Create New Service Request</div>
-        <div id="tab-contact-us" class="portal-tab" onclick="switchCustomerTab('contact-us')">📞 Contact Us & Support</div>
-      </div>
+<div class="customer-nav">
 
+  <button
+    id="tab-view-requests"
+    class="portal-tab active"
+    type="button"
+    onclick="switchCustomerTab('view-requests')"
+  >
+    View Service Requests & Invoices
+  </button>
+
+  <button
+    id="tab-create-request"
+    class="portal-tab"
+    type="button"
+    onclick="switchCustomerTab('create-request')"
+  >
+    Create New Service Request
+  </button>
+
+  <button
+    id="tab-contact-us"
+    class="portal-tab"
+    type="button"
+    onclick="switchCustomerTab('contact-us')"
+  >
+    Contact Us & Support
+  </button>
+
+  <button
+    id="tab-settings"
+    class="portal-tab settings-tab"
+    type="button"
+    onclick="switchCustomerTab('settings')"
+  >
+    Settings
+  </button>
+
+</div>
       <div id="customerTab-view-requests">
         <div id="statusBadge" style="margin: 12px 0;"></div>
         <div id="invoiceContainer" class="invoice-box">
@@ -185,8 +294,10 @@
           </div>
           <label>Reported Problem / Symptoms</label>
           <textarea id="cust_issue" rows="3" required></textarea>
-          
-          <button type="submit">Save Updated Profile</button>
+
+ <button class="btn-primary" type="submit">
+  Save Updated Profile
+</button>         
         </form>
       </div>
 
@@ -203,7 +314,9 @@
           <input type="datetime-local" id="book_datetime" required />
           <label>Describe Vehicle Issue / Symptoms</label>
           <textarea id="book_issue" rows="3" placeholder="Describe symptoms..." required></textarea>
-          <button type="submit">Submit Service Request</button>
+<button class="btn-primary" type="submit">
+  Submit Service Request
+</button>
         </form>
       </div>
 
@@ -220,6 +333,42 @@
           </div>
         </div>
       </div>
+      <!-- CUSTOMER PORTAL SETTINGS -->
+<div id="customerTab-settings" class="invoice-box settings-page hidden">
+  <h3>Dashboard Settings</h3>
+
+  <p style="color: var(--muted); margin-bottom: 20px;">
+    Customize your customer portal appearance.
+  </p>
+
+  <div class="settings-grid">
+
+    <div class="settings-group">
+      <label for="shopLogoInput">Change Header Picture</label>
+
+      <input
+        id="shopLogoInput"
+        type="file"
+        accept="image/*"
+      >
+    </div>
+
+    <div class="settings-group">
+      <label for="themeColorInput">Accent Color</label>
+
+      <select id="themeColorInput" class="theme-color-picker">
+        <option value="#ef4444">Red</option>
+        <option value="#facc15">Yellow</option>
+        <option value="#22c55e">Green</option>
+        <option value="#ec4899">Pink</option>
+        <option value="#3b82f6">Blue</option>
+        <option value="#a855f7">Purple</option>
+        <option value="#ed7b27">Orange</option>
+      </select>
+    </div>
+
+  </div>
+</div>
     </div>
 
     <!-- 4. EMPLOYEE & MANAGER DASHBOARD -->
@@ -229,7 +378,11 @@
           <h2>Shop Operations Portal</h2>
           <small class="shop-title-text" style="font-size:1.05rem;" id="empShopBanner"></small>
         </div>
-        <div>User: <span id="userRoleBadge" class="badge"></span> <button onclick="logout()" class="nav-btn">Logout</button></div>
+        <div>User: <span id="userRoleBadge" class="badge"></span>
+           <button onclick="logout()" class="btn-secondary">
+  Logout
+</button>
+          </div>
       </div>
 
       <div id="managerControlPanel" class="invoice-box hidden" style="margin-bottom:24px;">
@@ -252,7 +405,9 @@
               </select>
             </div>
           </div>
-          <button type="submit" style="width:auto; padding:10px 20px;">Create Employee Profile</button>
+<button class="btn-primary" type="submit">
+  Create Employee Profile
+</button>
         </form>
 
         <h4>Assigned Employee Roster & PIN Codes</h4>
@@ -295,12 +450,28 @@
       <form id="deptForm" onsubmit="submitDepartment(event)">
         <h3 id="deptTitle">Department Action</h3>
         <div id="formFields">Select a department above</div>
-        <button type="submit">Save Department Record</button>
-      </form>
+<button class="btn-primary" type="submit">
+  Save Department Record
+</button>      </form>
     </div>
 
   </div>
+<div class="theme-footer">
+  <span class="theme-label">Light</span>
+
+  <button
+    class="theme-switch"
+    type="button"
+    onclick="toggleTheme()"
+    aria-label="Switch between light and dark mode"
+  >
+    <span class="theme-switch-knob"></span>
+  </button>
+
+  <span class="theme-label">Dark</span>
+</div>
 
   <script src="/app.js"></script>
+  <script src="/theme.js"></script>
 </body>
 </html>

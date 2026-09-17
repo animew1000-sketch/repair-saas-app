@@ -214,6 +214,10 @@ function switchCustomerTab(tabName) {
     .classList.add('hidden');
 
   document
+    .getElementById('customerTab-settings')
+    .classList.add('hidden');
+
+  document
     .querySelectorAll('.portal-tab')
     .forEach((el) => el.classList.remove('active'));
 
@@ -1061,3 +1065,206 @@ function logout() {
 }
 
 renderDashboard();
+// =========================
+// HERO SLIDESHOW makes it move
+// =========================
+
+let currentHeroSlide = 0;
+let heroSlideTimer;
+
+function updateHeroSlides() {
+  const slides = document.querySelectorAll('.hero-slide');
+  const dots = document.querySelectorAll('.hero-dot');
+
+  if (!slides.length) return;
+
+  slides.forEach((slide, index) => {
+    slide.classList.toggle('active', index === currentHeroSlide);
+  });
+
+  dots.forEach((dot, index) => {
+    dot.classList.toggle('active', index === currentHeroSlide);
+  });
+}
+
+function setHeroSlide(index) {
+  const slides = document.querySelectorAll('.hero-slide');
+
+  if (!slides.length) return;
+
+  currentHeroSlide = (index + slides.length) % slides.length;
+
+  updateHeroSlides();
+  resetHeroSlideTimer();
+}
+
+function nextHeroSlide() {
+  setHeroSlide(currentHeroSlide + 1);
+}
+
+function previousHeroSlide() {
+  setHeroSlide(currentHeroSlide - 1);
+}
+
+function resetHeroSlideTimer() {
+  clearInterval(heroSlideTimer);
+
+  heroSlideTimer = setInterval(() => {
+    const slides = document.querySelectorAll('.hero-slide');
+
+    if (!slides.length) return;
+
+    currentHeroSlide =
+      (currentHeroSlide + 1) % slides.length;
+
+    updateHeroSlides();
+  }, 6000);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  updateHeroSlides();
+  resetHeroSlideTimer();
+});
+
+// =========================
+// CUSTOMER PORTAL SETTINGS
+// =========================
+
+function setCustomerPortalHeaderImage(imageSource) {
+  const header = document.getElementById('customerPortalHeader');
+
+  if (!header) return;
+
+  header.style.backgroundImage = `
+    linear-gradient(
+      90deg,
+      rgba(7, 24, 39, 0.88),
+      rgba(7, 24, 39, 0.68)
+    ),
+    url("${imageSource}")
+  `;
+
+  header.style.backgroundSize = 'cover';
+  header.style.backgroundPosition = 'center';
+}
+
+function darkenAccentColor(hexColor) {
+  const amount = 42;
+
+  const channels = hexColor
+    .match(/[\da-f]{2}/gi)
+    .map(channel =>
+      Math.max(0, parseInt(channel, 16) - amount)
+    );
+
+  return `#${channels
+    .map(channel =>
+      channel.toString(16).padStart(2, '0')
+    )
+    .join('')}`;
+}
+
+function setCustomerAccentColor(color) {
+  const darkerColor = darkenAccentColor(color);
+
+  document.documentElement.style.setProperty(
+    '--orange',
+    color
+  );
+
+  document.documentElement.style.setProperty(
+    '--orange-dark',
+    darkerColor
+  );
+
+  document.documentElement.style.setProperty(
+    '--primary',
+    color
+  );
+
+  document.documentElement.style.setProperty(
+    '--primary-hover',
+    darkerColor
+  );
+}
+
+function initializeCustomerPortalSettings() {
+  const imageInput =
+    document.getElementById('shopLogoInput');
+
+  const colorInput =
+    document.getElementById('themeColorInput');
+
+  const savedImage =
+    localStorage.getItem('customer_portal_image');
+
+  const savedColor =
+    localStorage.getItem('customer_accent_color');
+
+  if (savedImage) {
+    setCustomerPortalHeaderImage(savedImage);
+  }
+
+  if (savedColor) {
+    setCustomerAccentColor(savedColor);
+
+    if (colorInput) {
+      colorInput.value = savedColor;
+    }
+  }
+
+  if (colorInput) {
+    colorInput.addEventListener('change', (event) => {
+      const color = event.target.value;
+
+      setCustomerAccentColor(color);
+
+      localStorage.setItem(
+        'customer_accent_color',
+        color
+      );
+    });
+  }
+
+  if (imageInput) {
+    imageInput.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+
+      if (!file) return;
+
+      const reader = new FileReader();
+
+      reader.addEventListener('load', () => {
+        setCustomerPortalHeaderImage(reader.result);
+
+        localStorage.setItem(
+          'customer_portal_image',
+          reader.result
+        );
+      });
+
+      reader.readAsDataURL(file);
+    });
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  initializeCustomerPortalSettings();
+});
+function openScreenFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  const screen = params.get('screen');
+
+  const allowedScreens = [
+    'registerSection',
+    'loginSection'
+  ];
+
+  if (screen && allowedScreens.includes(screen)) {
+    showScreen(screen);
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  openScreenFromUrl();
+});

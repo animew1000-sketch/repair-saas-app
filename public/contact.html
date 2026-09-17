@@ -8,19 +8,48 @@
 </head>
 <body>
 
-  <div class="header">
-    <div class="brand" onclick="window.location.href='/'">
-      <span>Apex Auto SaaS</span>
-    </div>
-
-    <div>
-      <a class="nav-btn" href="/">Home</a>
-      <a class="nav-btn" href="/overview.html">Platform Overview</a>
-      <a class="nav-btn" href="/contact.html">Contact</a>
-      <a class="nav-btn nav-login" href="/">Portal Login</a>
-    </div>
+<div class="header">
+  <div
+    class="brand"
+    onclick="window.location.href='/'"
+  >
+    <span>Apex Auto SaaS</span>
   </div>
 
+  <div class="header-nav">
+
+    <div class="header-links">
+      <a class="header-link" href="/">
+        Home
+      </a>
+
+      <a class="header-link" href="/overview.html">
+        Platform Overview
+      </a>
+
+      <a class="header-link" href="/contact.html">
+        Contact
+      </a>
+    </div>
+
+    <div class="header-actions">
+      <a
+        class="btn-secondary"
+        href="/?screen=registerSection"
+      >
+        Sign Up
+      </a>
+
+      <a
+        class="btn-primary"
+        href="/?screen=loginSection"
+      >
+        Portal Login
+      </a>
+    </div>
+
+  </div>
+</div>
   <div class="container">
 
     <main class="contact-page">
@@ -121,9 +150,9 @@
               ></textarea>
             </div>
 
-            <button type="submit">
-              Send Message
-            </button>
+            <button class="btn-primary" type="submit">
+  Send Message
+</button>
 
             <p id="contactStatus" class="form-status"></p>
 
@@ -146,6 +175,6 @@
       event.target.reset();
     }
   </script>
-
+<script src="/theme.js"></script>
 </body>
 </html>

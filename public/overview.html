@@ -8,18 +8,48 @@
 </head>
 <body>
 
-  <div class="header">
-    <div class="brand" onclick="window.location.href='/'">
-      <span>Apex Auto SaaS</span>
+<div class="header">
+  <div
+    class="brand"
+    onclick="window.location.href='/'"
+  >
+    <span>Apex Auto SaaS</span>
+  </div>
+
+  <div class="header-nav">
+
+    <div class="header-links">
+      <a class="header-link" href="/">
+        Home
+      </a>
+
+      <a class="header-link" href="/overview.html">
+        Platform Overview
+      </a>
+
+      <a class="header-link" href="/contact.html">
+        Contact
+      </a>
     </div>
 
-    <div>
-      <a class="nav-btn" href="/">Home</a>
-      <a class="nav-btn" href="/overview.html">Platform Overview</a>
-      <a class="nav-btn" href="/contact.html">Contact</a>
-      <a class="nav-btn nav-login" href="/">Portal Login</a>
+    <div class="header-actions">
+      <a
+        class="btn-secondary"
+        href="/?screen=registerSection"
+      >
+        Sign Up
+      </a>
+
+      <a
+        class="btn-primary"
+        href="/?screen=loginSection"
+      >
+        Portal Login
+      </a>
     </div>
+
   </div>
+</div>
 
   <div class="container">
 
@@ -44,69 +74,73 @@
         <section class="overview-features">
           <h2>Core Platform Capabilities</h2>
 
-          <ul class="feature-list">
+<div class="feature-list">
 
-            <li>
-              <details open>
-                <summary>
-                  <span>01</span>
-                  Multi-Tenant Shop Management
-                </summary>
+  <div class="feature-item active">
+    <button class="feature-summary" type="button">
+      <span class="feature-number">01</span>
+      <span>Multi-Tenant Shop Management</span>
+      <span class="feature-icon">−</span>
+    </button>
 
-                <p>
-                  Multiple repair businesses can operate independently
-                  using isolated company data, unique branding, and
-                  dedicated shop identities.
-                </p>
-              </details>
-            </li>
+    <div class="feature-content">
+      <div class="feature-content-inner">
+        Multiple repair businesses can operate independently
+        using isolated company data, unique branding, and
+        dedicated shop identities.
+      </div>
+    </div>
+  </div>
 
-            <li>
-              <details>
-                <summary>
-                  <span>02</span>
-                  Role-Based Staff Access
-                </summary>
+  <div class="feature-item">
+    <button class="feature-summary" type="button">
+      <span class="feature-number">02</span>
+      <span>Role-Based Staff Access</span>
+      <span class="feature-icon">+</span>
+    </button>
 
-                <p>
-                  Managers, service advisors, technicians, billing staff,
-                  and customers receive interfaces and permissions based
-                  on their assigned roles.
-                </p>
-              </details>
-            </li>
+    <div class="feature-content">
+      <div class="feature-content-inner">
+        Managers, service advisors, technicians, billing staff,
+        and customers receive interfaces and permissions based
+        on their assigned roles.
+      </div>
+    </div>
+  </div>
 
-            <li>
-              <details>
-                <summary>
-                  <span>03</span>
-                  Complete Repair Workflow
-                </summary>
+  <div class="feature-item">
+    <button class="feature-summary" type="button">
+      <span class="feature-number">03</span>
+      <span>Complete Repair Workflow</span>
+      <span class="feature-icon">+</span>
+    </button>
 
-                <p>
-                  Repair jobs move through customer intake, vehicle data,
-                  appointments, repair orders, parts and labor, estimates,
-                  repair execution, and invoicing.
-                </p>
-              </details>
-            </li>
+    <div class="feature-content">
+      <div class="feature-content-inner">
+        Repair jobs move through customer intake, vehicle data,
+        appointments, repair orders, parts and labor, estimates,
+        repair execution, and invoicing.
+      </div>
+    </div>
+  </div>
 
-            <li>
-              <details>
-                <summary>
-                  <span>04</span>
-                  Customer Portal
-                </summary>
+  <div class="feature-item">
+    <button class="feature-summary" type="button">
+      <span class="feature-number">04</span>
+      <span>Customer Portal</span>
+      <span class="feature-icon">+</span>
+    </button>
 
-                <p>
-                  Customers can create accounts, submit service requests,
-                  update vehicle information, track repair status, and
-                  review invoices.
-                </p>
-              </details>
-            </li>
+    <div class="feature-content">
+      <div class="feature-content-inner">
+        Customers can create accounts, submit service requests,
+        update vehicle information, track repair status, and
+        review invoices.
+      </div>
+    </div>
+  </div>
 
-          </ul>
+</div>
         </section>
 
         <figure class="overview-feature-image">
@@ -159,9 +193,32 @@
 
       </div>
 
-    </div>
+       </div>
 
   </div>
 
+  <script>
+    const featureItems = document.querySelectorAll('.feature-item');
+
+    featureItems.forEach((item) => {
+      const button = item.querySelector('.feature-summary');
+      const icon = item.querySelector('.feature-icon');
+
+      button.addEventListener('click', () => {
+        const wasActive = item.classList.contains('active');
+
+        featureItems.forEach((otherItem) => {
+          otherItem.classList.remove('active');
+          otherItem.querySelector('.feature-icon').textContent = '+';
+        });
+
+        if (!wasActive) {
+          item.classList.add('active');
+          icon.textContent = '−';
+        }
+      });
+    });
+  </script>
+<script src="/theme.js"></script>
 </body>
 </html>
