@@ -1022,7 +1022,33 @@ function applyRolePermissions(role) {
   }
 }
 
+function updateHeaderAuthButtons() {
+  const token = localStorage.getItem('token');
+
+  const signupButton =
+    document.querySelector('.header-signup');
+
+  const loginButton =
+    document.querySelector('.header-login');
+
+  if (signupButton) {
+    signupButton.classList.toggle(
+      'hidden',
+      Boolean(token)
+    );
+  }
+
+  if (loginButton) {
+    loginButton.classList.toggle(
+      'hidden',
+      Boolean(token)
+    );
+  }
+}
+
 function renderDashboard() {
+  updateHeaderAuthButtons();
+
   const token =
     localStorage.getItem('token');
 
