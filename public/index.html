@@ -98,6 +98,7 @@
     <div class="hero-actions">
       <button
         class="hero-primary-btn"
+        type="button"
         onclick="showScreen('registerSection')"
       >
         Get Started →
@@ -105,6 +106,7 @@
 
       <button
         class="hero-secondary-btn"
+        type="button"
         onclick="showScreen('loginSection')"
       >
         Portal Login
@@ -171,20 +173,37 @@
       <h2>Create Customer Account</h2>
       <p style="color: var(--text-muted);">Please confirm your shop location and create an account to schedule service.</p>
       <form onsubmit="handleRegister(event)">
-        <label>Selected Auto Repair Shop Location</label>
+        <label for="reg_company_id">Selected Auto Repair Shop Location</label>
         <select id="reg_company_id" required>
           <option value="">Loading shop locations...</option>
         </select>
         <div class="grid">
-          <div><label>First Name</label><input type="text" id="reg_first_name" required /></div>
-          <div><label>Last Name</label><input type="text" id="reg_last_name" required /></div>
-          <div><label>Phone Number</label><input type="text" id="reg_phone" required /></div>
+          <div><label for="reg_first_name">First Name</label><input type="text" id="reg_first_name" required /></div>
+          <div><label for="reg_last_name">Last Name</label><input type="text" id="reg_last_name" required /></div>
+          <div><label for="reg_phone">Phone Number</label><input type="text" id="reg_phone" required /></div>
         </div>
         <div class="grid">
-          <div><label>Email Address (Your Login ID)</label><input type="email" id="reg_email" placeholder="e.g. user@domain.com" required /></div>
-          <div><label>Username</label><input type="text" id="reg_username" required /></div>
+          <div><label for="reg_email">Email Address (Your Login ID)</label><input type="email" id="reg_email" placeholder="e.g. user@domain.com" required /></div>
+          <div><label for="reg_username">Username</label><input type="text" id="reg_username" required /></div>
         </div>
-        <div><label>Password</label><input type="password" id="reg_password" required /></div>
+        <div><label for="reg_password">Password</label><input type="password" id="reg_password" required /></div>
+<div class="legal-acknowledgment" style="margin:16px 0;">
+  <label style="display:flex; gap:10px; align-items:flex-start; font-weight:400;">
+    <input
+      type="checkbox"
+      id="reg_notice_ack"
+      required
+      style="width:auto; margin-top:4px;"
+    />
+    <span>
+      I acknowledge the
+      <a href="/notice.html" target="_blank" rel="noopener noreferrer">
+        Privacy Policy, Terms of Use, and California Repair Service Notice
+      </a>.
+    </span>
+  </label>
+</div>
+
 <button class="btn-primary" type="submit">
   Register Account
 </button>
@@ -196,15 +215,15 @@
       <h2>Portal Login</h2>
       <p style="color:var(--text-muted);">Staff log in using your 6-Digit PIN. Customers log in using your Email Address & Password.</p>
       <form onsubmit="handleLogin(event)">
-        <label>Shop Location</label>
+        <label for="login_company_id">Shop Location</label>
         <select id="login_company_id">
           <option value="">-- Auto-Detect Shop by PIN/Account --</option>
         </select>
 
-        <label style="margin-top:12px;">Customer Email / Username OR Staff 6-Digit PIN</label>
+        <label for="login_input" style="margin-top:12px;">Customer Email / Username OR Staff 6-Digit PIN</label>
         <input type="text" id="login_input" placeholder="e.g. user@domain.com (Customer) or 111111 (Staff PIN)" required />
         
-        <label style="margin-top:12px;">Password (Required for Customer Email Login)</label>
+        <label for="password" style="margin-top:12px;">Password (Required for Customer Email Login)</label>
         <input type="password" id="password" placeholder="Password for email/username login" />
        <button class="btn-primary" type="submit">
   Log In
@@ -230,12 +249,19 @@
         </div>
       </div>
 
-<div class="customer-nav">
-
+<div
+  class="customer-nav"
+  role="tablist"
+  aria-label="Customer portal sections"
+>
   <button
     id="tab-view-requests"
     class="portal-tab active"
     type="button"
+    role="tab"
+    aria-selected="true"
+    aria-controls="customerTab-view-requests"
+    tabindex="0"
     onclick="switchCustomerTab('view-requests')"
   >
     View Service Requests & Invoices
@@ -245,6 +271,10 @@
     id="tab-create-request"
     class="portal-tab"
     type="button"
+    role="tab"
+    aria-selected="false"
+    aria-controls="customerTab-create-request"
+    tabindex="-1"
     onclick="switchCustomerTab('create-request')"
   >
     Create New Service Request
@@ -254,6 +284,10 @@
     id="tab-contact-us"
     class="portal-tab"
     type="button"
+    role="tab"
+    aria-selected="false"
+    aria-controls="customerTab-contact-us"
+    tabindex="-1"
     onclick="switchCustomerTab('contact-us')"
   >
     Contact Us & Support
@@ -263,36 +297,39 @@
     id="tab-settings"
     class="portal-tab settings-tab"
     type="button"
+    role="tab"
+    aria-selected="false"
+    aria-controls="customerTab-settings"
+    tabindex="-1"
     onclick="switchCustomerTab('settings')"
   >
     Settings
   </button>
-
 </div>
-      <div id="customerTab-view-requests">
-        <div id="statusBadge" style="margin: 12px 0;"></div>
+      <div id="customerTab-view-requests" role="tabpanel" aria-labelledby="tab-view-requests">
+        <div id="statusBadge" style="margin: 12px 0;" aria-live="polite"></div>
         <div id="invoiceContainer" class="invoice-box">
           <h3>Active Repair Job & Invoicing Details</h3>
-          <div id="invoiceContent">Loading records...</div>
+          <div id="invoiceContent" aria-live="polite">Loading records...</div>
         </div>
 
         <form onsubmit="handleUpdateCustomerProfile(event)" style="margin-top: 24px;">
           <h3>Update Profile & Vehicle Details</h3>
           <div class="grid">
-            <div><label>First Name</label><input type="text" id="cust_first_name" required /></div>
-            <div><label>Last Name</label><input type="text" id="cust_last_name" required /></div>
-            <div><label>Phone Number</label><input type="text" id="cust_phone" required /></div>
+            <div><label for="cust_first_name">First Name</label><input type="text" id="cust_first_name" required /></div>
+            <div><label for="cust_last_name">Last Name</label><input type="text" id="cust_last_name" required /></div>
+            <div><label for="cust_phone">Phone Number</label><input type="text" id="cust_phone" required /></div>
           </div>
           <div class="grid">
-            <div><label>Email Address</label><input type="email" id="cust_email" required /></div>
-            <div><label>VIN Number (17 Digits)</label><input type="text" id="cust_vin" maxlength="17" required /></div>
+            <div><label for="cust_email">Email Address</label><input type="email" id="cust_email" required /></div>
+            <div><label for="cust_vin">VIN Number (17 Digits)</label><input type="text" id="cust_vin" maxlength="17" required /></div>
           </div>
           <div class="grid">
-            <div><label>Vehicle Make</label><input type="text" id="cust_make" required /></div>
-            <div><label>Vehicle Model</label><input type="text" id="cust_model" required /></div>
-            <div><label>Year</label><input type="number" id="cust_year" required /></div>
+            <div><label for="cust_make">Vehicle Make</label><input type="text" id="cust_make" required /></div>
+            <div><label for="cust_model">Vehicle Model</label><input type="text" id="cust_model" required /></div>
+            <div><label for="cust_year">Year</label><input type="number" id="cust_year" required /></div>
           </div>
-          <label>Reported Problem / Symptoms</label>
+          <label for="cust_issue">Reported Problem / Symptoms</label>
           <textarea id="cust_issue" rows="3" required></textarea>
 
  <button class="btn-primary" type="submit">
@@ -301,18 +338,18 @@
         </form>
       </div>
 
-      <div id="customerTab-create-request" class="invoice-box hidden">
+      <div id="customerTab-create-request" class="invoice-box hidden" role="tabpanel" aria-labelledby="tab-create-request">
         <h3>Submit New Vehicle Repair / Maintenance Request</h3>
         <form onsubmit="handleBookAppointment(event)">
           <div class="grid">
-            <div><label>VIN Number (17 Digits)</label><input type="text" id="book_vin" maxlength="17" placeholder="e.g. 1FA6P8CF0H1234567" required /></div>
-            <div><label>Vehicle Make</label><input type="text" id="book_make" placeholder="e.g. Ford" required /></div>
-            <div><label>Vehicle Model</label><input type="text" id="book_model" placeholder="e.g. Mustang" required /></div>
-            <div><label>Year</label><input type="number" id="book_year" placeholder="e.g. 2022" required /></div>
+            <div><label for="book_vin">VIN Number (17 Digits)</label><input type="text" id="book_vin" maxlength="17" placeholder="e.g. 1FA6P8CF0H1234567" required /></div>
+            <div><label for="book_make">Vehicle Make</label><input type="text" id="book_make" placeholder="e.g. Ford" required /></div>
+            <div><label for="book_model">Vehicle Model</label><input type="text" id="book_model" placeholder="e.g. Mustang" required /></div>
+            <div><label for="book_year">Year</label><input type="number" id="book_year" placeholder="e.g. 2022" required /></div>
           </div>
-          <label>Preferred Appointment Date & Time</label>
+          <label for="book_datetime">Preferred Appointment Date & Time</label>
           <input type="datetime-local" id="book_datetime" required />
-          <label>Describe Vehicle Issue / Symptoms</label>
+          <label for="book_issue">Describe Vehicle Issue / Symptoms</label>
           <textarea id="book_issue" rows="3" placeholder="Describe symptoms..." required></textarea>
 <button class="btn-primary" type="submit">
   Submit Service Request
@@ -320,7 +357,7 @@
         </form>
       </div>
 
-      <div id="customerTab-contact-us" class="invoice-box hidden">
+      <div id="customerTab-contact-us" class="invoice-box hidden" role="tabpanel" aria-labelledby="tab-contact-us">
         <h3>Contact Shop Support</h3>
         <div class="grid" style="margin-top:20px;">
           <div class="feature-card">
@@ -334,7 +371,7 @@
         </div>
       </div>
       <!-- CUSTOMER PORTAL SETTINGS -->
-<div id="customerTab-settings" class="invoice-box settings-page hidden">
+<div id="customerTab-settings" class="invoice-box settings-page hidden" role="tabpanel" aria-labelledby="tab-settings">
   <h3>Dashboard Settings</h3>
 
   <p style="color: var(--muted); margin-bottom: 20px;">
@@ -392,11 +429,11 @@
         <form onsubmit="handleCreateEmployee(event)" style="margin-bottom:20px;">
           <h4>Add New Employee Profile</h4>
           <div class="grid">
-            <div><label>Employee Name / Username</label><input type="text" id="new_emp_username" placeholder="e.g. john_tech" required /></div>
-            <div><label>Employee Email (Optional)</label><input type="email" id="new_emp_email" placeholder="john@apex.com" /></div>
-            <div><label>Assign 6-Digit PIN</label><input type="text" id="new_emp_pin" maxlength="6" placeholder="e.g. 654321" required /></div>
+            <div><label for="new_emp_username">Employee Name / Username</label><input type="text" id="new_emp_username" placeholder="e.g. john_tech" required /></div>
+            <div><label for="new_emp_email">Employee Email (Optional)</label><input type="email" id="new_emp_email" placeholder="john@apex.com" /></div>
+            <div><label for="new_emp_pin">Assign 6-Digit PIN</label><input type="text" id="new_emp_pin" maxlength="6" placeholder="e.g. 654321" required /></div>
             <div>
-              <label>Assign Role</label>
+              <label for="new_emp_role">Assign Role</label>
               <select id="new_emp_role" required>
                 <option value="service_advisor">Service Advisor</option>
                 <option value="technician">Technician</option>
@@ -428,23 +465,23 @@
         </table>
       </div>
 
-      <label class="shop-title-text" style="font-size:1rem;">Select Customer (Auto-fills Customer & Vehicle Data)</label>
+      <label for="customerSelector" class="shop-title-text" style="font-size:1rem;">Select Customer (Auto-fills Customer & Vehicle Data)</label>
       <select id="customerSelector" onchange="autoFillCustomerData()">
         <option value="">-- Choose Existing Customer Record --</option>
       </select>
 
-      <label>Active Repair Job ID</label>
+      <label for="activeJobId">Active Repair Job ID</label>
       <input type="number" id="activeJobId" value="1" />
 
       <div class="workflow-bar" style="margin-top:16px;">
-        <div id="btn-customer" class="step-card" onclick="showDept('customer')">1. Customer</div>
-        <div id="btn-vehicle" class="step-card" onclick="showDept('vehicle')">2. Vehicle</div>
-        <div id="btn-appointment" class="step-card" onclick="showDept('appointment')">3. Appointment</div>
-        <div id="btn-repair_order" class="step-card" onclick="showDept('repair_order')">4. Repair Order</div>
-        <div id="btn-parts_labor" class="step-card" onclick="showDept('parts_labor')">5. Parts + Labor</div>
-        <div id="btn-estimate" class="step-card" onclick="showDept('estimate')">6. Estimate</div>
-        <div id="btn-repair" class="step-card" onclick="showDept('repair')">7. Repair</div>
-        <div id="btn-invoice" class="step-card" onclick="showDept('invoice')">8. Invoice</div>
+        <button id="btn-customer" class="step-card" type="button" onclick="showDept('customer')">1. Customer</button>
+        <button id="btn-vehicle" class="step-card" type="button" onclick="showDept('vehicle')">2. Vehicle</button>
+        <button id="btn-appointment" class="step-card" type="button" onclick="showDept('appointment')">3. Appointment</button>
+        <button id="btn-repair_order" class="step-card" type="button" onclick="showDept('repair_order')">4. Repair Order</button>
+        <button id="btn-parts_labor" class="step-card" type="button" onclick="showDept('parts_labor')">5. Parts + Labor</button>
+        <button id="btn-estimate" class="step-card" type="button" onclick="showDept('estimate')">6. Estimate</button>
+        <button id="btn-repair" class="step-card" type="button" onclick="showDept('repair')">7. Repair</button>
+        <button id="btn-invoice" class="step-card" type="button" onclick="showDept('invoice')">8. Invoice</button>
       </div>
 
       <form id="deptForm" onsubmit="submitDepartment(event)">
@@ -456,6 +493,10 @@
     </div>
 
   </div>
+<footer class="legal-footer" style="text-align:center; margin:28px 0 14px;">
+  <a href="/notice.html">Privacy, Terms & California Notice</a>
+</footer>
+
 <div class="theme-footer">
   <span class="theme-label">Light</span>
 
@@ -472,6 +513,47 @@
 </div>
 
   <script src="/app.js"></script>
+
+  <script>
+    const customerTabs = Array.from(
+      document.querySelectorAll('.customer-nav [role="tab"]')
+    );
+
+    function setCustomerTabA11y(activeTab) {
+      customerTabs.forEach((tab) => {
+        const isActive = tab === activeTab;
+        tab.setAttribute('aria-selected', String(isActive));
+        tab.setAttribute('tabindex', isActive ? '0' : '-1');
+      });
+    }
+
+    customerTabs.forEach((tab, index) => {
+      tab.addEventListener('click', () => {
+        setCustomerTabA11y(tab);
+      });
+
+      tab.addEventListener('keydown', (event) => {
+        let nextIndex = null;
+
+        if (event.key === 'ArrowRight') {
+          nextIndex = (index + 1) % customerTabs.length;
+        } else if (event.key === 'ArrowLeft') {
+          nextIndex = (index - 1 + customerTabs.length) % customerTabs.length;
+        } else if (event.key === 'Home') {
+          nextIndex = 0;
+        } else if (event.key === 'End') {
+          nextIndex = customerTabs.length - 1;
+        }
+
+        if (nextIndex !== null) {
+          event.preventDefault();
+          customerTabs[nextIndex].focus();
+          customerTabs[nextIndex].click();
+        }
+      });
+    });
+  </script>
+
   <script src="/theme.js"></script>
 </body>
 </html>

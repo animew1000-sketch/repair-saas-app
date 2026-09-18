@@ -73,16 +73,25 @@
         <section class="overview-features">
           <h2>Core Platform Capabilities</h2>
 
+
 <div class="feature-list">
 
   <div class="feature-item active">
-    <button class="feature-summary" type="button">
+    <button
+      class="feature-summary"
+      type="button"
+      aria-expanded="true"
+      aria-controls="feature-panel-1"
+    >
       <span class="feature-number">01</span>
       <span>Multi-Tenant Shop Management</span>
-      <span class="feature-icon">−</span>
+      <span class="feature-icon" aria-hidden="true">−</span>
     </button>
 
-    <div class="feature-content">
+    <div
+      class="feature-content"
+      id="feature-panel-1"
+    >
       <div class="feature-content-inner">
         Multiple repair businesses can operate independently
         using isolated company data, unique branding, and
@@ -92,13 +101,21 @@
   </div>
 
   <div class="feature-item">
-    <button class="feature-summary" type="button">
+    <button
+      class="feature-summary"
+      type="button"
+      aria-expanded="false"
+      aria-controls="feature-panel-2"
+    >
       <span class="feature-number">02</span>
       <span>Role-Based Staff Access</span>
-      <span class="feature-icon">+</span>
+      <span class="feature-icon" aria-hidden="true">+</span>
     </button>
 
-    <div class="feature-content">
+    <div
+      class="feature-content"
+      id="feature-panel-2"
+    >
       <div class="feature-content-inner">
         Managers, service advisors, technicians, billing staff,
         and customers receive interfaces and permissions based
@@ -108,13 +125,21 @@
   </div>
 
   <div class="feature-item">
-    <button class="feature-summary" type="button">
+    <button
+      class="feature-summary"
+      type="button"
+      aria-expanded="false"
+      aria-controls="feature-panel-3"
+    >
       <span class="feature-number">03</span>
       <span>Complete Repair Workflow</span>
-      <span class="feature-icon">+</span>
+      <span class="feature-icon" aria-hidden="true">+</span>
     </button>
 
-    <div class="feature-content">
+    <div
+      class="feature-content"
+      id="feature-panel-3"
+    >
       <div class="feature-content-inner">
         Repair jobs move through customer intake, vehicle data,
         appointments, repair orders, parts and labor, estimates,
@@ -124,13 +149,21 @@
   </div>
 
   <div class="feature-item">
-    <button class="feature-summary" type="button">
+    <button
+      class="feature-summary"
+      type="button"
+      aria-expanded="false"
+      aria-controls="feature-panel-4"
+    >
       <span class="feature-number">04</span>
       <span>Customer Portal</span>
-      <span class="feature-icon">+</span>
+      <span class="feature-icon" aria-hidden="true">+</span>
     </button>
 
-    <div class="feature-content">
+    <div
+      class="feature-content"
+      id="feature-panel-4"
+    >
       <div class="feature-content-inner">
         Customers can create accounts, submit service requests,
         update vehicle information, track repair status, and
@@ -196,28 +229,33 @@
 
   </div>
 
-  <script>
-    const featureItems = document.querySelectorAll('.feature-item');
+<script>
+  const featureItems = document.querySelectorAll('.feature-item');
 
-    featureItems.forEach((item) => {
-      const button = item.querySelector('.feature-summary');
-      const icon = item.querySelector('.feature-icon');
+  featureItems.forEach((item) => {
+    const button = item.querySelector('.feature-summary');
+    const icon = item.querySelector('.feature-icon');
 
-      button.addEventListener('click', () => {
-        const wasActive = item.classList.contains('active');
+    button.addEventListener('click', () => {
+      const wasActive = item.classList.contains('active');
 
-        featureItems.forEach((otherItem) => {
-          otherItem.classList.remove('active');
-          otherItem.querySelector('.feature-icon').textContent = '+';
-        });
+      featureItems.forEach((otherItem) => {
+        const otherButton = otherItem.querySelector('.feature-summary');
+        const otherIcon = otherItem.querySelector('.feature-icon');
 
-        if (!wasActive) {
-          item.classList.add('active');
-          icon.textContent = '−';
-        }
+        otherItem.classList.remove('active');
+        otherButton.setAttribute('aria-expanded', 'false');
+        otherIcon.textContent = '+';
       });
+
+      if (!wasActive) {
+        item.classList.add('active');
+        button.setAttribute('aria-expanded', 'true');
+        icon.textContent = '−';
+      }
     });
-  </script>
+  });
+</script>
 <script src="/theme.js"></script>
 </body>
 </html>
