@@ -291,40 +291,86 @@ async function handleLogin(e) {
   const password =
     document.getElementById('password').value;
 
-  const res = await fetch('/api/login', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      company_id,
-      login_input,
-      password
-    })
-  });
+  const form = e.target;
 
-  const data = await res.json();
+  const loginButton =
+    form.querySelector('button[type="submit"]');
 
-  if (!res.ok) {
-    showToast(data.error, 'error');
-    return;
+  const originalButtonText =
+    loginButton.innerHTML;
+
+  // Show loading state
+  loginButton.disabled = true;
+  loginButton.innerHTML = `
+    <span class="login-spinner"></span>
+    Signing in...
+  `;
+
+  try {
+    const res = await fetch('/api/login', {
+      method: 'POST',
+
+      headers: {
+        'Content-Type': 'application/json'
+      },
+
+      body: JSON.stringify({
+        company_id,
+        login_input,
+        password
+      })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      showToast(data.error, 'error');
+      return;
+    }
+
+    localStorage.setItem(
+      'token',
+      data.token
+    );
+
+    localStorage.setItem(
+      'role',
+      data.role
+    );
+
+    localStorage.setItem(
+      'username',
+      data.username
+    );
+
+    localStorage.setItem(
+      'company_name',
+      data.company_name
+    );
+
+    localStorage.setItem(
+      'primary_color',
+      data.primary_color || '#f97316'
+    );
+
+    renderDashboard();
+  } catch (err) {
+    console.error(
+      'Login request error:',
+      err
+    );
+
+    showToast(
+      'Unable to connect to the server. Please try again.',
+      'error'
+    );
+  } finally {
+    // Restore button
+    loginButton.disabled = false;
+    loginButton.innerHTML =
+      originalButtonText;
   }
-
-  localStorage.setItem('token', data.token);
-  localStorage.setItem('role', data.role);
-  localStorage.setItem('username', data.username);
-  localStorage.setItem(
-    'company_name',
-    data.company_name
-  );
-  localStorage.setItem(
-    'primary_color',
-    data.primary_color || '#f97316'
-  );
-
-  renderDashboard();
 }
-
 async function loadManagerStaffTable() {
   const res = await fetch('/api/manager/employees', {
     headers: {
