@@ -13,7 +13,9 @@ if (!JWT_SECRET) {
   );
 }
 
+// ======================================================
 // CUSTOMER REGISTRATION
+// ======================================================
 router.post('/register', async (req, res) => {
   const {
     company_id,
@@ -25,20 +27,60 @@ router.post('/register', async (req, res) => {
     phone
   } = req.body;
 
+  let connection;
+
   try {
+    if (
+      !company_id ||
+      !username ||
+      !email ||
+      !password ||
+      !first_name ||
+      !last_name ||
+      !phone
+    ) {
+      return res.status(400).json({
+        error: 'Please complete all required fields.'
+      });
+    }
+
     const passwordHash = await bcrypt.hash(password, 10);
 
-    const jobNum = `JOB-${Date.now().toString().slice(-6)}`;
+    connection = await pool.getConnection();
 
-    const [jobRes] = await pool.query(
-      'INSERT INTO repair_jobs (company_id, job_number, status) VALUES (?, ?, ?)',
-      [company_id, jobNum, 'Requested']
+    await connection.beginTransaction();
+
+    const jobNum =
+      `JOB-${Date.now().toString().slice(-6)}`;
+
+    const [jobRes] = await connection.query(
+      `
+      INSERT INTO repair_jobs
+        (company_id, job_number, status)
+      VALUES (?, ?, ?)
+      `,
+      [
+        company_id,
+        jobNum,
+        'Requested'
+      ]
     );
 
     const jobId = jobRes.insertId;
 
-    await pool.query(
-      'INSERT INTO customers (company_id, repair_job_id, first_name, last_name, phone, email) VALUES (?, ?, ?, ?, ?, ?)',
+    await connection.query(
+      `
+      INSERT INTO customers
+        (
+          company_id,
+          repair_job_id,
+          first_name,
+          last_name,
+          phone,
+          email
+        )
+      VALUES (?, ?, ?, ?, ?, ?)
+      `,
       [
         company_id,
         jobId,
@@ -49,8 +91,19 @@ router.post('/register', async (req, res) => {
       ]
     );
 
-    await pool.query(
-      'INSERT INTO users (company_id, username, email, password, role, customer_id) VALUES (?, ?, ?, ?, ?, ?)',
+    await connection.query(
+      `
+      INSERT INTO users
+        (
+          company_id,
+          username,
+          email,
+          password,
+          role,
+          customer_id
+        )
+      VALUES (?, ?, ?, ?, ?, ?)
+      `,
       [
         company_id,
         username,
@@ -61,21 +114,48 @@ router.post('/register', async (req, res) => {
       ]
     );
 
-    res.json({
+    await connection.commit();
+
+    return res.json({
       success: true,
       message:
         'Account created successfully! You can now log in.'
     });
   } catch (err) {
+    if (connection) {
+      try {
+        await connection.rollback();
+      } catch (rollbackErr) {
+        console.error(
+          'Registration rollback error:',
+          rollbackErr
+        );
+      }
+    }
+
     console.error('Registration error:', err);
 
-    res.status(500).json({
-      error: err.message
+    if (err.code === 'ER_DUP_ENTRY') {
+      return res.status(409).json({
+        error:
+          'An account with that username or email already exists for this shop.'
+      });
+    }
+
+    return res.status(500).json({
+      error:
+        'Unable to create your account right now. Please try again.'
     });
+  } finally {
+    if (connection) {
+      connection.release();
+    }
   }
 });
 
+// ======================================================
 // LOGIN
+// ======================================================
 router.post('/login', async (req, res) => {
   const {
     company_id,
@@ -83,14 +163,22 @@ router.post('/login', async (req, res) => {
     password
   } = req.body;
 
-  const inputStr = (login_input || '').trim();
+  const inputStr =
+    (login_input || '').trim();
 
   try {
+    if (!inputStr) {
+      return res.status(400).json({
+        error:
+          'Please enter your email, username, or staff PIN.'
+      });
+    }
+
     let rows = [];
 
-    // ------------------------------
+    // ==================================================
     // STAFF 6-DIGIT PIN LOGIN
-    // ------------------------------
+    // ==================================================
     if (/^\d{6}$/.test(inputStr)) {
       if (company_id) {
         [rows] = await pool.query(
@@ -105,7 +193,10 @@ router.post('/login', async (req, res) => {
           WHERE u.pin_code = ?
             AND u.company_id = ?
           `,
-          [inputStr, company_id]
+          [
+            inputStr,
+            company_id
+          ]
         );
       } else {
         [rows] = await pool.query(
@@ -119,14 +210,16 @@ router.post('/login', async (req, res) => {
             ON u.company_id = c.id
           WHERE u.pin_code = ?
           `,
-          [inputStr]
+          [
+            inputStr
+          ]
         );
       }
     }
 
-    // ------------------------------
-    // CUSTOMER USERNAME / EMAIL LOGIN
-    // ------------------------------
+    // ==================================================
+    // CUSTOMER EMAIL / USERNAME LOGIN
+    // ==================================================
     if (rows.length === 0) {
       if (company_id) {
         [rows] = await pool.query(
@@ -138,11 +231,12 @@ router.post('/login', async (req, res) => {
           FROM users u
           JOIN companies c
             ON u.company_id = c.id
-          WHERE (
-            u.email = ?
-            OR u.username = ?
-          )
-          AND u.company_id = ?
+          WHERE
+            (
+              u.email = ?
+              OR u.username = ?
+            )
+            AND u.company_id = ?
           `,
           [
             inputStr,
@@ -160,10 +254,11 @@ router.post('/login', async (req, res) => {
           FROM users u
           JOIN companies c
             ON u.company_id = c.id
-          WHERE (
-            u.email = ?
-            OR u.username = ?
-          )
+          WHERE
+            (
+              u.email = ?
+              OR u.username = ?
+            )
           `,
           [
             inputStr,
@@ -182,35 +277,48 @@ router.post('/login', async (req, res) => {
           });
         }
 
-        let passwordMatches = false;
-
-        const storedPassword = account.password || '';
+        const storedPassword =
+          account.password || '';
 
         const passwordIsHashed =
           storedPassword.startsWith('$2a$') ||
           storedPassword.startsWith('$2b$') ||
           storedPassword.startsWith('$2y$');
 
-        // Existing bcrypt account
+        let passwordMatches = false;
+
+        // ----------------------------------------------
+        // BCRYPT ACCOUNT
+        // ----------------------------------------------
         if (passwordIsHashed) {
-          passwordMatches = await bcrypt.compare(
-            password,
-            storedPassword
-          );
-        } else {
-          // Legacy plaintext account
+          passwordMatches =
+            await bcrypt.compare(
+              password,
+              storedPassword
+            );
+        }
+
+        // ----------------------------------------------
+        // LEGACY PLAINTEXT ACCOUNT
+        // ----------------------------------------------
+        else {
           passwordMatches =
             password === storedPassword;
 
-          // Automatically migrate old plaintext password
+          // Automatically upgrade old plaintext account
           if (passwordMatches) {
-            const newHash = await bcrypt.hash(
-              password,
-              10
-            );
+            const newHash =
+              await bcrypt.hash(
+                password,
+                10
+              );
 
             await pool.query(
-              'UPDATE users SET password = ? WHERE id = ?',
+              `
+              UPDATE users
+              SET password = ?
+              WHERE id = ?
+              `,
               [
                 newHash,
                 account.id
@@ -229,23 +337,21 @@ router.post('/login', async (req, res) => {
       }
     }
 
-    // ------------------------------
+    // ==================================================
     // INVALID LOGIN
-    // ------------------------------
+    // ==================================================
     if (rows.length === 0) {
-      return res
-        .status(401)
-        .json({
-          error:
-            'Invalid Credentials for the selected shop.'
-        });
+      return res.status(401).json({
+        error:
+          'Invalid credentials for the selected shop.'
+      });
     }
 
     const user = rows[0];
 
-    // ------------------------------
-    // CREATE JWT SESSION
-    // ------------------------------
+    // ==================================================
+    // CREATE JWT
+    // ==================================================
     const token = jwt.sign(
       {
         id: user.id,
@@ -263,12 +369,15 @@ router.post('/login', async (req, res) => {
       }
     );
 
-    res.json({
+    return res.json({
       token,
       company_id: user.company_id,
       company_name: user.company_name,
+
       primary_color:
-        user.primary_color || '#f97316',
+        user.primary_color ||
+        '#f97316',
+
       role: user.role,
       username: user.username,
       email: user.email,
@@ -278,8 +387,9 @@ router.post('/login', async (req, res) => {
   } catch (err) {
     console.error('Login error:', err);
 
-    res.status(500).json({
-      error: err.message
+    return res.status(500).json({
+      error:
+        'Unable to log in right now. Please try again.'
     });
   }
 });
