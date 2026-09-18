@@ -2,6 +2,55 @@ let activeDept = 'customer';
 let loadedCustomerList = [];
 let currentShop = null;
 
+
+function showToast(message, type = 'info') {
+  let container = document.getElementById('toastContainer');
+
+  if (!container) {
+    container = document.createElement('div');
+    container.id = 'toastContainer';
+    container.className = 'toast-container';
+    document.body.appendChild(container);
+  }
+
+  const toast = document.createElement('div');
+  toast.className = `app-toast app-toast-${type}`;
+  toast.setAttribute('role', type === 'error' ? 'alert' : 'status');
+
+  toast.innerHTML = `
+    <div class="app-toast-message"></div>
+    <button
+      class="app-toast-close"
+      type="button"
+      aria-label="Close notification"
+    >
+      ×
+    </button>
+  `;
+
+  toast.querySelector('.app-toast-message').textContent = message;
+
+  toast
+    .querySelector('.app-toast-close')
+    .addEventListener('click', () => {
+      toast.remove();
+    });
+
+  container.appendChild(toast);
+
+  requestAnimationFrame(() => {
+    toast.classList.add('show');
+  });
+
+  setTimeout(() => {
+    toast.classList.remove('show');
+
+    setTimeout(() => {
+      toast.remove();
+    }, 250);
+  }, 4500);
+}
+
 const ROLE_MAP = {
   service_advisor: [
     'customer',
@@ -257,7 +306,8 @@ async function handleLogin(e) {
   const data = await res.json();
 
   if (!res.ok) {
-    return alert(data.error);
+    showToast(data.error, 'error');
+    return;
   }
 
   localStorage.setItem('token', data.token);
@@ -396,11 +446,11 @@ async function handleCreateEmployee(e) {
   const data = await res.json();
 
   if (res.ok) {
-    alert(data.message);
+    showToast(data.message, 'success');
     e.target.reset();
     loadManagerStaffTable();
   } else {
-    alert('Error: ' + data.error);
+    showToast(data.error, 'error');
   }
 }
 
@@ -431,10 +481,10 @@ async function saveEmployeeChanges(empId) {
   const data = await res.json();
 
   if (res.ok) {
-    alert(data.message);
+    showToast(data.message, 'success');
     loadManagerStaffTable();
   } else {
-    alert('Error: ' + data.error);
+    showToast(data.error, 'error');
   }
 }
 
@@ -443,9 +493,8 @@ async function lookupVinOnline() {
     document.getElementById('field_vin').value;
 
   if (!vin || vin.length !== 17) {
-    return alert(
-      'Enter any valid 17-digit VIN number'
-    );
+    showToast('Enter any valid 17-digit VIN number', 'error');
+    return;
   }
 
   const res = await fetch(
@@ -470,11 +519,12 @@ async function lookupVinOnline() {
     document.getElementById('field_year').value =
       data.year;
 
-    alert(
-      `Decoded VIN (${data.vin}): ${data.year} ${data.make} ${data.model}`
+    showToast(
+      `Decoded VIN (${data.vin}): ${data.year} ${data.make} ${data.model}`,
+      'success'
     );
   } else {
-    alert('VIN Lookup Error: ' + data.error);
+    showToast(data.error, 'error');
   }
 }
 
@@ -495,9 +545,8 @@ async function checkLivePartsPrice() {
     document.getElementById('activeJobId').value;
 
   if (!desc) {
-    return alert(
-      'Enter a part description first'
-    );
+    showToast('Enter a part description first', 'error');
+    return;
   }
 
   const res = await fetch(
@@ -516,8 +565,9 @@ async function checkLivePartsPrice() {
     document.getElementById('part_cost').value =
       data.market_price;
 
-    alert(
-      `Online Price for ${data.vehicle}: $${data.market_price}`
+    showToast(
+      `Online Price for ${data.vehicle}: $${data.market_price}`,
+      'success'
     );
   }
 }
@@ -559,10 +609,10 @@ async function handleRegister(e) {
   const data = await res.json();
 
   if (res.ok) {
-    alert(data.message);
+    showToast(data.message, 'success');
     showScreen('loginSection');
   } else {
-    alert('Error: ' + data.error);
+    showToast(data.error, 'error');
   }
 }
 
@@ -573,9 +623,8 @@ async function handleBookAppointment(e) {
     document.getElementById('book_vin').value;
 
   if (vin.length !== 17) {
-    return alert(
-      'VIN must be exactly 17 digits'
-    );
+    showToast('VIN must be exactly 17 digits', 'error');
+    return;
   }
 
   const payload = {
@@ -613,11 +662,11 @@ async function handleBookAppointment(e) {
   const data = await res.json();
 
   if (res.ok) {
-    alert(data.message);
+    showToast(data.message, 'success');
     switchCustomerTab('view-requests');
     loadCustomerProfile();
   } else {
-    alert('Error: ' + data.error);
+    showToast(data.error, 'error');
   }
 }
 
@@ -746,9 +795,8 @@ async function handleUpdateCustomerProfile(e) {
     document.getElementById('cust_vin').value;
 
   if (vin.length !== 17) {
-    return alert(
-      'VIN must be exactly 17 digits'
-    );
+    showToast('VIN must be exactly 17 digits', 'error');
+    return;
   }
 
   const payload = {
@@ -795,9 +843,9 @@ async function handleUpdateCustomerProfile(e) {
   const data = await res.json();
 
   if (res.ok) {
-    alert(data.message);
+    showToast(data.message, 'success');
   } else {
-    alert('Error: ' + data.error);
+    showToast(data.error, 'error');
   }
 }
 
@@ -1045,7 +1093,7 @@ async function submitDepartment(e) {
   const data = await res.json();
 
   if (res.ok) {
-    alert('Record saved!');
+    showToast('Record saved!', 'success');
 
     e.target.reset();
 
@@ -1053,9 +1101,7 @@ async function submitDepartment(e) {
 
     showDept(activeDept);
   } else {
-    alert(
-      'Access Denied: ' + data.error
-    );
+    showToast('Access Denied: ' + data.error, 'error');
   }
 }
 
