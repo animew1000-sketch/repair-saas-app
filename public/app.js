@@ -1026,10 +1026,14 @@ function updateHeaderAuthButtons() {
   const token = localStorage.getItem('token');
 
   const signupButton =
-    document.querySelector('.header-signup');
+    document.querySelector(
+      'a[href*="screen=registerSection"]'
+    );
 
   const loginButton =
-    document.querySelector('.header-login');
+    document.querySelector(
+      'a[href*="screen=loginSection"]'
+    );
 
   if (signupButton) {
     signupButton.classList.toggle(
@@ -1045,7 +1049,6 @@ function updateHeaderAuthButtons() {
     );
   }
 }
-
 function renderDashboard() {
   updateHeaderAuthButtons();
 
