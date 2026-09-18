@@ -1,7 +1,12 @@
 const jwt = require('jsonwebtoken');
 
-const JWT_SECRET =
-  process.env.JWT_SECRET || 'super_secret_school_project_key_2026';
+const JWT_SECRET = process.env.JWT_SECRET;
+
+if (!JWT_SECRET) {
+  throw new Error(
+    'JWT_SECRET is not set. Add JWT_SECRET to your .env file before starting the server.'
+  );
+}
 
 function authenticateToken(req, res, next) {
   const authHeader = req.headers['authorization'];
