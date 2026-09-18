@@ -75,30 +75,31 @@ const ROLE_MAP = {
 
 const DEPT_FIELDS = {
   customer:
-    '<input name="first_name" id="field_first_name" placeholder="First Name" required/>' +
-    '<input name="last_name" id="field_last_name" placeholder="Last Name" required/>' +
-    '<input name="phone" id="field_phone" placeholder="Phone Number" required/>',
+    '<input name="first_name" id="field_first_name" maxlength="100" placeholder="First Name" required />' +
+    '<input name="last_name" id="field_last_name" maxlength="100" placeholder="Last Name" required />' +
+    '<input name="phone" id="field_phone" type="tel" maxlength="20" data-input-type="phone" placeholder="Phone Number" required />',
 
   vehicle:
-    '<input name="vin" id="field_vin" maxlength="17" placeholder="Any 17-Digit VIN Number" required/>' +
+    '<input name="vin" id="field_vin" maxlength="17" minlength="17" data-input-type="vin" placeholder="17-Digit VIN" required />' +
     '<button type="button" onclick="lookupVinOnline()" style="margin-bottom:8px;">Search / Decode Any VIN Online</button>' +
-    '<input name="make" id="field_make" placeholder="Make" required/>' +
-    '<input name="model" id="field_model" placeholder="Model" required/>' +
-    '<input name="year" id="field_year" type="number" placeholder="Year" required/>',
+    '<input name="make" id="field_make" maxlength="100" placeholder="Make" required />' +
+    '<input name="model" id="field_model" maxlength="100" placeholder="Model" required />' +
+    '<input name="year" id="field_year" type="number" min="1886" max="2100" step="1" data-input-type="year" placeholder="Year" required />',
 
   appointment:
-    '<input name="scheduled_datetime" type="datetime-local" required/>' +
-    '<input name="service_advisor" placeholder="Service Advisor"/>',
+    '<input name="scheduled_datetime" type="datetime-local" required />' +
+    '<input name="service_advisor" maxlength="100" placeholder="Service Advisor" />',
 
   repair_order:
-    '<input name="ro_number" placeholder="RO Number" required/>' +
-    '<textarea name="issue_description" placeholder="Issue Description" required></textarea>',
+    '<input name="ro_number" maxlength="100" placeholder="RO Number" required />' +
+    '<textarea name="issue_description" maxlength="5000" placeholder="Issue Description" required></textarea>',
 
   parts_labor:
-    '<select name="item_type">' +
+    '<select name="item_type" required>' +
     '<option value="Part">Part</option>' +
     '<option value="Labor">Labor</option>' +
     '</select>' +
+
     '<select id="part_desc_select" onchange="autoFillPartName()">' +
     '<option value="">-- Choose Common Vehicle Replacement Part --</option>' +
     '<option value="Front Brake Rotors & Pads">Front Brake Rotors & Pads</option>' +
@@ -106,21 +107,153 @@ const DEPT_FIELDS = {
     '<option value="High Performance Alternator">High Performance Alternator</option>' +
     '<option value="Synthetic Oil Filter">Synthetic Oil Filter</option>' +
     '</select>' +
-    '<input name="description" id="part_desc" placeholder="Part Description" required/>' +
+
+    '<input name="description" id="part_desc" maxlength="255" placeholder="Part Description" required />' +
+
     '<button type="button" onclick="checkLivePartsPrice()" style="margin-bottom:8px;">Lookup Price For This Vehicle</button>' +
-    '<input name="unit_cost" id="part_cost" type="number" step="0.01" placeholder="Cost ($)" required/>',
+
+    '<input name="unit_cost" id="part_cost" type="number" min="0" max="99999999.99" step="0.01" data-input-type="money" placeholder="Cost ($)" required />',
 
   estimate:
-    '<input name="estimated_total" type="number" step="0.01" placeholder="Estimated Total ($)" required/>',
+    '<input name="estimated_total" type="number" min="0" max="99999999.99" step="0.01" data-input-type="money" placeholder="Estimated Total ($)" required />',
 
   repair:
-    '<textarea name="work_summary" placeholder="Summary of performed repairs" required></textarea>',
+    '<textarea name="work_summary" maxlength="5000" placeholder="Summary of performed repairs" required></textarea>',
 
   invoice:
-    '<input name="invoice_number" placeholder="Invoice #" required/>' +
-    '<input name="subtotal" type="number" step="0.01" placeholder="Subtotal ($)" required/>' +
-    '<input name="total_amount" type="number" step="0.01" placeholder="Total ($)" required/>'
+    '<input name="invoice_number" maxlength="100" placeholder="Invoice #" required />' +
+    '<input name="subtotal" type="number" min="0" max="99999999.99" step="0.01" data-input-type="money" placeholder="Subtotal ($)" required />' +
+    '<input name="total_amount" type="number" min="0" max="99999999.99" step="0.01" data-input-type="money" placeholder="Total ($)" required />'
 };
+
+// ======================================================
+// CLIENT-SIDE INPUT GUARDS
+// ======================================================
+
+function guardMoneyInput(input) {
+  const value = input.value;
+
+  if (value === '') {
+    input.dataset.lastValid = '';
+    return;
+  }
+
+  // Numbers only, optional decimal, maximum 2 decimal places.
+  const validFormat =
+    /^\d{0,8}(\.\d{0,2})?$/.test(value);
+
+  if (!validFormat) {
+    input.value =
+      input.dataset.lastValid || '';
+    return;
+  }
+
+  const numberValue = Number(value);
+
+  if (
+    !Number.isFinite(numberValue) ||
+    numberValue < 0 ||
+    numberValue > 99999999.99
+  ) {
+    input.value =
+      input.dataset.lastValid || '';
+    return;
+  }
+
+  input.dataset.lastValid = value;
+}
+
+function guardYearInput(input) {
+  const value =
+    input.value.replace(/\D/g, '').slice(0, 4);
+
+  input.value = value;
+
+  if (!value) {
+    return;
+  }
+
+  const year = Number(value);
+
+  if (year > 2100) {
+    input.value = '2100';
+  }
+}
+
+function guardVinInput(input) {
+  input.value =
+    input.value
+      .toUpperCase()
+      .replace(/[^A-HJ-NPR-Z0-9]/g, '')
+      .slice(0, 17);
+}
+
+function guardPhoneInput(input) {
+  input.value =
+    input.value
+      .replace(/[^0-9+\-() .]/g, '')
+      .slice(0, 20);
+}
+
+document.addEventListener(
+  'input',
+  (event) => {
+    const input = event.target;
+
+    if (!(input instanceof HTMLInputElement)) {
+      return;
+    }
+
+    const inputType =
+      input.dataset.inputType;
+
+    if (inputType === 'money') {
+      guardMoneyInput(input);
+    }
+
+    if (inputType === 'year') {
+      guardYearInput(input);
+    }
+
+    if (inputType === 'vin') {
+      guardVinInput(input);
+    }
+
+    if (inputType === 'phone') {
+      guardPhoneInput(input);
+    }
+  }
+);
+
+// Prevent characters that type="number" may otherwise accept,
+// such as exponent notation.
+document.addEventListener(
+  'keydown',
+  (event) => {
+    const input = event.target;
+
+    if (!(input instanceof HTMLInputElement)) {
+      return;
+    }
+
+    const inputType =
+      input.dataset.inputType;
+
+    if (
+      inputType === 'money' &&
+      ['e', 'E', '+', '-'].includes(event.key)
+    ) {
+      event.preventDefault();
+    }
+
+    if (
+      inputType === 'year' &&
+      ['e', 'E', '+', '-', '.'].includes(event.key)
+    ) {
+      event.preventDefault();
+    }
+  }
+);
 
 function applyShopThemeColor(colorHex) {
   if (colorHex) {
