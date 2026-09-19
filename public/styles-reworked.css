@@ -3000,3 +3000,615 @@ body.dark-mode .staff-table td {
   .auth-form-wrap h1 { font-size: 2.35rem; }
   .auth-visual-copy h2 { font-size: 2rem; }
 }
+
+
+/* ======================================================
+   MOBILE RESPONSIVE PASS
+   Phones + small tablets
+   ====================================================== */
+
+html,
+body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+/* ---------- TABLETS ---------- */
+@media (max-width: 980px) {
+
+  body {
+    padding: 0;
+  }
+
+  .container {
+    width: 100%;
+    max-width: none;
+    min-height: 100vh;
+    margin: 0;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  /* Public / app shell becomes top navigation */
+  .container > .header,
+  body > .header {
+    position: relative;
+    top: auto;
+    left: auto;
+
+    width: 100%;
+    min-height: auto;
+
+    padding: 16px 18px;
+
+    display: block;
+
+    border-right: 0;
+    border-bottom: 1px solid rgba(255,255,255,.08);
+  }
+
+  body > .header + .container {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .brand {
+    margin: 0 0 14px;
+  }
+
+  .header-nav {
+    width: 100%;
+  }
+
+  .header-links,
+  .header-actions {
+    display: flex !important;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .header-link,
+  .header-action-link {
+    width: auto;
+    flex: 0 1 auto;
+    margin: 0;
+    padding: 10px 12px;
+    white-space: nowrap;
+  }
+
+  .header-link:hover,
+  .header-action-link:hover {
+    transform: translateY(-2px);
+  }
+
+  .header-link::after,
+  .header-action-link::after {
+    left: 10px;
+    bottom: 4px;
+  }
+
+  .header-link:hover::after,
+  .header-action-link:hover::after,
+  .customer-nav-link.active::after {
+    width: calc(100% - 20px);
+  }
+
+  /* Main content */
+  #landingSection,
+  #customerDashboard,
+  #employeeDashboard,
+  #registerSection,
+  #loginSection,
+  .contact-page {
+    width: 100%;
+    min-width: 0;
+  }
+
+  #landingSection,
+  #customerDashboard,
+  #employeeDashboard {
+    padding: 20px;
+  }
+
+  /* Landing hero */
+  .hero {
+    min-height: 520px;
+    padding: 42px 32px;
+  }
+
+  .hero-content {
+    max-width: 680px;
+  }
+
+  .hero h1 {
+    font-size: clamp(2.35rem, 7vw, 4rem);
+  }
+
+  .marketing-stat-grid,
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  /* Overview + contact */
+  .overview-feature-row,
+  .contact-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .overview-feature-image {
+    min-height: 340px;
+  }
+
+  .contact-page {
+    padding: 34px 24px;
+  }
+
+  .contact-intro {
+    max-width: none;
+    text-align: left;
+  }
+
+  .contact-intro h1 {
+    font-size: clamp(2.4rem, 7vw, 4rem);
+  }
+
+  /* Auth split */
+  .auth-split {
+    min-height: 100vh;
+    grid-template-columns: 1fr;
+  }
+
+  .auth-visual-panel {
+    order: -1;
+    min-height: 320px;
+  }
+
+  .auth-form-panel {
+    min-height: auto;
+    padding: 42px 28px 56px;
+  }
+
+  .auth-form-wrap,
+  .auth-login-wrap {
+    width: 100%;
+    max-width: 640px;
+  }
+
+  /* Customer portal */
+  .customer-home-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  /* Staff portal */
+  .staff-manager-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .staff-field-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .staff-job-toolbar {
+    grid-template-columns: minmax(0, 1fr) 160px;
+  }
+
+  .staff-workflow-tabs {
+    overflow-x: auto;
+    scrollbar-width: thin;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .staff-workflow-tabs .step-card {
+    flex: 0 0 132px;
+    min-width: 132px;
+  }
+}
+
+
+/* ---------- PHONES ---------- */
+@media (max-width: 640px) {
+
+  body {
+    font-size: 15px;
+  }
+
+  /* Top app navigation */
+  .container > .header,
+  body > .header {
+    padding: 14px 14px 12px;
+  }
+
+  .brand {
+    font-size: 1rem;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .brand::before {
+    width: 34px;
+    height: 22px;
+    flex: 0 0 34px;
+  }
+
+  .header-links,
+  .header-actions {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 7px;
+  }
+
+  .header-link,
+  .header-action-link {
+    width: 100%;
+    min-width: 0;
+    padding: 10px 9px;
+    justify-content: center;
+    text-align: center;
+    font-size: .72rem;
+  }
+
+  .header-actions {
+    margin-top: 7px;
+  }
+
+  /* Landing */
+  #landingSection,
+  #customerDashboard,
+  #employeeDashboard {
+    padding: 14px;
+  }
+
+  .hero {
+    min-height: 470px;
+    margin-bottom: 14px;
+    padding: 32px 20px;
+    border-radius: 12px;
+  }
+
+  .hero-content {
+    width: 100%;
+  }
+
+  .hero h1 {
+    font-size: clamp(2.1rem, 11vw, 3.2rem);
+    line-height: 1.02;
+  }
+
+  .hero p {
+    font-size: .86rem;
+  }
+
+  .hero-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 9px;
+    width: 100%;
+  }
+
+  .hero-actions button {
+    width: 100%;
+    margin: 0;
+  }
+
+  .hero-arrow {
+    width: 38px !important;
+    height: 38px;
+    padding: 0 !important;
+  }
+
+  .hero-arrow-left {
+    left: 8px;
+  }
+
+  .hero-arrow-right {
+    right: 8px;
+  }
+
+  .marketing-stat-grid,
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .stat-box {
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .stat-box:last-child {
+    border-bottom: 0;
+  }
+
+  .feature-card,
+  .card,
+  .panel {
+    padding: 18px;
+  }
+
+  /* Standalone overview / contact */
+  .contact-page {
+    padding: 28px 16px 24px;
+  }
+
+  .contact-intro h1 {
+    font-size: 2.5rem;
+  }
+
+  .overview-feature-row {
+    gap: 14px;
+  }
+
+  .overview-features,
+  .overview-feature-image {
+    min-height: 0;
+    height: auto;
+  }
+
+  .overview-feature-image img {
+    min-height: 260px;
+  }
+
+  .contact-form {
+    padding: 18px;
+  }
+
+  .contact-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Auth screens */
+  #registerSection.auth-screen,
+  #loginSection.auth-screen {
+    min-height: 100vh;
+  }
+
+  .auth-visual-panel {
+    min-height: 230px;
+  }
+
+  .auth-visual-copy {
+    padding: 24px 20px;
+  }
+
+  .auth-visual-copy h2 {
+    font-size: 1.85rem;
+  }
+
+  .auth-visual-copy p {
+    font-size: .78rem;
+  }
+
+  .auth-form-panel {
+    padding: 30px 18px 42px;
+  }
+
+  .auth-form-wrap h1 {
+    font-size: 2.35rem;
+  }
+
+  .auth-subtitle {
+    margin-bottom: 22px;
+    font-size: .82rem;
+  }
+
+  .auth-grid-two {
+    grid-template-columns: 1fr;
+  }
+
+  .auth-form {
+    gap: 12px;
+  }
+
+  .auth-field input,
+  .auth-field select {
+    min-height: 46px;
+    font-size: 16px; /* prevents iOS zoom */
+  }
+
+  .auth-submit-btn {
+    min-height: 48px;
+  }
+
+  /* Customer portal header */
+  .customer-portal-header {
+    flex-direction: column;
+    align-items: flex-start !important;
+    gap: 14px;
+  }
+
+  .customer-home-hero {
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 26px 20px;
+  }
+
+  .customer-home-hero h1 {
+    font-size: 2.45rem;
+  }
+
+  .customer-home-hero .btn-primary {
+    width: 100%;
+  }
+
+  .customer-home-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .customer-home-card {
+    min-height: 135px;
+  }
+
+  .customer-home-shop-card {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .customer-home-shop-card .btn-secondary {
+    width: 100%;
+  }
+
+  /* Staff / manager portal */
+  #employeeDashboard.staff-dashboard {
+    padding: 14px;
+  }
+
+  .staff-portal-hero {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 24px 20px;
+    border-radius: 12px;
+  }
+
+  .staff-portal-hero h2 {
+    font-size: 2.45rem;
+  }
+
+  .staff-user-panel {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .staff-manager-panel,
+  .staff-workflow-section {
+    padding: 16px;
+    border-radius: 10px;
+  }
+
+  .staff-section-heading {
+    flex-direction: column;
+    align-items: stretch;
+    margin-bottom: 18px;
+    padding-bottom: 16px;
+  }
+
+  .staff-manager-chip {
+    align-self: flex-start;
+  }
+
+  .staff-create-card,
+  .staff-roster-card {
+    padding: 16px;
+  }
+
+  .staff-field-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .staff-create-btn,
+  .staff-save-record-btn {
+    width: 100%;
+  }
+
+  .staff-job-toolbar {
+    grid-template-columns: 1fr;
+    padding: 14px;
+  }
+
+  .staff-job-id {
+    width: 100%;
+  }
+
+  .staff-workflow-tabs {
+    margin-left: -4px;
+    margin-right: -4px;
+    padding-left: 4px;
+    padding-right: 4px;
+  }
+
+  .staff-workflow-tabs .step-card {
+    flex: 0 0 118px;
+    min-width: 118px;
+    min-height: 58px;
+    padding: 13px 8px 9px;
+    font-size: .7rem;
+  }
+
+  .staff-workflow-tabs .step-card::after {
+    height: 70px;
+  }
+
+  .staff-dept-form {
+    padding: 16px;
+  }
+
+  /* Tables scroll instead of crushing columns */
+  .staff-table-shell {
+    width: calc(100vw - 60px);
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .staff-table {
+    min-width: 720px;
+  }
+
+  /* Forms */
+  input,
+  select,
+  textarea {
+    font-size: 16px;
+  }
+
+  button {
+    min-height: 42px;
+  }
+
+  /* Toasts */
+  .toast-container {
+    left: 12px;
+    right: 12px;
+    width: auto;
+    max-width: none;
+  }
+
+  .app-toast {
+    width: 100%;
+  }
+
+  /* Footer */
+  .legal-footer,
+  .theme-footer {
+    width: 100%;
+    margin-left: 0;
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+}
+
+
+/* ---------- VERY SMALL PHONES ---------- */
+@media (max-width: 390px) {
+
+  .header-links,
+  .header-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .hero {
+    min-height: 430px;
+    padding: 28px 16px;
+  }
+
+  .hero h1 {
+    font-size: 2rem;
+  }
+
+  .auth-visual-panel {
+    min-height: 200px;
+  }
+
+  .auth-form-panel {
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+
+  .staff-portal-hero h2,
+  .customer-home-hero h1 {
+    font-size: 2.1rem;
+  }
+
+  .staff-table-shell {
+    width: calc(100vw - 52px);
+  }
+}
