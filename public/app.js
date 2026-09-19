@@ -51,6 +51,44 @@ function showToast(message, type = 'info') {
   }, 4500);
 }
 
+
+function clearAuthSession() {
+  localStorage.removeItem('token');
+  localStorage.removeItem('role');
+  localStorage.removeItem('username');
+  localStorage.removeItem('company_name');
+  localStorage.removeItem('primary_color');
+}
+
+function handleExpiredSession(res, data = {}) {
+  const message =
+    String(data?.error || '');
+
+  const expired =
+    res.status === 401 ||
+    (
+      res.status === 403 &&
+      message
+        .toLowerCase()
+        .includes('session expired')
+    );
+
+  if (!expired) {
+    return false;
+  }
+
+  clearAuthSession();
+
+  showToast(
+    'Your session has expired. Please sign in again.',
+    'error'
+  );
+
+  showScreen('loginSection');
+
+  return true;
+}
+
 const ROLE_MAP = {
   service_advisor: [
     'customer',
@@ -99,7 +137,6 @@ const DEPT_FIELDS = {
     '<option value="Part">Part</option>' +
     '<option value="Labor">Labor</option>' +
     '</select>' +
-
     '<select id="part_desc_select" onchange="autoFillPartName()">' +
     '<option value="">-- Choose Common Vehicle Replacement Part --</option>' +
     '<option value="Front Brake Rotors & Pads">Front Brake Rotors & Pads</option>' +
@@ -107,11 +144,8 @@ const DEPT_FIELDS = {
     '<option value="High Performance Alternator">High Performance Alternator</option>' +
     '<option value="Synthetic Oil Filter">Synthetic Oil Filter</option>' +
     '</select>' +
-
     '<input name="description" id="part_desc" maxlength="255" placeholder="Part Description" required />' +
-
     '<button type="button" onclick="checkLivePartsPrice()" style="margin-bottom:8px;">Lookup Price For This Vehicle</button>' +
-
     '<input name="unit_cost" id="part_cost" type="number" min="0" max="99999999.99" step="0.01" data-input-type="money" placeholder="Cost ($)" required />',
 
   estimate:
@@ -126,10 +160,10 @@ const DEPT_FIELDS = {
     '<input name="total_amount" type="number" min="0" max="99999999.99" step="0.01" data-input-type="money" placeholder="Total ($)" required />'
 };
 
+
 // ======================================================
 // CLIENT-SIDE INPUT GUARDS
 // ======================================================
-
 function guardMoneyInput(input) {
   const value = input.value;
 
@@ -138,7 +172,6 @@ function guardMoneyInput(input) {
     return;
   }
 
-  // Numbers only, optional decimal, maximum 2 decimal places.
   const validFormat =
     /^\d{0,8}(\.\d{0,2})?$/.test(value);
 
@@ -225,8 +258,6 @@ document.addEventListener(
   }
 );
 
-// Prevent characters that type="number" may otherwise accept,
-// such as exponent notation.
 document.addEventListener(
   'keydown',
   (event) => {
@@ -295,7 +326,7 @@ async function loadShopLandingContext() {
     currentShop.company_name;
 
   document.getElementById('heroTitle').innerHTML =
-    `${currentShop.company_name} <span>Portal</span>`;
+    `${escapeHtml(currentShop.company_name)} <span>Portal</span>`;
 
   document.getElementById('heroSubtitle').textContent =
     currentShop.hero_text || currentShop.tagline;
@@ -331,7 +362,7 @@ async function loadCompaniesDropdown() {
   const optionsHtml = companies
     .map(
       (c) =>
-        `<option value="${c.id}">${c.company_name}</option>`
+        `<option value="${escapeHtml(c.id)}">${escapeHtml(c.company_name)}</option>`
     )
     .join('');
 
@@ -357,6 +388,58 @@ async function loadCompaniesDropdown() {
 }
 
 function showScreen(screenId) {
+  const token =
+    localStorage.getItem('token');
+
+  const role =
+    localStorage.getItem('role');
+
+  const protectedScreens = [
+    'customerDashboard',
+    'employeeDashboard'
+  ];
+
+  // ==================================================
+  // BLOCK PROTECTED SCREENS WITHOUT LOGIN
+  // ==================================================
+  if (
+    protectedScreens.includes(screenId) &&
+    !token
+  ) {
+    showToast(
+      'Please sign in to access the portal.',
+      'error'
+    );
+
+    screenId = 'landingSection';
+  }
+
+  // ==================================================
+  // BLOCK CUSTOMERS FROM EMPLOYEE DASHBOARD
+  // ==================================================
+  if (
+    screenId === 'employeeDashboard' &&
+    role === 'customer'
+  ) {
+    showToast(
+      'You do not have permission to access the staff portal.',
+      'error'
+    );
+
+    screenId = 'customerDashboard';
+  }
+
+  // ==================================================
+  // BLOCK STAFF FROM CUSTOMER DASHBOARD
+  // ==================================================
+  if (
+    screenId === 'customerDashboard' &&
+    token &&
+    role !== 'customer'
+  ) {
+    screenId = 'employeeDashboard';
+  }
+
   document
     .getElementById('landingSection')
     .classList.add('hidden');
@@ -504,6 +587,15 @@ async function handleLogin(e) {
       originalButtonText;
   }
 }
+function escapeHtml(value) {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
 async function loadManagerStaffTable() {
   const res = await fetch('/api/manager/employees', {
     headers: {
@@ -513,6 +605,24 @@ async function loadManagerStaffTable() {
   });
 
   if (!res.ok) {
+    let errorData = {};
+
+    try {
+      errorData = await res.json();
+    } catch (err) {
+      // Ignore malformed error responses.
+    }
+
+    if (handleExpiredSession(res, errorData)) {
+      return;
+    }
+
+    showToast(
+      errorData.error ||
+      'Unable to load the employee roster.',
+      'error'
+    );
+
     return;
   }
 
@@ -525,65 +635,40 @@ async function loadManagerStaffTable() {
     .map(
       (emp) => `
         <tr>
-          <td>${emp.id}</td>
-
-          <td>
-            <strong>${emp.username}</strong>
-          </td>
-
-          <td>${emp.email || 'N/A'}</td>
-
+          <td>${escapeHtml(emp.id)}</td>
+          <td><strong>${escapeHtml(emp.username)}</strong></td>
+          <td>${escapeHtml(emp.email || 'N/A')}</td>
           <td>
             <input
-              type="text"
+              type="password"
               id="pin_${emp.id}"
-              value="${emp.pin_code || ''}"
+              inputmode="numeric"
+              pattern="[0-9]{6}"
               maxlength="6"
-              style="width:100px; padding:6px;"
+              autocomplete="new-password"
+              placeholder="New 6-digit PIN"
+              style="width:145px; padding:6px;"
             />
           </td>
-
           <td>
             <select
               id="role_${emp.id}"
               style="padding:6px;"
             >
-              <option
-                value="manager"
-                ${emp.role === 'manager' ? 'selected' : ''}
-              >
-                Manager
-              </option>
-
-              <option
-                value="service_advisor"
-                ${emp.role === 'service_advisor' ? 'selected' : ''}
-              >
-                Service Advisor
-              </option>
-
-              <option
-                value="technician"
-                ${emp.role === 'technician' ? 'selected' : ''}
-              >
-                Technician
-              </option>
-
-              <option
-                value="billing"
-                ${emp.role === 'billing' ? 'selected' : ''}
-              >
-                Billing Clerk
-              </option>
+              <option value="manager" ${emp.role === 'manager' ? 'selected' : ''}>Manager</option>
+              <option value="service_advisor" ${emp.role === 'service_advisor' ? 'selected' : ''}>Service Advisor</option>
+              <option value="technician" ${emp.role === 'technician' ? 'selected' : ''}>Technician</option>
+              <option value="parts_manager" ${emp.role === 'parts_manager' ? 'selected' : ''}>Parts Manager</option>
+              <option value="billing" ${emp.role === 'billing' ? 'selected' : ''}>Billing Clerk</option>
             </select>
           </td>
-
           <td>
             <button
-              onclick="saveEmployeeChanges(${emp.id})"
+              type="button"
+              onclick="saveEmployeeChanges(${Number(emp.id)})"
               style="margin:0; padding:6px 12px; font-size:0.8rem;"
             >
-              Save PIN & Role
+              Save Changes
             </button>
           </td>
         </tr>
@@ -624,6 +709,10 @@ async function handleCreateEmployee(e) {
 
   const data = await res.json();
 
+  if (handleExpiredSession(res, data)) {
+    return;
+  }
+
   if (res.ok) {
     showToast(data.message, 'success');
     e.target.reset();
@@ -634,11 +723,27 @@ async function handleCreateEmployee(e) {
 }
 
 async function saveEmployeeChanges(empId) {
+  const pinInput =
+    document.getElementById(`pin_${empId}`);
+
   const pin_code =
-    document.getElementById(`pin_${empId}`).value;
+    pinInput.value.trim();
 
   const role =
     document.getElementById(`role_${empId}`).value;
+
+  if (
+    pin_code &&
+    !/^\d{6}$/.test(pin_code)
+  ) {
+    showToast(
+      'The new PIN must be exactly 6 digits.',
+      'error'
+    );
+
+    pinInput.focus();
+    return;
+  }
 
   const res = await fetch(
     '/api/manager/update-employee',
@@ -659,11 +764,25 @@ async function saveEmployeeChanges(empId) {
 
   const data = await res.json();
 
+  if (handleExpiredSession(res, data)) {
+    return;
+  }
+
   if (res.ok) {
-    showToast(data.message, 'success');
+    showToast(
+      data.message ||
+      'Employee updated successfully.',
+      'success'
+    );
+
+    pinInput.value = '';
     loadManagerStaffTable();
   } else {
-    showToast(data.error, 'error');
+    showToast(
+      data.error ||
+      'Unable to update employee.',
+      'error'
+    );
   }
 }
 
@@ -687,6 +806,10 @@ async function lookupVinOnline() {
   );
 
   const data = await res.json();
+
+  if (handleExpiredSession(res, data)) {
+    return;
+  }
 
   if (res.ok) {
     document.getElementById('field_make').value =
@@ -739,6 +862,10 @@ async function checkLivePartsPrice() {
   );
 
   const data = await res.json();
+
+  if (handleExpiredSession(res, data)) {
+    return;
+  }
 
   if (res.ok) {
     document.getElementById('part_cost').value =
@@ -840,6 +967,10 @@ async function handleBookAppointment(e) {
 
   const data = await res.json();
 
+  if (handleExpiredSession(res, data)) {
+    return;
+  }
+
   if (res.ok) {
     showToast(data.message, 'success');
     switchCustomerTab('view-requests');
@@ -862,6 +993,10 @@ async function loadCustomerProfile() {
 
   const data = await res.json();
 
+  if (handleExpiredSession(res, data)) {
+    return;
+  }
+
   document.getElementById(
     'clientShopBanner'
   ).textContent =
@@ -877,7 +1012,7 @@ async function loadCustomerProfile() {
   document.getElementById(
     'statusBadge'
   ).innerHTML =
-    `Current Service Status: <span class="badge">${data.status}</span>`;
+    `Current Service Status: <span class="badge">${escapeHtml(data.status)}</span>`;
 
   document.getElementById('cust_first_name').value =
     data.customer.first_name || '';
@@ -913,23 +1048,51 @@ async function loadCustomerProfile() {
         ).toLocaleString()
       : 'No appointment scheduled yet.';
 
+  const safeApptText =
+    escapeHtml(apptText);
+
   if (data.invoice) {
+    const safeInvoiceNumber =
+      escapeHtml(
+        data.invoice.invoice_number || ''
+      );
+
+    const safeWorkSummary =
+      escapeHtml(
+        data.repairExec?.work_summary ||
+        'Service in progress.'
+      );
+
+    const safePaymentStatus =
+      escapeHtml(
+        data.invoice.payment_status ||
+        'Unpaid'
+      );
+
+    const totalAmount =
+      Number(data.invoice.total_amount);
+
+    const safeTotal =
+      Number.isFinite(totalAmount)
+        ? totalAmount.toFixed(2)
+        : '0.00';
+
     document.getElementById(
       'invoiceContent'
     ).innerHTML = `
       <p>
         <strong>Scheduled Appointment:</strong>
-        ${apptText}
+        ${safeApptText}
       </p>
 
       <p>
         <strong>Invoice Number:</strong>
-        ${data.invoice.invoice_number}
+        ${safeInvoiceNumber}
       </p>
 
       <p>
         <strong>Work Summary:</strong>
-        ${data.repairExec.work_summary || 'Service in progress.'}
+        ${safeWorkSummary}
       </p>
 
       <div style="margin-top:16px; font-size:1.1rem;">
@@ -938,16 +1101,14 @@ async function loadCustomerProfile() {
         <span
           style="color:var(--primary); font-weight:bold;"
         >
-          $${parseFloat(
-            data.invoice.total_amount
-          ).toFixed(2)}
+          $${safeTotal}
         </span>
 
         <span
           class="badge"
           style="margin-left:10px;"
         >
-          ${data.invoice.payment_status || 'Unpaid'}
+          ${safePaymentStatus}
         </span>
       </div>
     `;
@@ -957,7 +1118,7 @@ async function loadCustomerProfile() {
     ).innerHTML = `
       <p>
         <strong>Scheduled Appointment:</strong>
-        ${apptText}
+        ${safeApptText}
       </p>
 
       <p style="color:var(--text-muted);">
@@ -1021,6 +1182,10 @@ async function handleUpdateCustomerProfile(e) {
 
   const data = await res.json();
 
+  if (handleExpiredSession(res, data)) {
+    return;
+  }
+
   if (res.ok) {
     showToast(data.message, 'success');
   } else {
@@ -1040,6 +1205,18 @@ async function fetchCustomerList() {
   );
 
   if (!res.ok) {
+    let errorData = {};
+
+    try {
+      errorData = await res.json();
+    } catch (err) {
+      // Ignore malformed error responses.
+    }
+
+    if (handleExpiredSession(res, errorData)) {
+      return;
+    }
+
     return;
   }
 
@@ -1052,8 +1229,32 @@ async function fetchCustomerList() {
     '<option value="">-- Choose Existing Customer Record --</option>' +
     loadedCustomerList
       .map(
-        (c) =>
-          `<option value="${c.repair_job_id}">Job #${c.repair_job_id} - ${c.first_name} ${c.last_name} (${c.year || ''} ${c.make || ''} ${c.model || ''})</option>`
+        (c) => {
+          const jobId =
+            escapeHtml(c.repair_job_id);
+
+          const firstName =
+            escapeHtml(c.first_name || '');
+
+          const lastName =
+            escapeHtml(c.last_name || '');
+
+          const year =
+            escapeHtml(c.year || '');
+
+          const make =
+            escapeHtml(c.make || '');
+
+          const model =
+            escapeHtml(c.model || '');
+
+          return (
+            `<option value="${jobId}">` +
+            `Job #${jobId} - ${firstName} ${lastName} ` +
+            `(${year} ${make} ${model})` +
+            `</option>`
+          );
+        }
       )
       .join('');
 }
@@ -1159,14 +1360,10 @@ function updateHeaderAuthButtons() {
   const token = localStorage.getItem('token');
 
   const signupButton =
-    document.querySelector(
-      'a[href*="screen=registerSection"]'
-    );
+    document.querySelector('.header-signup');
 
   const loginButton =
-    document.querySelector(
-      'a[href*="screen=loginSection"]'
-    );
+    document.querySelector('.header-login');
 
   if (signupButton) {
     signupButton.classList.toggle(
@@ -1182,6 +1379,7 @@ function updateHeaderAuthButtons() {
     );
   }
 }
+
 function renderDashboard() {
   updateHeaderAuthButtons();
 
@@ -1300,6 +1498,10 @@ async function submitDepartment(e) {
 
   const data = await res.json();
 
+  if (handleExpiredSession(res, data)) {
+    return;
+  }
+
   if (res.ok) {
     showToast('Record saved!', 'success');
 
@@ -1309,12 +1511,16 @@ async function submitDepartment(e) {
 
     showDept(activeDept);
   } else {
-    showToast('Access Denied: ' + data.error, 'error');
+    showToast(
+      data.error ||
+      'Unable to save record.',
+      'error'
+    );
   }
 }
 
 function logout() {
-  localStorage.clear();
+  clearAuthSession();
   renderDashboard();
 }
 

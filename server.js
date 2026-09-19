@@ -1,5 +1,6 @@
 const express = require('express');
 const rateLimit = require('express-rate-limit');
+const helmet = require('helmet');
 const pool = require('./db/pool');
 const path = require('path');
 
@@ -20,6 +21,19 @@ const app = express();
 // Production traffic comes through Nginx.
 // This allows Express to use the real visitor IP address.
 app.set('trust proxy', 1);
+
+// ======================================================
+// SECURITY HEADERS
+// ======================================================
+// Keep CSP disabled for now because the current frontend still uses
+// inline scripts/styles and inline event handlers. The remaining
+// Helmet protections are still enabled.
+app.use(
+  helmet({
+    contentSecurityPolicy: false,
+    crossOriginEmbedderPolicy: false
+  })
+);
 
 // ======================================================
 // REQUEST PARSING
@@ -126,7 +140,7 @@ async function initDatabase() {
         username VARCHAR(100) NOT NULL,
         email VARCHAR(255) NULL,
         password VARCHAR(255) NOT NULL,
-        pin_code VARCHAR(6) NULL,
+        pin_code VARCHAR(255) NULL,
         role ENUM(
           'manager',
           'service_advisor',
@@ -341,6 +355,17 @@ async function initDatabase() {
       );
     } catch (e) {}
 
+    try {
+      await pool.query(
+        "ALTER TABLE users MODIFY COLUMN pin_code VARCHAR(255) NULL;"
+      );
+    } catch (e) {
+      console.error(
+        'Unable to expand users.pin_code column:',
+        e.message
+      );
+    }
+
     // ==================================================
     // DEMO COMPANIES
     // ==================================================
@@ -382,10 +407,10 @@ async function initDatabase() {
     // ==================================================
     //
     // IMPORTANT:
-    // Existing passwords are intentionally NOT overwritten.
+    // Existing passwords and PINs are intentionally NOT overwritten.
     //
     // This prevents bcrypt hashes from being replaced with
-    // plaintext passwords every time the server restarts.
+    // plaintext credentials every time the server restarts.
     //
     await pool.query(`
       INSERT INTO users (
@@ -463,7 +488,6 @@ async function initDatabase() {
         company_id = VALUES(company_id),
         username = VALUES(username),
         email = VALUES(email),
-        pin_code = VALUES(pin_code),
         role = VALUES(role);
     `);
 
