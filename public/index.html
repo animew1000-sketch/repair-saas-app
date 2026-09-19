@@ -13,30 +13,87 @@
   <div
     class="brand"
     id="navBrand"
-    onclick="window.location.href='/'"
+    onclick="handleHomeNavigation()"
   >
     <span id="brandName">Apex Auto SaaS</span>
   </div>
 
   <div class="header-nav">
     <div class="header-links">
-      <a
-        class="header-link"
-        href="/?screen=landingSection"
+
+      <!-- PUBLIC / STAFF NAVIGATION -->
+      <button
+        class="header-link public-nav-link"
+        type="button"
+        onclick="handleHomeNavigation()"
       >
         Home
-      </a>
+      </button>
 
-      <a class="header-link" href="/overview.html">
+      <a
+        class="header-link public-nav-link"
+        href="/overview.html"
+      >
         Platform Overview
       </a>
 
-      <a class="header-link" href="/contact.html">
+      <a
+        class="header-link public-nav-link"
+        href="/contact.html"
+      >
         Contact
       </a>
+
+      <!-- CUSTOMER PORTAL NAVIGATION -->
+      <button
+        class="header-link customer-nav-link hidden"
+        type="button"
+        data-customer-nav="home"
+        onclick="openCustomerPortalTab('home')"
+      >
+        Home
+      </button>
+
+      <button
+        class="header-link customer-nav-link hidden"
+        type="button"
+        data-customer-nav="view-requests"
+        onclick="openCustomerPortalTab('view-requests')"
+      >
+        My Service
+      </button>
+
+      <button
+        class="header-link customer-nav-link hidden"
+        type="button"
+        data-customer-nav="create-request"
+        onclick="openCustomerPortalTab('create-request')"
+      >
+        New Request
+      </button>
+
+      <button
+        class="header-link customer-nav-link hidden"
+        type="button"
+        data-customer-nav="contact-us"
+        onclick="openCustomerPortalTab('contact-us')"
+      >
+        Contact Shop
+      </button>
+
+      <button
+        class="header-link customer-nav-link hidden"
+        type="button"
+        data-customer-nav="settings"
+        onclick="openCustomerPortalTab('settings')"
+      >
+        Settings
+      </button>
+
     </div>
 
     <div class="header-actions">
+
       <button
         class="header-link header-action-link header-signup"
         type="button"
@@ -52,6 +109,15 @@
       >
         Portal Login
       </button>
+
+      <button
+        class="header-link header-action-link signed-in-logout hidden"
+        type="button"
+        onclick="logout()"
+      >
+        Logout
+      </button>
+
     </div>
   </div>
 </div>    <!-- 0. PUBLIC MARKETING LANDING PAGE -->
@@ -313,6 +379,86 @@
     Settings
   </button>
 </div>
+      <div
+        id="customerTab-home"
+        class="customer-home"
+        role="tabpanel"
+        aria-label="Customer shop home"
+      >
+        <section class="customer-home-hero">
+          <div>
+            <div class="customer-home-kicker">YOUR REPAIR SHOP</div>
+            <h1 id="customerHomeShopName">Your Shop</h1>
+            <p id="customerHomeShopText">
+              Welcome back. Your service information and shop updates are available here.
+            </p>
+          </div>
+
+          <button
+            class="btn-primary"
+            type="button"
+            onclick="openCustomerPortalTab('create-request')"
+          >
+            Request Service
+          </button>
+        </section>
+
+        <section class="customer-home-grid">
+          <article class="customer-home-card">
+            <span class="customer-home-label">Current Status</span>
+            <strong id="customerHomeStatus">Loading...</strong>
+            <button
+              type="button"
+              class="customer-home-link"
+              onclick="openCustomerPortalTab('view-requests')"
+            >
+              View service details →
+            </button>
+          </article>
+
+          <article class="customer-home-card">
+            <span class="customer-home-label">Next Appointment</span>
+            <strong id="customerHomeAppointment">Loading...</strong>
+          </article>
+
+          <article class="customer-home-card">
+            <span class="customer-home-label">Vehicle</span>
+            <strong id="customerHomeVehicle">Loading...</strong>
+          </article>
+
+          <article class="customer-home-card">
+            <span class="customer-home-label">Invoice</span>
+            <strong id="customerHomeInvoice">Loading...</strong>
+            <button
+              type="button"
+              class="customer-home-link"
+              onclick="openCustomerPortalTab('view-requests')"
+            >
+              View invoice →
+            </button>
+          </article>
+        </section>
+
+        <section class="customer-home-shop-card">
+          <div>
+            <span class="customer-home-label">SHOP PORTAL</span>
+            <h3 id="customerHomeShopHeading">Your selected repair shop</h3>
+            <p>
+              This portal is tied to the repair shop selected for your account.
+              Service requests, repair updates, and invoices shown here belong to that shop.
+            </p>
+          </div>
+
+          <button
+            class="btn-secondary"
+            type="button"
+            onclick="openCustomerPortalTab('contact-us')"
+          >
+            Contact Shop
+          </button>
+        </section>
+      </div>
+
       <div id="customerTab-view-requests" role="tabpanel" aria-labelledby="tab-view-requests">
         <div id="statusBadge" style="margin: 12px 0;" aria-live="polite"></div>
         <div id="invoiceContainer" class="invoice-box">

@@ -57,6 +57,7 @@ function clearAuthSession() {
   localStorage.removeItem('role');
   localStorage.removeItem('username');
   localStorage.removeItem('company_name');
+  localStorage.removeItem('company_id');
   localStorage.removeItem('primary_color');
 }
 
@@ -466,33 +467,83 @@ function showScreen(screenId) {
 }
 
 function switchCustomerTab(tabName) {
-  document
-    .getElementById('customerTab-view-requests')
-    .classList.add('hidden');
+  const panels = [
+    'home',
+    'view-requests',
+    'create-request',
+    'contact-us',
+    'settings'
+  ];
 
-  document
-    .getElementById('customerTab-create-request')
-    .classList.add('hidden');
+  panels.forEach((name) => {
+    const panel =
+      document.getElementById(`customerTab-${name}`);
 
-  document
-    .getElementById('customerTab-contact-us')
-    .classList.add('hidden');
-
-  document
-    .getElementById('customerTab-settings')
-    .classList.add('hidden');
+    if (panel) {
+      panel.classList.add('hidden');
+    }
+  });
 
   document
     .querySelectorAll('.portal-tab')
     .forEach((el) => el.classList.remove('active'));
 
   document
-    .getElementById(`customerTab-${tabName}`)
-    .classList.remove('hidden');
+    .querySelectorAll('[data-customer-nav]')
+    .forEach((el) => {
+      el.classList.toggle(
+        'active',
+        el.dataset.customerNav === tabName
+      );
+    });
 
-  document
-    .getElementById(`tab-${tabName}`)
-    .classList.add('active');
+  const activePanel =
+    document.getElementById(`customerTab-${tabName}`);
+
+  if (activePanel) {
+    activePanel.classList.remove('hidden');
+  }
+
+  const legacyTab =
+    document.getElementById(`tab-${tabName}`);
+
+  if (legacyTab) {
+    legacyTab.classList.add('active');
+  }
+}
+
+function openCustomerPortalTab(tabName) {
+  const token = localStorage.getItem('token');
+  const role = localStorage.getItem('role');
+
+  if (!token || role !== 'customer') {
+    showScreen('landingSection');
+    return;
+  }
+
+  showScreen('customerDashboard');
+  switchCustomerTab(tabName);
+}
+
+function handleHomeNavigation() {
+  const token = localStorage.getItem('token');
+  const role = localStorage.getItem('role');
+
+  if (token && role === 'customer') {
+    openCustomerPortalTab('home');
+    return;
+  }
+
+  if (token && role && role !== 'customer') {
+    showScreen('employeeDashboard');
+    return;
+  }
+
+  showScreen('landingSection');
+
+  if (window.location.search) {
+    window.history.replaceState({}, '', window.location.pathname);
+  }
 }
 
 async function handleLogin(e) {
@@ -562,6 +613,11 @@ async function handleLogin(e) {
     localStorage.setItem(
       'company_name',
       data.company_name
+    );
+
+    localStorage.setItem(
+      'company_id',
+      String(data.company_id)
     );
 
     localStorage.setItem(
@@ -980,6 +1036,61 @@ async function handleBookAppointment(e) {
   }
 }
 
+async function loadCustomerShopHome() {
+  const shopName =
+    localStorage.getItem('company_name') || 'Your Repair Shop';
+
+  const shopNameEl =
+    document.getElementById('customerHomeShopName');
+
+  const shopHeadingEl =
+    document.getElementById('customerHomeShopHeading');
+
+  const shopTextEl =
+    document.getElementById('customerHomeShopText');
+
+  if (shopNameEl) {
+    shopNameEl.textContent = shopName;
+  }
+
+  if (shopHeadingEl) {
+    shopHeadingEl.textContent = shopName;
+  }
+
+  try {
+    const companyId =
+      Number(localStorage.getItem('company_id'));
+
+    const res = await fetch('/api/companies');
+
+    if (!res.ok) {
+      return;
+    }
+
+    const companies = await res.json();
+
+    const shop = companies.find(
+      (company) => Number(company.id) === companyId
+    );
+
+    if (!shop) {
+      return;
+    }
+
+    if (shopTextEl) {
+      shopTextEl.textContent =
+        shop.hero_text ||
+        shop.tagline ||
+        `Welcome to the ${shop.company_name} customer portal.`;
+    }
+  } catch (err) {
+    console.error(
+      'Unable to load customer shop home:',
+      err
+    );
+  }
+}
+
 async function loadCustomerProfile() {
   const res = await fetch(
     '/api/customer/my-repair',
@@ -1050,6 +1161,50 @@ async function loadCustomerProfile() {
 
   const safeApptText =
     escapeHtml(apptText);
+
+  const homeStatus =
+    document.getElementById('customerHomeStatus');
+
+  const homeAppointment =
+    document.getElementById('customerHomeAppointment');
+
+  const homeVehicle =
+    document.getElementById('customerHomeVehicle');
+
+  const homeInvoice =
+    document.getElementById('customerHomeInvoice');
+
+  if (homeStatus) {
+    homeStatus.textContent =
+      data.status || 'No active status';
+  }
+
+  if (homeAppointment) {
+    homeAppointment.textContent = apptText;
+  }
+
+  if (homeVehicle) {
+    const vehicleParts = [
+      data.vehicle?.year,
+      data.vehicle?.make,
+      data.vehicle?.model
+    ].filter(Boolean);
+
+    homeVehicle.textContent =
+      vehicleParts.length
+        ? vehicleParts.join(' ')
+        : 'No vehicle on file';
+  }
+
+  if (homeInvoice) {
+    const amount =
+      Number(data.invoice?.total_amount);
+
+    homeInvoice.textContent =
+      data.invoice
+        ? `$${Number.isFinite(amount) ? amount.toFixed(2) : '0.00'}`
+        : 'Not generated yet';
+  }
 
   if (data.invoice) {
     const safeInvoiceNumber =
@@ -1358,7 +1513,10 @@ function applyRolePermissions(role) {
 
 function updateHeaderAuthButtons() {
   const token = localStorage.getItem('token');
+  const role = localStorage.getItem('role');
+
   const isLoggedIn = Boolean(token);
+  const isCustomer = isLoggedIn && role === 'customer';
 
   document
     .querySelectorAll('.header-signup, .auth-signup')
@@ -1370,6 +1528,24 @@ function updateHeaderAuthButtons() {
     .querySelectorAll('.header-login, .auth-login')
     .forEach((el) => {
       el.classList.toggle('hidden', isLoggedIn);
+    });
+
+  document
+    .querySelectorAll('.signed-in-logout')
+    .forEach((el) => {
+      el.classList.toggle('hidden', !isLoggedIn);
+    });
+
+  document
+    .querySelectorAll('.public-nav-link')
+    .forEach((el) => {
+      el.classList.toggle('hidden', isCustomer);
+    });
+
+  document
+    .querySelectorAll('.customer-nav-link')
+    .forEach((el) => {
+      el.classList.toggle('hidden', !isCustomer);
     });
 }
 
@@ -1397,7 +1573,8 @@ function renderDashboard() {
 
   if (role === 'customer') {
     showScreen('customerDashboard');
-    switchCustomerTab('view-requests');
+    switchCustomerTab('home');
+    loadCustomerShopHome();
     loadCustomerProfile();
   } else {
     showScreen('employeeDashboard');
@@ -1715,6 +1892,19 @@ function openScreenFromUrl() {
   ];
 
   if (screen && allowedScreens.includes(screen)) {
+    const token = localStorage.getItem('token');
+    const role = localStorage.getItem('role');
+
+    if (screen === 'landingSection' && token) {
+      if (role === 'customer') {
+        openCustomerPortalTab('home');
+      } else {
+        showScreen('employeeDashboard');
+      }
+
+      return;
+    }
+
     showScreen(screen);
   }
 }

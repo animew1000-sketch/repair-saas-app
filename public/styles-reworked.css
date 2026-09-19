@@ -1935,3 +1935,190 @@ body.dark-mode > .header + .container {
     height: 300px;
   }
 }
+
+
+/* ======================================================
+   CUSTOMER SHOP PORTAL
+   Signed-in customers get a shop-specific experience.
+   ====================================================== */
+
+.customer-home {
+  display: grid;
+  gap: 22px;
+}
+
+.customer-home-hero {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 28px;
+
+  padding: clamp(28px, 4vw, 48px);
+
+  background:
+    linear-gradient(135deg, #17202a, #2f3b48);
+  color: #ffffff;
+
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.customer-home-kicker,
+.customer-home-label {
+  display: block;
+  margin-bottom: 8px;
+
+  color: #8b98a8;
+  font-size: .72rem;
+  font-weight: 800;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.customer-home-hero .customer-home-kicker {
+  color: #c9d2dc;
+}
+
+.customer-home-hero h1 {
+  margin: 0 0 10px;
+  max-width: 760px;
+
+  color: #ffffff;
+  font-size: clamp(2.2rem, 4vw, 4.4rem);
+  line-height: .98;
+  letter-spacing: -.055em;
+}
+
+.customer-home-hero p {
+  max-width: 720px;
+  margin: 0;
+  color: #d7dee6;
+  font-size: 1rem;
+}
+
+.customer-home-hero .btn-primary {
+  flex: 0 0 auto;
+  margin: 0;
+  white-space: nowrap;
+  background: #f8fafc;
+  color: #1f2933;
+  border-color: #f8fafc;
+}
+
+.customer-home-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.customer-home-card,
+.customer-home-shop-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(15,23,42,.045);
+}
+
+.customer-home-card {
+  min-height: 158px;
+  padding: 22px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.customer-home-card strong {
+  color: var(--ink);
+  font-size: 1.08rem;
+  line-height: 1.35;
+}
+
+.customer-home-link {
+  margin-top: auto;
+  padding: 10px 0 0 !important;
+
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+
+  color: var(--muted) !important;
+  font-size: .8rem;
+  font-weight: 700;
+}
+
+.customer-home-link:hover {
+  transform: translateX(3px) !important;
+  color: var(--ink) !important;
+}
+
+.customer-home-shop-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 28px;
+
+  padding: 26px;
+}
+
+.customer-home-shop-card h3 {
+  margin: 0 0 8px;
+}
+
+.customer-home-shop-card p {
+  max-width: 760px;
+  margin: 0;
+  color: var(--muted);
+}
+
+/* Old horizontal customer tabs are superseded by sidebar navigation. */
+#customerDashboard > .customer-nav {
+  display: none;
+}
+
+/* Sidebar active state for customer portal. */
+.customer-nav-link.active {
+  color: #ffffff;
+  background: rgba(255,255,255,.09);
+  border-color: rgba(255,255,255,.10);
+  transform: translateX(4px);
+}
+
+.customer-logout {
+  color: #d9e0e8;
+}
+
+body.dark-mode .customer-home-card,
+body.dark-mode .customer-home-shop-card {
+  background: #171d25;
+  border-color: #28313d;
+}
+
+body.dark-mode .customer-home-hero {
+  background:
+    linear-gradient(135deg, #090d12, #1c2530);
+}
+
+@media (max-width: 1100px) {
+  .customer-home-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .customer-home-hero,
+  .customer-home-shop-card {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .customer-home-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .customer-home-hero .btn-primary,
+  .customer-home-shop-card .btn-secondary {
+    width: 100%;
+  }
+}
