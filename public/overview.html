@@ -11,7 +11,7 @@
 <div class="header">
   <div
     class="brand"
-    onclick="window.location.href='/'"
+    onclick="window.location.href='/?screen=landingSection'"
   >
     <span>Apex Auto SaaS</span>
   </div>
@@ -19,7 +19,7 @@
   <div class="header-nav">
 
     <div class="header-links">
-      <a class="header-link" href="/">
+      <a class="header-link" href="/?screen=landingSection">
         Home
       </a>
 
@@ -34,14 +34,14 @@
 
 <div class="header-actions">
   <a
-    class="header-link header-action-link"
+    class="header-link header-action-link header-signup"
     href="/?screen=registerSection"
   >
     Sign Up
   </a>
 
   <a
-    class="header-link header-action-link"
+    class="header-link header-action-link header-login"
     href="/?screen=loginSection"
   >
     Portal Login
@@ -255,6 +255,11 @@
       }
     });
   });
+
+  if (localStorage.getItem('token')) {
+    document.querySelector('.header-signup')?.classList.add('hidden');
+    document.querySelector('.header-login')?.classList.add('hidden');
+  }
 </script>
 <script src="/theme.js"></script>
 </body>

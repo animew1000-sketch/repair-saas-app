@@ -20,6 +20,13 @@
 
   <div class="header-nav">
     <div class="header-links">
+      <a
+        class="header-link"
+        href="/?screen=landingSection"
+      >
+        Home
+      </a>
+
       <a class="header-link" href="/overview.html">
         Platform Overview
       </a>
@@ -29,23 +36,23 @@
       </a>
     </div>
 
-   <div class="header-actions">
-  <button
-    class="header-link header-action-link"
-    type="button"
-    onclick="showScreen('registerSection')"
-  >
-    Sign Up
-  </button>
+    <div class="header-actions">
+      <button
+        class="header-link header-action-link header-signup"
+        type="button"
+        onclick="showScreen('registerSection')"
+      >
+        Sign Up
+      </button>
 
-  <button
-    class="header-link header-action-link"
-    type="button"
-    onclick="showScreen('loginSection')"
-  >
-    Portal Login
-  </button>
-</div>
+      <button
+        class="header-link header-action-link header-login"
+        type="button"
+        onclick="showScreen('loginSection')"
+      >
+        Portal Login
+      </button>
+    </div>
   </div>
 </div>    <!-- 0. PUBLIC MARKETING LANDING PAGE -->
     <div id="landingSection">
@@ -552,6 +559,17 @@
         }
       });
     });
+  </script>
+
+
+  <script>
+    const requestedMainScreen =
+      new URLSearchParams(window.location.search).get('screen');
+
+    if (requestedMainScreen === 'landingSection') {
+      showScreen('landingSection');
+      updateHeaderAuthButtons();
+    }
   </script>
 
   <script src="/theme.js"></script>

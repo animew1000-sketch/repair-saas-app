@@ -1716,6 +1716,7 @@ function openScreenFromUrl() {
   const screen = params.get('screen');
 
   const allowedScreens = [
+    'landingSection',
     'registerSection',
     'loginSection'
   ];
