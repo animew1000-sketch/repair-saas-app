@@ -2122,3 +2122,81 @@ body.dark-mode .customer-home-hero {
     width: 100%;
   }
 }
+
+
+/* ======================================================
+   SIDEBAR BUTTON POLISH
+   Neutral auth buttons + underline hover animation
+   ====================================================== */
+
+/* Keep sidebar links/buttons neutral instead of filling Portal Login white. */
+.header-actions .header-link,
+.header-actions .header-action-link {
+  background: transparent;
+  color: #b9c2ce;
+  border-color: rgba(255,255,255,.10);
+}
+
+/* Explicitly override the older "last button becomes white" rule. */
+.header-actions .header-link:last-child,
+.header-actions .header-action-link:last-child {
+  background: transparent;
+  color: #b9c2ce;
+  border-color: rgba(255,255,255,.10);
+}
+
+.header-actions .header-link:last-child:hover,
+.header-actions .header-action-link:last-child:hover {
+  background: rgba(255,255,255,.07);
+  color: #ffffff;
+  border-color: rgba(255,255,255,.14);
+  transform: translateX(4px) translateY(-1px);
+}
+
+/* Restore the small animated underline on sidebar navigation items. */
+.header-link::after,
+.header-action-link::after {
+  content: "";
+  display: block;
+
+  position: absolute;
+  left: 12px;
+  bottom: 6px;
+
+  width: 0;
+  height: 2px;
+
+  background: currentColor;
+  opacity: .72;
+  border-radius: 999px;
+
+  transition:
+    width .22s ease,
+    opacity .22s ease;
+}
+
+.header-link:hover::after,
+.header-action-link:hover::after {
+  width: calc(100% - 24px);
+  opacity: 1;
+}
+
+/* Do not put an underline under hidden elements. */
+.header-link.hidden::after,
+.header-action-link.hidden::after {
+  width: 0;
+}
+
+/* Customer active navigation keeps a subtle underline as a location cue. */
+.customer-nav-link.active::after {
+  width: calc(100% - 24px);
+  opacity: .9;
+}
+
+/* Mobile/top-nav version gets a tighter underline. */
+@media (max-width: 760px) {
+  .header-link::after,
+  .header-action-link::after {
+    bottom: 4px;
+  }
+}
