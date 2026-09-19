@@ -1679,3 +1679,259 @@ body.dark-mode .feature-card:hover {
     min-height: 560px;
   }
 }
+
+
+/* ======================================================
+   IMMERSIVE FULL-PAGE LAYOUT FIX
+   Supports both:
+   1) index.html where .header is inside .container
+   2) overview/contact where .header is a body-level sibling
+   ====================================================== */
+
+html,
+body {
+  width: 100%;
+  min-height: 100%;
+}
+
+body {
+  padding: 0;
+  background: var(--page);
+}
+
+/* Main app: remove the framed / floating-card feeling. */
+.container {
+  width: 100%;
+  max-width: none;
+  min-height: 100vh;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+/* Slightly wider, more immersive sidebar. */
+.container > .header {
+  min-height: 100vh;
+  padding: 28px 18px;
+}
+
+/* ------------------------------------------------------
+   Standalone pages: overview.html + contact.html
+   Their header currently sits OUTSIDE .container.
+   Turn that body-level header into the same sidebar.
+   ------------------------------------------------------ */
+
+body > .header {
+  position: fixed;
+  inset: 0 auto 0 0;
+  z-index: 100;
+
+  width: 220px;
+  min-height: 100vh;
+
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+
+  padding: 28px 18px;
+
+  background: #171b21;
+  border-right: 1px solid rgba(255,255,255,.07);
+}
+
+body > .header .brand {
+  margin: 0 4px 34px;
+}
+
+body > .header .header-nav,
+body > .header .header-links,
+body > .header .header-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  width: 100%;
+}
+
+body > .header .header-nav {
+  gap: 18px;
+}
+
+body > .header .header-links,
+body > .header .header-actions {
+  gap: 7px;
+}
+
+/* Standalone page workspace fills the rest of the viewport. */
+body > .header + .container {
+  display: block;
+
+  width: calc(100% - 220px);
+  min-height: 100vh;
+
+  margin: 0 0 0 220px;
+  padding: 0;
+
+  background: var(--workspace);
+}
+
+/* Give Overview / Contact more room instead of a narrow centered island. */
+body > .header + .container .contact-page {
+  width: 100%;
+  max-width: none;
+
+  margin: 0;
+  padding: clamp(36px, 5vw, 72px) clamp(28px, 5vw, 72px) 64px;
+}
+
+body > .header + .container .contact-intro {
+  width: min(100%, 980px);
+  max-width: none;
+  margin: 0 0 46px;
+  text-align: left;
+}
+
+body > .header + .container .contact-intro h1 {
+  max-width: 980px;
+  font-size: clamp(2.7rem, 5.4vw, 5.2rem);
+  line-height: .98;
+  letter-spacing: -.06em;
+}
+
+body > .header + .container .contact-intro p {
+  max-width: 780px;
+  font-size: 1.05rem;
+}
+
+/* Overview: use the canvas. */
+body > .header + .container .overview-feature-row {
+  grid-template-columns: minmax(0, 1.15fr) minmax(360px, .85fr);
+  gap: 28px;
+  margin-bottom: 28px;
+}
+
+body > .header + .container .overview-features,
+body > .header + .container .overview-feature-image {
+  min-height: 480px;
+  height: auto;
+}
+
+body > .header + .container .overview-features {
+  padding: 32px;
+}
+
+body > .header + .container .grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+}
+
+/* Contact: wider two-column composition. */
+body > .header + .container .contact-layout {
+  width: 100%;
+  max-width: none;
+  grid-template-columns: minmax(300px, .72fr) minmax(480px, 1.28fr);
+  gap: 34px;
+}
+
+body > .header + .container .contact-details {
+  gap: 14px;
+}
+
+body > .header + .container .contact-form {
+  padding: 34px;
+}
+
+body > .header + .container .contact-details .overview-feature-image {
+  min-height: 330px;
+  height: 330px;
+}
+
+/* Keep the subtle motion without making the UI flashy. */
+body > .header .header-link:hover,
+body > .header .header-action-link:hover {
+  transform: translateX(4px);
+}
+
+/* Dark mode standalone pages. */
+body.dark-mode > .header {
+  background: #0b0f14;
+  border-right-color: #202833;
+}
+
+body.dark-mode > .header + .container {
+  background: var(--workspace);
+}
+
+/* Tablet */
+@media (max-width: 1050px) {
+  body > .header,
+  .container > .header {
+    width: 190px;
+  }
+
+  .container {
+    grid-template-columns: 190px minmax(0, 1fr);
+  }
+
+  body > .header + .container {
+    width: calc(100% - 190px);
+    margin-left: 190px;
+  }
+
+  body > .header + .container .overview-feature-row,
+  body > .header + .container .contact-layout {
+    grid-template-columns: 1fr;
+  }
+
+  body > .header + .container .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Mobile: return to a compact top nav and full-width content. */
+@media (max-width: 760px) {
+  body > .header {
+    position: relative;
+    inset: auto;
+
+    width: 100%;
+    min-height: auto;
+
+    padding: 16px;
+
+    border-right: 0;
+    border-bottom: 1px solid rgba(255,255,255,.08);
+  }
+
+  body > .header + .container {
+    width: 100%;
+    min-height: 0;
+    margin-left: 0;
+  }
+
+  body > .header + .container .contact-page {
+    padding: 28px 18px 40px;
+  }
+
+  body > .header + .container .contact-intro {
+    margin-bottom: 30px;
+  }
+
+  body > .header + .container .contact-intro h1 {
+    font-size: clamp(2.35rem, 11vw, 3.5rem);
+  }
+
+  body > .header + .container .grid {
+    grid-template-columns: 1fr;
+  }
+
+  body > .header + .container .overview-features,
+  body > .header + .container .overview-feature-image {
+    min-height: 0;
+  }
+
+  body > .header + .container .overview-feature-image {
+    height: 300px;
+  }
+}
