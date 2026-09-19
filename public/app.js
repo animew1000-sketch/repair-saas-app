@@ -1358,26 +1358,19 @@ function applyRolePermissions(role) {
 
 function updateHeaderAuthButtons() {
   const token = localStorage.getItem('token');
+  const isLoggedIn = Boolean(token);
 
-  const signupButton =
-    document.querySelector('.header-signup');
+  document
+    .querySelectorAll('.header-signup, .auth-signup')
+    .forEach((el) => {
+      el.classList.toggle('hidden', isLoggedIn);
+    });
 
-  const loginButton =
-    document.querySelector('.header-login');
-
-  if (signupButton) {
-    signupButton.classList.toggle(
-      'hidden',
-      Boolean(token)
-    );
-  }
-
-  if (loginButton) {
-    loginButton.classList.toggle(
-      'hidden',
-      Boolean(token)
-    );
-  }
+  document
+    .querySelectorAll('.header-login, .auth-login')
+    .forEach((el) => {
+      el.classList.toggle('hidden', isLoggedIn);
+    });
 }
 
 function renderDashboard() {
