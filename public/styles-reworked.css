@@ -1201,3 +1201,481 @@ button:disabled {
   opacity: 0.75;
   cursor: not-allowed;
 }
+
+
+/* ======================================================
+   DESIGN REFRESH — NEUTRAL SIDEBAR WORKSPACE
+   Inspired by the cleaner dashboard direction while
+   preserving the existing app structure and interactions.
+   ====================================================== */
+
+:root {
+  --page: #20242a;
+  --workspace: #f4f5f7;
+  --surface: #ffffff;
+  --ink: #1f2933;
+  --muted: #667085;
+  --line: #e3e7ec;
+  --navy: #26313d;
+  --navy-soft: #edf1f5;
+
+  /* Neutral steel accent instead of lime/orange */
+  --orange: #64748b;
+  --orange-dark: #475569;
+  --blue: #64748b;
+
+  --shadow: 0 18px 44px rgba(15, 23, 42, 0.10);
+}
+
+html {
+  background: var(--page);
+}
+
+body {
+  min-height: 100vh;
+  padding: 14px;
+  background:
+    radial-gradient(circle at top left, rgba(255,255,255,.05), transparent 28%),
+    var(--page);
+}
+
+body::before {
+  display: none;
+}
+
+.container {
+  display: grid;
+  grid-template-columns: 210px minmax(0, 1fr);
+  align-items: start;
+
+  width: min(1480px, 100%);
+  min-height: calc(100vh - 28px);
+
+  margin: 0 auto;
+  padding: 0;
+
+  overflow: hidden;
+
+  background: var(--workspace);
+  border: 1px solid rgba(255,255,255,.06);
+  border-radius: 20px;
+
+  box-shadow:
+    0 24px 70px rgba(0,0,0,.24);
+}
+
+/* Keep the existing header markup, but make it a sidebar. */
+.header {
+  position: sticky;
+  top: 0;
+
+  grid-column: 1;
+  grid-row: 1;
+
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+
+  min-height: calc(100vh - 28px);
+  padding: 24px 16px;
+
+  background: #171b21;
+  border-right: 1px solid rgba(255,255,255,.07);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  margin: 0 4px 34px;
+
+  color: #f8fafc;
+  font-size: 1.05rem;
+  font-weight: 800;
+  letter-spacing: -.035em;
+  line-height: 1.15;
+  white-space: normal;
+}
+
+.brand::before {
+  content: "";
+  flex: 0 0 34px;
+  width: 34px;
+  height: 34px;
+
+  border: 1px solid rgba(255,255,255,.16);
+  border-radius: 9px;
+
+  background:
+    linear-gradient(135deg, #94a3b8, #475569);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.2),
+    0 8px 20px rgba(0,0,0,.22);
+}
+
+.brand span {
+  color: #f8fafc;
+}
+
+.header-nav,
+.header-links,
+.header-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 7px;
+
+  width: 100%;
+}
+
+.header-nav {
+  gap: 18px;
+}
+
+.header-link,
+.header-action-link {
+  position: relative;
+
+  display: flex;
+  align-items: center;
+
+  width: 100%;
+  min-height: 42px;
+
+  margin: 0;
+  padding: 10px 12px;
+
+  border: 1px solid transparent;
+  border-radius: 9px;
+
+  background: transparent;
+  color: #b9c2ce;
+
+  font-size: .82rem;
+  font-weight: 700;
+  text-align: left;
+  text-decoration: none;
+
+  transition:
+    color .2s ease,
+    background .2s ease,
+    border-color .2s ease,
+    transform .2s ease,
+    box-shadow .2s ease;
+}
+
+.header-link::after {
+  display: none;
+}
+
+/* Keep the little lift/animation you liked. */
+.header-link:hover,
+.header-action-link:hover {
+  color: #ffffff;
+  background: rgba(255,255,255,.07);
+  border-color: rgba(255,255,255,.08);
+  transform: translateX(4px);
+
+  box-shadow:
+    0 8px 18px rgba(0,0,0,.12);
+}
+
+.header-actions {
+  padding-top: 14px;
+  border-top: 1px solid rgba(255,255,255,.08);
+}
+
+.header-actions .header-link:last-child,
+.header-actions .header-action-link:last-child {
+  background: #eef2f6;
+  color: #1f2933;
+  border-color: #eef2f6;
+}
+
+.header-actions .header-link:last-child:hover,
+.header-actions .header-action-link:last-child:hover {
+  background: #ffffff;
+  color: #111827;
+  transform: translateX(4px) translateY(-1px);
+}
+
+/* Everything that is not the sidebar lives in the workspace column. */
+.container > #landingSection,
+.container > #registerSection,
+.container > #loginSection,
+.container > #customerDashboard,
+.container > #employeeDashboard {
+  grid-column: 2;
+  min-width: 0;
+  margin: 0;
+  padding: 30px;
+}
+
+.container > #registerSection,
+.container > #loginSection,
+.container > #customerDashboard,
+.container > #employeeDashboard {
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  background: transparent;
+}
+
+/* Hero stays visual, but tighter and more app-like inside the workspace. */
+.hero-slider {
+  margin-top: 0;
+  min-height: 620px;
+  border-radius: 16px;
+  box-shadow:
+    0 18px 40px rgba(15,23,42,.16);
+}
+
+.hero-content {
+  width: min(980px, 88%);
+}
+
+.hero-actions button {
+  transition:
+    background .2s ease,
+    border-color .2s ease,
+    transform .2s ease,
+    box-shadow .2s ease;
+}
+
+.hero-actions button:hover {
+  transform: translateY(-3px);
+  box-shadow:
+    0 10px 24px rgba(0,0,0,.22);
+}
+
+/* Clean dashboard/card language */
+.panel,
+.card,
+.feature-card,
+.marketing-stat-grid,
+.overview-features,
+.contact-form,
+.invoice-box {
+  border-color: var(--line);
+  box-shadow:
+    0 8px 24px rgba(15,23,42,.055);
+}
+
+.card,
+.panel,
+.feature-card,
+.invoice-box {
+  border-radius: 11px;
+}
+
+.feature-card {
+  transition:
+    transform .2s ease,
+    box-shadow .2s ease,
+    border-color .2s ease;
+}
+
+.feature-card:hover {
+  transform: translateY(-3px);
+  border-color: #cbd3dc;
+  box-shadow:
+    0 14px 32px rgba(15,23,42,.09);
+}
+
+.stat-number {
+  color: #475569;
+}
+
+/* Buttons: neutral steel, with the same responsive motion feel. */
+.btn-primary,
+button:not(.hero-arrow):not(.theme-switch):not(.app-toast-close) {
+  transition:
+    background .2s ease,
+    color .2s ease,
+    border-color .2s ease,
+    transform .2s ease,
+    box-shadow .2s ease;
+}
+
+.btn-primary:hover,
+button:not(.hero-arrow):not(.theme-switch):not(.app-toast-close):hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 8px 18px rgba(71,85,105,.16);
+}
+
+/* Workflow retains its button feel but becomes more dashboard-like. */
+.workflow-bar {
+  gap: 8px;
+  padding: 8px 2px 12px;
+}
+
+.step-card {
+  border-radius: 8px;
+  background: #ffffff;
+  border: 1px solid var(--line);
+  color: #5b6572;
+  box-shadow: none;
+}
+
+.step-card:hover,
+.step-card.active {
+  background: #334155;
+  border-color: #334155;
+  color: #ffffff;
+  transform: translateY(-2px);
+}
+
+/* Form controls */
+input,
+select,
+textarea {
+  background: #ffffff;
+  border-color: #d8dee6;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: #64748b;
+  box-shadow: 0 0 0 3px rgba(100,116,139,.14);
+}
+
+/* Footer/theme controls span the workspace area. */
+.legal-footer,
+.theme-footer {
+  grid-column: 2;
+}
+
+.legal-footer {
+  color: var(--muted);
+}
+
+.legal-footer a {
+  color: var(--muted);
+}
+
+/* Dark mode keeps the same neutral language. */
+body.dark-mode {
+  --page: #0e1116;
+  --workspace: #11161d;
+  --surface: #171d25;
+  --ink: #f3f4f6;
+  --muted: #9aa6b5;
+  --line: #28313d;
+  --navy: #e5e7eb;
+  --navy-soft: #202833;
+  --orange: #94a3b8;
+  --orange-dark: #cbd5e1;
+  --blue: #94a3b8;
+
+  background:
+    radial-gradient(circle at top left, rgba(255,255,255,.035), transparent 30%),
+    var(--page);
+}
+
+body.dark-mode .container {
+  background: var(--workspace);
+  border-color: #202833;
+}
+
+body.dark-mode .header {
+  background: #0b0f14;
+  border-right-color: #202833;
+}
+
+body.dark-mode .step-card {
+  background: #171d25;
+  color: #aab4c0;
+  border-color: #2b3541;
+}
+
+body.dark-mode .step-card:hover,
+body.dark-mode .step-card.active {
+  background: #cbd5e1;
+  border-color: #cbd5e1;
+  color: #111827;
+}
+
+body.dark-mode input,
+body.dark-mode select,
+body.dark-mode textarea {
+  background: #111820;
+  border-color: #2b3541;
+}
+
+body.dark-mode .feature-card:hover {
+  border-color: #3b4654;
+}
+
+/* Mobile: sidebar becomes a compact top navigation again. */
+@media (max-width: 760px) {
+  body {
+    padding: 6px;
+  }
+
+  .container {
+    display: block;
+    min-height: calc(100vh - 12px);
+    border-radius: 14px;
+  }
+
+  .header {
+    position: relative;
+    min-height: auto;
+    padding: 16px;
+    border-right: 0;
+    border-bottom: 1px solid rgba(255,255,255,.08);
+  }
+
+  .brand {
+    margin-bottom: 16px;
+  }
+
+  .header-nav {
+    gap: 10px;
+  }
+
+  .header-links,
+  .header-actions {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 7px;
+  }
+
+  .header-actions {
+    padding-top: 10px;
+  }
+
+  .header-link,
+  .header-action-link {
+    width: auto;
+    flex: 1 1 130px;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .header-link:hover,
+  .header-action-link:hover {
+    transform: translateY(-2px);
+  }
+
+  .container > #landingSection,
+  .container > #registerSection,
+  .container > #loginSection,
+  .container > #customerDashboard,
+  .container > #employeeDashboard {
+    padding: 16px;
+  }
+
+  .legal-footer,
+  .theme-footer {
+    grid-column: auto;
+  }
+
+  .hero-slider {
+    min-height: 560px;
+  }
+}
