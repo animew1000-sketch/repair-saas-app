@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Platform Overview | Apex Auto SaaS</title>
+  <link rel="stylesheet" href="/styles-reworked.css">
+</head>
+<body>
+
+<div class="header">
+  <div
+    class="brand"
+    onclick="window.location.href='/?screen=landingSection'"
+  >
+    <span>Apex Auto SaaS</span>
+  </div>
+
+  <div class="header-nav">
+
+    <div class="header-links">
+      <a class="header-link" href="/?screen=landingSection">
+        Home
+      </a>
+
+      <a class="header-link" href="/overview.html">
+        Platform Overview
+      </a>
+
+      <a class="header-link" href="/contact.html">
+        Contact
+      </a>
+    </div>
+
+<div class="header-actions">
+  <a
+    class="header-link header-action-link header-signup"
+    href="/?screen=registerSection"
+  >
+    Sign Up
+  </a>
+
+  <a
+    class="header-link header-action-link header-login"
+    href="/?screen=loginSection"
+  >
+    Portal Login
+  </a>
+</div>
+  </div>
+</div>
+
+  <div class="container">
+
+    <div class="contact-page">
+
+      <div class="contact-intro">
+        <div class="marketing-pill">Platform Overview</div>
+
+        <h1>
+          One Operating System for the Entire Repair Shop
+        </h1>
+
+        <p>
+          Apex Auto SaaS connects customer intake, repair workflows,
+          technician operations, parts tracking, estimates, and invoicing
+          inside one multi-tenant web platform.
+        </p>
+      </div>
+
+      <div class="overview-feature-row">
+
+        <section class="overview-features">
+          <h2>Core Platform Capabilities</h2>
+
+
+<div class="feature-list">
+
+  <div class="feature-item active">
+    <button
+      class="feature-summary"
+      type="button"
+      aria-expanded="true"
+      aria-controls="feature-panel-1"
+    >
+      <span class="feature-number">01</span>
+      <span>Multi-Tenant Shop Management</span>
+      <span class="feature-icon" aria-hidden="true">−</span>
+    </button>
+
+    <div
+      class="feature-content"
+      id="feature-panel-1"
+    >
+      <div class="feature-content-inner">
+        Multiple repair businesses can operate independently
+        using isolated company data, unique branding, and
+        dedicated shop identities.
+      </div>
+    </div>
+  </div>
+
+  <div class="feature-item">
+    <button
+      class="feature-summary"
+      type="button"
+      aria-expanded="false"
+      aria-controls="feature-panel-2"
+    >
+      <span class="feature-number">02</span>
+      <span>Role-Based Staff Access</span>
+      <span class="feature-icon" aria-hidden="true">+</span>
+    </button>
+
+    <div
+      class="feature-content"
+      id="feature-panel-2"
+    >
+      <div class="feature-content-inner">
+        Managers, service advisors, technicians, billing staff,
+        and customers receive interfaces and permissions based
+        on their assigned roles.
+      </div>
+    </div>
+  </div>
+
+  <div class="feature-item">
+    <button
+      class="feature-summary"
+      type="button"
+      aria-expanded="false"
+      aria-controls="feature-panel-3"
+    >
+      <span class="feature-number">03</span>
+      <span>Complete Repair Workflow</span>
+      <span class="feature-icon" aria-hidden="true">+</span>
+    </button>
+
+    <div
+      class="feature-content"
+      id="feature-panel-3"
+    >
+      <div class="feature-content-inner">
+        Repair jobs move through customer intake, vehicle data,
+        appointments, repair orders, parts and labor, estimates,
+        repair execution, and invoicing.
+      </div>
+    </div>
+  </div>
+
+  <div class="feature-item">
+    <button
+      class="feature-summary"
+      type="button"
+      aria-expanded="false"
+      aria-controls="feature-panel-4"
+    >
+      <span class="feature-number">04</span>
+      <span>Customer Portal</span>
+      <span class="feature-icon" aria-hidden="true">+</span>
+    </button>
+
+    <div
+      class="feature-content"
+      id="feature-panel-4"
+    >
+      <div class="feature-content-inner">
+        Customers can create accounts, submit service requests,
+        update vehicle information, track repair status, and
+        review invoices.
+      </div>
+    </div>
+  </div>
+
+</div>
+        </section>
+
+        <figure class="overview-feature-image">
+          <img
+            src="/images/Smokey-lift.jpg"
+            alt="Automotive repair shop vehicle lift"
+          >
+
+          <figcaption>
+            A centralized workflow designed around real repair-shop
+            operations.
+          </figcaption>
+        </figure>
+
+      </div>
+
+      <div class="grid">
+
+        <div class="feature-card">
+          <h3>Customer Intake</h3>
+          <p>
+            Capture customer, contact, and vehicle information while
+            associating each request with a repair job.
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <h3>VIN & Vehicle Tools</h3>
+          <p>
+            Store 17-digit VIN data and support vehicle lookup tools for
+            faster service documentation.
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <h3>Parts & Labor</h3>
+          <p>
+            Track parts and labor items against each repair job and
+            support pricing workflows.
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <h3>Billing & Invoicing</h3>
+          <p>
+            Generate repair totals, invoice records, and payment-status
+            information for customers.
+          </p>
+        </div>
+
+      </div>
+
+       </div>
+
+  </div>
+
+<script>
+  const featureItems = document.querySelectorAll('.feature-item');
+
+  featureItems.forEach((item) => {
+    const button = item.querySelector('.feature-summary');
+    const icon = item.querySelector('.feature-icon');
+
+    button.addEventListener('click', () => {
+      const wasActive = item.classList.contains('active');
+
+      featureItems.forEach((otherItem) => {
+        const otherButton = otherItem.querySelector('.feature-summary');
+        const otherIcon = otherItem.querySelector('.feature-icon');
+
+        otherItem.classList.remove('active');
+        otherButton.setAttribute('aria-expanded', 'false');
+        otherIcon.textContent = '+';
+      });
+
+      if (!wasActive) {
+        item.classList.add('active');
+        button.setAttribute('aria-expanded', 'true');
+        icon.textContent = '−';
+      }
+    });
+  });
+
+  if (localStorage.getItem('token')) {
+    document.querySelector('.header-signup')?.classList.add('hidden');
+    document.querySelector('.header-login')?.classList.add('hidden');
+  }
+</script>
+<script src="/theme.js"></script>
+</body>
+</html>
