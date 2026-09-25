@@ -119,6 +119,30 @@ app.use('/api/customer', customerRoutes);
 app.use('/api', toolsRoutes);
 app.use('/api/department', departmentRoutes);
 
+
+// ======================================================
+// HEALTH CHECK
+// ======================================================
+app.get('/api/health', async (req, res) => {
+  try {
+    await pool.query('SELECT 1');
+
+    res.status(200).json({
+      status: 'ok',
+      database: 'connected',
+      uptime: process.uptime()
+    });
+  } catch (err) {
+    console.error('Health check failed:', err.message);
+
+    res.status(503).json({
+      status: 'error',
+      database: 'disconnected'
+    });
+  }
+});
+
+
 // ======================================================
 // DATABASE SETUP
 // ======================================================
