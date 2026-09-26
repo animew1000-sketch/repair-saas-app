@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Apex SaaS | Platform Overview</title>
+  <link rel="stylesheet" href="public/styles-reworked.css">
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <div class="brand" onclick="window.location.href='overview.html'"><img class="brand-logo" src="public/images/Motivo-white-word-transparent.png" alt="Motivo"></div>
+      <div>
+        <a class="nav-btn" href="overview.html">Platform Overview</a>
+        <a class="nav-btn" href="contact.html">Contact</a>
+        <div class="portal-menu">
+          <button class="nav-btn portal-menu-toggle" type="button" aria-expanded="false" aria-controls="portalMenu" onclick="togglePortalMenu(event)">Portal Login <span aria-hidden="true">⌄</span></button>
+          <div class="portal-menu-options" id="portalMenu" role="menu">
+            <button type="button" role="menuitem" onclick="window.location.href='index.html?screen=loginSection'">Log In</button>
+            <button type="button" role="menuitem" onclick="window.location.href='index.html?screen=registerSection'">Sign Up</button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main id="landingSection">
+      <section class="hero">
+        <div class="marketing-pill">⚡ Next-Gen Auto Repair Operating System</div>
+        <h1>Cloud-Native Management Built for <span>Independent Auto Shops</span></h1>
+        <p>Streamline customer intake, vehicle diagnostic tracking, technician workflow, parts lookup, and automated invoicing in one secure, multi-tenant SaaS platform.</p>
+        <div style="display:flex; justify-content:center; gap:12px; flex-wrap:wrap;">
+          <button style="width:auto; padding:12px 24px;" onclick="window.location.href='index.html?screen=registerSection'">Book Appointment / Signup</button>
+          <button style="width:auto; padding:12px 24px; background:transparent; border:1px solid var(--primary);" onclick="window.location.href='index.html?screen=loginSection'">Staff &amp; Client Portal Login</button>
+        </div>
+        <div class="shop-switcher">
+          <span>Interactive Demo Shop Pages:</span>
+          <a href="/apex-mechanics" class="shop-chip">🍊 Apex Precision Mechanics</a>
+          <a href="/vanguard-auto" class="shop-chip">🔹 Vanguard Auto Performance</a>
+        </div>
+      </section>
+
+      <section class="marketing-stat-grid">
+        <div class="stat-box"><div class="stat-number">100%</div><div class="stat-label">Multi-Tenant Data Isolation</div></div>
+        <div class="stat-box"><div class="stat-number">6-Digit</div><div class="stat-label">Fast Staff PIN Authentication</div></div>
+        <div class="stat-box"><div class="stat-number">8-Step</div><div class="stat-label">End-to-End Shop Workflow</div></div>
+      </section>
+
+      <div class="overview-feature-row">
+        <section class="overview-features" aria-label="Platform features">
+          <h2>Everything your shop needs, in one place.</h2>
+          <ul class="feature-list">
+            <li><details open><summary><span aria-hidden="true">🏢</span> Multi-Tenant SaaS Architecture</summary><p>Instantly onboard auto repair businesses with individual branding, custom theme colors, dedicated URLs, and isolated database schemas.</p></details></li>
+            <li><details><summary><span aria-hidden="true">⚡</span> Staff 6-Digit PIN System</summary><p>Technicians and service advisors log in within seconds via shop-assigned PINs, eliminating complex passwords on the shop floor.</p></details></li>
+            <li><details><summary><span aria-hidden="true">✉️</span> Client Portal &amp; Status Tracking</summary><p>Vehicle owners receive live job status updates, view digital repair estimates, and review transparent invoices from any device.</p></details></li>
+            <li><details><summary><span aria-hidden="true">🔍</span> Integrated VIN &amp; Parts Lookup</summary><p>Automated 17-digit VIN decoding matches vehicle makes and models with real-time market pricing for parts and labor billing.</p></details></li>
+          </ul>
+        </section>
+        <figure class="overview-feature-image">
+          <img src="images/Disk-Break.jpg" alt="Brake disc and caliper from an auto repair shop">
+          <figcaption>Keep every repair detail moving from intake to invoice.</figcaption>
+        </figure>
+      </div>
+
+      <section class="card" style="border-left: 4px solid var(--primary);">
+        <h3 style="margin-top:0; color:var(--primary);">🎯 Ready-to-Present Project Architecture</h3>
+        <p style="color:var(--text-muted); margin-bottom:12px;">This software solution demonstrates a production-grade Web Application featuring Node.js Express API endpoints, MySQL multi-tenant database normalization, JWT authentication with role-based access control (RBAC), and custom frontend CSS variable theme synchronization.</p>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    function togglePortalMenu(event) {
+      event.stopPropagation();
+      const menu = document.getElementById('portalMenu');
+      const toggle = document.querySelector('.portal-menu-toggle');
+      const isOpen = menu.classList.toggle('open');
+      toggle.setAttribute('aria-expanded', String(isOpen));
+    }
+
+    function closePortalMenu() {
+      const menu = document.getElementById('portalMenu');
+      const toggle = document.querySelector('.portal-menu-toggle');
+      menu.classList.remove('open');
+      toggle.setAttribute('aria-expanded', 'false');
+    }
+
+    document.addEventListener('click', closePortalMenu);
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape') closePortalMenu();
+    });
+
+    document.querySelectorAll('.feature-list details').forEach(detail => {
+      detail.querySelector('summary').addEventListener('click', event => {
+        event.preventDefault();
+        const shouldOpen = !detail.open;
+
+        document.querySelectorAll('.feature-list details[open]').forEach(openDetail => {
+          openDetail.open = false;
+        });
+
+        detail.open = shouldOpen;
+      });
+    });
+  </script>
+</body>
+</html>
