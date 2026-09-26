@@ -1,634 +1,1268 @@
 <!DOCTYPE html>
+
 <html lang="en">
+
 <head>
+
   <meta charset="UTF-8">
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>Apex SaaS | Multi-Tenant Auto Repair Operating System</title>
+
 <link rel="stylesheet" href="/styles-reworked.css">
+
 </head>
+
 <body>
+
   <div class="container">
-    
+
+
+
 <div class="header">
+
   <div
+
     class="brand"
+
     id="navBrand"
+
     onclick="handleHomeNavigation()"
+
   >
+
     <span id="brandName">Apex Auto SaaS</span>
+
   </div>
 
+
+
   <div class="header-nav">
+
     <div class="header-links">
 
+
+
       <!-- PUBLIC / STAFF NAVIGATION -->
+
       <button
+
         class="header-link public-nav-link"
+
         type="button"
+
         onclick="handleHomeNavigation()"
+
       >
+
         Home
+
       </button>
 
-      <a
-        class="header-link public-nav-link"
-        href="/overview.html"
-      >
-        Platform Overview
-      </a>
+
 
       <a
+
         class="header-link public-nav-link"
-        href="/contact.html"
+
+        href="/overview.html"
+
       >
-        Contact
+
+        Platform Overview
+
       </a>
+
+
+
+      <a
+
+        class="header-link public-nav-link"
+
+        href="/contact.html"
+
+      >
+
+        Contact
+
+      </a>
+
+
 
       <!-- CUSTOMER PORTAL NAVIGATION -->
+
       <button
+
         class="header-link customer-nav-link hidden"
+
         type="button"
+
         data-customer-nav="home"
+
         onclick="openCustomerPortalTab('home')"
+
       >
+
         Home
+
       </button>
 
+
+
       <button
+
         class="header-link customer-nav-link hidden"
+
         type="button"
+
         data-customer-nav="view-requests"
+
         onclick="openCustomerPortalTab('view-requests')"
+
       >
+
         My Service
+
       </button>
 
+
+
       <button
+
         class="header-link customer-nav-link hidden"
+
         type="button"
+
         data-customer-nav="create-request"
+
         onclick="openCustomerPortalTab('create-request')"
+
       >
+
         New Request
+
       </button>
 
+
+
       <button
+
         class="header-link customer-nav-link hidden"
+
         type="button"
+
         data-customer-nav="contact-us"
+
         onclick="openCustomerPortalTab('contact-us')"
+
       >
+
         Contact Shop
+
       </button>
 
+
+
       <button
+
         class="header-link customer-nav-link hidden"
+
         type="button"
+
         data-customer-nav="settings"
+
         onclick="openCustomerPortalTab('settings')"
+
       >
+
         Settings
+
       </button>
+
+
 
     </div>
+
+
 
     <div class="header-actions">
 
+
+
       <button
+
         class="header-link header-action-link header-signup"
+
         type="button"
+
         onclick="showScreen('registerSection')"
+
       >
+
         Sign Up
+
       </button>
 
+
+
       <button
+
         class="header-link header-action-link header-login"
+
         type="button"
+
         onclick="showScreen('loginSection')"
+
       >
+
         Portal Login
+
       </button>
 
+
+
       <button
+
         class="header-link header-action-link signed-in-logout hidden"
+
         type="button"
+
         onclick="logout()"
+
       >
+
         Logout
+
       </button>
+
+
 
     </div>
+
   </div>
+
 </div>    <!-- 0. PUBLIC MARKETING LANDING PAGE -->
+
     <div id="landingSection">
+
 <div class="hero hero-slider">
 
+
+
   <div class="hero-slides">
+
     <div
+
       class="hero-slide active"
+
       style="background-image: url('/images/Neon.jpg');"
+
     ></div>
 
+
+
     <div
+
       class="hero-slide"
+
       style="background-image: url('/images/Smokey-lift.jpg');"
+
     ></div>
 
+
+
     <div
+
       class="hero-slide"
+
       style="background-image: url('/images/Disk-Break.jpg');"
+
     ></div>
+
   </div>
+
+
 
   <div class="hero-overlay"></div>
 
+
+
   <button
+
     class="hero-arrow hero-arrow-left"
+
     type="button"
+
     onclick="previousHeroSlide()"
+
     aria-label="Previous slide"
+
   >
+
     &#10094;
+
   </button>
+
+
 
   <div class="hero-content">
 
+
+
     <div class="marketing-pill">
+
       NEXT-GEN AUTO REPAIR SYSTEM
+
     </div>
+
+
 
     <h1 id="heroTitle">
+
       Cloud-Native Management Built for
+
       <span>Independent Auto Shops</span>
+
     </h1>
 
+
+
     <p id="heroSubtitle">
+
       Manage customers, vehicles, technicians, parts,
+
       estimates, and invoices — all in one place.
+
     </p>
 
+
+
     <div class="hero-actions">
-      <button
-        class="hero-primary-btn auth-signup"
-        type="button"
-        onclick="showScreen('registerSection')"
-      >
-        Get Started →
-      </button>
 
       <button
-        class="hero-secondary-btn auth-login"
+
+        class="hero-primary-btn auth-signup"
+
         type="button"
-        onclick="showScreen('loginSection')"
+
+        onclick="showScreen('registerSection')"
+
       >
-        Portal Login
+
+        Get Started →
+
       </button>
+
+
+
+      <button
+
+        class="hero-secondary-btn auth-login"
+
+        type="button"
+
+        onclick="showScreen('loginSection')"
+
+      >
+
+        Portal Login
+
+      </button>
+
     </div>
+
+
 
   </div>
 
+
+
   <button
+
     class="hero-arrow hero-arrow-right"
+
     type="button"
+
     onclick="nextHeroSlide()"
+
     aria-label="Next slide"
+
   >
+
     &#10095;
+
   </button>
 
+
+
 </div>
+
+
 
       <div class="marketing-stat-grid">
+
         <div class="stat-box">
+
           <div class="stat-number">100%</div>
+
           <div class="stat-label">Multi-Tenant Data Isolation</div>
+
         </div>
+
         <div class="stat-box">
+
           <div class="stat-number">6-Digit</div>
+
           <div class="stat-label">Fast Staff PIN Authentication</div>
+
         </div>
+
         <div class="stat-box">
+
           <div class="stat-number">8-Step</div>
+
           <div class="stat-label">End-to-End Shop Workflow</div>
+
         </div>
+
       </div>
+
+
 
       <div class="grid" style="margin-bottom: 24px;">
+
         <div class="feature-card">
+
           <h3>🏢 Multi-Tenant SaaS Architecture</h3>
+
           <p>Instantly onboard auto repair businesses with individual branding, custom theme colors, dedicated URLs, and isolated database schemas.</p>
+
         </div>
+
         <div class="feature-card">
+
           <h3>⚡ Staff 6-Digit PIN System</h3>
+
           <p>Technicians and service advisors log in within seconds via shop-assigned PINs, eliminating complex passwords on the shop floor.</p>
+
         </div>
+
         <div class="feature-card">
+
           <h3>✉️ Client Portal & Status Tracking</h3>
+
           <p>Vehicle owners receive live job status updates, view digital repair estimates, and review transparent invoices from any device.</p>
+
         </div>
+
         <div class="feature-card">
+
           <h3>🔍 Integrated VIN & Parts Lookup</h3>
+
           <p>Automated 17-digit VIN decoding matches vehicle makes and models with real-time market pricing for parts and labor billing.</p>
+
         </div>
+
       </div>
+
+
 
       <div class="card" style="border-left: 4px solid var(--primary);">
+
         <h3 style="margin-top:0; color:var(--primary);">🎯 Ready-to-Present Project Architecture</h3>
+
         <p style="color:var(--text-muted); margin-bottom:12px;">
+
           This software solution demonstrates a production-grade Web Application featuring Node.js Express API endpoints, MySQL multi-tenant database normalization, JWT authentication with role-based access control (RBAC), and custom frontend CSS variable theme synchronization.
+
         </p>
+
       </div>
+
     </div>
+
+
 
     <!-- 1. REGISTRATION -->
+
     <div id="registerSection" class="auth-screen hidden">
+
       <div class="auth-split auth-register-layout">
+
         <section class="auth-form-panel">
+
           <div class="auth-form-wrap">
+
             <div class="auth-kicker">CUSTOMER ONBOARDING</div>
+
             <h1>Create Your Service Account</h1>
+
             <p class="auth-subtitle">
+
               Create an account for your selected repair shop to request
+
               service, track repairs, and review invoices.
+
             </p>
+
+
 
             <form onsubmit="handleRegister(event)" class="auth-form">
+
               <div class="auth-field">
+
                 <label for="reg_company_id">Repair Shop</label>
+
                 <select id="reg_company_id" required>
+
                   <option value="">Loading shop locations...</option>
+
                 </select>
+
               </div>
 
+
+
               <div class="auth-grid-two">
+
                 <div class="auth-field">
+
                   <label for="reg_first_name">First Name</label>
+
                   <input type="text" id="reg_first_name" autocomplete="given-name" required />
+
                 </div>
+
                 <div class="auth-field">
+
                   <label for="reg_last_name">Last Name</label>
+
                   <input type="text" id="reg_last_name" autocomplete="family-name" required />
+
                 </div>
+
               </div>
 
+
+
               <div class="auth-field">
+
                 <label for="reg_phone">Phone Number</label>
+
                 <input type="tel" id="reg_phone" autocomplete="tel" required />
+
               </div>
+
+
 
               <div class="auth-grid-two">
+
                 <div class="auth-field">
+
                   <label for="reg_email">Email Address</label>
+
                   <input type="email" id="reg_email" autocomplete="email" placeholder="you@example.com" required />
+
                 </div>
+
                 <div class="auth-field">
+
                   <label for="reg_username">Username</label>
+
                   <input type="text" id="reg_username" autocomplete="username" required />
+
                 </div>
+
               </div>
 
+
+
               <div class="auth-field">
+
                 <label for="reg_password">Password</label>
+
                 <input type="password" id="reg_password" autocomplete="new-password" required />
+
               </div>
+
+
 
               <label class="auth-check-row" for="reg_notice_ack">
+
                 <input type="checkbox" id="reg_notice_ack" required />
+
                 <span>
+
                   I acknowledge the
+
                   <a href="/notice.html" target="_blank" rel="noopener noreferrer">
+
                     Privacy Policy, Terms of Use, and California Repair Service Notice
+
                   </a>.
+
                 </span>
+
               </label>
 
+
+
               <button class="auth-submit-btn" type="submit">
+
                 Create Account
+
               </button>
 
+
+
               <p class="auth-switch-copy">
+
                 Already have an account?
+
                 <button type="button" class="auth-text-link" onclick="showScreen('loginSection')">
+
                   Sign in
+
                 </button>
+
               </p>
+
             </form>
+
           </div>
+
         </section>
+
+
 
         <aside class="auth-visual-panel auth-register-visual" aria-hidden="true">
+
           <div class="auth-visual-overlay"></div>
+
           <div class="auth-visual-copy">
+
             <span>YOUR SHOP. YOUR SERVICE HISTORY.</span>
+
             <h2>Everything about your repair visit in one place.</h2>
+
             <p>
+
               Appointments, repair progress, estimates, and invoices stay
+
               connected to the shop you choose.
+
             </p>
+
           </div>
+
         </aside>
+
       </div>
+
     </div>
+
+
 
     <!-- 2. LOGIN PAGE -->
+
     <div id="loginSection" class="auth-screen hidden">
+
       <div class="auth-split auth-login-layout">
+
         <section class="auth-form-panel">
+
           <div class="auth-form-wrap auth-login-wrap">
+
             <div class="auth-kicker">SECURE PORTAL ACCESS</div>
+
             <h1>Welcome Back</h1>
+
             <p class="auth-subtitle">
+
               Customers can sign in with email or username and password.
+
               Staff can use their assigned 6-digit PIN.
+
             </p>
+
+
 
             <form onsubmit="handleLogin(event)" class="auth-form">
+
               <div class="auth-field">
+
                 <label for="login_company_id">Repair Shop</label>
+
                 <select id="login_company_id">
+
                   <option value="">-- Auto-Detect Shop by PIN/Account --</option>
+
                 </select>
+
               </div>
 
+
+
               <div class="auth-field">
+
                 <label for="login_input">Email, Username, or Staff PIN</label>
+
                 <input
+
                   type="text"
+
                   id="login_input"
+
                   autocomplete="username"
+
                   placeholder="Email / username / 6-digit PIN"
+
                   required
+
                 />
+
               </div>
 
+
+
               <div class="auth-field">
+
                 <label for="password">
+
                   Password
+
                   <span class="auth-label-note">Customer accounts only</span>
+
                 </label>
+
                 <input
+
                   type="password"
+
                   id="password"
+
                   autocomplete="current-password"
+
                   placeholder="Enter password"
+
                 />
+
               </div>
+
+
 
               <button class="auth-submit-btn" type="submit">
+
                 Log In
+
               </button>
 
+
+
               <div class="auth-login-note">
+
                 <strong>Staff login:</strong>
+
                 enter your 6-digit PIN above. A password is not required.
+
               </div>
 
+
+
               <p class="auth-switch-copy">
+
                 Need a customer account?
+
                 <button type="button" class="auth-text-link" onclick="showScreen('registerSection')">
+
                   Create one
+
                 </button>
+
               </p>
+
             </form>
+
           </div>
+
         </section>
+
+
 
         <aside class="auth-visual-panel auth-login-visual" aria-hidden="true">
+
           <div class="auth-visual-overlay"></div>
+
           <div class="auth-visual-copy">
+
             <span>CONNECTED REPAIR WORKFLOW</span>
+
             <h2>Stay connected from drop-off to final invoice.</h2>
+
             <p>
+
               Customers and shop staff each get the tools they need without
+
               cluttering the experience with unnecessary screens.
+
             </p>
+
           </div>
+
         </aside>
+
       </div>
+
     </div>
 
+
+
     <!-- 3. CUSTOMER DASHBOARD -->
+
     <div id="customerDashboard" class="card hidden">
+
 <div id="customerPortalHeader" class="customer-portal-header">        <div>
+
           <h2>Customer Portal</h2>
+
           <small class="shop-title-text" id="clientShopBanner"></small>
+
         </div>
+
         <div>
+
           Welcome, <strong id="clientWelcomeName" style="color:var(--primary);"></strong>!
+
 <button
+
   onclick="logout()"
+
   class="btn-secondary"
+
   style="margin-left:12px;"
+
 >
+
   Logout
+
 </button>
+
         </div>
+
       </div>
+
+
 
 <div
+
   class="customer-nav"
+
   role="tablist"
+
   aria-label="Customer portal sections"
+
 >
+
   <button
+
     id="tab-view-requests"
+
     class="portal-tab active"
+
     type="button"
+
     role="tab"
+
     aria-selected="true"
+
     aria-controls="customerTab-view-requests"
+
     tabindex="0"
+
     onclick="switchCustomerTab('view-requests')"
+
   >
+
     View Service Requests & Invoices
+
   </button>
 
+
+
   <button
+
     id="tab-create-request"
+
     class="portal-tab"
+
     type="button"
+
     role="tab"
+
     aria-selected="false"
+
     aria-controls="customerTab-create-request"
+
     tabindex="-1"
+
     onclick="switchCustomerTab('create-request')"
+
   >
+
     Create New Service Request
+
   </button>
 
+
+
   <button
+
     id="tab-contact-us"
+
     class="portal-tab"
+
     type="button"
+
     role="tab"
+
     aria-selected="false"
+
     aria-controls="customerTab-contact-us"
+
     tabindex="-1"
+
     onclick="switchCustomerTab('contact-us')"
+
   >
+
     Contact Us & Support
+
   </button>
 
+
+
   <button
+
     id="tab-settings"
+
     class="portal-tab settings-tab"
+
     type="button"
+
     role="tab"
+
     aria-selected="false"
+
     aria-controls="customerTab-settings"
+
     tabindex="-1"
+
     onclick="switchCustomerTab('settings')"
+
   >
+
     Settings
+
   </button>
+
 </div>
+
       <div
+
         id="customerTab-home"
+
         class="customer-home"
+
         role="tabpanel"
+
         aria-label="Customer shop home"
+
       >
+
         <section class="customer-home-hero">
+
           <div>
+
             <div class="customer-home-kicker">YOUR REPAIR SHOP</div>
+
             <h1 id="customerHomeShopName">Your Shop</h1>
+
             <p id="customerHomeShopText">
+
               Welcome back. Your service information and shop updates are available here.
+
             </p>
+
           </div>
 
+
+
           <button
+
             class="btn-primary"
+
             type="button"
+
             onclick="openCustomerPortalTab('create-request')"
+
           >
+
             Request Service
+
           </button>
+
         </section>
+
+
 
         <section class="customer-home-grid">
+
           <article class="customer-home-card">
+
             <span class="customer-home-label">Current Status</span>
+
             <strong id="customerHomeStatus">Loading...</strong>
+
             <button
+
               type="button"
+
               class="customer-home-link"
+
               onclick="openCustomerPortalTab('view-requests')"
+
             >
+
               View service details →
+
             </button>
+
           </article>
 
+
+
           <article class="customer-home-card">
+
             <span class="customer-home-label">Next Appointment</span>
+
             <strong id="customerHomeAppointment">Loading...</strong>
+
           </article>
 
+
+
           <article class="customer-home-card">
+
             <span class="customer-home-label">Vehicle</span>
+
             <strong id="customerHomeVehicle">Loading...</strong>
+
           </article>
 
+
+
           <article class="customer-home-card">
+
             <span class="customer-home-label">Invoice</span>
+
             <strong id="customerHomeInvoice">Loading...</strong>
+
             <button
+
               type="button"
+
               class="customer-home-link"
+
               onclick="openCustomerPortalTab('view-requests')"
+
             >
+
               View invoice →
+
             </button>
+
           </article>
+
         </section>
+
+
 
         <section class="customer-home-shop-card">
+
           <div>
+
             <span class="customer-home-label">SHOP PORTAL</span>
+
             <h3 id="customerHomeShopHeading">Your selected repair shop</h3>
+
             <p>
+
               This portal is tied to the repair shop selected for your account.
+
               Service requests, repair updates, and invoices shown here belong to that shop.
+
             </p>
+
           </div>
+
+
 
           <button
+
             class="btn-secondary"
+
             type="button"
+
             onclick="openCustomerPortalTab('contact-us')"
+
           >
+
             Contact Shop
+
           </button>
+
         </section>
+
       </div>
+
+
 
       <div id="customerTab-view-requests" role="tabpanel" aria-labelledby="tab-view-requests">
+
         <div id="statusBadge" style="margin: 12px 0;" aria-live="polite"></div>
+
         <div id="invoiceContainer" class="invoice-box">
+
           <h3>Active Repair Job & Invoicing Details</h3>
+
           <div id="invoiceContent" aria-live="polite">Loading records...</div>
+
         </div>
+
+
 
         <form onsubmit="handleUpdateCustomerProfile(event)" style="margin-top: 24px;">
+
           <h3>Update Profile & Vehicle Details</h3>
+
           <div class="grid">
+
             <div><label for="cust_first_name">First Name</label><input type="text" id="cust_first_name" required /></div>
+
             <div><label for="cust_last_name">Last Name</label><input type="text" id="cust_last_name" required /></div>
+
             <div><label for="cust_phone">Phone Number</label><input type="text" id="cust_phone" required /></div>
+
           </div>
+
           <div class="grid">
+
             <div><label for="cust_email">Email Address</label><input type="email" id="cust_email" required /></div>
+
             <div><label for="cust_vin">VIN Number (17 Digits)</label><input type="text" id="cust_vin" maxlength="17" required /></div>
+
           </div>
+
           <div class="grid">
+
             <div><label for="cust_make">Vehicle Make</label><input type="text" id="cust_make" required /></div>
+
             <div><label for="cust_model">Vehicle Model</label><input type="text" id="cust_model" required /></div>
+
             <div><label for="cust_year">Year</label><input type="number" id="cust_year" required /></div>
+
           </div>
+
           <label for="cust_issue">Reported Problem / Symptoms</label>
+
           <textarea id="cust_issue" rows="3" required></textarea>
 
+
+
  <button class="btn-primary" type="submit">
+
   Save Updated Profile
+
 </button>         
+
         </form>
+
       </div>
+
+
 
       <div id="customerTab-create-request" class="invoice-box hidden" role="tabpanel" aria-labelledby="tab-create-request">
+
         <h3>Submit New Vehicle Repair / Maintenance Request</h3>
+
         <form onsubmit="handleBookAppointment(event)">
+
           <div class="grid">
+
             <div><label for="book_vin">VIN Number (17 Digits)</label><input type="text" id="book_vin" maxlength="17" placeholder="e.g. 1FA6P8CF0H1234567" required /></div>
+
             <div><label for="book_make">Vehicle Make</label><input type="text" id="book_make" placeholder="e.g. Ford" required /></div>
+
             <div><label for="book_model">Vehicle Model</label><input type="text" id="book_model" placeholder="e.g. Mustang" required /></div>
+
             <div><label for="book_year">Year</label><input type="number" id="book_year" placeholder="e.g. 2022" required /></div>
+
           </div>
+
           <label for="book_datetime">Preferred Appointment Date & Time</label>
+
           <input type="datetime-local" id="book_datetime" required />
+
           <label for="book_issue">Describe Vehicle Issue / Symptoms</label>
+
           <textarea id="book_issue" rows="3" placeholder="Describe symptoms..." required></textarea>
+
 <button class="btn-primary" type="submit">
+
   Submit Service Request
+
 </button>
+
         </form>
+
       </div>
 
+
+
       <div id="customerTab-contact-us" class="invoice-box hidden" role="tabpanel" aria-labelledby="tab-contact-us">
+
         <h3>Contact Shop Support</h3>
+
         <div class="grid" style="margin-top:20px;">
+
           <div class="feature-card">
+
             <h4>📍 Service Location</h4>
+
             <p id="shopAddressText">100 Industrial Parkway, Mechanics Hub</p>
+
           </div>
+
           <div class="feature-card">
+
             <h4>📞 Phone Support</h4>
+
             <p>(555) 019-2834</p>
+
           </div>
+
         </div>
+
       </div>
+
       <!-- CUSTOMER PORTAL SETTINGS -->
-<div id="customerTab-settings" class="invoice-box settings-page hidden" role="tabpanel" aria-labelledby="tab-settings">
+<div
+  id="customerTab-settings"
+  class="invoice-box settings-page hidden"
+  role="tabpanel"
+  aria-labelledby="tab-settings"
+>
   <h3>Dashboard Settings</h3>
 
   <p style="color: var(--muted); margin-bottom: 20px;">
@@ -638,7 +1272,9 @@
   <div class="settings-grid">
 
     <div class="settings-group">
-      <label for="shopLogoInput">Change Header Picture</label>
+      <label for="shopLogoInput">
+        Change Header Picture
+      </label>
 
       <input
         id="shopLogoInput"
@@ -648,9 +1284,14 @@
     </div>
 
     <div class="settings-group">
-      <label for="themeColorInput">Accent Color</label>
+      <label for="themeColorInput">
+        Accent Color
+      </label>
 
-      <select id="themeColorInput" class="theme-color-picker">
+      <select
+        id="themeColorInput"
+        class="theme-color-picker"
+      >
         <option value="#ef4444">Red</option>
         <option value="#facc15">Yellow</option>
         <option value="#22c55e">Green</option>
@@ -662,314 +1303,678 @@
     </div>
 
   </div>
+
+  <!-- ACCOUNT DANGER ZONE -->
+  <div
+    style="
+      margin-top: 40px;
+      padding: 24px;
+      border: 1px solid #dc2626;
+      border-radius: 12px;
+    "
+  >
+    <h3
+      style="
+        color: #dc2626;
+        margin-top: 0;
+      "
+    >
+      Danger Zone
+    </h3>
+
+    <p
+      style="
+        color: var(--text-muted);
+        margin-bottom: 20px;
+      "
+    >
+      Deleting your account is permanent.
+      Your login and associated repair information
+      will be removed.
+    </p>
+
+    <div class="settings-group">
+      <label for="deleteAccountPassword">
+        Confirm Current Password
+      </label>
+
+      <input
+        id="deleteAccountPassword"
+        type="password"
+        autocomplete="current-password"
+        placeholder="Enter your current password"
+      >
+    </div>
+
+    <button
+      type="button"
+      onclick="deleteCustomerAccount()"
+      style="
+        margin-top: 16px;
+        background: #dc2626;
+        border-color: #dc2626;
+        color: white;
+      "
+    >
+      Delete My Account
+    </button>
+  </div>
+
 </div>
     </div>
 
     <!-- 4. EMPLOYEE & MANAGER DASHBOARD -->
+
     <div id="employeeDashboard" class="card hidden staff-dashboard">
 
+
+
       <section class="staff-portal-hero">
+
         <div class="staff-portal-copy">
+
           <span class="staff-eyebrow">SHOP OPERATIONS</span>
+
           <h2>Shop Operations Portal</h2>
+
           <p id="empShopBanner" class="staff-shop-name"></p>
+
         </div>
+
+
 
         <div class="staff-user-panel">
+
           <span class="staff-user-label">Signed in as</span>
+
           <span id="userRoleBadge" class="badge staff-user-badge"></span>
 
+
+
           <button
+
             onclick="logout()"
+
             class="btn-secondary staff-logout-btn"
+
             type="button"
+
           >
+
             Logout
+
           </button>
+
         </div>
+
       </section>
+
+
 
       <div id="managerControlPanel" class="hidden staff-manager-panel">
 
+
+
         <div class="staff-section-heading">
+
           <div>
+
             <span class="staff-section-kicker">TEAM MANAGEMENT</span>
+
             <h3>Staff Access & Roles</h3>
+
             <p>
+
               Create employee accounts, assign secure 6-digit login PINs,
+
               and manage each team member's shop role.
+
             </p>
+
           </div>
 
+
+
           <span class="staff-manager-chip">Manager controls</span>
+
         </div>
+
+
 
         <div class="staff-manager-grid">
 
+
+
           <section class="staff-create-card">
+
             <div class="staff-card-heading">
+
               <span class="staff-card-number">01</span>
+
               <div>
+
                 <h4>Add Employee</h4>
+
                 <p>Create a new staff profile for this repair shop.</p>
+
               </div>
+
             </div>
+
+
 
             <form onsubmit="handleCreateEmployee(event)" class="staff-create-form">
 
+
+
               <div class="staff-field-grid">
+
                 <div>
+
                   <label for="new_emp_username">Employee Name / Username</label>
+
                   <input
+
                     type="text"
+
                     id="new_emp_username"
+
                     placeholder="e.g. john_tech"
+
                     required
+
                   />
+
                 </div>
 
+
+
                 <div>
+
                   <label for="new_emp_email">Employee Email</label>
+
                   <input
+
                     type="email"
+
                     id="new_emp_email"
+
                     placeholder="john@apex.com"
+
                   />
+
                 </div>
 
+
+
                 <div>
+
                   <label for="new_emp_pin">Assign 6-Digit PIN</label>
+
                   <input
+
                     type="text"
+
                     id="new_emp_pin"
+
                     maxlength="6"
+
                     inputmode="numeric"
+
                     placeholder="e.g. 654321"
+
                     required
+
                   />
+
                 </div>
 
+
+
                 <div>
+
                   <label for="new_emp_role">Assign Role</label>
+
                   <select id="new_emp_role" required>
+
                     <option value="service_advisor">Service Advisor</option>
+
                     <option value="technician">Technician</option>
+
                     <option value="parts_manager">Parts Manager</option>
+
                     <option value="billing">Billing Clerk</option>
+
                     <option value="manager">Manager</option>
+
                   </select>
+
                 </div>
+
               </div>
+
+
 
               <button class="btn-primary staff-create-btn" type="submit">
+
                 Create Employee Profile
+
               </button>
+
             </form>
+
           </section>
+
+
 
           <section class="staff-roster-card">
+
             <div class="staff-card-heading">
+
               <span class="staff-card-number">02</span>
+
               <div>
+
                 <h4>Employee Roster</h4>
+
                 <p>Reset PINs and update employee roles without exposing existing PINs.</p>
+
               </div>
+
             </div>
+
+
 
             <div class="staff-table-shell">
+
               <table class="staff-table">
+
                 <thead>
+
                   <tr>
+
                     <th>ID</th>
+
                     <th>Employee</th>
+
                     <th>Email</th>
+
                     <th>New PIN</th>
+
                     <th>Role</th>
+
                     <th>Action</th>
+
                   </tr>
+
                 </thead>
+
                 <tbody id="employeeRosterBody">
+
                   <tr>
+
                     <td colspan="6">Loading employee records...</td>
+
                   </tr>
+
                 </tbody>
+
               </table>
+
             </div>
+
           </section>
 
+
+
         </div>
+
       </div>
 
+
+
       <section class="staff-workflow-section">
+
         <div class="staff-section-heading">
+
           <div>
+
             <span class="staff-section-kicker">ACTIVE REPAIR WORKFLOW</span>
+
             <h3>Repair Job Workspace</h3>
+
             <p>
+
               Choose a customer and move through the repair process
+
               from intake to final invoice.
+
             </p>
+
           </div>
+
         </div>
+
+
 
         <div class="staff-job-toolbar">
+
           <div class="staff-job-field staff-job-customer">
+
             <label for="customerSelector">
+
               Select Customer
+
             </label>
+
+
 
             <select
+
               id="customerSelector"
+
               onchange="autoFillCustomerData()"
+
             >
+
               <option value="">
+
                 -- Choose Existing Customer Record --
+
               </option>
+
             </select>
 
+
+
             <small>
+
               Customer and vehicle information auto-fills into the workflow.
+
             </small>
+
           </div>
+
+
 
           <div class="staff-job-field staff-job-id">
+
             <label for="activeJobId">
+
               Active Repair Job ID
+
             </label>
 
+
+
             <input
+
               type="number"
+
               id="activeJobId"
+
               value="1"
+
             />
+
           </div>
+
         </div>
+
+
 
         <div class="workflow-bar staff-workflow-tabs">
+
           <button id="btn-customer" class="step-card" type="button" onclick="showDept('customer')">
+
             <span>01</span> Customer
+
           </button>
+
+
 
           <button id="btn-vehicle" class="step-card" type="button" onclick="showDept('vehicle')">
+
             <span>02</span> Vehicle
+
           </button>
+
+
 
           <button id="btn-appointment" class="step-card" type="button" onclick="showDept('appointment')">
+
             <span>03</span> Appointment
+
           </button>
+
+
 
           <button id="btn-repair_order" class="step-card" type="button" onclick="showDept('repair_order')">
+
             <span>04</span> Repair Order
+
           </button>
+
+
 
           <button id="btn-parts_labor" class="step-card" type="button" onclick="showDept('parts_labor')">
+
             <span>05</span> Parts + Labor
+
           </button>
+
+
 
           <button id="btn-estimate" class="step-card" type="button" onclick="showDept('estimate')">
+
             <span>06</span> Estimate
+
           </button>
+
+
 
           <button id="btn-repair" class="step-card" type="button" onclick="showDept('repair')">
+
             <span>07</span> Repair
+
           </button>
+
+
 
           <button id="btn-invoice" class="step-card" type="button" onclick="showDept('invoice')">
+
             <span>08</span> Invoice
+
           </button>
+
         </div>
 
+
+
         <form id="deptForm" class="staff-dept-form" onsubmit="submitDepartment(event)">
+
           <div class="staff-dept-heading">
+
             <span class="staff-card-number">WORKFLOW</span>
+
             <h3 id="deptTitle">Department Action</h3>
+
           </div>
+
+
 
           <div id="formFields" class="staff-dept-fields">
+
             Select a department above
+
           </div>
 
+
+
           <button class="btn-primary staff-save-record-btn" type="submit">
+
             Save Department Record
+
           </button>
+
         </form>
+
       </section>
+
+
 
     </div>
 
+
+
   </div>
+
 <footer class="legal-footer" style="text-align:center; margin:28px 0 14px;">
+
   <a href="/notice.html">Privacy, Terms & California Notice</a>
+
 </footer>
 
+
+
 <div class="theme-footer">
+
   <span class="theme-label">Light</span>
 
+
+
   <button
+
     class="theme-switch"
+
     type="button"
+
     onclick="toggleTheme()"
+
     aria-label="Switch between light and dark mode"
+
   >
+
     <span class="theme-switch-knob"></span>
+
   </button>
 
+
+
   <span class="theme-label">Dark</span>
+
 </div>
+
+
 
   <script src="/app.js"></script>
 
+
+
   <script>
+
     const customerTabs = Array.from(
+
       document.querySelectorAll('.customer-nav [role="tab"]')
+
     );
 
+
+
     function setCustomerTabA11y(activeTab) {
+
       customerTabs.forEach((tab) => {
+
         const isActive = tab === activeTab;
+
         tab.setAttribute('aria-selected', String(isActive));
+
         tab.setAttribute('tabindex', isActive ? '0' : '-1');
+
       });
+
     }
 
+
+
     customerTabs.forEach((tab, index) => {
+
       tab.addEventListener('click', () => {
+
         setCustomerTabA11y(tab);
+
       });
+
+
 
       tab.addEventListener('keydown', (event) => {
+
         let nextIndex = null;
 
+
+
         if (event.key === 'ArrowRight') {
+
           nextIndex = (index + 1) % customerTabs.length;
+
         } else if (event.key === 'ArrowLeft') {
+
           nextIndex = (index - 1 + customerTabs.length) % customerTabs.length;
+
         } else if (event.key === 'Home') {
+
           nextIndex = 0;
+
         } else if (event.key === 'End') {
+
           nextIndex = customerTabs.length - 1;
+
         }
 
+
+
         if (nextIndex !== null) {
+
           event.preventDefault();
+
           customerTabs[nextIndex].focus();
+
           customerTabs[nextIndex].click();
+
         }
+
       });
+
     });
+
   </script>
+
+
+
 
 
   <script>
+
     const requestedMainScreen =
+
       new URLSearchParams(window.location.search).get('screen');
 
+
+
     if (requestedMainScreen === 'landingSection') {
+
       showScreen('landingSection');
+
       updateHeaderAuthButtons();
+
     }
+
   </script>
 
+
+
   <script src="/theme.js"></script>
+
 </body>
+
 </html>
