@@ -5,8 +5,11 @@ const transporter = nodemailer.createTransport({
   port: Number(process.env.SMTP_PORT || 25),
   secure: false,
 
-  // Postfix only accepts trusted local connections from the app server.
-  // No SMTP username/password is required.
+  // Node and Postfix are on the same server over loopback.
+  // Do not attempt STARTTLS using Postfix's local self-signed certificate.
+  ignoreTLS: true,
+
+  // Postfix trusts localhost, so no SMTP credentials are required.
   auth: undefined
 });
 
