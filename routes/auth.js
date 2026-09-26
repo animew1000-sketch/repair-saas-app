@@ -2,6 +2,7 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const pool = require('../db/pool');
+const { sendMail } = require('../services/mail');
 
 const router = express.Router();
 
@@ -139,13 +140,37 @@ router.post('/register', async (req, res) => {
       ]
     );
 
-    await connection.commit();
+   await connection.commit();
 
-    return res.json({
-      success: true,
-      message:
-        'Account created successfully! You can now log in.'
-    });
+// ======================================================
+// REGISTRATION CONFIRMATION EMAIL
+// ======================================================
+// The account has already been committed to the database,
+// so an email failure must never undo a successful signup.
+try {
+  await sendMail({
+    to: email,
+    subject: 'Welcome to Repair SaaS',
+    text:
+      `Hi ${first_name},\n\n` +
+      `Your Repair SaaS customer account has been created successfully.\n\n` +
+      `Username: ${username}\n\n` +
+      `You can now log in to view and manage your repair information.\n\n` +
+      `Thank you,\n` +
+      `Repair SaaS`
+  });
+} catch (emailErr) {
+  console.error(
+    'Registration email failed:',
+    emailErr.message
+  );
+}
+
+return res.json({
+  success: true,
+  message:
+    'Account created successfully! You can now log in.'
+});
 
   } catch (err) {
     if (connection) {
