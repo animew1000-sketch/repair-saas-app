@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Contact Apex SaaS</title>
+	<link rel="stylesheet" href="public/styles-reworked.css">
+</head>
+<body>
+	<div class="container">
+		<header class="header">
+			<div class="brand" id="navBrand" onclick="window.location.href='overview.html'"><img class="brand-logo" src="public/images/Motivo-white-word-transparent.png" alt="Motivo"><span id="brandName" hidden>Apex Auto SaaS</span></div>
+			<div>
+				<a class="nav-btn" href="overview.html">Platform Overview</a>
+				<a class="nav-btn" href="contact.html">Contact</a>
+				<div class="portal-menu">
+					<button class="nav-btn portal-menu-toggle" type="button" aria-expanded="false" aria-controls="portalMenu" onclick="togglePortalMenu(event)">Portal Login <span aria-hidden="true">⌄</span></button>
+					<div class="portal-menu-options" id="portalMenu" role="menu">
+						<button type="button" role="menuitem" onclick="window.location.href='index.html'">Log In</button>
+						<button type="button" role="menuitem" onclick="window.location.href='index.html'">Sign Up</button>
+					</div>
+				</div>
+			</div>
+		</header>
+
+		<main class="contact-page">
+			<section class="contact-intro">
+				<span class="marketing-pill">We are here to help</span>
+				<h1>Let&apos;s get your shop moving.</h1>
+				<p>Have a question about Apex Auto SaaS, need help with your account, or want to see how it fits your repair shop? Send us a message and our team will get back to you.</p>
+			</section>
+
+			<section class="contact-layout" aria-label="Contact information and message form">
+				<div class="contact-details">
+					<div class="contact-detail">
+						<span class="contact-icon" aria-hidden="true">@</span>
+						<div><strong>Email us</strong><a href="mailto:hello@apexautosaas.com">hello@apexautosaas.com</a></div>
+					</div>
+					<div class="contact-detail">
+						<span class="contact-icon" aria-hidden="true">+</span>
+						<div><strong>Call our team</strong><a href="tel:+15550192834">(555) 019-2834</a></div>
+					</div>
+					<div class="contact-detail">
+						<span class="contact-icon" aria-hidden="true">M</span>
+						<div><strong>Office hours</strong><span>Monday-Friday, 9am-5pm</span></div>
+					</div>
+				</div>
+
+				<form class="contact-form" id="contactForm">
+					<h2>Send us a message</h2>
+					<div class="contact-form-grid">
+						<div><label for="contactName">Name</label><input id="contactName" name="name" type="text" placeholder="Your name" required></div>
+						<div><label for="contactEmail">Email</label><input id="contactEmail" name="email" type="email" placeholder="you@example.com" required></div>
+					</div>
+					<label for="contactSubject">Subject</label>
+					<input id="contactSubject" name="subject" type="text" placeholder="How can we help?" required>
+					<label for="contactMessage">Message</label>
+					<textarea id="contactMessage" name="message" placeholder="Tell us a little more..." required></textarea>
+					<button type="submit">Send message</button>
+					<p class="form-status" id="formStatus" role="status" aria-live="polite"></p>
+				</form>
+			</section>
+		</main>
+	</div>
+
+	<script>
+		function togglePortalMenu(event) {
+			event.stopPropagation();
+			const menu = document.getElementById('portalMenu');
+			const toggle = document.querySelector('.portal-menu-toggle');
+			const isOpen = menu.classList.toggle('open');
+			toggle.setAttribute('aria-expanded', String(isOpen));
+		}
+
+		function closePortalMenu() {
+			const menu = document.getElementById('portalMenu');
+			const toggle = document.querySelector('.portal-menu-toggle');
+			menu.classList.remove('open');
+			toggle.setAttribute('aria-expanded', 'false');
+		}
+
+		document.addEventListener('click', closePortalMenu);
+		document.addEventListener('keydown', event => {
+			if (event.key === 'Escape') closePortalMenu();
+		});
+
+		document.getElementById('contactForm').addEventListener('submit', event => {
+			event.preventDefault();
+			document.getElementById('formStatus').textContent = 'Thanks! Your message is ready to be sent to our team.';
+			event.target.reset();
+		});
+	</script>
+</body>
+</html>
