@@ -40,6 +40,7 @@ const ROLE_PERMISSIONS = {
     'estimate'
   ],
   technician: ['parts_labor', 'repair'],
+  parts_manager: ['parts_labor'],
   billing: ['estimate', 'invoice'],
   manager: [
     'customer',
