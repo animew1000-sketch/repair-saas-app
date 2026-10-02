@@ -1238,6 +1238,30 @@ body.dark-mode .container:has(#landingSection:not(.hidden)) .header-nav#motivo-s
   border-color: #cc4f31;
   box-shadow: 0 11px 22px rgba(204,79,49,.24);
 }
+.motivo-finder-returning {
+  align-items: center;
+  color: #65716e;
+  display: flex;
+  font-size: .78rem;
+  gap: 9px;
+  grid-column: 1 / -1;
+  justify-content: flex-end;
+  padding: 8px 7px 1px;
+}
+.motivo-finder-login {
+  background: transparent;
+  border: 0;
+  color: #173c3b;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 700;
+  margin: 0;
+  padding: 0;
+  text-decoration: underline;
+  text-decoration-color: #e86642;
+  text-underline-offset: 3px;
+}
+.motivo-finder-login:hover { background: transparent; color: #e86642; }
 body.dark-mode .motivo-finder { background: #172d2b; border-color: #2e4a44; box-shadow: 0 18px 45px rgba(0,0,0,.18); }
 body.dark-mode .motivo-finder-controls { background: #0f2020; border-color: #31504a; box-shadow: none; }
 body.dark-mode .motivo-finder-controls input,
@@ -1245,6 +1269,20 @@ body.dark-mode .motivo-finder-controls select { color: #edf2ed; }
 body.dark-mode .motivo-finder-controls input:focus,
 body.dark-mode .motivo-finder-controls select:focus { background: #172d2b; }
 body.dark-mode .motivo-finder-controls select { border-left-color: #31504a; }
+body.dark-mode .motivo-finder-returning { color: #afbeb8; }
+body.dark-mode .motivo-finder-login { color: #edf2ed; }
+body.dark-mode .motivo-finder-login:hover { color: #f2a17f; }
+body.motivo-public-page .contact-page { color: #173c3b; }
+body.motivo-public-page .contact-form,
+body.motivo-public-page .overview-features,
+body.motivo-public-page .card { background: #fff; border-color: #d2dfd5; box-shadow: 0 14px 34px rgba(23,60,59,.07); }
+body.motivo-public-page .contact-detail { background: #e8f0ea; border-color: #d2dfd5; }
+body.motivo-public-page .contact-intro h1,
+body.motivo-public-page .contact-form h2,
+body.motivo-public-page .overview-features h2,
+body.motivo-public-page .card h2 { color: #173c3b; }
+body.motivo-public-page .contact-intro p,
+body.motivo-public-page .card p { color: #65716e; }
 
 @media (max-width: 820px) {
   .motivo-finder { gap: 24px; }
