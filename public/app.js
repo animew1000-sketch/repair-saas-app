@@ -355,6 +355,44 @@ async function loadCompaniesDropdown() {
 
   const companies = await res.json();
 
+  window.motivoCompanies = companies;
+
+  const shopSearch =
+    document.getElementById('motivo-shop-search');
+
+  const shopSelect =
+    document.getElementById('motivo-shop-select');
+
+  function renderMotivoShopOptions(searchTerm = '') {
+    if (!shopSelect) {
+      return;
+    }
+
+    const normalizedSearch = searchTerm.trim().toLowerCase();
+    const filteredCompanies = companies.filter((company) =>
+      company.company_name.toLowerCase().includes(normalizedSearch)
+    );
+
+    shopSelect.innerHTML = filteredCompanies.length
+      ? '<option value="">Select your shop...</option>' +
+        filteredCompanies
+          .map(
+            (company) =>
+              `<option value="${escapeHtml(company.id)}">${escapeHtml(company.company_name)}</option>`
+          )
+          .join('')
+      : '<option value="">No shops found</option>';
+  }
+
+  renderMotivoShopOptions();
+
+  if (shopSearch && !shopSearch.dataset.bound) {
+    shopSearch.addEventListener('input', () => {
+      renderMotivoShopOptions(shopSearch.value);
+    });
+    shopSearch.dataset.bound = 'true';
+  }
+
   const regSelect =
     document.getElementById('reg_company_id');
 
@@ -387,6 +425,28 @@ async function loadCompaniesDropdown() {
       loginSelect.value = currentShop.id;
     }
   }
+}
+
+function startMotivoSignup() {
+  const shopSelect =
+    document.getElementById('motivo-shop-select');
+
+  const selectedShopId = shopSelect?.value;
+
+  if (!selectedShopId) {
+    showToast('Choose your repair shop to continue.', 'error');
+    shopSelect?.focus();
+    return;
+  }
+
+  const registrationShop =
+    document.getElementById('reg_company_id');
+
+  if (registrationShop) {
+    registrationShop.value = selectedShopId;
+  }
+
+  showScreen('registerSection');
 }
 
 function showScreen(screenId) {

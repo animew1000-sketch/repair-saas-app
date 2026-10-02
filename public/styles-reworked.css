@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
+
 :root {
   --ink: #233040;
   --muted: #657487;
@@ -890,6 +892,139 @@ body.dark-mode .theme-switch-knob {
   .hero-arrow {
     display: none;
   }
+}
+
+/* Motivo public homepage */
+.container:has(#landingSection:not(.hidden)) {
+  display: block;
+  max-width: none;
+  padding: 0;
+}
+
+.container:has(#landingSection:not(.hidden)) > .header {
+  align-items: center;
+  background: #f8f7f2;
+  border-bottom: 1px solid #d9ded6;
+  display: flex;
+  gap: 32px;
+  justify-content: space-between;
+  padding: 19px clamp(22px, 5vw, 76px);
+}
+
+.container:has(#landingSection:not(.hidden)) .brand {
+  align-items: center;
+  color: #173c3b;
+  display: flex;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.65rem;
+  letter-spacing: -.06em;
+}
+
+.container:has(#landingSection:not(.hidden)) .brand-logo { display: none; }
+.container:has(#landingSection:not(.hidden)) .brand::before { content: '◒'; color: #e86642; font-size: 1.9rem; margin-right: 9px; }
+.container:has(#landingSection:not(.hidden)) .brand::after { color: #173c3b; content: 'Motivo'; }
+.container:has(#landingSection:not(.hidden)) .header-nav { align-items: center; display: flex; gap: clamp(16px, 2.5vw, 34px); }
+.container:has(#landingSection:not(.hidden)) .header-links { gap: clamp(15px, 2.5vw, 30px); }
+.container:has(#landingSection:not(.hidden)) .header-link { color: #53615f; font-family: 'DM Sans', sans-serif; font-size: .83rem; font-weight: 600; }
+.container:has(#landingSection:not(.hidden)) .header-link:hover { color: #173c3b; }
+.container:has(#landingSection:not(.hidden)) .header-link::after { background: #e86642; }
+.container:has(#landingSection:not(.hidden)) .header-actions { border: 0; display: flex; gap: 10px; padding: 0; }
+.container:has(#landingSection:not(.hidden)) .header-signup { border: 1px solid #cbd5ce; color: #173c3b; }
+.container:has(#landingSection:not(.hidden)) .header-login { background: #173c3b; border-color: #173c3b; color: #fff; }
+
+.motivo-landing { background: #f8f7f2; color: #173c3b; font-family: 'DM Sans', sans-serif; overflow: hidden; }
+.motivo-landing h1, .motivo-landing h2, .motivo-landing h3 { font-family: 'Space Grotesk', sans-serif; letter-spacing: -.045em; }
+.motivo-hero { align-items: center; background: #f8f7f2; display: grid; gap: clamp(30px, 7vw, 110px); grid-template-columns: minmax(0, 1fr) minmax(360px, .82fr); margin: 0 auto; max-width: 1360px; min-height: 650px; padding: 72px clamp(24px, 7vw, 110px) 88px; }
+.motivo-eyebrow { color: #e86642; font-size: .72rem; font-weight: 700; letter-spacing: .14em; margin: 0 0 18px; text-transform: uppercase; }
+.motivo-hero h1 { color: #173c3b; font-size: clamp(3.5rem, 7.6vw, 7rem); line-height: .94; margin: 0 0 28px; max-width: 730px; }
+.motivo-hero h1 span { color: #e86642; display: block; }
+.motivo-hero-subtitle { color: #53615f; font-size: clamp(1rem, 1.5vw, 1.18rem); line-height: 1.7; margin: 0; max-width: 560px; }
+.motivo-hero .hero-actions { align-items: center; display: flex; gap: 12px; margin-top: 35px; }
+.motivo-button { align-items: center; border: 0; border-radius: 4px; cursor: pointer; display: inline-flex; font-family: 'DM Sans', sans-serif; font-size: .85rem; font-weight: 700; justify-content: center; padding: 14px 21px; text-decoration: none; transition: transform .2s, background .2s; }
+.motivo-button:hover { transform: translateY(-2px); }
+.motivo-button-primary { background: #e86642; color: #fff; }
+.motivo-button-primary:hover { background: #cc4f31; }
+.motivo-button-secondary { background: transparent; border: 1px solid #bcc9c1; color: #173c3b; }
+.motivo-button-dark { background: #173c3b; color: #fff; }
+.motivo-hero-art { min-height: 490px; overflow: hidden; position: relative; }
+.motivo-hero-art::before { background: #e86642; content: ''; height: 72px; position: absolute; right: -14px; top: -14px; width: 72px; z-index: 1; }
+.motivo-hero-art img { display: block; height: 490px; object-fit: cover; width: 100%; }
+.motivo-art-note { background: #fff; bottom: 22px; display: grid; gap: 5px; left: 22px; padding: 17px 20px; position: absolute; width: min(290px, calc(100% - 44px)); }
+.motivo-art-note strong { font-family: 'Space Grotesk', sans-serif; font-size: 1rem; }
+.motivo-art-note span { color: #65716e; font-size: .82rem; }
+.motivo-finder { align-items: center; background: #e5eee7; display: grid; gap: 30px; grid-template-columns: .8fr 1.2fr; margin: 0 auto; max-width: 1180px; padding: 38px 44px; }
+.motivo-finder h2, .motivo-benefits h2, .motivo-feature-section h2, .motivo-shop-cta h2, .motivo-final-cta h2 { font-size: clamp(1.8rem, 3vw, 3rem); line-height: 1; margin: 0; }
+.motivo-finder p:not(.motivo-eyebrow) { color: #53615f; margin: 12px 0 0; }
+.motivo-finder-controls { display: grid; gap: 9px; grid-template-columns: 1.1fr 1fr auto; }
+.motivo-finder-controls input, .motivo-finder-controls select { background: #fff; border: 1px solid #c6d3ca; border-radius: 3px; color: #173c3b; font: inherit; min-width: 0; padding: 14px 13px; }
+.motivo-finder-controls input:focus, .motivo-finder-controls select:focus { border-color: #e86642; outline: 2px solid #e8664233; }
+.sr-only { height: 1px; margin: -1px; overflow: hidden; position: absolute; width: 1px; }
+.motivo-benefits { margin: 0 auto; max-width: 1180px; padding: 104px 44px 98px; }
+.motivo-section-heading { align-items: end; display: flex; justify-content: space-between; margin-bottom: 48px; }
+.motivo-benefit-grid { display: grid; gap: 0; grid-template-columns: repeat(3, 1fr); }
+.motivo-benefit-grid article { border-left: 1px solid #cad5ce; padding: 0 32px; }
+.motivo-benefit-grid article:first-child { border-left: 0; padding-left: 0; }
+.motivo-step { color: #e86642; font-size: .78rem; font-weight: 700; letter-spacing: .08em; }
+.motivo-benefit-grid h3 { font-size: 1.32rem; margin: 23px 0 10px; }
+.motivo-benefit-grid p, .motivo-feature-intro > p:last-child { color: #65716e; line-height: 1.65; margin: 0; max-width: 280px; }
+.motivo-feature-section { background: #173c3b; color: #f8f7f2; display: grid; gap: 70px; grid-template-columns: .8fr 1.2fr; padding: 100px max(44px, calc((100vw - 1092px) / 2)); }
+.motivo-feature-section .motivo-eyebrow { color: #f2a17f; }
+.motivo-feature-section h2 { max-width: 370px; }
+.motivo-feature-intro > p:last-child { color: #b9c8c1; margin-top: 23px; }
+.motivo-feature-list article { align-items: start; border-top: 1px solid #42615c; display: grid; gap: 25px; grid-template-columns: 35px 1fr; padding: 24px 0; }
+.motivo-feature-list article:last-child { border-bottom: 1px solid #42615c; }
+.motivo-feature-list article > span { color: #f2a17f; font-size: .8rem; font-weight: 700; }
+.motivo-feature-list h3 { font-size: 1.15rem; margin: 0 0 7px; }
+.motivo-feature-list p { color: #b9c8c1; font-size: .9rem; margin: 0; }
+.motivo-shop-cta { background: #e86642; color: #fff; display: grid; gap: 45px 70px; grid-template-columns: 1fr auto; padding: 94px max(44px, calc((100vw - 1092px) / 2)); }
+.motivo-shop-cta .motivo-eyebrow { color: #ffe0d5; }
+.motivo-shop-cta h2 { max-width: 540px; }
+.motivo-shop-cta > div:first-child > p:last-child { line-height: 1.6; margin: 20px 0 0; max-width: 600px; }
+.motivo-shop-actions { align-items: start; display: flex; flex-direction: column; gap: 19px; }
+.motivo-shop-actions .motivo-button-primary { background: #173c3b; }
+.motivo-text-link { color: inherit; font-size: .9rem; font-weight: 700; text-decoration: none; }
+.motivo-text-link span { font-size: 1.2rem; margin-left: 7px; }
+.motivo-onboarding { border-top: 1px solid #f18c70; display: grid; gap: 25px; grid-column: 1 / -1; grid-template-columns: repeat(3, 1fr); list-style: none; margin: 5px 0 0; padding: 25px 0 0; }
+.motivo-onboarding li { display: grid; gap: 7px; }
+.motivo-onboarding span { color: #ffe0d5; font-size: .84rem; line-height: 1.45; }
+.motivo-final-cta { background: #f8f7f2; padding: 105px 24px 120px; text-align: center; }
+.motivo-final-cta h2 { margin: 0 auto 26px; max-width: 650px; }
+.motivo-final-cta .motivo-eyebrow { margin-bottom: 20px; }
+.motivo-final-cta .motivo-text-link { color: #e86642; }
+
+@media (max-width: 820px) {
+  .container:has(#landingSection:not(.hidden)) > .header { align-items: flex-start; flex-wrap: wrap; }
+  .container:has(#landingSection:not(.hidden)) .header-nav { flex: 1 1 100%; justify-content: space-between; }
+  .motivo-hero, .motivo-finder, .motivo-feature-section, .motivo-shop-cta { grid-template-columns: 1fr; }
+  .motivo-hero { padding-top: 55px; }
+  .motivo-hero-art { min-height: 350px; }
+  .motivo-hero-art img { height: 350px; }
+  .motivo-finder-controls { grid-template-columns: 1fr 1fr; }
+  .motivo-finder-controls .motivo-button { grid-column: 1 / -1; }
+  .motivo-shop-actions { align-items: flex-start; }
+}
+
+@media (max-width: 640px) {
+  .container:has(#landingSection:not(.hidden)) > .header { padding: 15px 18px; }
+  .container:has(#landingSection:not(.hidden)) .header-nav { align-items: stretch; display: grid; gap: 12px; }
+  .container:has(#landingSection:not(.hidden)) .header-links { justify-content: space-between; }
+  .container:has(#landingSection:not(.hidden)) .header-actions { justify-content: space-between; }
+  .container:has(#landingSection:not(.hidden)) .header-link { font-size: .72rem; padding: 5px 0; }
+  .motivo-hero { gap: 42px; min-height: 0; padding: 68px 22px 58px; }
+  .motivo-hero h1 { font-size: clamp(3.3rem, 16vw, 5rem); }
+  .motivo-hero .hero-actions { align-items: stretch; flex-direction: column; }
+  .motivo-button { width: 100%; }
+  .motivo-hero-art { min-height: 300px; }
+  .motivo-hero-art img { height: 300px; }
+  .motivo-finder, .motivo-benefits { padding: 54px 22px; }
+  .motivo-finder-controls { grid-template-columns: 1fr; }
+  .motivo-finder-controls .motivo-button { grid-column: auto; }
+  .motivo-section-heading { display: block; }
+  .motivo-benefit-grid { gap: 34px; grid-template-columns: 1fr; }
+  .motivo-benefit-grid article, .motivo-benefit-grid article:first-child { border-left: 0; border-top: 1px solid #cad5ce; padding: 28px 0 0; }
+  .motivo-benefit-grid article:first-child { border-top: 0; padding-top: 0; }
+  .motivo-feature-section, .motivo-shop-cta { padding: 66px 22px; }
+  .motivo-onboarding { grid-template-columns: 1fr; }
 }
 /* =========================
    SHARED BUTTON SYSTEM
