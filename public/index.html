@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Motivo | Find Your Auto Shop Here</title>
-<link rel="stylesheet" href="/styles-reworked.css">
+<link rel="stylesheet" href="/styles-reworked.css?v=motivo-2">
 </head>
 <body>
   <div class="container">
@@ -15,11 +15,22 @@
     id="navBrand"
     onclick="handleHomeNavigation()"
   >
-    <img class="brand-logo" src="/images/Motivo-white-word-transparent.png" alt="Motivo">
+    <img class="brand-logo" src="/images/Motivo-white-word-transparent.png" alt="Motivo Auto Repair Shops">
     <span id="brandName" hidden>Motivo</span>
   </div>
 
-  <div class="header-nav">
+  <button
+    class="motivo-menu-toggle"
+    type="button"
+    aria-expanded="false"
+    aria-controls="motivo-side-menu"
+    aria-label="Open navigation menu"
+    onclick="toggleMotivoMenu()"
+  >
+    <span></span><span></span><span></span>
+  </button>
+
+  <div class="header-nav" id="motivo-side-menu">
     <div class="header-links">
 
       <!-- PUBLIC / STAFF NAVIGATION -->
@@ -137,7 +148,12 @@
           </div>
         </div>
         <div class="motivo-hero-art" aria-label="A vehicle being serviced at a trusted repair shop">
-          <img src="/images/Smokey-lift.jpg" alt="Vehicle raised for service in a repair shop">
+          <div class="motivo-hero-slides" aria-hidden="true">
+            <div class="hero-slide active" style="background-image: url('/images/Smokey-lift.jpg');"></div>
+            <div class="hero-slide" style="background-image: url('/images/Neon.jpg');"></div>
+            <div class="hero-slide" style="background-image: url('/images/Disk-Break.jpg');"></div>
+          </div>
+          <div class="motivo-hero-overlay" aria-hidden="true"></div>
           <div class="motivo-art-note"><strong>One place for the whole visit.</strong><span>From first request to final invoice.</span></div>
         </div>
       </section>
@@ -888,7 +904,7 @@
   <span class="theme-label">Dark</span>
 </div>
 
-  <script src="/app.js"></script>
+  <script src="/app.js?v=motivo-2"></script>
 
   <script>
     const customerTabs = Array.from(
@@ -941,6 +957,6 @@
     }
   </script>
 
-  <script src="/theme.js"></script>
+  <script src="/theme.js?v=motivo-2"></script>
 </body>
 </html>

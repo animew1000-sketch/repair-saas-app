@@ -607,6 +607,43 @@ function handleHomeNavigation() {
   }
 }
 
+function toggleMotivoMenu(forceOpen) {
+  const menu = document.getElementById('motivo-side-menu');
+  const toggle = document.querySelector('.motivo-menu-toggle');
+
+  if (!menu || !toggle) {
+    return;
+  }
+
+  const shouldOpen =
+    typeof forceOpen === 'boolean'
+      ? forceOpen
+      : !document.body.classList.contains('motivo-menu-open');
+
+  document.body.classList.toggle('motivo-menu-open', shouldOpen);
+  toggle.setAttribute('aria-expanded', String(shouldOpen));
+  toggle.setAttribute(
+    'aria-label',
+    shouldOpen ? 'Close navigation menu' : 'Open navigation menu'
+  );
+}
+
+document.addEventListener('click', (event) => {
+  if (!document.body.classList.contains('motivo-menu-open')) {
+    return;
+  }
+
+  if (!event.target.closest('.header')) {
+    toggleMotivoMenu(false);
+  }
+});
+
+document.addEventListener('keydown', (event) => {
+  if (event.key === 'Escape') {
+    toggleMotivoMenu(false);
+  }
+});
+
 async function handleLogin(e) {
   e.preventDefault();
 

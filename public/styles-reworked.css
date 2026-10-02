@@ -1026,6 +1026,112 @@ body.dark-mode .theme-switch-knob {
   .motivo-feature-section, .motivo-shop-cta { padding: 66px 22px; }
   .motivo-onboarding { grid-template-columns: 1fr; }
 }
+
+/* Landing refinements: shared logo, slideshow, and true page-level themes. */
+.container:has(#landingSection:not(.hidden)) .brand::before,
+.container:has(#landingSection:not(.hidden)) .brand::after { content: none; }
+.container:has(#landingSection:not(.hidden)) .brand-logo { background: #173c3b; border-radius: 4px; display: block; height: 44px; object-fit: contain; padding: 3px 7px; width: 145px; }
+.container:has(#landingSection:not(.hidden)) .header-nav,
+.container:has(#landingSection:not(.hidden)) .header-links,
+.container:has(#landingSection:not(.hidden)) .header-actions { flex-direction: row; }
+.motivo-hero { min-height: 570px; padding-bottom: 58px; padding-top: 38px; }
+.motivo-hero-art { background: #173c3b; }
+.motivo-hero-slides, .motivo-hero-slides .hero-slide, .motivo-hero-overlay { inset: 0; position: absolute; }
+.motivo-hero-slides { z-index: 0; }
+.motivo-hero-slides .hero-slide { background-position: center; background-size: cover; opacity: 0; transform: scale(1.06); transition: opacity 1s ease, transform 7s ease; }
+.motivo-hero-slides .hero-slide.active { opacity: 1; transform: scale(1); }
+.motivo-hero-overlay { background: linear-gradient(90deg, rgba(11,31,30,.16), rgba(11,31,30,.48)); z-index: 1; }
+.motivo-hero-art .motivo-art-note { z-index: 2; }
+
+body.dark-mode .container:has(#landingSection:not(.hidden)) > .header { background: #0d1717; border-bottom-color: #2b403d; }
+body.dark-mode .container:has(#landingSection:not(.hidden)) .brand { color: #f1f3ec; }
+body.dark-mode .container:has(#landingSection:not(.hidden)) .brand-logo { background: #173c3b; filter: brightness(1.15); }
+body.dark-mode .container:has(#landingSection:not(.hidden)) .header-link { color: #b7c6c0; }
+body.dark-mode .container:has(#landingSection:not(.hidden)) .header-link:hover { color: #fff; }
+body.dark-mode .container:has(#landingSection:not(.hidden)) .header-signup { border-color: #47605a; color: #edf2ed; }
+body.dark-mode .container:has(#landingSection:not(.hidden)) .header-login { background: #e86642; border-color: #e86642; }
+body.dark-mode .motivo-landing { background: #0d1717; color: #edf2ed; }
+body.dark-mode .motivo-hero { background: #0d1717; }
+body.dark-mode .motivo-hero h1, body.dark-mode .motivo-finder h2, body.dark-mode .motivo-benefits h2, body.dark-mode .motivo-final-cta h2 { color: #f3f5ef; }
+body.dark-mode .motivo-hero-subtitle, body.dark-mode .motivo-finder p:not(.motivo-eyebrow), body.dark-mode .motivo-benefit-grid p, body.dark-mode .motivo-feature-intro > p:last-child { color: #afbeb8; }
+body.dark-mode .motivo-button-secondary { border-color: #47605a; color: #edf2ed; }
+body.dark-mode .motivo-finder { background: #172d2b; }
+body.dark-mode .motivo-finder-controls input, body.dark-mode .motivo-finder-controls select { background: #0f2020; border-color: #3d5954; color: #edf2ed; }
+body.dark-mode .motivo-benefits { background: #0d1717; }
+body.dark-mode .motivo-benefit-grid article { border-color: #304641; }
+body.dark-mode .motivo-final-cta { background: #0d1717; }
+body.dark-mode .motivo-art-note { background: #172d2b; color: #edf2ed; }
+body.dark-mode .motivo-art-note span { color: #afbeb8; }
+
+@media (max-width: 640px) {
+  .container:has(#landingSection:not(.hidden)) .brand-logo { height: 38px; width: 125px; }
+  .motivo-hero { min-height: 0; padding-top: 30px; }
+}
+
+/* Collapsible public navigation. */
+.container:has(#landingSection:not(.hidden)) > .header { position: relative; z-index: 20; }
+.container:has(#landingSection:not(.hidden)) .motivo-menu-toggle {
+  align-items: center;
+  background: transparent;
+  border: 1px solid #cbd5ce;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  height: 42px;
+  justify-content: center;
+  margin-left: auto;
+  padding: 0;
+  width: 42px;
+}
+.container:has(#landingSection:not(.hidden)) .motivo-menu-toggle span { background: #173c3b; display: block; height: 2px; transition: transform .2s, opacity .2s; width: 18px; }
+.container:has(#landingSection:not(.hidden)) .motivo-menu-toggle:hover { background: #e5eee7; transform: none; }
+.container:has(#landingSection:not(.hidden)) .header-nav#motivo-side-menu {
+  align-items: stretch;
+  background: #f8f7f2;
+  box-shadow: 14px 0 34px rgba(23,60,59,.16);
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  height: 100vh;
+  justify-content: flex-start;
+  left: 0;
+  max-width: 330px;
+  opacity: 0;
+  padding: 112px 28px 28px;
+  pointer-events: none;
+  position: fixed;
+  top: 0;
+  transform: translateX(-105%);
+  transition: opacity .2s ease, transform .25s ease;
+  visibility: hidden;
+  width: min(84vw, 330px);
+  z-index: 19;
+}
+.container:has(#landingSection:not(.hidden)) .header-nav#motivo-side-menu .header-links,
+.container:has(#landingSection:not(.hidden)) .header-nav#motivo-side-menu .header-actions { align-items: stretch; display: flex; flex-direction: column; gap: 10px; }
+.container:has(#landingSection:not(.hidden)) .header-nav#motivo-side-menu .header-link { border-radius: 4px; padding: 13px 12px; text-align: left; width: 100%; }
+.container:has(#landingSection:not(.hidden)) .header-nav#motivo-side-menu .header-link::after { display: none; }
+body.motivo-menu-open .container:has(#landingSection:not(.hidden)) .header-nav#motivo-side-menu { opacity: 1; pointer-events: auto; transform: translateX(0); visibility: visible; }
+body.motivo-menu-open .container:has(#landingSection:not(.hidden)) .motivo-menu-toggle span:first-child { transform: translateY(6px) rotate(45deg); }
+body.motivo-menu-open .container:has(#landingSection:not(.hidden)) .motivo-menu-toggle span:nth-child(2) { opacity: 0; }
+body.motivo-menu-open .container:has(#landingSection:not(.hidden)) .motivo-menu-toggle span:last-child { transform: translateY(-6px) rotate(-45deg); }
+body.dark-mode .container:has(#landingSection:not(.hidden)) .motivo-menu-toggle { border-color: #47605a; }
+body.dark-mode .container:has(#landingSection:not(.hidden)) .motivo-menu-toggle span { background: #edf2ed; }
+body.dark-mode .container:has(#landingSection:not(.hidden)) .motivo-menu-toggle:hover { background: #172d2b; }
+body.dark-mode .container:has(#landingSection:not(.hidden)) .header-nav#motivo-side-menu { background: #0d1717; box-shadow: 14px 0 34px rgba(0,0,0,.35); }
+body.dark-mode .container:has(#landingSection:not(.hidden)) .header-nav#motivo-side-menu .header-link { color: #d9e5df; }
+body.dark-mode .container:has(#landingSection:not(.hidden)) .header-nav#motivo-side-menu .header-link:hover { background: #172d2b; }
+
+@media (max-width: 640px) {
+  .container:has(#landingSection:not(.hidden)) .header-nav#motivo-side-menu { padding-top: 98px; }
+}
+
+/* Keep the menu and centered brand visually stable at every width. */
+.container:has(#landingSection:not(.hidden)) > .header { justify-content: flex-start; }
+.container:has(#landingSection:not(.hidden)) .brand { left: 50%; position: absolute; transform: translateX(-50%); }
+.container:has(#landingSection:not(.hidden)) .motivo-menu-toggle { margin-left: 0; }
 /* =========================
    SHARED BUTTON SYSTEM
    ========================= */
@@ -3803,4 +3909,42 @@ body {
 .danger-button:disabled {
   opacity: 0.65;
   cursor: not-allowed;
+}
+
+/* Final public landing overrides. Keep these after the legacy app breakpoints. */
+.container:has(#landingSection:not(.hidden)) > .header { display: flex; flex-direction: row; }
+.container:has(#landingSection:not(.hidden)) .header-nav,
+.container:has(#landingSection:not(.hidden)) .header-links,
+.container:has(#landingSection:not(.hidden)) .header-actions { display: flex; flex-direction: row; }
+.container:has(#landingSection:not(.hidden)) .brand-logo { background: #173c3b; border-radius: 4px; display: block; height: 44px; object-fit: contain; padding: 3px 7px; width: 145px; }
+.motivo-hero { min-height: 570px; padding-bottom: 58px; padding-top: 38px; }
+.motivo-hero-art { background: #173c3b; }
+.motivo-hero-slides, .motivo-hero-slides .hero-slide, .motivo-hero-overlay { inset: 0; position: absolute; }
+.motivo-hero-slides { z-index: 0; }
+.motivo-hero-slides .hero-slide { background-position: center; background-size: cover; opacity: 0; transform: scale(1.06); transition: opacity 1s ease, transform 7s ease; }
+.motivo-hero-slides .hero-slide.active { opacity: 1; transform: scale(1); }
+.motivo-hero-overlay { background: linear-gradient(90deg, rgba(11,31,30,.16), rgba(11,31,30,.48)); z-index: 1; }
+.motivo-hero-art .motivo-art-note { z-index: 2; }
+body.dark-mode .container:has(#landingSection:not(.hidden)) > .header { background: #0d1717; border-bottom-color: #2b403d; }
+body.dark-mode .container:has(#landingSection:not(.hidden)) .brand-logo { background: #173c3b; filter: brightness(1.15); }
+body.dark-mode .motivo-landing, body.dark-mode .motivo-hero, body.dark-mode .motivo-final-cta { background: #0d1717; color: #edf2ed; }
+body.dark-mode .motivo-hero h1, body.dark-mode .motivo-finder h2, body.dark-mode .motivo-benefits h2, body.dark-mode .motivo-final-cta h2 { color: #f3f5ef; }
+body.dark-mode .motivo-hero-subtitle, body.dark-mode .motivo-finder p:not(.motivo-eyebrow), body.dark-mode .motivo-benefit-grid p { color: #afbeb8; }
+body.dark-mode .motivo-finder { background: #172d2b; }
+body.dark-mode .motivo-finder-controls input, body.dark-mode .motivo-finder-controls select { background: #0f2020; border-color: #3d5954; color: #edf2ed; }
+body.dark-mode .motivo-benefit-grid article { border-color: #304641; }
+body.dark-mode .motivo-art-note { background: #172d2b; color: #edf2ed; }
+body.dark-mode .motivo-art-note span { color: #afbeb8; }
+
+@media (max-width: 820px) {
+  .container:has(#landingSection:not(.hidden)) > .header { flex-wrap: wrap; }
+  .container:has(#landingSection:not(.hidden)) .header-nav { flex: 1 1 100%; }
+}
+
+@media (max-width: 640px) {
+  .container:has(#landingSection:not(.hidden)) .header-nav { display: grid; }
+  .container:has(#landingSection:not(.hidden)) .header-links,
+  .container:has(#landingSection:not(.hidden)) .header-actions { display: flex; }
+  .container:has(#landingSection:not(.hidden)) .brand-logo { height: 38px; width: 125px; }
+  .motivo-hero { min-height: 0; padding-top: 30px; }
 }
