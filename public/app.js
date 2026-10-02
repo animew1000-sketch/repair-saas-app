@@ -1386,40 +1386,46 @@ async function loadCustomerProfile() {
         ? totalAmount.toFixed(2)
         : '0.00';
 
+    const subtotalAmount =
+      Number(data.invoice.subtotal);
+
+    const safeSubtotal =
+      Number.isFinite(subtotalAmount)
+        ? subtotalAmount.toFixed(2)
+        : '0.00';
+
+    const invoiceItems =
+      Array.isArray(data.partsLabor) && data.partsLabor.length
+        ? data.partsLabor
+            .map((item) => `
+              <div class="customer-invoice-line">
+                <span>${escapeHtml(item.description || item.item_type || 'Service')}</span>
+                <strong>$${Number(item.unit_cost || 0).toFixed(2)}</strong>
+              </div>
+            `)
+            .join('')
+        : '<div class="customer-invoice-empty">Repair services and labor</div>';
+
     document.getElementById(
       'invoiceContent'
     ).innerHTML = `
-      <p>
-        <strong>Scheduled Appointment:</strong>
-        ${safeApptText}
-      </p>
-
-      <p>
-        <strong>Invoice Number:</strong>
-        ${safeInvoiceNumber}
-      </p>
-
-      <p>
-        <strong>Work Summary:</strong>
-        ${safeWorkSummary}
-      </p>
-
-      <div style="margin-top:16px; font-size:1.1rem;">
-        <strong>Total Due:</strong>
-
-        <span
-          style="color:var(--primary); font-weight:bold;"
-        >
-          $${safeTotal}
-        </span>
-
-        <span
-          class="badge"
-          style="margin-left:10px;"
-        >
-          ${safePaymentStatus}
-        </span>
+      <div class="customer-invoice-head">
+        <div>
+          <span class="customer-invoice-kicker">SERVICE INVOICE</span>
+          <h3>Invoice ${safeInvoiceNumber}</h3>
+        </div>
+        <span class="badge">${safePaymentStatus}</span>
       </div>
+      <div class="customer-invoice-meta">
+        <span>Appointment</span><strong>${safeApptText}</strong>
+        <span>Work completed</span><strong>${safeWorkSummary}</strong>
+      </div>
+      <div class="customer-invoice-lines">
+        <div class="customer-invoice-line customer-invoice-line-heading"><span>Service or item</span><strong>Amount</strong></div>
+        ${invoiceItems}
+      </div>
+      <div class="customer-invoice-total"><span>Subtotal</span><strong>$${safeSubtotal}</strong><span>Total due</span><strong>$${safeTotal}</strong></div>
+      <p class="customer-invoice-note">Please have a payment method ready when you arrive at the shop.</p>
     `;
   } else {
     document.getElementById(
@@ -1986,6 +1992,29 @@ function openStaffView(view) {
 
 async function showDept(dept) {
   activeDept = dept;
+  
+  const workflowTitles = {
+    customer: 'Customer intake',
+    vehicle: 'Vehicle details',
+    appointment: 'Appointment',
+    repair_order: 'Repair order',
+    parts_labor: 'Parts and labor',
+    estimate: 'Estimate',
+    repair: 'Repair in progress',
+    invoice: 'Invoice and payment'
+  };
+  
+  const workflowOrder = Object.keys(workflowTitles);
+  const workflowIndex = workflowOrder.indexOf(dept);
+  const progressKicker = document.getElementById('workflowProgressKicker');
+  const progressTitle = document.getElementById('workflowProgressTitle');
+  const progressFill = document.getElementById('workflowProgressFill');
+  
+  if (progressKicker && progressTitle && progressFill) {
+    progressKicker.textContent = `STEP ${workflowIndex + 1} OF ${workflowOrder.length}`;
+    progressTitle.textContent = workflowTitles[dept];
+    progressFill.style.width = `${((workflowIndex + 1) / workflowOrder.length) * 100}%`;
+  }
 
   document
     .querySelectorAll('.step-card')

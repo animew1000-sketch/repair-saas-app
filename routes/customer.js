@@ -335,6 +335,22 @@ router.get(
           ]
         );
 
+      const [estimate] =
+        await pool.query(
+          `
+          SELECT *
+          FROM estimates
+          WHERE repair_job_id = ?
+            AND company_id = ?
+          ORDER BY id DESC
+          LIMIT 1
+          `,
+          [
+            jobId,
+            companyId
+          ]
+        );
+
       const [invoice] =
         await pool.query(
           `
@@ -372,6 +388,9 @@ router.get(
 
         repairExec:
           repairExec[0] || {},
+
+        estimate:
+          estimate[0] || {},
 
         invoice:
           invoice[0] || null

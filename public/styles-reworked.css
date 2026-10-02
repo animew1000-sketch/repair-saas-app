@@ -2784,6 +2784,39 @@ body.dark-mode .staff-job-filters button.active { background: #e86642; border-co
   font-size: .86rem;
 }
 
+.workflow-progress-card { background: #e8f0ea; border: 1px solid #d2dfd5; border-radius: 14px; display: grid; gap: 10px; margin: 0 0 22px; padding: 16px 18px; }
+.workflow-progress-card > div:first-child { align-items: baseline; display: flex; gap: 12px; }
+.workflow-progress-card span { color: #e86642; font-size: .7rem; font-weight: 800; letter-spacing: .1em; }
+.workflow-progress-card strong { color: #173c3b; font-family: 'Space Grotesk', sans-serif; font-size: 1.05rem; }
+.workflow-progress-track { background: #cbd9cf; border-radius: 999px; height: 7px; overflow: hidden; }
+.workflow-progress-track span { background: #e86642; border-radius: inherit; display: block; height: 100%; transition: width .25s ease; width: 12.5%; }
+.workflow-progress-card small { color: #65716e; font-size: .75rem; }
+body.dark-mode .workflow-progress-card { background: #172d2b; border-color: #2e4a44; }
+body.dark-mode .workflow-progress-card strong { color: #edf2ed; }
+body.dark-mode .workflow-progress-track { background: #31504a; }
+body.dark-mode .workflow-progress-card small { color: #afbeb8; }
+
+.customer-invoice-head { align-items: center; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; gap: 14px; padding-bottom: 15px; }
+.customer-invoice-head h3 { color: var(--navy); font-size: 1.25rem; margin: 4px 0 0; }
+.customer-invoice-kicker { color: var(----Green-dark); font-size: .68rem; font-weight: 800; letter-spacing: .12em; }
+.customer-invoice-meta { color: var(--muted); display: grid; font-size: .8rem; gap: 6px 12px; grid-template-columns: auto 1fr; margin: 17px 0; }
+.customer-invoice-meta strong { color: var(--ink); font-weight: 600; }
+.customer-invoice-lines { border: 1px solid var(--line); border-radius: 9px; overflow: hidden; }
+.customer-invoice-line { align-items: center; border-top: 1px solid var(--line); display: flex; justify-content: space-between; gap: 12px; padding: 11px 13px; }
+.customer-invoice-line:first-child { border-top: 0; }
+.customer-invoice-line-heading { background: var(--navy-soft); color: var(--muted); font-size: .7rem; font-weight: 800; text-transform: uppercase; }
+.customer-invoice-empty { color: var(--muted); font-size: .8rem; padding: 13px; }
+.customer-invoice-total { display: grid; gap: 6px 12px; grid-template-columns: 1fr auto; margin-top: 17px; }
+.customer-invoice-total span { color: var(--muted); font-size: .82rem; }
+.customer-invoice-total strong { color: var(--ink); font-size: .9rem; text-align: right; }
+.customer-invoice-total strong:last-child { color: var(--primary); font-size: 1.2rem; }
+.customer-invoice-note { background: #e8f0ea; border-radius: 7px; color: #53615f; font-size: .78rem; margin: 18px 0 0; padding: 11px 13px; }
+body.dark-mode .customer-invoice-head h3,
+body.dark-mode .customer-invoice-meta strong,
+body.dark-mode .customer-invoice-total strong { color: var(--ink); }
+body.dark-mode .customer-invoice-line-heading { background: var(--navy-soft); }
+body.dark-mode .customer-invoice-note { background: #172d2b; color: #afbeb8; }
+
 .staff-manager-chip {
   flex: 0 0 auto;
   padding: 7px 10px;

@@ -85,7 +85,9 @@ router.post(
           c.first_name,
           c.email,
           r.job_number,
-          co.company_name
+          co.company_name,
+          co.service_address,
+          co.phone
          FROM repair_jobs r
          LEFT JOIN customers c
            ON c.repair_job_id = r.id
@@ -111,7 +113,7 @@ router.post(
         await sendMail({
           to: rows[0].email,
           subject: `${rows[0].company_name}: your vehicle is ready for pickup`,
-          text: `Hello ${rows[0].first_name || 'there'},\n\nYour vehicle is ready for pickup at ${rows[0].company_name}. Please contact the shop if you need help arranging pickup.\n\nRepair job: ${rows[0].job_number || jobId}`,
+          text: `Hello ${rows[0].first_name || 'there'},\n\nYour vehicle is ready for pickup at ${rows[0].company_name}.\n\nAddress: ${rows[0].service_address || '100 Industrial Parkway, Mechanics Hub'}\nPhone: ${rows[0].phone || '(555) 019-2834'}\n\nRepair job: ${rows[0].job_number || jobId}`,
           fromName: rows[0].company_name
         });
         emailSent = true;
@@ -516,7 +518,8 @@ router.post(
         );
 
         const [customerRows] = await pool.query(
-          `SELECT c.first_name, c.email, r.job_number, co.company_name
+            `SELECT c.first_name, c.email, r.job_number, co.company_name,
+              co.service_address, co.phone
            FROM customers c
            INNER JOIN repair_jobs r ON r.id = c.repair_job_id AND r.company_id = c.company_id
            INNER JOIN companies co ON co.id = r.company_id
@@ -526,10 +529,24 @@ router.post(
         );
 
         if (customerRows[0]?.email) {
+          const [lineItems] = await pool.query(
+            `SELECT item_type, description, unit_cost
+             FROM parts_and_labor
+             WHERE repair_job_id = ? AND company_id = ?
+             ORDER BY id ASC`,
+            [jobId, companyId]
+          );
+
+          const itemText = lineItems.length
+            ? lineItems
+                .map((item) => `- ${item.item_type}: ${item.description} ($${Number(item.unit_cost).toFixed(2)})`)
+                .join('\n')
+            : '- Repair services and labor';
+
           await sendMail({
             to: customerRows[0].email,
             subject: `${customerRows[0].company_name}: your invoice is ready`,
-            text: `Hello ${customerRows[0].first_name || 'there'},\n\nYour repair invoice has been generated and is ready to review through your Motivo customer portal.\n\nRepair job: ${customerRows[0].job_number || jobId}`,
+            text: `Hello ${customerRows[0].first_name || 'there'},\n\nYour repair invoice is ready to review through your Motivo customer portal. Please have a payment method ready when you arrive.\n\nInvoice: ${data.invoice_number}\nItems:\n${itemText}\n\nSubtotal: $${data.subtotal}\nTotal due: $${data.total_amount}\n\nShop address: ${customerRows[0].service_address || '100 Industrial Parkway, Mechanics Hub'}\nShop phone: ${customerRows[0].phone || '(555) 019-2834'}\nRepair job: ${customerRows[0].job_number || jobId}`,
             fromName: customerRows[0].company_name
           });
           emailSent = true;

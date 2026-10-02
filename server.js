@@ -155,6 +155,8 @@ async function initDatabase() {
         tagline VARCHAR(255) NULL,
         hero_text TEXT NULL,
         primary_color VARCHAR(10) DEFAULT '#f97316',
+        service_address VARCHAR(255) DEFAULT '100 Industrial Parkway, Mechanics Hub',
+        phone VARCHAR(50) DEFAULT '(555) 019-2834',
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
 
@@ -378,6 +380,18 @@ async function initDatabase() {
     try {
       await pool.query(
         "ALTER TABLE companies ADD COLUMN primary_color VARCHAR(10) DEFAULT '#f97316';"
+      );
+    } catch (e) {}
+
+    try {
+      await pool.query(
+        "ALTER TABLE companies ADD COLUMN service_address VARCHAR(255) DEFAULT '100 Industrial Parkway, Mechanics Hub';"
+      );
+    } catch (e) {}
+
+    try {
+      await pool.query(
+        "ALTER TABLE companies ADD COLUMN phone VARCHAR(50) DEFAULT '(555) 019-2834';"
       );
     } catch (e) {}
 
