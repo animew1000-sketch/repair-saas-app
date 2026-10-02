@@ -949,7 +949,7 @@ body.dark-mode .theme-switch-knob {
 .motivo-button-secondary { background: transparent; border: 1px solid #bcc9c1; color: #173c3b; }
 .motivo-button-dark { background: #173c3b; color: #fff; }
 .motivo-hero-art { min-height: 490px; overflow: hidden; position: relative; }
-.motivo-hero-art::before { background: #e86642; content: ''; height: 72px; position: absolute; right: -14px; top: -14px; width: 72px; z-index: 1; }
+.motivo-hero-art::before { content: none; }
 .motivo-hero-art img { display: block; height: 490px; object-fit: cover; width: 100%; }
 .motivo-art-note { background: #fff; bottom: 22px; display: grid; gap: 5px; left: 22px; padding: 17px 20px; position: absolute; width: min(290px, calc(100% - 44px)); }
 .motivo-art-note strong { font-family: 'Space Grotesk', sans-serif; font-size: 1rem; }
@@ -1094,6 +1094,25 @@ body.dark-mode .motivo-public-page .motivo-menu-toggle span { background: #edf2e
 body.dark-mode .motivo-public-page .header-nav#motivo-side-menu { background: #0d1717; box-shadow: 14px 0 34px rgba(0,0,0,.35); }
 body.dark-mode .motivo-public-page .header-nav#motivo-side-menu .header-link { color: #d9e5df; }
 body.dark-mode .motivo-public-page .header-nav#motivo-side-menu .header-link:hover { background: #172d2b; }
+body.dark-mode .motivo-public-page > .container { background: #0d1717 !important; color: #edf2ed; }
+body.dark-mode .motivo-public-page .contact-page { background: #0d1717; }
+body.dark-mode .motivo-public-page .contact-intro h1,
+body.dark-mode .motivo-public-page .contact-form h2,
+body.dark-mode .motivo-public-page .overview-features h2,
+body.dark-mode .motivo-public-page .card h2 { color: #f3f5ef; }
+body.dark-mode .motivo-public-page .contact-form,
+body.dark-mode .motivo-public-page .overview-features,
+body.dark-mode .motivo-public-page .card { background: #172d2b !important; border-color: #2e4a44; box-shadow: 0 12px 30px rgba(0,0,0,.16); }
+body.dark-mode .motivo-public-page .contact-detail { background: #132523; border-color: #2e4a44; }
+body.dark-mode .motivo-public-page .contact-detail strong,
+body.dark-mode .motivo-public-page .feature-summary { color: #edf2ed; }
+body.dark-mode .motivo-public-page .feature-summary:hover { background: #21403b; }
+body.dark-mode .motivo-public-page .feature-content-inner,
+body.dark-mode .motivo-public-page .card p,
+body.dark-mode .motivo-public-page .contact-intro p { color: #afbeb8; }
+body.dark-mode .motivo-public-page input,
+body.dark-mode .motivo-public-page select,
+body.dark-mode .motivo-public-page textarea { background: #0f2020; border-color: #31504a; color: #edf2ed; }
 
 @media (max-width: 640px) {
   .motivo-public-page > .header,
@@ -1210,6 +1229,7 @@ body.dark-mode .container:has(#landingSection:not(.hidden)) .header-nav#motivo-s
   box-shadow: 0 8px 18px rgba(232,102,66,.18);
   font-size: .84rem;
   letter-spacing: .01em;
+  height: 50px;
   min-height: 50px;
 }
 .motivo-hero .motivo-button-primary:hover,
