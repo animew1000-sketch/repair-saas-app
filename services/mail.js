@@ -4,33 +4,38 @@ const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST || '127.0.0.1',
   port: Number(process.env.SMTP_PORT || 25),
   secure: false,
-
-  // Node and Postfix are on the same server over loopback.
-  // Do not attempt STARTTLS using Postfix's local self-signed certificate.
   ignoreTLS: true,
-
-  // Postfix trusts localhost, so no SMTP credentials are required.
   auth: undefined
 });
 
 const DEFAULT_FROM =
   process.env.MAIL_FROM ||
-  'Repair SaaS <noreply@repairben.dynv6.net>';
+  'Motivo <noreply@repairben.dynv6.net>';
 
-/**
- * Send an email through the local Postfix server.
- *
- * @param {Object} options
- * @param {string} options.to
- * @param {string} options.subject
- * @param {string} [options.text]
- * @param {string} [options.html]
- */
+function getDefaultFromAddress() {
+  const angleMatch =
+    String(DEFAULT_FROM).match(/<([^>]+)>/);
+
+  if (angleMatch) {
+    return angleMatch[1].trim();
+  }
+
+  return String(DEFAULT_FROM).trim();
+}
+
+function cleanDisplayName(value) {
+  return String(value || '')
+    .replace(/[\r\n]+/g, ' ')
+    .replace(/"/g, '')
+    .trim();
+}
+
 async function sendMail({
   to,
   subject,
   text,
-  html
+  html,
+  fromName
 }) {
   if (!to) {
     throw new Error(
@@ -44,9 +49,17 @@ async function sendMail({
     );
   }
 
+  const safeFromName =
+    cleanDisplayName(fromName);
+
+  const from =
+    safeFromName
+      ? `${safeFromName} <${getDefaultFromAddress()}>`
+      : DEFAULT_FROM;
+
   const info =
     await transporter.sendMail({
-      from: DEFAULT_FROM,
+      from,
       to,
       subject,
       text,
@@ -54,7 +67,7 @@ async function sendMail({
     });
 
   console.log(
-    `Email sent to ${to}: ${info.messageId}`
+    `Email sent to ${to} from ${safeFromName || 'default sender'}: ${info.messageId}`
   );
 
   return info;

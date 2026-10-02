@@ -141,24 +141,38 @@ router.post('/register', async (req, res) => {
     );
 
    await connection.commit();
+    const [companyRows] =
+  await pool.query(
+    `
+    SELECT company_name
+    FROM companies
+    WHERE id = ?
+    LIMIT 1
+    `,
+    [company_id]
+  );
 
+const companyName =
+  companyRows[0]?.company_name ||
+  'Your Repair Shop';
 // ======================================================
 // REGISTRATION CONFIRMATION EMAIL
 // ======================================================
 // The account has already been committed to the database,
 // so an email failure must never undo a successful signup.
 try {
-  await sendMail({
-    to: email,
-    subject: 'Welcome to Repair SaaS',
-    text:
-      `Hi ${first_name},\n\n` +
-      `Your Repair SaaS customer account has been created successfully.\n\n` +
-      `Username: ${username}\n\n` +
-      `You can now log in to view and manage your repair information.\n\n` +
-      `Thank you,\n` +
-      `Repair SaaS`
-  });
+await sendMail({
+  to: email,
+  fromName: companyName,
+  subject: `Welcome to ${companyName}`,
+  text:
+    `Hi ${first_name},\n\n` +
+    `Your customer account for ${companyName} has been created successfully.\n\n` +
+    `Username: ${username}\n\n` +
+    `You can now log in to view your repair information, appointments, and invoices.\n\n` +
+    `Thank you,\n` +
+    `${companyName}`
+});
 } catch (emailErr) {
   console.error(
     'Registration email failed:',
