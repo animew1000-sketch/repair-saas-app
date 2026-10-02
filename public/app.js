@@ -1,6 +1,9 @@
 let activeDept = 'customer';
+let staffJobs = [];
+let activeStaffJobFilter = 'current';
 let loadedCustomerList = [];
 let currentShop = null;
+let activeWorkflowRecord = null;
 
 
 function showToast(message, type = 'info') {
@@ -83,6 +86,7 @@ function clearAuthFormFields() {
 function clearAuthSession() {
   clearAuthFormFields();
   localStorage.removeItem('token');
+  localStorage.removeItem('user_id');
   localStorage.removeItem('role');
   localStorage.removeItem('username');
   localStorage.removeItem('company_name');
@@ -732,6 +736,11 @@ async function handleLogin(e) {
     localStorage.setItem(
       'token',
       data.token
+    );
+
+    localStorage.setItem(
+      'user_id',
+      String(data.user_id || '')
     );
 
     localStorage.setItem(
@@ -1559,7 +1568,74 @@ async function fetchCustomerList() {
       .join('');
 }
 
-function autoFillCustomerData() {
+function setWorkflowField(name, value) {
+  const field = document.querySelector(
+    `#formFields [name="${name}"], #formFields #field_${name}`
+  );
+
+  if (field) {
+    field.value = value ?? '';
+  }
+}
+
+function populateWorkflowDepartment() {
+  const record = activeWorkflowRecord;
+
+  if (!record) {
+    return;
+  }
+
+  const data = record[activeDept];
+
+  if (activeDept === 'parts_labor') {
+    const firstLine = Array.isArray(data) ? data[0] || {} : {};
+    setWorkflowField('item_type', firstLine.item_type);
+    setWorkflowField('description', firstLine.description);
+    setWorkflowField('unit_cost', firstLine.unit_cost);
+    return;
+  }
+
+  if (!data) {
+    return;
+  }
+
+  Object.entries(data).forEach(([name, value]) => {
+    setWorkflowField(name, value);
+  });
+}
+
+async function loadWorkflowRecord(jobId) {
+  if (!jobId) {
+    activeWorkflowRecord = null;
+    return;
+  }
+
+  const res = await fetch(
+    `/api/department/job/${encodeURIComponent(jobId)}`,
+    {
+      headers: {
+        Authorization:
+          `Bearer ${localStorage.getItem('token')}`
+      }
+    }
+  );
+
+  const data = await res.json();
+
+  if (handleExpiredSession(res, data)) {
+    return;
+  }
+
+  if (!res.ok) {
+    showToast(data.error || 'Unable to load this repair job.', 'error');
+    return;
+  }
+
+  activeWorkflowRecord = data;
+  populateWorkflowDepartment();
+}
+
+async function autoFillCustomerData() {
   const jobId =
     document.getElementById('customerSelector').value;
 
@@ -1622,6 +1698,8 @@ function autoFillCustomerData() {
       ).value = customer.year || '';
     }
   }
+
+  await loadWorkflowRecord(jobId);
 }
 
 function applyRolePermissions(role) {
@@ -1662,6 +1740,7 @@ function updateHeaderAuthButtons() {
 
   const isLoggedIn = Boolean(token);
   const isCustomer = isLoggedIn && role === 'customer';
+  const isStaff = isLoggedIn && !isCustomer;
 
   document
     .querySelectorAll('.header-signup, .auth-signup')
@@ -1684,13 +1763,26 @@ function updateHeaderAuthButtons() {
   document
     .querySelectorAll('.public-nav-link')
     .forEach((el) => {
-      el.classList.toggle('hidden', isCustomer);
+      el.classList.toggle('hidden', isCustomer || isStaff);
     });
 
   document
     .querySelectorAll('.customer-nav-link')
     .forEach((el) => {
       el.classList.toggle('hidden', !isCustomer);
+    });
+  document
+    .querySelectorAll('.staff-nav-link')
+    .forEach((el) => {
+      el.classList.toggle('hidden', !isLoggedIn || isCustomer);
+    });
+  document
+    .querySelectorAll('.staff-manager-nav')
+    .forEach((el) => {
+      el.classList.toggle(
+        'hidden',
+        !isLoggedIn || role !== 'manager'
+      );
     });
 }
 
@@ -1747,11 +1839,152 @@ function renderDashboard() {
     }
 
     fetchCustomerList();
+    loadStaffJobs();
     applyRolePermissions(role);
+    openStaffView(role === 'technician' ? 'jobs' : 'workflow');
   }
 }
 
-function showDept(dept) {
+async function loadStaffJobs() {
+  const res = await fetch('/api/department/jobs', {
+    headers: {
+      Authorization:
+        `Bearer ${localStorage.getItem('token')}`
+    }
+  });
+
+  const data = await res.json();
+
+  if (handleExpiredSession(res, data)) {
+    return;
+  }
+
+  if (!res.ok) {
+    showToast(data.error || 'Unable to load staff jobs.', 'error');
+    return;
+  }
+
+  staffJobs = data.jobs || [];
+  renderStaffJobs();
+}
+
+function filterStaffJobs(filter) {
+  activeStaffJobFilter = filter;
+
+  document
+    .querySelectorAll('.staff-job-filters button')
+    .forEach((button) => {
+      button.classList.toggle(
+        'active',
+        button.textContent.trim().toLowerCase() === filter
+      );
+    });
+
+  renderStaffJobs();
+}
+
+function renderStaffJobs() {
+  const tbody = document.getElementById('staffJobsBody');
+
+  if (!tbody) {
+    return;
+  }
+
+  const userId = Number(localStorage.getItem('user_id'));
+  const jobs = staffJobs.filter((job) => {
+    const completed = job.status === 'Completed';
+    const unassigned = !job.assigned_staff_id;
+
+    if (activeStaffJobFilter === 'previous') {
+      return completed;
+    }
+
+    if (activeStaffJobFilter === 'available') {
+      return unassigned && !completed;
+    }
+
+    if (localStorage.getItem('role') === 'technician') {
+      return Number(job.assigned_staff_id) === userId && !completed;
+    }
+
+    return !completed;
+  });
+
+  if (jobs.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="7">No jobs in this view.</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = jobs.map((job) => {
+    const customer = `${job.first_name || ''} ${job.last_name || ''}`.trim() || 'Customer';
+    const vehicle = `${job.year || ''} ${job.make || ''} ${job.model || ''}`.trim() || 'Vehicle';
+    const appointment = job.scheduled_datetime
+      ? new Date(job.scheduled_datetime).toLocaleString()
+      : 'Not scheduled';
+    const canClaim = localStorage.getItem('role') === 'technician' && !job.assigned_staff_id;
+
+    return `<tr>
+      <td>#${escapeHtml(job.id)}</td>
+      <td>${escapeHtml(customer)}</td>
+      <td>${escapeHtml(vehicle)}</td>
+      <td>${escapeHtml(appointment)}</td>
+      <td>${escapeHtml(job.status)}</td>
+      <td>${escapeHtml(job.assigned_staff_name || 'Unassigned')}</td>
+      <td>${canClaim ? `<button class="staff-inline-action" type="button" onclick="claimStaffJob(${Number(job.id)})">Claim</button>` : ''}</td>
+    </tr>`;
+  }).join('');
+}
+
+async function claimStaffJob(jobId) {
+  const res = await fetch(`/api/department/jobs/${jobId}/claim`, {
+    method: 'POST',
+    headers: {
+      Authorization:
+        `Bearer ${localStorage.getItem('token')}`
+    }
+  });
+
+  const data = await res.json();
+
+  if (handleExpiredSession(res, data)) {
+    return;
+  }
+
+  if (!res.ok) {
+    showToast(data.error || 'Unable to claim this job.', 'error');
+    return;
+  }
+
+  showToast('Job claimed.', 'success');
+  await loadStaffJobs();
+}
+
+function openStaffView(view) {
+  const jobsSection = document.getElementById('staffJobsSection');
+  const workflowSection = document.getElementById('staffWorkflowSection');
+  const managerPanel = document.getElementById('managerControlPanel');
+
+  if (!jobsSection || !workflowSection || !managerPanel) {
+    return;
+  }
+
+  const isManager = localStorage.getItem('role') === 'manager';
+
+  if (view === 'team' && !isManager) {
+    showToast('Manager access is required.', 'error');
+    return;
+  }
+
+  jobsSection.classList.toggle('hidden', view !== 'jobs');
+  workflowSection.classList.toggle('hidden', view !== 'workflow');
+  managerPanel.classList.toggle('hidden', view !== 'team' || !isManager);
+
+  if (view === 'jobs') {
+    loadStaffJobs();
+  }
+}
+
+async function showDept(dept) {
   activeDept = dept;
 
   document
@@ -1767,6 +2000,23 @@ function showDept(dept) {
     activeBtn.classList.add('active');
   }
 
+  const readyButton =
+    document.getElementById('markReadyBtn');
+
+  const saveButton =
+    document.querySelector('.staff-save-record-btn');
+
+  if (readyButton) {
+    readyButton.classList.toggle('hidden', dept !== 'invoice');
+  }
+
+  if (saveButton) {
+    saveButton.textContent =
+      dept === 'invoice'
+        ? 'Generate Invoice & Email Customer'
+        : 'Save Department Record';
+  }
+
   document.getElementById(
     'deptTitle'
   ).textContent =
@@ -1778,7 +2028,9 @@ function showDept(dept) {
     'formFields'
   ).innerHTML = DEPT_FIELDS[dept] || '';
 
-  autoFillCustomerData();
+  await loadWorkflowRecord(
+    document.getElementById('activeJobId').value
+  );
 }
 
 async function submitDepartment(e) {
@@ -1818,7 +2070,14 @@ async function submitDepartment(e) {
   }
 
   if (res.ok) {
-    showToast('Record saved!', 'success');
+    showToast(
+      activeDept === 'invoice'
+        ? data.email_sent
+          ? 'Invoice generated and customer email sent.'
+          : 'Invoice generated. No customer email is on file.'
+        : 'Record saved!',
+      'success'
+    );
 
     e.target.reset();
 
@@ -1832,6 +2091,45 @@ async function submitDepartment(e) {
       'error'
     );
   }
+}
+
+async function markJobReady() {
+  const jobId =
+    document.getElementById('activeJobId').value;
+
+  if (!jobId) {
+    showToast('Select a repair job first.', 'error');
+    return;
+  }
+
+  const res = await fetch(
+    `/api/department/job/${encodeURIComponent(jobId)}/ready`,
+    {
+      method: 'POST',
+      headers: {
+        Authorization:
+          `Bearer ${localStorage.getItem('token')}`
+      }
+    }
+  );
+
+  const data = await res.json();
+
+  if (handleExpiredSession(res, data)) {
+    return;
+  }
+
+  if (!res.ok) {
+    showToast(data.error || 'Unable to mark this vehicle ready.', 'error');
+    return;
+  }
+
+  showToast(
+    data.email_sent
+      ? 'Vehicle marked ready. Customer notification sent.'
+      : 'Vehicle marked ready. No customer email is on file.',
+    'success'
+  );
 }
 
 function logout() {

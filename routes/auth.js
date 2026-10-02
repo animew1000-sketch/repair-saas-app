@@ -519,6 +519,8 @@ router.post('/login', async (req, res) => {
     // ==================================================
     return res.json({
       token,
+      user_id:
+        user.id,
       company_id:
         user.company_id,
 

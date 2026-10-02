@@ -102,6 +102,17 @@
         Settings
       </button>
 
+      <!-- STAFF WORKSPACE NAVIGATION -->
+      <button class="header-link staff-nav-link hidden" type="button" onclick="openStaffView('jobs')">
+        My Jobs
+      </button>
+      <button class="header-link staff-nav-link hidden" type="button" onclick="openStaffView('workflow')">
+        Repair Workflow
+      </button>
+      <button class="header-link staff-nav-link staff-manager-nav hidden" type="button" onclick="openStaffView('team')">
+        Team Access
+      </button>
+
     </div>
 
     <div class="header-actions">
@@ -687,6 +698,27 @@
         </div>
       </section>
 
+      <section id="staffJobsSection" class="staff-jobs-section hidden">
+        <div class="staff-section-heading">
+          <div>
+            <span class="staff-section-kicker">JOB QUEUE</span>
+            <h3>Work assigned to your team</h3>
+            <p>Review current repairs, previous jobs, and future work waiting for a technician.</p>
+          </div>
+          <div class="staff-job-filters" role="group" aria-label="Job views">
+            <button type="button" class="active" onclick="filterStaffJobs('current')">Current</button>
+            <button type="button" onclick="filterStaffJobs('available')">Available</button>
+            <button type="button" onclick="filterStaffJobs('previous')">Previous</button>
+          </div>
+        </div>
+        <div class="staff-table-shell">
+          <table class="staff-table">
+            <thead><tr><th>Job</th><th>Customer</th><th>Vehicle</th><th>Appointment</th><th>Status</th><th>Technician</th><th>Action</th></tr></thead>
+            <tbody id="staffJobsBody"><tr><td colspan="7">Loading jobs...</td></tr></tbody>
+          </table>
+        </div>
+      </section>
+
       <div id="managerControlPanel" class="hidden staff-manager-panel">
 
         <div class="staff-section-heading">
@@ -798,7 +830,7 @@
         </div>
       </div>
 
-      <section class="staff-workflow-section">
+      <section id="staffWorkflowSection" class="staff-workflow-section">
         <div class="staff-section-heading">
           <div>
             <span class="staff-section-kicker">ACTIVE REPAIR WORKFLOW</span>
@@ -891,6 +923,10 @@
             Save Department Record
           </button>
         </form>
+
+        <button id="markReadyBtn" class="btn-secondary staff-ready-btn hidden" type="button" onclick="markJobReady()">
+          Mark Vehicle Ready &amp; Notify Customer
+        </button>
       </section>
 
     </div>

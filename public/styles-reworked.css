@@ -2736,7 +2736,8 @@ body.dark-mode .customer-home-hero {
 }
 
 .staff-manager-panel,
-.staff-workflow-section {
+.staff-workflow-section,
+.staff-jobs-section {
   margin-bottom: 22px;
   padding: clamp(22px, 3vw, 34px);
 
@@ -2745,6 +2746,15 @@ body.dark-mode .customer-home-hero {
   border-radius: 14px;
   box-shadow: 0 10px 30px rgba(15,23,42,.045);
 }
+
+.staff-job-filters { display: flex; flex-wrap: wrap; gap: 7px; }
+.staff-job-filters button { background: #f1f3f5; border: 1px solid #e0e4e8; border-radius: 999px; color: #65716e; cursor: pointer; font-size: .75rem; font-weight: 800; margin: 0; padding: 8px 12px; }
+.staff-job-filters button.active { background: #173c3b; border-color: #173c3b; color: #fff; }
+.staff-inline-action { background: #e86642; border: 0; border-radius: 7px; color: #fff; cursor: pointer; font-size: .72rem; font-weight: 800; margin: 0; padding: 7px 10px; }
+.staff-inline-action:hover { background: #cc4f31; }
+body.dark-mode .staff-jobs-section { background: #171d25; border-color: #28313d; }
+body.dark-mode .staff-job-filters button { background: #202833; border-color: #34404e; color: #b7c2ce; }
+body.dark-mode .staff-job-filters button.active { background: #e86642; border-color: #e86642; color: #fff; }
 
 .staff-section-heading {
   display: flex;

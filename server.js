@@ -204,6 +204,8 @@ async function initDatabase() {
           'Completed'
         ) DEFAULT 'Requested',
 
+        assigned_staff_id INT NULL,
+
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
         FOREIGN KEY (company_id)
@@ -389,6 +391,12 @@ async function initDatabase() {
         e.message
       );
     }
+
+    try {
+      await pool.query(
+        'ALTER TABLE repair_jobs ADD COLUMN assigned_staff_id INT NULL;'
+      );
+    } catch (e) {}
 
     // ==================================================
     // DEMO COMPANIES
