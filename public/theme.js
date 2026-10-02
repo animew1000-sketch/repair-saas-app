@@ -31,4 +31,32 @@ function toggleTheme() {
   localStorage.setItem('theme', theme);
 }
 
+function toggleMotivoMenu(toggle) {
+  toggle = toggle || document.querySelector('.motivo-menu-toggle');
+
+  const isOpen =
+    document.body.classList.toggle('motivo-menu-open');
+
+  toggle?.setAttribute('aria-expanded', String(isOpen));
+  toggle?.setAttribute(
+    'aria-label',
+    isOpen ? 'Close navigation menu' : 'Open navigation menu'
+  );
+}
+
+document.addEventListener('click', (event) => {
+  if (
+    document.body.classList.contains('motivo-menu-open') &&
+    !event.target.closest('.header')
+  ) {
+    document.body.classList.remove('motivo-menu-open');
+  }
+});
+
+document.addEventListener('keydown', (event) => {
+  if (event.key === 'Escape') {
+    document.body.classList.remove('motivo-menu-open');
+  }
+});
+
 applySavedTheme();

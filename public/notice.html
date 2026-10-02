@@ -4,9 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Privacy, Terms & California Notice | Motivo</title>
-  <link rel="stylesheet" href="/styles-reworked.css">
+  <link rel="stylesheet" href="/styles-reworked.css?v=motivo-3">
 </head>
-<body>
+<body class="motivo-public-page">
   <div class="container">
 
     <div class="header">
@@ -14,10 +14,14 @@
         <span>Motivo</span>
       </div>
 
-      <div class="header-nav">
+      <button class="motivo-menu-toggle" type="button" aria-expanded="false" aria-controls="motivo-side-menu" aria-label="Open navigation menu" onclick="toggleMotivoMenu(this)">
+        <span></span><span></span><span></span>
+      </button>
+
+      <div class="header-nav" id="motivo-side-menu">
         <div class="header-links">
           <a class="header-link" href="/">Home</a>
-          <a class="header-link" href="/overview.html">Platform Overview</a>
+          <a class="header-link" href="/overview.html">How It Works</a>
           <a class="header-link" href="/contact.html">Contact</a>
         </div>
 
@@ -165,6 +169,6 @@
     </div>
   </div>
 
-  <script src="/theme.js"></script>
+  <script src="/theme.js?v=motivo-3"></script>
 </body>
 </html>
