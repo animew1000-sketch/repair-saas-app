@@ -907,7 +907,9 @@ body.dark-mode .theme-switch-knob {
   border-bottom: 1px solid #d9ded6;
   display: flex;
   gap: 32px;
+  height: auto !important;
   justify-content: space-between;
+  min-height: 82px !important;
   padding: 19px clamp(22px, 5vw, 76px);
 }
 
@@ -1200,6 +1202,22 @@ body.dark-mode .container:has(#landingSection:not(.hidden)) .header-nav#motivo-s
 .motivo-finder-controls select:focus { background: #f2f7f3; box-shadow: none; outline: 0; }
 .motivo-finder-controls select { border-left: 1px solid #d8e2da; }
 .motivo-finder-controls .motivo-button-dark { border-radius: 9px; min-height: 48px; padding-left: 22px; padding-right: 22px; white-space: nowrap; }
+.motivo-hero .motivo-button-primary,
+.motivo-finder-controls .motivo-button-dark {
+  background: #e86642;
+  border: 1px solid #e86642;
+  border-radius: 10px;
+  box-shadow: 0 8px 18px rgba(232,102,66,.18);
+  font-size: .84rem;
+  letter-spacing: .01em;
+  min-height: 50px;
+}
+.motivo-hero .motivo-button-primary:hover,
+.motivo-finder-controls .motivo-button-dark:hover {
+  background: #cc4f31;
+  border-color: #cc4f31;
+  box-shadow: 0 11px 22px rgba(204,79,49,.24);
+}
 body.dark-mode .motivo-finder { background: #172d2b; border-color: #2e4a44; box-shadow: 0 18px 45px rgba(0,0,0,.18); }
 body.dark-mode .motivo-finder-controls { background: #0f2020; border-color: #31504a; box-shadow: none; }
 body.dark-mode .motivo-finder-controls input,
