@@ -565,8 +565,19 @@
             <div><label for="book_model">Vehicle Model</label><input type="text" id="book_model" placeholder="e.g. Mustang" required /></div>
             <div><label for="book_year">Year</label><input type="number" id="book_year" placeholder="e.g. 2022" required /></div>
           </div>
-          <label for="book_datetime">Preferred Appointment Date & Time</label>
-          <input type="datetime-local" id="book_datetime" required />
+          <fieldset class="appointment-datetime-group">
+            <legend>Preferred Appointment Date &amp; Time</legend>
+            <div class="appointment-datetime-grid">
+              <div class="appointment-field">
+                <label for="book_date">Appointment date</label>
+                <input type="date" id="book_date" required />
+              </div>
+              <div class="appointment-field">
+                <label for="book_time">Preferred time</label>
+                <input type="time" id="book_time" required />
+              </div>
+            </div>
+          </fieldset>
           <label for="book_issue">Describe Vehicle Issue / Symptoms</label>
           <textarea id="book_issue" rows="3" placeholder="Describe symptoms..." required></textarea>
 <button class="btn-primary" type="submit">

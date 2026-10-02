@@ -1284,6 +1284,30 @@ body.motivo-public-page .card h2 { color: #173c3b; }
 body.motivo-public-page .contact-intro p,
 body.motivo-public-page .card p { color: #65716e; }
 
+.appointment-datetime-group {
+  background: #e8f0ea;
+  border: 1px solid #d2dfd5;
+  border-radius: 14px;
+  margin: 18px 0;
+  padding: 18px;
+}
+.appointment-datetime-group legend { color: #173c3b; font-size: .82rem; font-weight: 800; padding: 0 8px; }
+.appointment-datetime-grid { display: grid; gap: 14px; grid-template-columns: 1fr 1fr; }
+.appointment-field label { color: #65716e; font-size: .72rem; margin: 0 0 7px; }
+.appointment-field input[type="date"],
+.appointment-field input[type="time"] { background: #fff; border: 1px solid #c6d8ca; border-radius: 9px; color: #173c3b; font: inherit; min-height: 48px; padding: 0 12px; width: 100%; }
+.appointment-field input[type="date"]:focus,
+.appointment-field input[type="time"]:focus { border-color: #e86642; box-shadow: 0 0 0 3px rgba(232,102,66,.14); outline: 0; }
+body.dark-mode .appointment-datetime-group { background: #172d2b; border-color: #2e4a44; }
+body.dark-mode .appointment-datetime-group legend { color: #edf2ed; }
+body.dark-mode .appointment-field label { color: #afbeb8; }
+body.dark-mode .appointment-field input[type="date"],
+body.dark-mode .appointment-field input[type="time"] { background: #0f2020; border-color: #31504a; color: #edf2ed; color-scheme: dark; }
+
+@media (max-width: 640px) {
+  .appointment-datetime-grid { grid-template-columns: 1fr; }
+}
+
 @media (max-width: 820px) {
   .motivo-finder { gap: 24px; }
 }

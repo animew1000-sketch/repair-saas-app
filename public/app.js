@@ -51,8 +51,37 @@ function showToast(message, type = 'info') {
   }, 4500);
 }
 
+function clearAuthFormFields() {
+  const fieldIds = [
+    'login_input',
+    'password',
+    'reg_first_name',
+    'reg_last_name',
+    'reg_phone',
+    'reg_email',
+    'reg_username',
+    'reg_password',
+    'reg_notice_ack'
+  ];
+
+  fieldIds.forEach((id) => {
+    const field = document.getElementById(id);
+
+    if (!field) {
+      return;
+    }
+
+    if (field.type === 'checkbox') {
+      field.checked = false;
+    } else {
+      field.value = '';
+    }
+  });
+}
+
 
 function clearAuthSession() {
+  clearAuthFormFields();
   localStorage.removeItem('token');
   localStorage.removeItem('role');
   localStorage.removeItem('username');
@@ -500,6 +529,13 @@ function showScreen(screenId) {
     role !== 'customer'
   ) {
     screenId = 'employeeDashboard';
+  }
+
+  if (
+    ['landingSection', 'registerSection', 'loginSection']
+      .includes(screenId)
+  ) {
+    clearAuthFormFields();
   }
 
   document
@@ -1087,6 +1123,17 @@ async function handleBookAppointment(e) {
     return;
   }
 
+  const appointmentDate =
+    document.getElementById('book_date').value;
+
+  const appointmentTime =
+    document.getElementById('book_time').value;
+
+  if (!appointmentDate || !appointmentTime) {
+    showToast('Choose an appointment date and time.', 'error');
+    return;
+  }
+
   const payload = {
     vin,
 
@@ -1100,7 +1147,7 @@ async function handleBookAppointment(e) {
       document.getElementById('book_year').value,
 
     scheduled_datetime:
-      document.getElementById('book_datetime').value,
+      `${appointmentDate}T${appointmentTime}`,
 
     issue_description:
       document.getElementById('book_issue').value
