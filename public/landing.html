@@ -7,7 +7,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="/styles.css">
 </head>
-<body class="min-h-screen flex flex-col justify-between">
+<body class="motivo-universal-page min-h-screen flex flex-col justify-between">
 
   <!-- Navigation Header -->
   <header class="max-w-7xl w-full mx-auto p-6 flex justify-between items-center border-b border-slate-800">
@@ -15,12 +15,17 @@
       <span class="text-2xl">🔧</span>
       <span class="text-xl font-extrabold tracking-wider text-orange-500">MOTIVO</span>
     </div>
-    <div class="flex items-center space-x-3 text-xs font-semibold">
+    <button class="motivo-menu-toggle" type="button" aria-expanded="false" aria-label="Open navigation menu" onclick="toggleMotivoMenu(this)"><span></span><span></span><span></span></button>
+    <div class="legacy-header-links flex items-center space-x-3 text-xs font-semibold">
       <a href="#features" class="px-4 py-2 rounded-lg border border-slate-800 hover:bg-slate-900 transition">PLATFORM OVERVIEW</a>
       <a href="/client-signup" class="px-4 py-2 rounded-lg border border-slate-800 hover:bg-slate-900 transition">CLIENT SIGNUP</a>
       <a href="/app" class="px-4 py-2 rounded-lg border border-orange-500/50 bg-orange-500/10 text-orange-400 hover:bg-orange-500 hover:text-white transition">PORTAL LOGIN</a>
     </div>
   </header>
+
+  <nav class="motivo-universal-menu" aria-label="Main navigation">
+    <a href="/">Home</a><a href="/overview.html">How It Works</a><a href="/contact.html">Contact</a><a href="/client-signup">Customer Sign Up</a><a href="/app">Portal Login</a><button class="motivo-menu-theme" type="button" onclick="toggleTheme()" aria-label="Switch to dark mode"><span aria-hidden="true">◐</span><span class="motivo-menu-theme-label">Switch to dark mode</span></button>
+  </nav>
 
   <!-- Hero Section -->
   <main class="max-w-5xl w-full mx-auto px-6 py-12 text-center space-y-8 my-auto">
@@ -50,6 +55,8 @@
   <footer class="text-center py-6 border-t border-slate-900 text-xs text-slate-600">
     © 2026 Motivo. All rights reserved.
   </footer>
+
+  <script src="/theme.js?v=motivo-4"></script>
 
 </body>
 </html>

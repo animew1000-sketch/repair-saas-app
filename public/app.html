@@ -7,7 +7,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="/styles.css">
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans">
+<body class="motivo-universal-page bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans">
 
   <!-- TOP GLOBAL HEADER -->
   <header class="bg-slate-900 border-b border-slate-800 px-6 py-4 flex justify-between items-center sticky top-0 z-50">
@@ -20,12 +20,18 @@
       </div>
     </div>
 
+    <button class="motivo-menu-toggle" type="button" aria-expanded="false" aria-label="Open navigation menu" onclick="toggleMotivoMenu(this)"><span></span><span></span><span></span></button>
+
     <div id="staffNav" class="hidden flex items-center space-x-2 bg-slate-950 p-1 rounded-lg border border-slate-800 text-xs font-semibold">
       <button onclick="switchView('dashboard')" id="btn-dashboard" class="px-3 py-1.5 rounded-md bg-slate-800 text-white">1. Dashboard</button>
       <button onclick="switchView('departments')" id="btn-departments" class="px-3 py-1.5 rounded-md text-slate-400 hover:text-white">2. Departments & Forms</button>
       <button onclick="logoutStaff()" class="px-3 py-1.5 rounded-md text-red-400 hover:text-red-300">Sign Out</button>
     </div>
   </header>
+
+  <nav class="motivo-universal-menu" aria-label="Staff navigation">
+    <a href="/">Home</a><a href="#view-dashboard">Dashboard</a><a href="#view-departments">Departments &amp; Forms</a><button type="button" onclick="logoutStaff()">Sign Out</button><button class="motivo-menu-theme" type="button" onclick="toggleTheme()" aria-label="Switch to dark mode"><span aria-hidden="true">◐</span><span class="motivo-menu-theme-label">Switch to dark mode</span></button>
+  </nav>
 
   <main class="flex-1 max-w-7xl w-full mx-auto p-4 md:p-6 space-y-6">
 
@@ -277,6 +283,8 @@
     </section>
 
   </main>
+
+  <script src="/theme.js?v=motivo-4"></script>
 
   <script>
     let currentPin = '';

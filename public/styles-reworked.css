@@ -1094,6 +1094,14 @@ body.dark-mode .motivo-public-page .motivo-menu-toggle span { background: #edf2e
 body.dark-mode .motivo-public-page .header-nav#motivo-side-menu { background: #0d1717; box-shadow: 14px 0 34px rgba(0,0,0,.35); }
 body.dark-mode .motivo-public-page .header-nav#motivo-side-menu .header-link { color: #d9e5df; }
 body.dark-mode .motivo-public-page .header-nav#motivo-side-menu .header-link:hover { background: #172d2b; }
+.motivo-public-page .motivo-menu-theme,
+.container:has(#landingSection:not(.hidden)) .motivo-menu-theme { align-items: center; background: transparent; border: 1px solid #cbd5ce; border-radius: 6px; color: #53615f; cursor: pointer; display: flex; font: inherit; font-size: .78rem; font-weight: 700; gap: 9px; margin: 8px 0 0; padding: 11px 12px; text-align: left; width: 100%; }
+.motivo-public-page .motivo-menu-theme:hover,
+.container:has(#landingSection:not(.hidden)) .motivo-menu-theme:hover { background: #e5eee7; color: #173c3b; transform: none; }
+body.dark-mode .motivo-public-page .motivo-menu-theme,
+body.dark-mode .container:has(#landingSection:not(.hidden)) .motivo-menu-theme { border-color: #47605a; color: #d9e5df; }
+body.dark-mode .motivo-public-page .motivo-menu-theme:hover,
+body.dark-mode .container:has(#landingSection:not(.hidden)) .motivo-menu-theme:hover { background: #172d2b; color: #fff; }
 body.dark-mode .motivo-public-page > .container { background: #0d1717 !important; color: #edf2ed; }
 body.dark-mode .motivo-public-page .contact-page { background: #0d1717; }
 body.dark-mode .motivo-public-page .contact-intro h1,

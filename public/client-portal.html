@@ -7,7 +7,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="/styles.css">
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans">
+<body class="motivo-universal-page bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans">
 
   <!-- TOP HEADER -->
   <header class="bg-slate-900 border-b border-slate-800 px-6 py-4 flex justify-between items-center sticky top-0 z-50">
@@ -18,8 +18,13 @@
         <span id="clientUserBadge" class="text-xs text-orange-400 font-bold block">Welcome</span>
       </div>
     </div>
+    <button class="motivo-menu-toggle" type="button" aria-expanded="false" aria-label="Open navigation menu" onclick="toggleMotivoMenu(this)"><span></span><span></span><span></span></button>
     <button onclick="logoutClient()" class="text-xs font-bold text-red-400 hover:text-red-300 bg-red-950/40 px-3 py-1.5 rounded-lg border border-red-900">Sign Out</button>
   </header>
+
+  <nav class="motivo-universal-menu" aria-label="Customer navigation">
+    <a href="/">Home</a><a href="#">My Service</a><a href="#job_make">New Repair Request</a><a href="/contact.html">Contact Shop</a><button type="button" onclick="logoutClient()">Sign Out</button><button class="motivo-menu-theme" type="button" onclick="toggleTheme()" aria-label="Switch to dark mode"><span aria-hidden="true">◐</span><span class="motivo-menu-theme-label">Switch to dark mode</span></button>
+  </nav>
 
   <main class="flex-1 max-w-5xl w-full mx-auto p-4 md:p-6 space-y-6">
 
@@ -71,6 +76,8 @@
     </div>
 
   </main>
+
+  <script src="/theme.js?v=motivo-4"></script>
 
   <script>
     let currentClient = JSON.parse(localStorage.getItem('clientUser') || 'null');

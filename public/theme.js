@@ -3,11 +3,13 @@ function applySavedTheme() {
 
   if (savedTheme === 'dark') {
     document.body.classList.add('dark-mode');
+    updateThemeMenuButtons();
     return;
   }
 
   if (savedTheme === 'light') {
     document.body.classList.remove('dark-mode');
+    updateThemeMenuButtons();
     return;
   }
 
@@ -18,6 +20,25 @@ function applySavedTheme() {
     'dark-mode',
     systemPrefersDark
   );
+
+  updateThemeMenuButtons();
+}
+
+function updateThemeMenuButtons() {
+  const nextLabel =
+    document.body.classList.contains('dark-mode')
+      ? 'Switch to light mode'
+      : 'Switch to dark mode';
+
+  document
+    .querySelectorAll('.motivo-menu-theme')
+    .forEach((button) => {
+      button.setAttribute('aria-label', nextLabel);
+      const label = button.querySelector('.motivo-menu-theme-label');
+      if (label) {
+        label.textContent = nextLabel;
+      }
+    });
 }
 
 function toggleTheme() {
@@ -29,6 +50,7 @@ function toggleTheme() {
       : 'light';
 
   localStorage.setItem('theme', theme);
+  updateThemeMenuButtons();
 }
 
 function toggleMotivoMenu(toggle) {
