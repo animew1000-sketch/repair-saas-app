@@ -110,6 +110,9 @@ body {
 .motivo-universal-page .motivo-universal-menu button:hover { background: #1e293b; color: #fff; }
 .motivo-universal-page .motivo-menu-theme { border-color: #475569; color: #cbd5e1; margin-top: 12px; }
 .motivo-universal-page .motivo-menu-theme:hover { background: #1e293b; color: #fff; }
+.motivo-universal-page .motivo-drawer-heading { border-bottom: 1px solid #334155; display: grid; gap: 4px; margin-bottom: 7px; padding: 0 12px 17px; }
+.motivo-universal-page .motivo-drawer-heading strong { color: #f8fafc; font-size: 1.2rem; }
+.motivo-universal-page .motivo-drawer-heading span { color: #fb923c; font-size: .68rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
 body.motivo-menu-open .motivo-universal-menu { opacity: 1; pointer-events: auto; transform: translateX(0); visibility: visible; }
 body.motivo-menu-open .motivo-menu-toggle span:first-child { transform: translateY(6px) rotate(45deg); }
 body.motivo-menu-open .motivo-menu-toggle span:nth-child(2) { opacity: 0; }
