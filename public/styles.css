@@ -79,7 +79,9 @@ body {
   justify-content: center;
   margin-left: auto;
   padding: 0;
+  position: relative;
   width: 40px;
+  z-index: 22;
 }
 .motivo-universal-page .motivo-menu-toggle span { background: #cbd5e1; display: block; height: 2px; width: 17px; }
 .motivo-universal-page .motivo-menu-toggle:hover { background: #1e293b; transform: none; }
@@ -111,7 +113,7 @@ body {
 .motivo-universal-page .motivo-menu-theme { border-color: #475569; color: #cbd5e1; margin-top: 12px; }
 .motivo-universal-page .motivo-menu-theme:hover { background: #1e293b; color: #fff; }
 .motivo-universal-page .motivo-drawer-heading { border-bottom: 1px solid #334155; display: grid; gap: 4px; margin-bottom: 7px; padding: 0 12px 17px; }
-.motivo-universal-page .motivo-drawer-heading strong { color: #f8fafc; font-size: 1.2rem; }
+.motivo-universal-page .motivo-drawer-heading img { background: #173c3b; border-radius: 4px; display: block; height: 36px; object-fit: contain; padding: 3px 7px; width: 124px; }
 .motivo-universal-page .motivo-drawer-heading span { color: #fb923c; font-size: .68rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
 body.motivo-menu-open .motivo-universal-menu { opacity: 1; pointer-events: auto; transform: translateX(0); visibility: visible; }
 body.motivo-menu-open .motivo-menu-toggle span:first-child { transform: translateY(6px) rotate(45deg); }
@@ -122,3 +124,42 @@ body.motivo-menu-open .motivo-menu-toggle span:last-child { transform: translate
   .motivo-universal-page > header { gap: 10px; }
   .motivo-universal-page .legacy-header-links { display: none; }
 }
+
+/* Motivo palette contract: green, white, and black only. */
+:root {
+  --primary-color: #2e7d32;
+  --bg-dark: #050805;
+  --card-dark: #101710;
+  --border-dark: #263326;
+}
+.motivo-universal-page:not(.dark-mode) { background: #fff !important; color: #111 !important; }
+.motivo-universal-page:not(.dark-mode) .bg-slate-950,
+.motivo-universal-page:not(.dark-mode) .bg-slate-900 { background-color: #fff !important; }
+.motivo-universal-page:not(.dark-mode) .border-slate-800,
+.motivo-universal-page:not(.dark-mode) .border-slate-700 { border-color: #d4e3d4 !important; }
+.motivo-universal-page:not(.dark-mode) .text-slate-100,
+.motivo-universal-page:not(.dark-mode) .text-white { color: #111 !important; }
+.motivo-universal-page:not(.dark-mode) .text-slate-200,
+.motivo-universal-page:not(.dark-mode) .text-slate-300,
+.motivo-universal-page:not(.dark-mode) .text-slate-400,
+.motivo-universal-page:not(.dark-mode) .text-slate-500 { color: #536153 !important; }
+.motivo-universal-page .bg-orange-500,
+.motivo-universal-page .bg-orange-600 { background-color: #2e7d32 !important; }
+.motivo-universal-page .text-orange-400,
+.motivo-universal-page .text-orange-500,
+.motivo-universal-page .text-amber-500,
+.motivo-universal-page .text-blue-400 { color: #2e7d32 !important; }
+.motivo-universal-page .border-orange-500,
+.motivo-universal-page .border-orange-500\/50 { border-color: #2e7d32 !important; }
+.motivo-universal-page.dark-mode,
+body.dark-mode.motivo-universal-page { background: #050805 !important; color: #f5faf5 !important; }
+body.dark-mode.motivo-universal-page .bg-slate-950 { background-color: #050805 !important; }
+body.dark-mode.motivo-universal-page .bg-slate-900 { background-color: #101710 !important; }
+body.dark-mode.motivo-universal-page .border-slate-800,
+body.dark-mode.motivo-universal-page .border-slate-700 { border-color: #263326 !important; }
+body.dark-mode.motivo-universal-page .text-slate-100,
+body.dark-mode.motivo-universal-page .text-white { color: #f5faf5 !important; }
+body.dark-mode.motivo-universal-page .text-slate-200,
+body.dark-mode.motivo-universal-page .text-slate-300,
+body.dark-mode.motivo-universal-page .text-slate-400,
+body.dark-mode.motivo-universal-page .text-slate-500 { color: #a9b8a9 !important; }

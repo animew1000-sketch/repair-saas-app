@@ -894,6 +894,71 @@ body.dark-mode .theme-switch-knob {
   }
 }
 
+/* Final Motivo palette: green, white, and black only. */
+:root {
+  --ink: #111;
+  --muted: #536153;
+  --line: #d4e3d4;
+  --surface: #fff;
+  --page: #fff;
+  --navy: #111;
+  --navy-soft: #edf6ed;
+  --Green: #2e7d32;
+  --Green-dark: #1b5e20;
+  --blue: #2e7d32;
+}
+body.dark-mode {
+  --ink: #f5faf5;
+  --muted: #a9b8a9;
+  --line: #263326;
+  --surface: #101710;
+  --page: #050805;
+  --navy: #f5faf5;
+  --navy-soft: #182418;
+  --Green: #66bb6a;
+  --Green-dark: #81c784;
+  --blue: #66bb6a;
+  background: #050805 !important;
+  color: #f5faf5 !important;
+}
+.motivo-landing,
+.motivo-hero { background: #fff !important; color: #111 !important; }
+.motivo-eyebrow,
+.motivo-step,
+.motivo-drawer-heading span,
+.motivo-hero h1 span,
+.motivo-final-cta .motivo-text-link { color: #2e7d32 !important; }
+.motivo-button-primary,
+.motivo-finder-controls .motivo-button-dark,
+.motivo-inline-action,
+.staff-inline-action { background: #2e7d32 !important; border-color: #2e7d32 !important; color: #fff !important; }
+.motivo-button-primary:hover,
+.motivo-finder-controls .motivo-button-dark:hover,
+.staff-inline-action:hover { background: #1b5e20 !important; border-color: #1b5e20 !important; }
+.motivo-shop-cta { background: #2e7d32 !important; color: #fff !important; }
+.motivo-feature-section { background: #101710 !important; color: #f5faf5 !important; }
+.motivo-finder,
+.workflow-progress-card,
+.appointment-datetime-group { background: #edf6ed !important; border-color: #c5dbc5 !important; }
+body.dark-mode .motivo-landing,
+body.dark-mode .motivo-hero,
+body.dark-mode .motivo-final-cta { background: #050805 !important; color: #f5faf5 !important; }
+body.dark-mode .motivo-hero h1,
+body.dark-mode .motivo-finder h2,
+body.dark-mode .motivo-benefits h2,
+body.dark-mode .motivo-final-cta h2 { color: #f5faf5 !important; }
+body.dark-mode .motivo-finder,
+body.dark-mode .workflow-progress-card,
+body.dark-mode .appointment-datetime-group { background: #182418 !important; border-color: #315031 !important; }
+body.dark-mode .motivo-feature-section { background: #050805 !important; }
+body.dark-mode .motivo-shop-cta { background: #1b5e20 !important; }
+.motivo-hero .motivo-button-secondary { border-color: #2e7d32 !important; color: #111 !important; }
+body.dark-mode .motivo-hero .motivo-button-secondary { color: #f5faf5 !important; }
+.motivo-finder-controls input:focus,
+.motivo-finder-controls select:focus,
+.appointment-field input[type="date"]:focus,
+.appointment-field input[type="time"]:focus { border-color: #2e7d32 !important; box-shadow: 0 0 0 3px rgba(46,125,50,.16) !important; }
+
 /* Motivo public homepage */
 .container:has(#landingSection:not(.hidden)) {
   display: block;
@@ -1077,7 +1142,7 @@ body.dark-mode .motivo-art-note span { color: #afbeb8; }
 .motivo-public-page > .container { background: transparent; border: 0; box-shadow: none; display: block; max-width: none; padding: 0; }
 .motivo-public-page .brand { left: 50%; position: absolute; transform: translateX(-50%); }
 .motivo-public-page .brand-logo { background: #173c3b; border-radius: 4px; display: block; height: 44px; object-fit: contain; padding: 3px 7px; width: 145px; }
-.motivo-public-page .motivo-menu-toggle { align-items: center; background: transparent; border: 1px solid #cbd5ce; border-radius: 4px; cursor: pointer; display: flex; flex-direction: column; gap: 4px; height: 42px; justify-content: center; margin: 0; padding: 0; width: 42px; }
+.motivo-public-page .motivo-menu-toggle { align-items: center; background: transparent; border: 1px solid #cbd5ce; border-radius: 4px; cursor: pointer; display: flex; flex-direction: column; gap: 4px; height: 42px; justify-content: center; margin: 0; padding: 0; position: relative; width: 42px; z-index: 22; }
 .motivo-public-page .motivo-menu-toggle span { background: #173c3b; display: block; height: 2px; width: 18px; }
 .motivo-public-page .motivo-menu-toggle:hover { background: #e5eee7; transform: none; }
 .motivo-public-page .header-nav#motivo-side-menu { align-items: stretch; background: #f8f7f2; box-shadow: 14px 0 34px rgba(23,60,59,.16); display: flex; flex-direction: column; gap: 28px; height: 100vh; left: 0; max-width: 330px; opacity: 0; padding: 112px 28px 28px; pointer-events: none; position: fixed; top: 0; transform: translateX(-105%); transition: opacity .2s ease, transform .25s ease; visibility: hidden; width: min(84vw, 330px); z-index: 19; }
@@ -1099,14 +1164,13 @@ body.dark-mode .motivo-public-page .header-nav#motivo-side-menu .header-link:hov
 .motivo-public-page .motivo-menu-theme:hover,
 .container:has(#landingSection:not(.hidden)) .motivo-menu-theme:hover { background: #e5eee7; color: #173c3b; transform: none; }
 .motivo-drawer-heading { border-bottom: 1px solid #d2dfd5; display: grid; gap: 4px; margin-bottom: 7px; padding: 0 12px 17px; }
-.motivo-drawer-heading strong { color: #173c3b; font-family: 'Space Grotesk', sans-serif; font-size: 1.35rem; letter-spacing: -.04em; }
+.motivo-drawer-heading img { background: #173c3b; border-radius: 4px; display: block; height: 36px; object-fit: contain; padding: 3px 7px; width: 124px; }
 .motivo-drawer-heading span { color: #e86642; font-size: .68rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
 body.dark-mode .motivo-public-page .motivo-menu-theme,
 body.dark-mode .container:has(#landingSection:not(.hidden)) .motivo-menu-theme { border-color: #47605a; color: #d9e5df; }
 body.dark-mode .motivo-public-page .motivo-menu-theme:hover,
 body.dark-mode .container:has(#landingSection:not(.hidden)) .motivo-menu-theme:hover { background: #172d2b; color: #fff; }
 body.dark-mode .motivo-drawer-heading { border-bottom-color: #31504a; }
-body.dark-mode .motivo-drawer-heading strong { color: #edf2ed; }
 body.dark-mode .motivo-public-page > .container { background: #0d1717 !important; color: #edf2ed; }
 body.dark-mode .motivo-public-page .contact-page { background: #0d1717; }
 body.dark-mode .motivo-public-page .contact-intro h1,
@@ -1148,7 +1212,9 @@ body.dark-mode .motivo-public-page textarea { background: #0f2020; border-color:
   justify-content: center;
   margin-left: auto;
   padding: 0;
+  position: relative;
   width: 42px;
+  z-index: 22;
 }
 .container:has(#landingSection:not(.hidden)) .motivo-menu-toggle span { background: #173c3b; display: block; height: 2px; transition: transform .2s, opacity .2s; width: 18px; }
 .container:has(#landingSection:not(.hidden)) .motivo-menu-toggle:hover { background: #e5eee7; transform: none; }

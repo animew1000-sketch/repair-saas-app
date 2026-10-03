@@ -322,24 +322,16 @@ document.addEventListener(
 );
 
 function applyShopThemeColor(colorHex) {
-  if (colorHex) {
-    document.documentElement.style.setProperty('--primary', colorHex);
+  const allowedGreen =
+    ['#2e7d32', '#1b5e20', '#66bb6a', '#81c784'];
 
-    let hoverColor = colorHex;
+  const safeColor =
+    allowedGreen.includes(String(colorHex).toLowerCase())
+      ? String(colorHex).toLowerCase()
+      : '#2e7d32';
 
-    if (colorHex === '#3b82f6') {
-      hoverColor = '#2563eb';
-    }
-
-    if (colorHex === '#f97316') {
-      hoverColor = '#ea580c';
-    }
-
-    document.documentElement.style.setProperty(
-      '--primary-hover',
-      hoverColor
-    );
-  }
+  document.documentElement.style.setProperty('--primary', safeColor);
+  document.documentElement.style.setProperty('--primary-hover', '#1b5e20');
 }
 
 async function loadShopLandingContext() {
@@ -765,7 +757,7 @@ async function handleLogin(e) {
 
     localStorage.setItem(
       'primary_color',
-      data.primary_color || '#f97316'
+      data.primary_color || '#2e7d32'
     );
 
     renderDashboard();
