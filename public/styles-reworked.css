@@ -1097,38 +1097,21 @@ body.dark-mode .motivo-hero .motivo-button-secondary { color: #f5faf5 !important
 /* Landing refinements: shared logo, slideshow, and true page-level themes. */
 .container:has(#landingSection:not(.hidden)) .brand::before,
 .container:has(#landingSection:not(.hidden)) .brand::after { content: none; }
-.container:has(#landingSection:not(.hidden)) .brand-logo { background: #173c3b; border-radius: 4px; display: block; height: 44px; object-fit: contain; padding: 3px 7px; width: 145px; }
 .container:has(#landingSection:not(.hidden)) .header-nav,
 .container:has(#landingSection:not(.hidden)) .header-links,
 .container:has(#landingSection:not(.hidden)) .header-actions { flex-direction: row; }
-.motivo-hero { min-height: 570px; padding-bottom: 58px; padding-top: 38px; }
-.motivo-hero-art { background: #173c3b; }
-.motivo-hero-slides, .motivo-hero-slides .hero-slide, .motivo-hero-overlay { inset: 0; position: absolute; }
-.motivo-hero-slides { z-index: 0; }
-.motivo-hero-slides .hero-slide { background-position: center; background-size: cover; opacity: 0; transform: scale(1.06); transition: opacity 1s ease, transform 7s ease; }
-.motivo-hero-slides .hero-slide.active { opacity: 1; transform: scale(1); }
-.motivo-hero-overlay { background: linear-gradient(90deg, rgba(11,31,30,.16), rgba(11,31,30,.48)); z-index: 1; }
-.motivo-hero-art .motivo-art-note { z-index: 2; }
 
-body.dark-mode .container:has(#landingSection:not(.hidden)) > .header { background: #0d1717; border-bottom-color: #2b403d; }
 body.dark-mode .container:has(#landingSection:not(.hidden)) .brand { color: #f1f3ec; }
-body.dark-mode .container:has(#landingSection:not(.hidden)) .brand-logo { background: #173c3b; filter: brightness(1.15); }
 body.dark-mode .container:has(#landingSection:not(.hidden)) .header-link { color: #b7c6c0; }
 body.dark-mode .container:has(#landingSection:not(.hidden)) .header-link:hover { color: #fff; }
 body.dark-mode .container:has(#landingSection:not(.hidden)) .header-signup { border-color: #47605a; color: #edf2ed; }
 body.dark-mode .container:has(#landingSection:not(.hidden)) .header-login { background: #e86642; border-color: #e86642; }
 body.dark-mode .motivo-landing { background: #0d1717; color: #edf2ed; }
 body.dark-mode .motivo-hero { background: #0d1717; }
-body.dark-mode .motivo-hero h1, body.dark-mode .motivo-finder h2, body.dark-mode .motivo-benefits h2, body.dark-mode .motivo-final-cta h2 { color: #f3f5ef; }
 body.dark-mode .motivo-hero-subtitle, body.dark-mode .motivo-finder p:not(.motivo-eyebrow), body.dark-mode .motivo-benefit-grid p, body.dark-mode .motivo-feature-intro > p:last-child { color: #afbeb8; }
 body.dark-mode .motivo-button-secondary { border-color: #47605a; color: #edf2ed; }
-body.dark-mode .motivo-finder { background: #172d2b; }
-body.dark-mode .motivo-finder-controls input, body.dark-mode .motivo-finder-controls select { background: #0f2020; border-color: #3d5954; color: #edf2ed; }
 body.dark-mode .motivo-benefits { background: #0d1717; }
-body.dark-mode .motivo-benefit-grid article { border-color: #304641; }
 body.dark-mode .motivo-final-cta { background: #0d1717; }
-body.dark-mode .motivo-art-note { background: #172d2b; color: #edf2ed; }
-body.dark-mode .motivo-art-note span { color: #afbeb8; }
 
 @media (max-width: 640px) {
   .container:has(#landingSection:not(.hidden)) .brand-logo { height: 38px; width: 125px; }
@@ -1151,14 +1134,14 @@ body.dark-mode .motivo-art-note span { color: #afbeb8; }
 .motivo-public-page .header-nav#motivo-side-menu .header-link { border-radius: 4px; color: #53615f; padding: 13px 12px; text-align: left; width: 100%; }
 .motivo-public-page .header-nav#motivo-side-menu .header-link::after { display: none; }
 body.motivo-menu-open .header-nav#motivo-side-menu { opacity: 1; pointer-events: auto; transform: translateX(0); visibility: visible; }
-body.dark-mode .motivo-public-page { background: #0d1717; color: #edf2ed; }
-body.dark-mode .motivo-public-page > .header,
-body.dark-mode .motivo-public-page > .container > .header { background: #0d1717; border-bottom-color: #2b403d; }
-body.dark-mode .motivo-public-page .motivo-menu-toggle { border-color: #47605a; }
-body.dark-mode .motivo-public-page .motivo-menu-toggle span { background: #edf2ed; }
-body.dark-mode .motivo-public-page .header-nav#motivo-side-menu { background: #0d1717; box-shadow: 14px 0 34px rgba(0,0,0,.35); }
-body.dark-mode .motivo-public-page .header-nav#motivo-side-menu .header-link { color: #d9e5df; }
-body.dark-mode .motivo-public-page .header-nav#motivo-side-menu .header-link:hover { background: #172d2b; }
+body.motivo-public-page.dark-mode { background: #0d1717; color: #edf2ed; }
+body.motivo-public-page.dark-mode > .header,
+body.motivo-public-page.dark-mode > .container > .header { background: #0d1717; border-bottom-color: #2b403d; }
+body.motivo-public-page.dark-mode .motivo-menu-toggle { border-color: #47605a; }
+body.motivo-public-page.dark-mode .motivo-menu-toggle span { background: #edf2ed; }
+body.motivo-public-page.dark-mode .header-nav#motivo-side-menu { background: #0d1717; box-shadow: 14px 0 34px rgba(0,0,0,.35); }
+body.motivo-public-page.dark-mode .header-nav#motivo-side-menu .header-link { color: #d9e5df; }
+body.motivo-public-page.dark-mode .header-nav#motivo-side-menu .header-link:hover { background: #172d2b; }
 .motivo-public-page .motivo-menu-theme,
 .container:has(#landingSection:not(.hidden)) .motivo-menu-theme { align-items: center; background: transparent; border: 1px solid #cbd5ce; border-radius: 6px; color: #53615f; cursor: pointer; display: flex; font: inherit; font-size: .78rem; font-weight: 700; gap: 9px; margin: 8px 0 0; padding: 11px 12px; text-align: left; width: 100%; }
 .motivo-public-page .motivo-menu-theme:hover,
@@ -1166,30 +1149,30 @@ body.dark-mode .motivo-public-page .header-nav#motivo-side-menu .header-link:hov
 .motivo-drawer-heading { border-bottom: 1px solid #d2dfd5; display: grid; gap: 4px; margin-bottom: 7px; padding: 0 12px 17px; }
 .motivo-drawer-heading img { background: #173c3b; border-radius: 4px; display: block; height: 36px; object-fit: contain; padding: 3px 7px; width: 124px; }
 .motivo-drawer-heading span { color: #e86642; font-size: .68rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
-body.dark-mode .motivo-public-page .motivo-menu-theme,
+body.motivo-public-page.dark-mode .motivo-menu-theme,
 body.dark-mode .container:has(#landingSection:not(.hidden)) .motivo-menu-theme { border-color: #47605a; color: #d9e5df; }
-body.dark-mode .motivo-public-page .motivo-menu-theme:hover,
+body.motivo-public-page.dark-mode .motivo-menu-theme:hover,
 body.dark-mode .container:has(#landingSection:not(.hidden)) .motivo-menu-theme:hover { background: #172d2b; color: #fff; }
 body.dark-mode .motivo-drawer-heading { border-bottom-color: #31504a; }
-body.dark-mode .motivo-public-page > .container { background: #0d1717 !important; color: #edf2ed; }
-body.dark-mode .motivo-public-page .contact-page { background: #0d1717; }
-body.dark-mode .motivo-public-page .contact-intro h1,
-body.dark-mode .motivo-public-page .contact-form h2,
-body.dark-mode .motivo-public-page .overview-features h2,
-body.dark-mode .motivo-public-page .card h2 { color: #f3f5ef; }
-body.dark-mode .motivo-public-page .contact-form,
-body.dark-mode .motivo-public-page .overview-features,
-body.dark-mode .motivo-public-page .card { background: #172d2b !important; border-color: #2e4a44; box-shadow: 0 12px 30px rgba(0,0,0,.16); }
-body.dark-mode .motivo-public-page .contact-detail { background: #132523; border-color: #2e4a44; }
-body.dark-mode .motivo-public-page .contact-detail strong,
-body.dark-mode .motivo-public-page .feature-summary { color: #edf2ed; }
-body.dark-mode .motivo-public-page .feature-summary:hover { background: #21403b; }
-body.dark-mode .motivo-public-page .feature-content-inner,
-body.dark-mode .motivo-public-page .card p,
-body.dark-mode .motivo-public-page .contact-intro p { color: #afbeb8; }
-body.dark-mode .motivo-public-page input,
-body.dark-mode .motivo-public-page select,
-body.dark-mode .motivo-public-page textarea { background: #0f2020; border-color: #31504a; color: #edf2ed; }
+body.motivo-public-page.dark-mode > .container { background: #0d1717 !important; color: #edf2ed; }
+body.motivo-public-page.dark-mode .contact-page { background: #0d1717; }
+body.motivo-public-page.dark-mode .contact-intro h1,
+body.motivo-public-page.dark-mode .contact-form h2,
+body.motivo-public-page.dark-mode .overview-features h2,
+body.motivo-public-page.dark-mode .card h2 { color: #f3f5ef; }
+body.motivo-public-page.dark-mode .contact-form,
+body.motivo-public-page.dark-mode .overview-features,
+body.motivo-public-page.dark-mode .card { background: #172d2b !important; border-color: #2e4a44; box-shadow: 0 12px 30px rgba(0,0,0,.16); }
+body.motivo-public-page.dark-mode .contact-detail { background: #132523; border-color: #2e4a44; }
+body.motivo-public-page.dark-mode .contact-detail strong,
+body.motivo-public-page.dark-mode .feature-summary { color: #edf2ed; }
+body.motivo-public-page.dark-mode .feature-summary:hover { background: #21403b; }
+body.motivo-public-page.dark-mode .feature-content-inner,
+body.motivo-public-page.dark-mode .card p,
+body.motivo-public-page.dark-mode .contact-intro p { color: #afbeb8; }
+body.motivo-public-page.dark-mode input,
+body.motivo-public-page.dark-mode select,
+body.motivo-public-page.dark-mode textarea { background: #0f2020; border-color: #31504a; color: #edf2ed; }
 
 @media (max-width: 640px) {
   .motivo-public-page > .header,
@@ -4261,4 +4244,46 @@ body.dark-mode .motivo-art-note span { color: #afbeb8; }
   .container:has(#landingSection:not(.hidden)) .header-actions { display: flex; }
   .container:has(#landingSection:not(.hidden)) .brand-logo { height: 38px; width: 125px; }
   .motivo-hero { min-height: 0; padding-top: 30px; }
+}
+
+/* Public-page header: override legacy sidebar margin and layout without
+   changing the customer/staff application header. */
+body.motivo-public-page > .header {
+  position: relative;
+  inset: auto;
+  width: 100%;
+  min-height: 82px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 18px 24px;
+  border-right: 0;
+  border-bottom: 1px solid #d9ded6;
+}
+body.motivo-public-page > .header .brand {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 0;
+  z-index: 1;
+}
+body.motivo-public-page > .header .motivo-menu-toggle {
+  position: relative;
+  flex: 0 0 42px;
+  width: 42px;
+  height: 42px;
+  margin: 0;
+  z-index: 22;
+}
+@media (max-width: 760px) {
+  body.motivo-public-page > .header {
+    min-height: 76px;
+    padding: 14px 18px;
+  }
+  body.motivo-public-page > .header .brand-logo {
+    width: 125px;
+    height: 38px;
+  }
 }
