@@ -82,3 +82,20 @@ document.addEventListener('keydown', (event) => {
 });
 
 applySavedTheme();
+// Automatically close the sidebar after selecting a destination.
+document.addEventListener('click', (event) => {
+  const navigationLink = event.target.closest(
+    '#motivo-side-menu .header-link'
+  );
+
+  if (!navigationLink) return;
+
+  document.body.classList.remove('motivo-menu-open');
+
+  const menuButton = document.querySelector('.motivo-menu-toggle');
+
+  if (menuButton) {
+    menuButton.setAttribute('aria-expanded', 'false');
+    menuButton.setAttribute('aria-label', 'Open navigation menu');
+  }
+});
