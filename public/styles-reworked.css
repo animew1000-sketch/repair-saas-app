@@ -4679,3 +4679,49 @@ body.dark-mode .motivo-job-search-row label,body.dark-mode .motivo-active-job-co
 body.dark-mode .motivo-job-search-row input,body.dark-mode #activeJobId[readonly] {background:#122624;color:#e3ede7;border-color:#31504a}
 body.dark-mode .motivo-active-job-context {background:#122624}
 @media(max-width:760px){.motivo-job-search-row{align-items:stretch;flex-direction:column}.motivo-job-search-row input{width:100%}.motivo-job-actions{min-width:120px}}
+
+/* Motivo five-section repair workspace: isolated selectors, existing theme preserved. */
+#staffWorkflowSection .motivo-job-hero { display:flex; justify-content:space-between; flex-wrap:wrap; gap:16px; padding:23px; border-radius:14px; background:#173c3b; color:#f8f7f2; margin:18px 0; }
+#staffWorkflowSection .motivo-job-hero h4 { color:#fff; font-size:clamp(1.25rem,2.7vw,1.8rem); margin:7px 0; }
+#staffWorkflowSection .motivo-job-hero p { color:#e0eae2; margin:4px 0; }
+#staffWorkflowSection .motivo-job-eyebrow { color:#f5a28a; letter-spacing:.12em; font-size:.72rem; font-weight:800; }
+#staffWorkflowSection .motivo-job-hero-right { display:flex; flex-direction:column; align-items:flex-end; gap:12px; font-weight:700; }
+#staffWorkflowSection .motivo-status-pill { background:#f8f7f2; color:#173c3b; border-radius:999px; padding:7px 12px; font-size:.78rem; }
+#staffWorkflowSection .motivo-job-selection { margin:0 0 20px; }
+#staffWorkflowSection .motivo-main-sections { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:7px; padding:7px; overflow:visible; border-radius:14px; background:#e9eee8; }
+#staffWorkflowSection .motivo-main-sections .step-card { min-width:0; margin:0; padding:14px 11px; min-height:68px; border-radius:10px; background:#fff; color:#365451; border:1px solid #d7dfd7; font-size:.82rem; }
+#staffWorkflowSection .motivo-main-sections .step-card::before,#staffWorkflowSection .motivo-main-sections .step-card::after { display:none; }
+#staffWorkflowSection .motivo-main-sections .step-card span { color:#d66c4c; font-size:.73rem; }
+#staffWorkflowSection .motivo-main-sections .step-card.active { background:#173c3b; color:#fff; border-color:#173c3b; transform:none; }
+#staffWorkflowSection .motivo-main-sections .step-card.active span { color:#f8b19e; }
+#staffWorkflowSection .motivo-main-sections .step-card:focus-visible,#staffWorkflowSection .motivo-tool-btn:focus-visible { outline:3px solid #e86642; outline-offset:3px; }
+#staffWorkflowSection .motivo-main-sections .step-card.hidden { display:none!important; }
+#staffWorkflowSection .motivo-section-intro { margin:24px 0 16px; }
+#staffWorkflowSection .motivo-section-intro h3 { color:#173c3b; margin:6px 0; }
+#staffWorkflowSection .motivo-section-intro p { color:#526963; }
+#staffWorkflowSection .motivo-job-summary { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr)); gap:14px; margin:16px 0 24px; }
+#staffWorkflowSection .motivo-summary-card { border:1px solid #dbe3dd; border-radius:12px; padding:18px; background:#fff; min-width:0; }
+#staffWorkflowSection .motivo-summary-card h4 { margin:0 0 14px; color:#173c3b; }
+#staffWorkflowSection .motivo-summary-card dl { margin:0; display:grid; gap:11px; }
+#staffWorkflowSection .motivo-summary-card dl div { display:flex; justify-content:space-between; flex-wrap:wrap; gap:5px 15px; border-bottom:1px solid #edf1ed; padding-bottom:8px; }
+#staffWorkflowSection .motivo-summary-card dt { color:#62756b; font-size:.83rem; }
+#staffWorkflowSection .motivo-summary-card dd { margin:0; color:#213e39; font-weight:600; overflow-wrap:anywhere; text-align:right; max-width:100%; }
+#staffWorkflowSection .motivo-edit-header { margin:18px 0 12px; }
+#staffWorkflowSection .motivo-edit-header h4 { color:#173c3b; margin:0 0 5px; }
+#staffWorkflowSection .motivo-edit-header p { color:#60736c; margin:0; font-size:.88rem; }
+#staffWorkflowSection .motivo-department-tools { display:flex; flex-wrap:wrap; gap:9px; margin-bottom:18px; }
+#staffWorkflowSection .motivo-tool-btn { background:#fff; color:#173c3b; border:1px solid #b7c8be; border-radius:8px; padding:10px 14px; cursor:pointer; font:inherit; font-weight:650; }
+#staffWorkflowSection .motivo-tool-btn:hover,#staffWorkflowSection .motivo-tool-btn.active { background:#e86642; color:#fff; border-color:#e86642; }
+#staffWorkflowSection #deptForm.hidden { display:none!important; }
+#staffWorkflowSection .motivo-workspace-guide small { display:block; }
+body.dark-mode #staffWorkflowSection .motivo-job-hero { background:#173c3b; }
+body.dark-mode #staffWorkflowSection .motivo-main-sections { background:#21352e; }
+body.dark-mode #staffWorkflowSection .motivo-main-sections .step-card { background:#192b26; color:#e2ebe5; border-color:#38594b; }
+body.dark-mode #staffWorkflowSection .motivo-main-sections .step-card.active { background:#e86642; color:#fff; border-color:#e86642; }
+body.dark-mode #staffWorkflowSection .motivo-summary-card { background:#192822; border-color:#375244; }
+body.dark-mode #staffWorkflowSection .motivo-summary-card h4,body.dark-mode #staffWorkflowSection .motivo-summary-card dd,body.dark-mode #staffWorkflowSection .motivo-section-intro h3,body.dark-mode #staffWorkflowSection .motivo-edit-header h4 { color:#eaf3ed; }
+body.dark-mode #staffWorkflowSection .motivo-summary-card dt,body.dark-mode #staffWorkflowSection .motivo-section-intro p,body.dark-mode #staffWorkflowSection .motivo-edit-header p { color:#a7c1b1; }
+body.dark-mode #staffWorkflowSection .motivo-tool-btn { background:#1d3028; color:#f8f7f2; border-color:#557260; }
+body.dark-mode #staffWorkflowSection .motivo-tool-btn.active { background:#e86642; border-color:#e86642; }
+@media(max-width:840px){#staffWorkflowSection .motivo-main-sections { grid-template-columns:repeat(2,minmax(0,1fr)); }#staffWorkflowSection .motivo-main-sections .step-card:last-child { grid-column:span 2; }}
+@media(max-width:520px){#staffWorkflowSection .motivo-job-hero-right { align-items:flex-start; }#staffWorkflowSection .motivo-main-sections .step-card { font-size:.75rem; min-height:60px; }#staffWorkflowSection .motivo-summary-card dl div { display:block; }#staffWorkflowSection .motivo-summary-card dd { text-align:left; margin-top:5px; }}

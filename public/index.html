@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Motivo | Find Your Auto Shop Here</title>
-<link rel="stylesheet" href="/styles-reworked.css?v=motivo-job-workspace-1">
+<link rel="stylesheet" href="/styles-reworked.css?v=motivo-five-1">
 </head>
 <body>
   <div class="container">
@@ -849,85 +849,45 @@
           </div>
         </div>
 
-        <div class="workflow-progress-card">
-          <div>
-            <span id="workflowProgressKicker">STEP 1 OF 8</span>
-            <strong id="workflowProgressTitle">Customer intake</strong>
-          </div>
-          <div class="workflow-progress-track" aria-hidden="true"><span id="workflowProgressFill"></span></div>
-          <small>Move between steps anytime. Saved details stay attached to this repair job.</small>
+        <div class="motivo-job-hero" id="motivoJobHero" aria-live="polite">
+          <div><span class="motivo-job-eyebrow">SELECTED REPAIR</span><h4 id="motivoJobVehicle">Open a job to begin</h4><p id="motivoJobCustomer">Use My Jobs to select a repair record.</p></div>
+          <div class="motivo-job-hero-right"><span id="motivoJobStatus" class="motivo-status-pill">No job selected</span><span id="motivoJobNumber">—</span></div>
         </div>
 
-        <div class="staff-job-toolbar">
+        <div class="staff-job-toolbar motivo-job-selection">
           <div class="staff-job-field staff-job-customer">
-            <label for="customerSelector">
-              Select Customer
-            </label>
-
-            <select
-              id="customerSelector"
-              onchange="autoFillCustomerData()"
-            >
-              <option value="">
-                -- Choose Existing Customer Record --
-              </option>
-            </select>
-
-            <small>
-              Selecting a customer loads their repair record. For a quicker start, open the job from My Jobs.
-            </small>
+            <label for="customerSelector">Switch repair job</label>
+            <select id="customerSelector" onchange="autoFillCustomerData()"><option value="">-- Choose Existing Customer Record --</option></select>
           </div>
-
           <div class="staff-job-field staff-job-id">
-            <label for="activeJobId">
-              Selected Repair Job ID
-            </label>
-
-            <input
-              type="number"
-              id="activeJobId"
-              value=""
-              readonly
-              placeholder="Select from My Jobs"
-            />
+            <label for="activeJobId">Repair job ID</label>
+            <input type="number" id="activeJobId" value="" readonly placeholder="Choose a job" />
           </div>
         </div>
 
-        <div class="workflow-bar staff-workflow-tabs">
-          <button id="btn-customer" class="step-card" type="button" onclick="showDept('customer')">
-            <span>01</span> Customer
-          </button>
-
-          <button id="btn-vehicle" class="step-card" type="button" onclick="showDept('vehicle')">
-            <span>02</span> Vehicle
-          </button>
-
-          <button id="btn-appointment" class="step-card" type="button" onclick="showDept('appointment')">
-            <span>03</span> Appointment
-          </button>
-
-          <button id="btn-repair_order" class="step-card" type="button" onclick="showDept('repair_order')">
-            <span>04</span> Repair Order
-          </button>
-
-          <button id="btn-parts_labor" class="step-card" type="button" onclick="showDept('parts_labor')">
-            <span>05</span> Parts + Labor
-          </button>
-
-          <button id="btn-estimate" class="step-card" type="button" onclick="showDept('estimate')">
-            <span>06</span> Estimate
-          </button>
-
-          <button id="btn-repair" class="step-card" type="button" onclick="showDept('repair')">
-            <span>07</span> Repair
-          </button>
-
-          <button id="btn-invoice" class="step-card" type="button" onclick="showDept('invoice')">
-            <span>08</span> Invoice
-          </button>
+        <div class="workflow-progress-card motivo-workspace-guide">
+          <div><span id="workflowProgressKicker">JOB WORKSPACE</span><strong id="workflowProgressTitle">Overview</strong></div>
+          <div class="workflow-progress-track" aria-hidden="true"><span id="workflowProgressFill"></span></div>
+          <small>Sections organize the job. This indicator is navigation, not a completion or authorization status.</small>
         </div>
 
-        <form id="deptForm" class="staff-dept-form" onsubmit="submitDepartment(event)">
+        <nav class="workflow-bar staff-workflow-tabs motivo-main-sections" aria-label="Repair workspace sections">
+          <button id="section-overview" class="step-card" type="button" onclick="openRepairSection('overview')" aria-current="page"><span>01</span> Overview</button>
+          <button id="section-inspection" class="step-card" type="button" onclick="openRepairSection('inspection')"><span>02</span> Inspection</button>
+          <button id="section-estimate" class="step-card" type="button" onclick="openRepairSection('estimate')"><span>03</span> Estimate &amp; Parts</button>
+          <button id="section-repair" class="step-card" type="button" onclick="openRepairSection('repair')"><span>04</span> Repair</button>
+          <button id="section-checkout" class="step-card" type="button" onclick="openRepairSection('checkout')"><span>05</span> Invoice &amp; Pickup</button>
+        </nav>
+
+        <div class="motivo-section-intro">
+          <div><span class="staff-section-kicker" id="motivoSectionKicker">01 / OVERVIEW</span><h3 id="motivoSectionHeading">Job overview</h3><p id="motivoSectionDescription">Customer, vehicle, appointment and repair information in one place.</p></div>
+        </div>
+
+        <div id="motivoJobSummary" class="motivo-job-summary" aria-live="polite">Select a job to review the saved record.</div>
+
+        <div class="motivo-edit-header"><h4>Record tools</h4><p>Choose the detail you need to update. Only tools permitted for your role appear.</p></div>
+        <div id="motivoDepartmentTools" class="motivo-department-tools" role="group" aria-label="Record editing tools"></div>
+        <form id="deptForm" class="staff-dept-form hidden" onsubmit="submitDepartment(event)">
           <div class="staff-dept-heading">
             <span class="staff-card-number">WORKFLOW</span>
             <h3 id="deptTitle">Department Action</h3>
@@ -969,7 +929,7 @@
   <span class="theme-label">Dark</span>
 </div>
 
-  <script src="/app.js?v=motivo-vin-1"></script>
+  <script src="/app.js?v=motivo-five-1"></script>
 
   <script>
     const customerTabs = Array.from(

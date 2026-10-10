@@ -5,6 +5,16 @@ let staffJobSearchTerm = '';
 let loadedCustomerList = [];
 let currentShop = null;
 let activeWorkflowRecord = null;
+let activeRepairSection = 'overview';
+const REPAIR_SECTIONS = {
+  overview: { title: 'Job overview', detail: 'Customer, vehicle and appointment details together.', departments: ['customer','vehicle','appointment'] },
+  inspection: { title: 'Inspection & diagnosis', detail: 'Review the reported concern and document the repair order. Structured inspection checklists will require a future backend update.', departments: ['repair_order'] },
+  estimate: { title: 'Estimate & parts', detail: 'Review saved parts and labor line items, then edit the estimate. Customer authorization is not recorded by this screen.', departments: ['parts_labor','estimate'] },
+  repair: { title: 'Repair execution', detail: 'Review and record the work performed.', departments: ['repair'] },
+  checkout: { title: 'Invoice & pickup', detail: 'Review invoice records and handle final customer notifications.', departments: ['invoice'] }
+};
+const DEPT_LABELS = {customer:'Customer details',vehicle:'Vehicle',appointment:'Appointment',repair_order:'Repair order',parts_labor:'Parts & labor',estimate:'Estimate',repair:'Repair notes',invoice:'Invoice'};
+
 
 
 function showToast(message, type = 'info') {
@@ -1638,8 +1648,10 @@ async function loadWorkflowRecord(jobId) {
     return;
   }
 
+  if (String(document.getElementById('activeJobId')?.value) !== String(jobId)) return;
   activeWorkflowRecord = data;
   populateWorkflowDepartment();
+  renderRepairWorkspaceSummary();
 }
 
 async function autoFillCustomerData() {
@@ -1709,39 +1721,21 @@ async function autoFillCustomerData() {
     }
   }
 
+  activeWorkflowRecord = null;
+  updateMotivoJobHero(jobId);
+  openRepairSection(REPAIR_SECTIONS[activeRepairSection].departments.some(d => (ROLE_MAP[localStorage.getItem('role')] || []).includes(d)) ? activeRepairSection : Object.keys(REPAIR_SECTIONS).find(k => REPAIR_SECTIONS[k].departments.some(d => (ROLE_MAP[localStorage.getItem('role')] || []).includes(d))));
   await loadWorkflowRecord(jobId);
 }
 
 function applyRolePermissions(role) {
-  const allowedDepts = ROLE_MAP[role] || [];
-
-  const allDepts = [
-    'customer',
-    'vehicle',
-    'appointment',
-    'repair_order',
-    'parts_labor',
-    'estimate',
-    'repair',
-    'invoice'
-  ];
-
-  allDepts.forEach((dept) => {
-    const btn =
-      document.getElementById(`btn-${dept}`);
-
-    if (btn) {
-      if (allowedDepts.includes(dept)) {
-        btn.classList.remove('hidden');
-      } else {
-        btn.classList.add('hidden');
-      }
-    }
+  const allowed = ROLE_MAP[role] || [];
+  Object.entries(REPAIR_SECTIONS).forEach(([key, section]) => {
+    const button = document.getElementById(`section-${key}`);
+    if (button) button.classList.toggle('hidden', !section.departments.some(dept => allowed.includes(dept)));
   });
-
-  if (allowedDepts.length > 0) {
-    showDept(allowedDepts[0]);
-  }
+  const firstSection = Object.keys(REPAIR_SECTIONS).find(key =>
+    REPAIR_SECTIONS[key].departments.some(dept => allowed.includes(dept)));
+  if (firstSection) openRepairSection(firstSection);
 }
 
 function updateHeaderAuthButtons() {
@@ -1930,8 +1924,11 @@ async function openStaffJob(jobId) {
     showToast('Your role does not have access to repair workflow fields.', 'error');
     return;
   }
-  // showDept fetches this job's current saved data and retains role permissions.
-  await showDept(allowed.includes(activeDept) ? activeDept : allowed[0]);
+  activeWorkflowRecord = null;
+  updateMotivoJobHero(job.id);
+  const preferred = REPAIR_SECTIONS.overview.departments.some(d => allowed.includes(d)) ? 'overview' : Object.keys(REPAIR_SECTIONS).find(k => REPAIR_SECTIONS[k].departments.some(d => allowed.includes(d)));
+  openRepairSection(preferred);
+  await loadWorkflowRecord(job.id);
   document.getElementById('staffWorkflowSection')?.scrollIntoView({behavior:'smooth',block:'start'});
 }
 
@@ -2047,81 +2044,120 @@ function openStaffView(view) {
   }
 }
 
+function formatMotivoValue(value) {
+  if (value === null || value === undefined || String(value).trim() === '') return 'Not recorded';
+  return String(value);
+}
+
+function motivoSummaryCard(label, rows) {
+  return `<article class="motivo-summary-card"><h4>${escapeHtml(label)}</h4><dl>${rows.map(([key,value]) =>
+    `<div><dt>${escapeHtml(key)}</dt><dd>${escapeHtml(formatMotivoValue(value))}</dd></div>`).join('')}</dl></article>`;
+}
+
+function renderRepairWorkspaceSummary() {
+  const holder = document.getElementById('motivoJobSummary');
+  if (!holder) return;
+  const rec = activeWorkflowRecord;
+  const jobId = document.getElementById('activeJobId')?.value;
+  if (!jobId || !rec) {
+    holder.textContent = 'Open a repair from My Jobs to see its saved details.';
+    return;
+  }
+  const c = rec.customer || {}, v = rec.vehicle || {}, a = rec.appointment || {};
+  const ro = rec.repair_order || {}, e = rec.estimate || {}, r = rec.repair || {}, inv = rec.invoice || {};
+  const lines = Array.isArray(rec.parts_labor) ? rec.parts_labor : [];
+  const money = value => Number.isFinite(Number(value)) ? `$${Number(value).toFixed(2)}` : 'Not recorded';
+  let cards = [];
+  if (activeRepairSection === 'overview') {
+    cards = [motivoSummaryCard('Customer', [['Name',[c.first_name,c.last_name].filter(Boolean).join(' ')],['Phone',c.phone]]),
+      motivoSummaryCard('Vehicle', [['Year',v.year],['Make',v.make],['Model',v.model],['VIN',v.vin]]),
+      motivoSummaryCard('Appointment', [['Scheduled',a.scheduled_datetime ? new Date(a.scheduled_datetime).toLocaleString() : 'Not scheduled'], ['Service advisor',a.service_advisor]])];
+  } else if (activeRepairSection === 'inspection') {
+    cards = [motivoSummaryCard('Customer concern / repair order', [['RO number',ro.ro_number],['Reported problem',ro.issue_description]])];
+  } else if (activeRepairSection === 'estimate') {
+    cards = [motivoSummaryCard('Estimate', [['Estimated total',e.estimated_total === undefined ? 'Not recorded' : money(e.estimated_total)],['Customer authorization','Not tracked in the current database']]),
+      motivoSummaryCard('Saved parts & labor',lines.length ? lines.map((item,i) => [`${i+1}. ${item.item_type || 'Item'} — ${item.description || 'No description'}`,money(item.unit_cost)]) : [['Items','No parts or labor entries saved']])];
+  } else if (activeRepairSection === 'repair') {
+    cards = [motivoSummaryCard('Work performed', [['Repair notes',r.work_summary]])];
+  } else {
+    cards = [motivoSummaryCard('Invoice', [['Invoice number',inv.invoice_number],['Subtotal',inv.subtotal === undefined ? 'Not recorded' : money(inv.subtotal)],['Total',inv.total_amount === undefined ? 'Not recorded' : money(inv.total_amount)]])];
+  }
+  holder.innerHTML = cards.join('');
+}
+
+function updateMotivoJobHero(jobId) {
+  const job = staffJobs.find(item => String(item.id) === String(jobId));
+  const value = (id,text) => {const el=document.getElementById(id);if(el) el.textContent=text;};
+  if (!job) {
+    value('motivoJobVehicle',jobId ? `Repair job #${jobId}` : 'Open a job to begin');
+    value('motivoJobCustomer','Review saved repair details below.');
+    value('motivoJobStatus',jobId ? 'Selected' : 'No job selected');
+    value('motivoJobNumber',jobId ? `#${jobId}` : '—');
+    return;
+  }
+  value('motivoJobVehicle',[job.year,job.make,job.model].filter(Boolean).join(' ') || 'Vehicle not recorded');
+  value('motivoJobCustomer',[job.first_name,job.last_name].filter(Boolean).join(' ') || 'Customer not recorded');
+  value('motivoJobStatus',job.status || 'Current');
+  value('motivoJobNumber',`#${job.job_number || job.id}`);
+}
+
+function openRepairSection(sectionKey) {
+  const section = REPAIR_SECTIONS[sectionKey];
+  if (!section) return;
+  const allowed = ROLE_MAP[localStorage.getItem('role')] || [];
+  const tools = section.departments.filter(dept => allowed.includes(dept));
+  if (!tools.length) {
+    showToast('Your role cannot access this section.', 'error');
+    return;
+  }
+  activeRepairSection = sectionKey;
+  const keys = Object.keys(REPAIR_SECTIONS);
+  const idx = keys.indexOf(sectionKey);
+  const set = (id,text) => { const el=document.getElementById(id); if(el) el.textContent=text; };
+  set('workflowProgressKicker',`SECTION ${idx+1} OF ${keys.length}`);
+  set('workflowProgressTitle',section.title);
+  set('motivoSectionKicker',`${String(idx+1).padStart(2,'0')} / ${sectionKey.toUpperCase()}`);
+  set('motivoSectionHeading',section.title);
+  set('motivoSectionDescription',section.detail);
+  const progress=document.getElementById('workflowProgressFill');
+  if(progress) progress.style.width=`${((idx+1)/keys.length)*100}%`;
+  document.querySelectorAll('.motivo-main-sections .step-card').forEach(button => {
+    const isActive=button.id===`section-${sectionKey}`;
+    button.classList.toggle('active',isActive);
+    if(isActive) button.setAttribute('aria-current','page');
+    else button.removeAttribute('aria-current');
+  });
+  const toolBar=document.getElementById('motivoDepartmentTools');
+  if(toolBar) toolBar.innerHTML=tools.map(dept=>`<button type="button" class="motivo-tool-btn" data-dept="${dept}" onclick="showDept('${dept}')">${escapeHtml(DEPT_LABELS[dept] || dept)}</button>`).join('');
+  const form=document.getElementById('deptForm');
+  if(form) form.classList.add('hidden');
+  document.getElementById('markReadyBtn')?.classList.add('hidden');
+  renderRepairWorkspaceSummary();
+}
+
 async function showDept(dept) {
   const role = localStorage.getItem('role');
   if (!(ROLE_MAP[role] || []).includes(dept)) {
-    showToast('Your role cannot access this repair section.', 'error');
+    showToast('Your role cannot access this repair tool.', 'error');
     return;
   }
-  activeDept = dept;
-  
-  const workflowTitles = {
-    customer: 'Customer intake',
-    vehicle: 'Vehicle details',
-    appointment: 'Appointment',
-    repair_order: 'Repair order',
-    parts_labor: 'Parts and labor',
-    estimate: 'Estimate',
-    repair: 'Repair in progress',
-    invoice: 'Invoice and payment'
-  };
-  
-  const workflowOrder = Object.keys(workflowTitles);
-  const workflowIndex = workflowOrder.indexOf(dept);
-  const progressKicker = document.getElementById('workflowProgressKicker');
-  const progressTitle = document.getElementById('workflowProgressTitle');
-  const progressFill = document.getElementById('workflowProgressFill');
-  
-  if (progressKicker && progressTitle && progressFill) {
-    progressKicker.textContent = `STEP ${workflowIndex + 1} OF ${workflowOrder.length}`;
-    progressTitle.textContent = workflowTitles[dept];
-    progressFill.style.width = `${((workflowIndex + 1) / workflowOrder.length) * 100}%`;
-  }
-
-  document
-    .querySelectorAll('.step-card')
-    .forEach((el) =>
-      el.classList.remove('active')
-    );
-
-  const activeBtn =
-    document.getElementById(`btn-${dept}`);
-
-  if (activeBtn) {
-    activeBtn.classList.add('active');
-  }
-
-  const readyButton =
-    document.getElementById('markReadyBtn');
-
-  const saveButton =
-    document.querySelector('.staff-save-record-btn');
-
-  if (readyButton) {
-    readyButton.classList.toggle('hidden', dept !== 'invoice');
-  }
-
-  if (saveButton) {
-    saveButton.textContent =
-      dept === 'invoice'
-        ? 'Generate Invoice & Email Customer'
-        : 'Save Department Record';
-  }
-
-  document.getElementById(
-    'deptTitle'
-  ).textContent =
-    `Department: ${dept
-      .replace('_', ' ')
-      .toUpperCase()}`;
-
-  document.getElementById(
-    'formFields'
-  ).innerHTML = DEPT_FIELDS[dept] || '';
-
-  await loadWorkflowRecord(
-    document.getElementById('activeJobId').value
-  );
+  const jobId = document.getElementById('activeJobId')?.value;
+  if(!jobId) {showToast('Open a repair from My Jobs before editing.', 'error');return;}
+  const sectionKey=Object.keys(REPAIR_SECTIONS).find(key=>REPAIR_SECTIONS[key].departments.includes(dept));
+  if(sectionKey && sectionKey!==activeRepairSection) openRepairSection(sectionKey);
+  activeDept=dept;
+  document.querySelectorAll('.motivo-tool-btn').forEach(button=>button.classList.toggle('active',button.dataset.dept===dept));
+  const form=document.getElementById('deptForm');
+  if(form) form.classList.remove('hidden');
+  const readyButton=document.getElementById('markReadyBtn');
+  if(readyButton) readyButton.classList.toggle('hidden',dept!=='invoice');
+  const saveButton=document.querySelector('.staff-save-record-btn');
+  if(saveButton) saveButton.textContent=dept==='invoice'?'Generate Invoice & Email Customer':'Save Record';
+  const title=document.getElementById('deptTitle');
+  if(title) title.textContent=`Edit ${DEPT_LABELS[dept] || dept}`;
+  const fields=document.getElementById('formFields');
+  if(fields) fields.innerHTML=DEPT_FIELDS[dept] || '';
+  await loadWorkflowRecord(jobId);
 }
 
 async function submitDepartment(e) {
@@ -2179,7 +2215,8 @@ async function submitDepartment(e) {
 
     fetchCustomerList();
 
-    showDept(activeDept);
+    await loadWorkflowRecord(jobId);
+    if (activeDept !== 'invoice') openRepairSection(activeRepairSection);
   } else {
     showToast(
       data.error ||
