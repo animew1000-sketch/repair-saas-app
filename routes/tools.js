@@ -4,50 +4,92 @@ const { authenticateToken } = require('../middleware/auth');
 
 const router = express.Router();
 
-router.get('/vehicle/vin-lookup/:vin', authenticateToken, async (req, res) => {
-  const vin = req.params.vin.toUpperCase();
+// NHTSA vPIC is a public vehicle decoder; no API key is required.
+// Cache successful responses to limit requests to the public service.
+const vinCache = new Map();
+const VIN_CACHE_MS = 24 * 60 * 60 * 1000;
+const MAX_VIN_CACHE_ENTRIES = 300;
+const VIN_PATTERN = /^[A-HJ-NPR-Z0-9]{17}$/;
 
-  if (vin.length !== 17) {
+router.get('/vehicle/vin-lookup/:vin', authenticateToken, async (req, res) => {
+  const vin = String(req.params.vin || '').trim().toUpperCase();
+  if (!VIN_PATTERN.test(vin)) {
     return res.status(400).json({
-      error: 'VIN must be exactly 17 characters long.'
+      error: 'Enter a valid 17-character VIN (letters I, O, and Q are not allowed).'
     });
   }
 
-  const projectMakes = [
-    'Apex-Motors',
-    'Project-Auto',
-    'Titan-Drive',
-    'Vanguard-EV',
-    'Hyperion-Motors'
-  ];
+  const cached = vinCache.get(vin);
+  if (cached && cached.expiresAt > Date.now()) {
+    return res.json(cached.value);
+  }
+  if (cached) vinCache.delete(vin);
 
-  const projectModels = [
-    'Interceptor',
-    'Courier',
-    'Falcon-X',
-    'Omni-Truck',
-    'Pioneer-SUV'
-  ];
+  try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 8000);
+    let response;
+    try {
+      response = await fetch(
+        `https://vpic.nhtsa.dot.gov/api/vehicles/DecodeVinValues/${encodeURIComponent(vin)}?format=json`,
+        { signal: controller.signal, headers: { Accept: 'application/json' } }
+      );
+    } finally {
+      clearTimeout(timeout);
+    }
 
-  const vinSum = vin
-    .split('')
-    .reduce((sum, char) => sum + char.charCodeAt(0), 0);
+    if (!response.ok) {
+      return res.status(502).json({
+        error: 'NHTSA VIN lookup is temporarily unavailable. Enter vehicle details manually.'
+      });
+    }
 
-  const simulatedMake =
-    projectMakes[vinSum % projectMakes.length];
+    const payload = await response.json();
+    const decoded = payload && Array.isArray(payload.Results) ? payload.Results[0] : null;
+    if (!decoded) {
+      return res.status(502).json({
+        error: 'NHTSA returned an unexpected response. Enter vehicle details manually.'
+      });
+    }
 
-  const simulatedModel =
-    projectModels[(vinSum * 7) % projectModels.length];
+    const make = String(decoded.Make || '').trim();
+    const model = String(decoded.Model || '').trim();
+    const year = String(decoded.ModelYear || '').trim();
+    const errorCode = String(decoded.ErrorCode || '').trim();
+    const warning = String(decoded.ErrorText || '').trim();
 
-  const simulatedYear =
-    2018 + (vinSum % 9);
+    if (!make || !model || !/^\d{4}$/.test(year)) {
+      return res.status(422).json({
+        error: 'NHTSA could not identify a complete year, make, and model for this VIN. Enter details manually.',
+        source: 'NHTSA vPIC',
+        warning: warning || undefined
+      });
+    }
 
-  res.json({
-    vin,
-    make: simulatedMake,
-    model: simulatedModel,
-    year: simulatedYear.toString()
-  });
+    const result = {
+      vin,
+      make,
+      model,
+      year,
+      source: 'NHTSA vPIC',
+      // Nonzero error codes can indicate check-digit or decoding problems.
+      // The UI must warn staff/customers before relying on decoded data.
+      warning: errorCode && errorCode !== '0' ? (warning || 'NHTSA reported a decoding warning.') : null
+    };
+    if (vinCache.size >= MAX_VIN_CACHE_ENTRIES) {
+      vinCache.delete(vinCache.keys().next().value);
+    }
+    vinCache.set(vin, { expiresAt: Date.now() + VIN_CACHE_MS, value: result });
+    return res.json(result);
+  } catch (error) {
+    const isTimeout = error && error.name === 'AbortError';
+    console.error('NHTSA VIN lookup error:', error && error.message);
+    return res.status(isTimeout ? 504 : 502).json({
+      error: isTimeout
+        ? 'NHTSA VIN lookup timed out. Enter vehicle details manually.'
+        : 'NHTSA VIN lookup is unavailable. Enter vehicle details manually.'
+    });
+  }
 });
 
 router.get('/parts/catalog-lookup', authenticateToken, async (req, res) => {

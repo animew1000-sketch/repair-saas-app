@@ -977,48 +977,56 @@ async function saveEmployeeChanges(empId) {
   }
 }
 
-async function lookupVinOnline() {
-  const vin =
-    document.getElementById('field_vin').value;
-
-  if (!vin || vin.length !== 17) {
-    showToast('Enter any valid 17-digit VIN number', 'error');
+// Shared VIN helper for staff and customer vehicle forms.
+// VIN lookup is opt-in: users can always enter details manually.
+async function decodeVinForFields(vinId, makeId, modelId, yearId, button) {
+  const vinField = document.getElementById(vinId);
+  const vin = String(vinField?.value || '').trim().toUpperCase();
+  const vinPattern = /^[A-HJ-NPR-Z0-9]{17}$/;
+  if (!vinPattern.test(vin)) {
+    showToast('Enter a valid 17-character VIN (without I, O, or Q).', 'error');
     return;
   }
 
-  const res = await fetch(
-    `/api/vehicle/vin-lookup/${vin}`,
-    {
-      headers: {
-        Authorization:
-          `Bearer ${localStorage.getItem('token')}`
-      }
+  const makeField = document.getElementById(makeId);
+  const modelField = document.getElementById(modelId);
+  const yearField = document.getElementById(yearId);
+  if (!makeField || !modelField || !yearField) return;
+
+  vinField.value = vin;
+  const buttonToDisable = button || null;
+  if (buttonToDisable) buttonToDisable.disabled = true;
+  try {
+    const res = await fetch(`/api/vehicle/vin-lookup/${encodeURIComponent(vin)}`, {
+      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+    });
+    const data = await res.json();
+    if (handleExpiredSession(res, data)) return;
+    if (!res.ok) {
+      showToast(data.error || 'VIN lookup failed. Enter vehicle details manually.', 'error');
+      return;
     }
-  );
 
-  const data = await res.json();
-
-  if (handleExpiredSession(res, data)) {
-    return;
+    // Only populate results if the user has not switched to a different VIN.
+    if (vinField.value.trim().toUpperCase() !== vin) return;
+    makeField.value = data.make || '';
+    modelField.value = data.model || '';
+    yearField.value = data.year || '';
+    if (data.warning) {
+      showToast(`NHTSA warning: ${data.warning} Verify the VIN and vehicle details.`, 'error');
+    } else {
+      showToast(`NHTSA decoded: ${data.year} ${data.make} ${data.model}`, 'success');
+    }
+  } catch (error) {
+    showToast('VIN lookup unavailable. Enter vehicle details manually.', 'error');
+  } finally {
+    if (buttonToDisable) buttonToDisable.disabled = false;
   }
+}
 
-  if (res.ok) {
-    document.getElementById('field_make').value =
-      data.make;
-
-    document.getElementById('field_model').value =
-      data.model;
-
-    document.getElementById('field_year').value =
-      data.year;
-
-    showToast(
-      `Decoded VIN (${data.vin}): ${data.year} ${data.make} ${data.model}`,
-      'success'
-    );
-  } else {
-    showToast(data.error, 'error');
-  }
+async function lookupVinOnline() {
+  // Existing staff button retains its original handler.
+  return decodeVinForFields('field_vin', 'field_make', 'field_model', 'field_year');
 }
 
 function autoFillPartName() {

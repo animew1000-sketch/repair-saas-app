@@ -555,7 +555,7 @@
           </div>
           <div class="grid">
             <div><label for="cust_email">Email Address</label><input type="email" id="cust_email" required /></div>
-            <div><label for="cust_vin">VIN Number (17 Digits)</label><input type="text" id="cust_vin" maxlength="17" required /></div>
+            <div><label for="cust_vin">VIN Number (17 Digits)</label><input type="text" id="cust_vin" maxlength="17" required /><button type="button" class="btn-secondary" onclick="decodeVinForFields('cust_vin', 'cust_make', 'cust_model', 'cust_year', this)" style="margin-top:8px;">Decode VIN (NHTSA)</button></div>
           </div>
           <div class="grid">
             <div><label for="cust_make">Vehicle Make</label><input type="text" id="cust_make" required /></div>
@@ -575,7 +575,7 @@
         <h3>Submit New Vehicle Repair / Maintenance Request</h3>
         <form onsubmit="handleBookAppointment(event)">
           <div class="grid">
-            <div><label for="book_vin">VIN Number (17 Digits)</label><input type="text" id="book_vin" maxlength="17" placeholder="e.g. 1FA6P8CF0H1234567" required /></div>
+            <div><label for="book_vin">VIN Number (17 Digits)</label><input type="text" id="book_vin" maxlength="17" placeholder="e.g. 1FA6P8CF0H1234567" required /><button type="button" class="btn-secondary" onclick="decodeVinForFields('book_vin', 'book_make', 'book_model', 'book_year', this)" style="margin-top:8px;">Decode VIN (NHTSA)</button></div>
             <div><label for="book_make">Vehicle Make</label><input type="text" id="book_make" placeholder="e.g. Ford" required /></div>
             <div><label for="book_model">Vehicle Model</label><input type="text" id="book_model" placeholder="e.g. Mustang" required /></div>
             <div><label for="book_year">Year</label><input type="number" id="book_year" placeholder="e.g. 2022" required /></div>
@@ -964,7 +964,7 @@
   <span class="theme-label">Dark</span>
 </div>
 
-  <script src="/app.js?v=motivo-5"></script>
+  <script src="/app.js?v=motivo-vin-1"></script>
 
   <script>
     const customerTabs = Array.from(
