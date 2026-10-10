@@ -4287,3 +4287,356 @@ body.motivo-public-page > .header .motivo-menu-toggle {
     height: 38px;
   }
 }
+
+
+/* =============================================================
+   MOTIVO UNIFIED EXPERIENCE / AUTHENTICATED & AUTHENTICATION UI
+   Visual-only: intentionally retains all existing event handlers,
+   input IDs, portal sections, roles and data attributes.
+   ============================================================= */
+
+/* Give each application screen the same clean full-width header. */
+body:has(#registerSection:not(.hidden)) .container,
+body:has(#loginSection:not(.hidden)) .container,
+body:has(#customerDashboard:not(.hidden)) .container,
+body:has(#employeeDashboard:not(.hidden)) .container {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-content: start;
+  overflow: visible;
+  background: #f8f7f2;
+}
+
+body:has(#registerSection:not(.hidden)) .container > .header,
+body:has(#loginSection:not(.hidden)) .container > .header,
+body:has(#customerDashboard:not(.hidden)) .container > .header,
+body:has(#employeeDashboard:not(.hidden)) .container > .header {
+  position: relative;
+  inset: auto;
+  grid-column: 1;
+  grid-row: auto;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0;
+  width: 100%;
+  min-height: 82px;
+  padding: 18px clamp(18px, 4vw, 52px);
+  background: #f8f7f2;
+  border: 0;
+  border-bottom: 1px solid #d9ded6;
+  z-index: 30;
+}
+
+body:has(#registerSection:not(.hidden)) .container > .header .brand,
+body:has(#loginSection:not(.hidden)) .container > .header .brand,
+body:has(#customerDashboard:not(.hidden)) .container > .header .brand,
+body:has(#employeeDashboard:not(.hidden)) .container > .header .brand {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 0;
+  z-index: 1;
+}
+
+body:has(#registerSection:not(.hidden)) .container > .header .brand-logo,
+body:has(#loginSection:not(.hidden)) .container > .header .brand-logo,
+body:has(#customerDashboard:not(.hidden)) .container > .header .brand-logo,
+body:has(#employeeDashboard:not(.hidden)) .container > .header .brand-logo {
+  display: block;
+  width: 145px;
+  height: 44px;
+  padding: 3px 7px;
+  object-fit: contain;
+  background: #173c3b;
+  border-radius: 4px;
+}
+
+body:has(#registerSection:not(.hidden)) .container > .header .motivo-menu-toggle,
+body:has(#loginSection:not(.hidden)) .container > .header .motivo-menu-toggle,
+body:has(#customerDashboard:not(.hidden)) .container > .header .motivo-menu-toggle,
+body:has(#employeeDashboard:not(.hidden)) .container > .header .motivo-menu-toggle {
+  display: flex;
+  flex: 0 0 42px;
+  position: relative;
+  margin: 0;
+  width: 42px;
+  height: 42px;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 4px;
+  padding: 0;
+  background: transparent;
+  border: 1px solid #cbd5ce;
+  border-radius: 5px;
+  cursor: pointer;
+  z-index: 33;
+}
+body:has(#registerSection:not(.hidden)) .motivo-menu-toggle span,
+body:has(#loginSection:not(.hidden)) .motivo-menu-toggle span,
+body:has(#customerDashboard:not(.hidden)) .motivo-menu-toggle span,
+body:has(#employeeDashboard:not(.hidden)) .motivo-menu-toggle span {
+  display: block;
+  width: 18px;
+  height: 2px;
+  background: #173c3b;
+}
+
+/* The existing toggleMotivoMenu() now opens the same narrow drawer
+   throughout the landing, sign-in and both authenticated portals. */
+body:has(#registerSection:not(.hidden)) #motivo-side-menu,
+body:has(#loginSection:not(.hidden)) #motivo-side-menu,
+body:has(#customerDashboard:not(.hidden)) #motivo-side-menu,
+body:has(#employeeDashboard:not(.hidden)) #motivo-side-menu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 26px;
+  width: min(84vw, 330px);
+  max-width: 330px;
+  height: 100dvh;
+  overflow-y: auto;
+  padding: 100px 24px 28px;
+  background: #f8f7f2;
+  box-shadow: 14px 0 34px rgba(23,60,59,.16);
+  border-right: 1px solid #d2dfd5;
+  transform: translateX(-105%);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: transform .25s ease, opacity .2s ease;
+  z-index: 31;
+}
+body.motivo-menu-open #motivo-side-menu {
+  transform: translateX(0);
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+body:has(#registerSection:not(.hidden)) #motivo-side-menu .header-links,
+body:has(#loginSection:not(.hidden)) #motivo-side-menu .header-links,
+body:has(#customerDashboard:not(.hidden)) #motivo-side-menu .header-links,
+body:has(#employeeDashboard:not(.hidden)) #motivo-side-menu .header-links,
+body:has(#registerSection:not(.hidden)) #motivo-side-menu .header-actions,
+body:has(#loginSection:not(.hidden)) #motivo-side-menu .header-actions,
+body:has(#customerDashboard:not(.hidden)) #motivo-side-menu .header-actions,
+body:has(#employeeDashboard:not(.hidden)) #motivo-side-menu .header-actions {
+  display: flex !important;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+  width: 100%;
+  margin: 0;
+}
+body:has(#registerSection:not(.hidden)) #motivo-side-menu .header-link,
+body:has(#loginSection:not(.hidden)) #motivo-side-menu .header-link,
+body:has(#customerDashboard:not(.hidden)) #motivo-side-menu .header-link,
+body:has(#employeeDashboard:not(.hidden)) #motivo-side-menu .header-link {
+  display: flex;
+  width: 100%;
+  min-height: 43px;
+  justify-content: flex-start;
+  padding: 12px;
+  color: #173c3b;
+  background: transparent;
+  border: 1px solid transparent;
+  text-align: left;
+  font-size: .88rem;
+  font-weight: 650;
+}
+body:has(#registerSection:not(.hidden)) #motivo-side-menu .header-link:hover,
+body:has(#loginSection:not(.hidden)) #motivo-side-menu .header-link:hover,
+body:has(#customerDashboard:not(.hidden)) #motivo-side-menu .header-link:hover,
+body:has(#employeeDashboard:not(.hidden)) #motivo-side-menu .header-link:hover {
+  background: #e5eee7;
+  color: #173c3b;
+  transform: none;
+}
+
+/* Keep forms in the content column and adopt Motivo's warm palette. */
+body:has(#registerSection:not(.hidden)) .container > #registerSection,
+body:has(#loginSection:not(.hidden)) .container > #loginSection,
+body:has(#customerDashboard:not(.hidden)) .container > #customerDashboard,
+body:has(#employeeDashboard:not(.hidden)) .container > #employeeDashboard {
+  grid-column: 1;
+  grid-row: auto;
+  min-width: 0;
+  width: 100%;
+  margin: 0;
+}
+body:has(#registerSection:not(.hidden)) .container > #registerSection,
+body:has(#loginSection:not(.hidden)) .container > #loginSection { padding: 0; }
+#registerSection.auth-screen,
+#loginSection.auth-screen,
+#registerSection .auth-split,
+#loginSection .auth-split {
+  background: #f8f7f2;
+  min-height: calc(100vh - 82px);
+}
+#registerSection .auth-form-panel,
+#loginSection .auth-form-panel {
+  background: #f8f7f2;
+  padding: clamp(36px, 5vw, 78px);
+}
+#registerSection .auth-kicker,
+#loginSection .auth-kicker { color: #d05a38; }
+#registerSection .auth-form-wrap h1,
+#loginSection .auth-form-wrap h1 { color: #173c3b; }
+#registerSection .auth-subtitle,
+#loginSection .auth-subtitle { color: #53615f; }
+#registerSection .auth-field label,
+#loginSection .auth-field label { color: #173c3b; }
+#registerSection .auth-label-note,
+#loginSection .auth-label-note { color: #65716e; }
+#registerSection .auth-field input,
+#registerSection .auth-field select,
+#loginSection .auth-field input,
+#loginSection .auth-field select {
+  color: #173c3b;
+  background: #fff;
+  border: 1px solid #cbd8cf;
+  border-radius: 9px;
+  min-height: 47px;
+}
+#registerSection .auth-field input::placeholder,
+#loginSection .auth-field input::placeholder { color: #72827a; }
+#registerSection .auth-field input:focus,
+#registerSection .auth-field select:focus,
+#loginSection .auth-field input:focus,
+#loginSection .auth-field select:focus {
+  border-color: #e86642;
+  box-shadow: 0 0 0 3px rgba(232,102,66,.15);
+}
+#registerSection .auth-submit-btn,
+#loginSection .auth-submit-btn {
+  background: #173c3b;
+  color: white;
+  border-color: #173c3b;
+  border-radius: 9px;
+  min-height: 49px;
+}
+#registerSection .auth-submit-btn:hover,
+#loginSection .auth-submit-btn:hover {
+  background: #275451;
+  border-color: #275451;
+}
+#registerSection .auth-check-row,
+#loginSection .auth-check-row,
+#registerSection .auth-switch-copy,
+#loginSection .auth-switch-copy { color: #53615f; }
+#registerSection .auth-check-row a,
+#loginSection .auth-check-row a,
+#registerSection .auth-text-link,
+#loginSection .auth-text-link { color: #173c3b; border-bottom-color: #e86642; }
+#registerSection .auth-login-note,
+#loginSection .auth-login-note {
+  background: #e9f0e9;
+  color: #53615f;
+  border-color: #d2dfd5;
+}
+#registerSection .auth-login-note strong,
+#loginSection .auth-login-note strong { color: #173c3b; }
+#registerSection .auth-field input:-webkit-autofill,
+#loginSection .auth-field input:-webkit-autofill {
+  -webkit-text-fill-color: #173c3b;
+  box-shadow: 0 0 0 1000px #fff inset;
+}
+#registerSection .auth-visual-overlay,
+#loginSection .auth-visual-overlay {
+  background: linear-gradient(180deg, rgba(11,31,30,.08) 15%, rgba(11,31,30,.2) 50%, rgba(11,31,30,.88) 100%);
+}
+#registerSection .auth-visual-copy span,
+#loginSection .auth-visual-copy span { color: #f6b096; }
+
+/* Customer and staff workspaces: lighter surfaces and clearer headings. */
+body:has(#customerDashboard:not(.hidden)) .container > #customerDashboard,
+body:has(#employeeDashboard:not(.hidden)) .container > #employeeDashboard {
+  padding: clamp(16px, 3vw, 42px);
+  background: #f8f7f2;
+  color: #173c3b;
+}
+#customerDashboard .customer-portal-header,
+#employeeDashboard .staff-portal-hero {
+  border-radius: 15px;
+  background: #173c3b;
+  color: #f3f5ef;
+}
+#customerDashboard .customer-portal-header h2,
+#employeeDashboard .staff-portal-hero h2 { color: #fff; }
+#customerDashboard .customer-portal-header small,
+#employeeDashboard .staff-shop-name { color: #bed0c6; }
+
+/* Dark mode: keep the same green identity, with readable controls. */
+body.dark-mode:has(#registerSection:not(.hidden)) .container,
+body.dark-mode:has(#loginSection:not(.hidden)) .container,
+body.dark-mode:has(#customerDashboard:not(.hidden)) .container,
+body.dark-mode:has(#employeeDashboard:not(.hidden)) .container,
+body.dark-mode:has(#registerSection:not(.hidden)) .container > .header,
+body.dark-mode:has(#loginSection:not(.hidden)) .container > .header,
+body.dark-mode:has(#customerDashboard:not(.hidden)) .container > .header,
+body.dark-mode:has(#employeeDashboard:not(.hidden)) .container > .header { background: #0d1717; border-bottom-color: #2b403d; }
+body.dark-mode:has(#registerSection:not(.hidden)) #motivo-side-menu,
+body.dark-mode:has(#loginSection:not(.hidden)) #motivo-side-menu,
+body.dark-mode:has(#customerDashboard:not(.hidden)) #motivo-side-menu,
+body.dark-mode:has(#employeeDashboard:not(.hidden)) #motivo-side-menu { background: #0d1717; border-color: #31504a; }
+body.dark-mode:has(#registerSection:not(.hidden)) #motivo-side-menu .header-link,
+body.dark-mode:has(#loginSection:not(.hidden)) #motivo-side-menu .header-link,
+body.dark-mode:has(#customerDashboard:not(.hidden)) #motivo-side-menu .header-link,
+body.dark-mode:has(#employeeDashboard:not(.hidden)) #motivo-side-menu .header-link { color: #e3ede7; }
+body.dark-mode:has(#registerSection:not(.hidden)) .motivo-menu-toggle span,
+body.dark-mode:has(#loginSection:not(.hidden)) .motivo-menu-toggle span,
+body.dark-mode:has(#customerDashboard:not(.hidden)) .motivo-menu-toggle span,
+body.dark-mode:has(#employeeDashboard:not(.hidden)) .motivo-menu-toggle span { background: #edf2ed; }
+body.dark-mode #registerSection.auth-screen,
+body.dark-mode #loginSection.auth-screen,
+body.dark-mode #registerSection .auth-split,
+body.dark-mode #loginSection .auth-split,
+body.dark-mode #registerSection .auth-form-panel,
+body.dark-mode #loginSection .auth-form-panel { background: #0d1717; }
+body.dark-mode #registerSection .auth-form-wrap h1,
+body.dark-mode #loginSection .auth-form-wrap h1,
+body.dark-mode #registerSection .auth-field label,
+body.dark-mode #loginSection .auth-field label { color: #edf2ed; }
+body.dark-mode #registerSection .auth-subtitle,
+body.dark-mode #loginSection .auth-subtitle,
+body.dark-mode #registerSection .auth-check-row,
+body.dark-mode #loginSection .auth-check-row,
+body.dark-mode #registerSection .auth-switch-copy,
+body.dark-mode #loginSection .auth-switch-copy { color: #afbeb8; }
+body.dark-mode #registerSection .auth-field input,
+body.dark-mode #registerSection .auth-field select,
+body.dark-mode #loginSection .auth-field input,
+body.dark-mode #loginSection .auth-field select { background: #172d2b; color: #edf2ed; border-color: #3d5954; }
+body.dark-mode #registerSection .auth-text-link,
+body.dark-mode #loginSection .auth-text-link,
+body.dark-mode #registerSection .auth-check-row a,
+body.dark-mode #loginSection .auth-check-row a { color: #f1f6f1; }
+body.dark-mode #registerSection .auth-login-note,
+body.dark-mode #loginSection .auth-login-note { background: #172d2b; color: #c3d1ca; border-color: #31504a; }
+body.dark-mode #registerSection .auth-login-note strong,
+body.dark-mode #loginSection .auth-login-note strong { color: #edf2ed; }
+body.dark-mode #registerSection .auth-field input:-webkit-autofill,
+body.dark-mode #loginSection .auth-field input:-webkit-autofill { -webkit-text-fill-color: #edf2ed; box-shadow: 0 0 0 1000px #172d2b inset; }
+body.dark-mode:has(#customerDashboard:not(.hidden)) .container > #customerDashboard,
+body.dark-mode:has(#employeeDashboard:not(.hidden)) .container > #employeeDashboard { background: #0d1717; color: #edf2ed; }
+
+@media (max-width: 760px) {
+  body:has(#registerSection:not(.hidden)) .container > .header,
+  body:has(#loginSection:not(.hidden)) .container > .header,
+  body:has(#customerDashboard:not(.hidden)) .container > .header,
+  body:has(#employeeDashboard:not(.hidden)) .container > .header { min-height: 76px; padding: 14px 18px; }
+  body:has(#registerSection:not(.hidden)) .container > .header .brand-logo,
+  body:has(#loginSection:not(.hidden)) .container > .header .brand-logo,
+  body:has(#customerDashboard:not(.hidden)) .container > .header .brand-logo,
+  body:has(#employeeDashboard:not(.hidden)) .container > .header .brand-logo { width: 125px; height: 38px; }
+  #registerSection .auth-form-panel,
+  #loginSection .auth-form-panel { padding: 32px 20px 44px; }
+  #registerSection .auth-split,
+  #loginSection .auth-split { min-height: calc(100vh - 76px); }
+}
