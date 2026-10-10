@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Motivo | Find Your Auto Shop Here</title>
-<link rel="stylesheet" href="/styles-reworked.css?v=motivo-portal-1">
+<link rel="stylesheet" href="/styles-reworked.css?v=motivo-job-workspace-1">
 </head>
 <body>
   <div class="container">
@@ -715,6 +715,10 @@
             <button type="button" onclick="filterStaffJobs('previous')">Previous</button>
           </div>
         </div>
+        <div class="motivo-job-search-row">
+          <label for="staffJobSearch">Search repair jobs</label>
+          <input id="staffJobSearch" type="search" placeholder="Search by job #, customer, vehicle or status" oninput="searchStaffJobs(this.value)" autocomplete="off" />
+        </div>
         <div class="staff-table-shell">
           <table class="staff-table">
             <thead><tr><th>Job</th><th>Customer</th><th>Vehicle</th><th>Appointment</th><th>Status</th><th>Technician</th><th>Action</th></tr></thead>
@@ -839,10 +843,9 @@
           <div>
             <span class="staff-section-kicker">ACTIVE REPAIR WORKFLOW</span>
             <h3>Repair Job Workspace</h3>
-            <p>
-              Choose a customer and move through the repair process
-              from intake to final invoice.
-            </p>
+            <p>Open a repair from My Jobs to review its saved details and update permitted sections.</p>
+            <button type="button" class="btn-secondary motivo-return-jobs" onclick="openStaffView('jobs')">← Back to My Jobs</button>
+            <p id="activeJobContext" class="motivo-active-job-context" role="status">Select a repair from My Jobs to begin.</p>
           </div>
         </div>
 
@@ -871,19 +874,21 @@
             </select>
 
             <small>
-              Customer and vehicle information auto-fills into the workflow.
+              Selecting a customer loads their repair record. For a quicker start, open the job from My Jobs.
             </small>
           </div>
 
           <div class="staff-job-field staff-job-id">
             <label for="activeJobId">
-              Active Repair Job ID
+              Selected Repair Job ID
             </label>
 
             <input
               type="number"
               id="activeJobId"
-              value="1"
+              value=""
+              readonly
+              placeholder="Select from My Jobs"
             />
           </div>
         </div>

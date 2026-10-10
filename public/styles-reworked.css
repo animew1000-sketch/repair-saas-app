@@ -4663,3 +4663,19 @@ body:has(#registerSection:not(.hidden)) .container > .header .brand,
 body:has(#loginSection:not(.hidden)) .container > .header .brand {
   cursor: pointer;
 }
+
+/* Motivo repair queue/workspace usability upgrade */
+.motivo-job-search-row {display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin:18px 0 14px}
+.motivo-job-search-row label {font-weight:700;color:#173c3b}
+.motivo-job-search-row input {width:min(100%,460px);min-height:44px;border:1px solid #b7c8be;border-radius:10px;background:#fff;color:#173c3b;padding:10px 14px}
+.motivo-job-search-row input:focus-visible,.motivo-open-job:focus-visible,.motivo-return-jobs:focus-visible {outline:3px solid #e86642;outline-offset:2px}
+.motivo-job-actions {display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.motivo-job-actions .motivo-open-job {background:#173c3b;color:#fff;border:1px solid #173c3b;white-space:nowrap}
+.motivo-job-actions .motivo-open-job:hover {background:#245452;color:#fff}
+.motivo-return-jobs {margin-top:12px}
+.motivo-active-job-context {margin:12px 0 0;padding:11px 15px;border-left:4px solid #e86642;background:#f8f7f2;color:#173c3b;border-radius:6px;font-weight:650}
+#activeJobId[readonly] {background:#f8f7f2;color:#173c3b;cursor:default}
+body.dark-mode .motivo-job-search-row label,body.dark-mode .motivo-active-job-context {color:#e3ede7}
+body.dark-mode .motivo-job-search-row input,body.dark-mode #activeJobId[readonly] {background:#122624;color:#e3ede7;border-color:#31504a}
+body.dark-mode .motivo-active-job-context {background:#122624}
+@media(max-width:760px){.motivo-job-search-row{align-items:stretch;flex-direction:column}.motivo-job-search-row input{width:100%}.motivo-job-actions{min-width:120px}}

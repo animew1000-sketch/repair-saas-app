@@ -1,6 +1,7 @@
 let activeDept = 'customer';
 let staffJobs = [];
 let activeStaffJobFilter = 'current';
+let staffJobSearchTerm = '';
 let loadedCustomerList = [];
 let currentShop = null;
 let activeWorkflowRecord = null;
@@ -1651,6 +1652,9 @@ async function autoFillCustomerData() {
 
   document.getElementById('activeJobId').value =
     jobId;
+  const job = staffJobs.find(item => String(item.id) === String(jobId));
+  const context = document.getElementById('activeJobContext');
+  if (context && job) context.textContent = `Job #${job.job_number || job.id} • ${[job.year, job.make, job.model].filter(Boolean).join(' ')} • ${job.status || 'Current'}`;
 
   const customer =
     loadedCustomerList.find(
@@ -1889,6 +1893,48 @@ function filterStaffJobs(filter) {
   renderStaffJobs();
 }
 
+function searchStaffJobs(value) {
+  staffJobSearchTerm = String(value || '').toLowerCase().trim();
+  renderStaffJobs();
+}
+
+async function openStaffJob(jobId) {
+  const job = staffJobs.find((item) => Number(item.id) === Number(jobId));
+  if (!job) {
+    showToast('This job is no longer in the current queue. Refresh the jobs list.', 'error');
+    return;
+  }
+
+  const role = localStorage.getItem('role');
+  if (role === 'technician' && job.assigned_staff_id &&
+      Number(job.assigned_staff_id) !== Number(localStorage.getItem('user_id'))) {
+    showToast('This job is assigned to another technician.', 'error');
+    return;
+  }
+
+  const jobIdField = document.getElementById('activeJobId');
+  if (jobIdField) jobIdField.value = String(job.id);
+  const customerSelect = document.getElementById('customerSelector');
+  if (customerSelect) customerSelect.value = String(job.id);
+
+  const context = document.getElementById('activeJobContext');
+  if (context) {
+    const customer = [job.first_name, job.last_name].filter(Boolean).join(' ') || 'Customer not recorded';
+    const vehicle = [job.year, job.make, job.model].filter(Boolean).join(' ') || 'Vehicle not recorded';
+    context.textContent = `Job #${job.job_number || job.id} • ${vehicle} • ${customer} • ${job.status || 'Current'}`;
+  }
+
+  openStaffView('workflow');
+  const allowed = ROLE_MAP[role] || [];
+  if (!allowed.length) {
+    showToast('Your role does not have access to repair workflow fields.', 'error');
+    return;
+  }
+  // showDept fetches this job's current saved data and retains role permissions.
+  await showDept(allowed.includes(activeDept) ? activeDept : allowed[0]);
+  document.getElementById('staffWorkflowSection')?.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
 function renderStaffJobs() {
   const tbody = document.getElementById('staffJobsBody');
 
@@ -1916,12 +1962,20 @@ function renderStaffJobs() {
     return !completed;
   });
 
-  if (jobs.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="7">No jobs in this view.</td></tr>';
+  const filteredJobs = jobs.filter((job) => {
+    if (!staffJobSearchTerm) return true;
+    const searchable = [job.id, job.job_number, job.first_name, job.last_name,
+      job.year, job.make, job.model, job.status, job.assigned_staff_name]
+      .filter((value) => value !== null && value !== undefined).join(' ').toLowerCase();
+    return searchable.includes(staffJobSearchTerm);
+  });
+
+  if (filteredJobs.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="7">No matching jobs in this view.</td></tr>';
     return;
   }
 
-  tbody.innerHTML = jobs.map((job) => {
+  tbody.innerHTML = filteredJobs.map((job) => {
     const customer = `${job.first_name || ''} ${job.last_name || ''}`.trim() || 'Customer';
     const vehicle = `${job.year || ''} ${job.make || ''} ${job.model || ''}`.trim() || 'Vehicle';
     const appointment = job.scheduled_datetime
@@ -1936,7 +1990,7 @@ function renderStaffJobs() {
       <td>${escapeHtml(appointment)}</td>
       <td>${escapeHtml(job.status)}</td>
       <td>${escapeHtml(job.assigned_staff_name || 'Unassigned')}</td>
-      <td>${canClaim ? `<button class="staff-inline-action" type="button" onclick="claimStaffJob(${Number(job.id)})">Claim</button>` : ''}</td>
+      <td><div class="motivo-job-actions"><button class="staff-inline-action motivo-open-job" type="button" onclick="openStaffJob(${Number(job.id)})" aria-label="Open repair job ${Number(job.id)}">Open Job</button>${canClaim ? `<button class="staff-inline-action" type="button" onclick="claimStaffJob(${Number(job.id)})">Claim</button>` : ''}</div></td>
     </tr>`;
   }).join('');
 }
@@ -1983,6 +2037,9 @@ function openStaffView(view) {
 
   jobsSection.classList.toggle('hidden', view !== 'jobs');
   workflowSection.classList.toggle('hidden', view !== 'workflow');
+  if (view === 'workflow' && !document.getElementById('activeJobId')?.value) {
+    document.getElementById('activeJobContext').textContent = 'Select a repair from My Jobs to begin.';
+  }
   managerPanel.classList.toggle('hidden', view !== 'team' || !isManager);
 
   if (view === 'jobs') {
@@ -1991,6 +2048,11 @@ function openStaffView(view) {
 }
 
 async function showDept(dept) {
+  const role = localStorage.getItem('role');
+  if (!(ROLE_MAP[role] || []).includes(dept)) {
+    showToast('Your role cannot access this repair section.', 'error');
+    return;
+  }
   activeDept = dept;
   
   const workflowTitles = {
@@ -2067,6 +2129,11 @@ async function submitDepartment(e) {
 
   const jobId =
     document.getElementById('activeJobId').value;
+
+  if (!jobId) {
+    showToast('Open a repair from My Jobs before saving.', 'error');
+    return;
+  }
 
   const formData =
     new FormData(e.target);
