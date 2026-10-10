@@ -4725,3 +4725,32 @@ body.dark-mode #staffWorkflowSection .motivo-tool-btn { background:#1d3028; colo
 body.dark-mode #staffWorkflowSection .motivo-tool-btn.active { background:#e86642; border-color:#e86642; }
 @media(max-width:840px){#staffWorkflowSection .motivo-main-sections { grid-template-columns:repeat(2,minmax(0,1fr)); }#staffWorkflowSection .motivo-main-sections .step-card:last-child { grid-column:span 2; }}
 @media(max-width:520px){#staffWorkflowSection .motivo-job-hero-right { align-items:flex-start; }#staffWorkflowSection .motivo-main-sections .step-card { font-size:.75rem; min-height:60px; }#staffWorkflowSection .motivo-summary-card dl div { display:block; }#staffWorkflowSection .motivo-summary-card dd { text-align:left; margin-top:5px; }}
+
+/* Motivo Parts & Labor — scoped to the five-section repair workspace. */
+.motivo-parts-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:16px 0}
+.motivo-parts-actions small{color:#647772;width:100%}
+.motivo-parts-editor{background:#fff;border:1px solid #d5ded8;border-radius:12px;padding:22px;margin:16px 0 24px;color:#173c3b}
+.motivo-parts-heading,.motivo-parts-footer{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+.motivo-parts-heading h4{margin:0 0 6px;font-size:1.3rem}.motivo-parts-heading p,.motivo-parts-caution{color:#63736a;font-size:.9rem}
+.motivo-parts-rows{display:flex;flex-direction:column;gap:10px;margin:20px 0}
+.motivo-parts-line{display:grid;grid-template-columns:105px minmax(180px,2fr) 90px 120px 110px 32px;gap:10px;align-items:end;background:#f8f7f2;padding:13px;border-radius:9px}
+.motivo-parts-line label{display:flex;flex-direction:column;gap:5px;font-size:.76rem;font-weight:650;color:#46625b}
+.motivo-parts-line select,.motivo-parts-line input{width:100%;box-sizing:border-box;min-height:40px;border-radius:6px;border:1px solid #cddbd2;background:#fff;color:#173c3b;padding:8px}
+.motivo-parts-line-total{display:flex;flex-direction:column;gap:6px;padding-bottom:8px}.motivo-parts-line-total small{font-size:.73rem;color:#64736e}
+.motivo-parts-remove{background:transparent;border:1px solid #e1b2a5;border-radius:6px;color:#bb4934;font-size:1.4rem;cursor:pointer;min-height:40px}
+.motivo-parts-add{display:flex;gap:8px;flex-wrap:wrap}.motivo-parts-total{display:flex;flex-direction:column;align-items:end;gap:5px}.motivo-parts-total strong{font-size:1.5rem}
+.motivo-parts-caution{margin:16px 0}.motivo-parts-empty{color:#64736e;padding:20px 0}
+body.dark-mode .motivo-parts-editor{background:#132623;color:#e0eee5;border-color:#355148}body.dark-mode .motivo-parts-line{background:#1a302b}body.dark-mode .motivo-parts-line label,body.dark-mode .motivo-parts-heading p{color:#bdd1c5}body.dark-mode .motivo-parts-line input,body.dark-mode .motivo-parts-line select{background:#172a26;color:#e0eee5;border-color:#496059}
+@media(max-width:1050px){.motivo-parts-line{grid-template-columns:repeat(2,minmax(0,1fr))}.motivo-parts-line label:nth-child(2){grid-column:span 1}}
+@media(max-width:500px){.motivo-parts-editor{padding:12px}.motivo-parts-line{grid-template-columns:1fr 1fr}.motivo-parts-line label:nth-child(2){grid-column:span 2}.motivo-parts-remove{justify-self:end}.motivo-parts-total{align-items:start}}
+
+/* Parts research: free outbound retailer links and human-reviewed listing selection */
+.motivo-parts-research{display:flex;flex-direction:column;gap:10px;flex:1 1 100%;padding:14px;background:var(--surface,#fff);border:1px solid var(--line,#dce5df);border-radius:12px}
+.motivo-parts-research label{font-weight:650;color:var(--ink,#173c3b)}
+.motivo-parts-research input{width:100%;min-height:43px;padding:10px 12px;border:1px solid var(--line,#dce5df);border-radius:8px;background:var(--surface,#fff);color:var(--ink,#173c3b)}
+.motivo-parts-search-links{display:flex;flex-wrap:wrap;gap:8px}
+.motivo-part-link-field{grid-column:1/-1;min-width:0}
+.motivo-part-link-field input{width:100%;max-width:100%}
+.motivo-seller-link{display:inline-flex;align-items:center;padding:8px 10px;color:#173c3b;text-decoration:underline;font-weight:600;overflow-wrap:anywhere}
+body.dark-mode .motivo-seller-link{color:#d8e8df}
+.motivo-summary-card a{display:block;margin:8px 0;color:#e86642;overflow-wrap:anywhere}

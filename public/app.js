@@ -191,7 +191,6 @@ const DEPT_FIELDS = {
     '<option value="Synthetic Oil Filter">Synthetic Oil Filter</option>' +
     '</select>' +
     '<input name="description" id="part_desc" maxlength="255" placeholder="Part Description" required />' +
-    '<button type="button" onclick="checkLivePartsPrice()" style="margin-bottom:8px;">Lookup Price For This Vehicle</button>' +
     '<input name="unit_cost" id="part_cost" type="number" min="0" max="99999999.99" step="0.01" data-input-type="money" placeholder="Cost ($)" required />',
 
   estimate:
@@ -1650,6 +1649,7 @@ async function loadWorkflowRecord(jobId) {
 
   if (String(document.getElementById('activeJobId')?.value) !== String(jobId)) return;
   activeWorkflowRecord = data;
+  if (!document.getElementById('motivoPartsEditor')?.classList.contains('hidden')) motivoPartsEditorSync();
   populateWorkflowDepartment();
   renderRepairWorkspaceSummary();
 }
@@ -2054,6 +2054,173 @@ function motivoSummaryCard(label, rows) {
     `<div><dt>${escapeHtml(key)}</dt><dd>${escapeHtml(formatMotivoValue(value))}</dd></div>`).join('')}</dl></article>`;
 }
 
+// Parts & Labor v2: quantity and hourly-rate values are stored server-side.
+let motivoPartsDraft = [];
+let motivoPartsSaving = false;
+const motivoLineMoney = n => `$${Number(n || 0).toFixed(2)}`;
+function motivoPartsExistingLines() {
+  return (activeWorkflowRecord?.parts_labor || []).map(line => ({
+    item_type: line.item_type === 'Labor' ? 'Labor' : 'Part',
+    description: String(line.description || ''),
+    quantity: Number(line.quantity ?? 1),
+    unit_price: Number(line.unit_price ?? line.unit_cost ?? 0),
+    source_url: String(line.source_url || '')
+  }));
+}
+function motivoPartsTotal(lines) {
+  return lines.reduce((sum, line) => sum + Math.round(Number(line.quantity) * Number(line.unit_price) * 100), 0) / 100;
+}
+function motivoPartsEditorSync() {
+  const root = document.getElementById('motivoPartsEditor');
+  if (!root) return;
+  motivoPartsDraft = motivoPartsExistingLines();
+  motivoRenderPartsDraft();
+}
+function motivoPartsField(index, field, value) {
+  const line = motivoPartsDraft[index];
+  if (!line) return;
+  line[field] = value;
+  if (field === 'item_type') line.quantity = 1;
+  motivoRenderPartsDraft();
+}
+function motivoAddPartLine(type = 'Part') {
+  motivoPartsDraft.push({ item_type: type, description: '', quantity: 1, unit_price: 0, source_url: '' });
+  motivoRenderPartsDraft();
+}
+function motivoRemovePartLine(index) {
+  motivoPartsDraft.splice(index, 1);
+  motivoRenderPartsDraft();
+}
+function motivoRenderPartsDraft() {
+  const holder = document.getElementById('motivoPartsRows');
+  if (!holder) return;
+  holder.innerHTML = motivoPartsDraft.length ? motivoPartsDraft.map((line, i) => {
+    const type = line.item_type === 'Labor' ? 'Labor' : 'Part';
+    const qty = Number(line.quantity);
+    const price = Number(line.unit_price);
+    const valid = Number.isFinite(qty) && Number.isFinite(price) && qty > 0 && price >= 0;
+    const sum = valid ? motivoLineMoney(Math.round(qty * price * 100) / 100) : '—';
+    return `<div class="motivo-parts-line" data-line="${i}">
+      <label>Type<select data-field="item_type"><option value="Part" ${type === 'Part' ? 'selected' : ''}>Part</option><option value="Labor" ${type === 'Labor' ? 'selected' : ''}>Labor</option></select></label>
+      <label>Description<input data-field="description" maxlength="255" value="${escapeHtml(line.description)}" placeholder="${type === 'Labor' ? 'Labor operation' : 'Part name / number'}" /></label>
+      <label>${type === 'Labor' ? 'Hours' : 'Qty'}<input data-field="quantity" type="number" min="${type === 'Labor' ? '0.25' : '1'}" step="${type === 'Labor' ? '0.25' : '1'}" value="${escapeHtml(String(line.quantity))}" /></label>
+      <label>${type === 'Labor' ? 'Hourly rate ($)' : 'Unit price ($)'}<input data-field="unit_price" type="number" min="0" step="0.01" value="${escapeHtml(String(line.unit_price))}" /></label>
+      ${type === 'Part' ? `<label class="motivo-part-link-field">Selected listing URL<input data-field="source_url" type="url" maxlength="2048" value="${escapeHtml(line.source_url || '')}" placeholder="https://seller.example/part" autocomplete="off" /></label><button class="btn-secondary motivo-use-query" type="button" data-action="use-query">Search this part ↗</button>${/^https?:\/\//i.test(line.source_url || '') ? `<a class="motivo-seller-link" href="${escapeHtml(line.source_url)}" target="_blank" rel="noopener noreferrer">Review selected listing ↗</a>` : ''}` : ''}
+      <div class="motivo-parts-line-total"><small>Line total</small><strong>${sum}</strong></div>
+      <button class="motivo-parts-remove" type="button" data-action="remove" aria-label="Remove line ${i + 1}">×</button>
+    </div>`;
+  }).join('') : '<p class="motivo-parts-empty">No line items yet. Add a part or a labor operation.</p>';
+  holder.querySelectorAll('[data-field]').forEach(el => {
+    el.addEventListener(el.tagName === 'SELECT' ? 'change' : 'input', event => {
+      const idx = Number(event.target.closest('[data-line]').dataset.line);
+      const field = event.target.dataset.field;
+      motivoPartsDraft[idx][field] = event.target.value;
+      if (field === 'item_type') {
+        motivoPartsDraft[idx].quantity = 1;
+        motivoRenderPartsDraft();
+      } else {
+        const lineNode = event.target.closest('[data-line]');
+        const l = motivoPartsDraft[idx];
+        const extended = Number(l.quantity) * Number(l.unit_price);
+        lineNode.querySelector('.motivo-parts-line-total strong').textContent = Number.isFinite(extended) ? motivoLineMoney(Math.round(extended * 100) / 100) : '—';
+        motivoUpdatePartsTotal();
+      }
+    });
+  });
+  holder.querySelectorAll('[data-action="remove"]').forEach(btn => btn.addEventListener('click', () => motivoRemovePartLine(Number(btn.closest('[data-line]').dataset.line))));
+  holder.querySelectorAll('[data-action="use-query"]').forEach(btn => btn.addEventListener('click', () => motivoUsePartQuery(Number(btn.closest('[data-line]').dataset.line))));
+  motivoUpdatePartsTotal();
+}
+function motivoUpdatePartsTotal() {
+  const el = document.getElementById('motivoPartsCalculatedTotal');
+  if (el) el.textContent = motivoLineMoney(motivoPartsTotal(motivoPartsDraft));
+}
+function motivoOpenPartsEditor() {
+  const jobId = document.getElementById('activeJobId')?.value;
+  if (!jobId) return showToast('Open a repair job first.', 'error');
+  if (!(ROLE_MAP[localStorage.getItem('role')] || []).includes('parts_labor')) return showToast('Your role cannot edit parts and labor.', 'error');
+  const panel = document.getElementById('motivoPartsEditor');
+  if (!panel) return;
+  panel.classList.remove('hidden');
+  motivoPartsEditorSync();
+  panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+function motivoClosePartsEditor() {
+  document.getElementById('motivoPartsEditor')?.classList.add('hidden');
+}
+async function motivoSavePartsLines() {
+  if (motivoPartsSaving) return;
+  const jobId = document.getElementById('activeJobId')?.value;
+  if (!jobId) return showToast('Open a repair job first.', 'error');
+  const lines = motivoPartsDraft.map(line => ({item_type:line.item_type,description:String(line.description).trim(),quantity:Number(line.quantity),unit_price:Number(line.unit_price),source_url:line.item_type === 'Part' ? String(line.source_url || '').trim() : ''}));
+  for (const line of lines) {
+    if (!['Part','Labor'].includes(line.item_type) || !line.description || line.description.length > 255 ||
+        !Number.isFinite(line.quantity) || line.quantity <= 0 || (line.item_type === 'Part' && !Number.isInteger(line.quantity)) ||
+        (line.item_type === 'Labor' && Math.round(line.quantity * 4) !== line.quantity * 4) ||
+        !Number.isFinite(line.unit_price) || line.unit_price < 0) {
+      return showToast('Check each line: description, whole-number part quantity, quarter-hour labor, and price.', 'error');
+    }
+  }
+  for (const line of lines) {
+    if (line.source_url) {
+      try {
+        const u = new URL(line.source_url);
+        if (!['http:', 'https:'].includes(u.protocol) || u.username || u.password || line.source_url.length > 2048) throw new Error('Invalid link');
+      } catch (_) { return showToast('Selected listing links must be valid http(s) URLs without embedded credentials.', 'error'); }
+    }
+  }
+  if (lines.length > 100 || motivoPartsTotal(lines) > 99999999.99) return showToast('Too many items or the total is too large.', 'error');
+  const button = document.getElementById('motivoPartsSave');
+  motivoPartsSaving = true;
+  if (button) button.disabled = true;
+  try {
+    const res = await fetch(`/api/department/job/${encodeURIComponent(jobId)}/line-items`, {
+      method:'PUT', headers:{'Content-Type':'application/json',Authorization:`Bearer ${localStorage.getItem('token')}`},
+      body:JSON.stringify({lines})
+    });
+    const data = await res.json();
+    if (handleExpiredSession(res,data)) return;
+    if (!res.ok) throw new Error(data.error || 'Unable to save parts and labor.');
+    showToast('Parts and labor saved. Review the estimate separately before sending it.', 'success');
+    if (String(document.getElementById('activeJobId')?.value) === String(jobId)) {
+      await loadWorkflowRecord(jobId);
+      motivoPartsEditorSync();
+    }
+  } catch (error) { showToast(error.message || 'Unable to save parts and labor.', 'error'); }
+  finally { motivoPartsSaving = false; if(button) button.disabled = false; }
+}
+// Free, direct retailer searches. These are outbound discovery links, not API imports.
+const MOTIVO_PART_SEARCH = [
+  {id:'google',label:'Google Shopping',base:'https://www.google.com/search?tbm=shop&q='},
+  {id:'amazon',label:'Amazon',base:'https://www.amazon.com/s?k='},
+  {id:'ebay',label:'eBay',base:'https://www.ebay.com/sch/i.html?_nkw='},
+  {id:'rockauto',label:'RockAuto results',base:'https://www.google.com/search?q='}
+];
+function motivoPartsSearchTerm() {
+  const vehicle = activeWorkflowRecord?.vehicle || {};
+  const vehicleText = [vehicle.year,vehicle.make,vehicle.model].filter(Boolean).join(' ');
+  const part = document.getElementById('motivoPartQuery')?.value.trim() || '';
+  return {vehicleText,part};
+}
+function motivoSearchPartSuppliers(providerId) {
+  const {vehicleText,part} = motivoPartsSearchTerm();
+  if (!part) return showToast('Enter a part name to search.', 'error');
+  if (!vehicleText) return showToast('Add the vehicle year, make and model first.', 'error');
+  const provider = MOTIVO_PART_SEARCH.find(p => p.id === providerId);
+  if (!provider) return;
+  const phrase = `${vehicleText} ${part} auto part`;
+  const q = providerId === 'rockauto' ? `site:rockauto.com ${phrase}` : phrase;
+  const url = provider.base + encodeURIComponent(q);
+  window.open(url, '_blank', 'noopener,noreferrer');
+}
+function motivoUsePartQuery(index) {
+  const line = motivoPartsDraft[index];
+  if (!line || line.item_type !== 'Part') return;
+  const input = document.getElementById('motivoPartQuery');
+  if (input) input.value = line.description || '';
+  document.getElementById('motivoPartsResearch')?.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
 function renderRepairWorkspaceSummary() {
   const holder = document.getElementById('motivoJobSummary');
   if (!holder) return;
@@ -2076,13 +2243,22 @@ function renderRepairWorkspaceSummary() {
     cards = [motivoSummaryCard('Customer concern / repair order', [['RO number',ro.ro_number],['Reported problem',ro.issue_description]])];
   } else if (activeRepairSection === 'estimate') {
     cards = [motivoSummaryCard('Estimate', [['Estimated total',e.estimated_total === undefined ? 'Not recorded' : money(e.estimated_total)],['Customer authorization','Not tracked in the current database']]),
-      motivoSummaryCard('Saved parts & labor',lines.length ? lines.map((item,i) => [`${i+1}. ${item.item_type || 'Item'} — ${item.description || 'No description'}`,money(item.unit_cost)]) : [['Items','No parts or labor entries saved']])];
+      motivoSummaryCard('Saved parts & labor',lines.length ? lines.map((item,i) => [`${i+1}. ${item.item_type || 'Item'} — ${item.description || 'No description'} (${item.quantity ?? 1} × ${money(item.unit_price ?? item.unit_cost)})`,money(item.unit_cost)]) : [['Items','No parts or labor entries saved']])];
   } else if (activeRepairSection === 'repair') {
     cards = [motivoSummaryCard('Work performed', [['Repair notes',r.work_summary]])];
   } else {
     cards = [motivoSummaryCard('Invoice', [['Invoice number',inv.invoice_number],['Subtotal',inv.subtotal === undefined ? 'Not recorded' : money(inv.subtotal)],['Total',inv.total_amount === undefined ? 'Not recorded' : money(inv.total_amount)]])];
   }
   holder.innerHTML = cards.join('');
+  if (activeRepairSection === 'estimate') {
+    const links = lines.filter(x => x.item_type === 'Part' && /^https?:\/\//i.test(x.source_url || ''));
+    if (links.length) {
+      const box = document.createElement('article'); box.className = 'motivo-summary-card';
+      const title = document.createElement('h4'); title.textContent = 'Selected product listings'; box.appendChild(title);
+      links.forEach(item => { try { const u = new URL(item.source_url); if (!['http:', 'https:'].includes(u.protocol) || u.username || u.password) return; const anchor = document.createElement('a'); anchor.href = u.href; anchor.target = '_blank'; anchor.rel = 'noopener noreferrer'; anchor.textContent = `${item.description} — Review seller ↗`; box.appendChild(anchor); } catch (_) {} });
+      holder.appendChild(box);
+    }
+  }
 }
 
 function updateMotivoJobHero(jobId) {
@@ -2111,6 +2287,7 @@ function openRepairSection(sectionKey) {
     return;
   }
   activeRepairSection = sectionKey;
+  motivoClosePartsEditor();
   const keys = Object.keys(REPAIR_SECTIONS);
   const idx = keys.indexOf(sectionKey);
   const set = (id,text) => { const el=document.getElementById(id); if(el) el.textContent=text; };
@@ -2128,15 +2305,18 @@ function openRepairSection(sectionKey) {
     else button.removeAttribute('aria-current');
   });
   const toolBar=document.getElementById('motivoDepartmentTools');
-  if(toolBar) toolBar.innerHTML=tools.map(dept=>`<button type="button" class="motivo-tool-btn" data-dept="${dept}" onclick="showDept('${dept}')">${escapeHtml(DEPT_LABELS[dept] || dept)}</button>`).join('');
+  if(toolBar) toolBar.innerHTML=tools.filter(dept=>dept!=='parts_labor').map(dept=>`<button type="button" class="motivo-tool-btn" data-dept="${dept}" onclick="showDept('${dept}')">${escapeHtml(DEPT_LABELS[dept] || dept)}</button>`).join('');
   const form=document.getElementById('deptForm');
   if(form) form.classList.add('hidden');
   document.getElementById('markReadyBtn')?.classList.add('hidden');
+  const partsActions = document.getElementById('motivoPartsActions');
+  if (partsActions) partsActions.classList.toggle('hidden', sectionKey !== 'estimate' || !allowed.includes('parts_labor'));
   renderRepairWorkspaceSummary();
 }
 
 async function showDept(dept) {
   const role = localStorage.getItem('role');
+  if (dept === 'parts_labor') { motivoOpenPartsEditor(); return; }
   if (!(ROLE_MAP[role] || []).includes(dept)) {
     showToast('Your role cannot access this repair tool.', 'error');
     return;

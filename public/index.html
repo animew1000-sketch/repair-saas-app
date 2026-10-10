@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Motivo | Find Your Auto Shop Here</title>
-<link rel="stylesheet" href="/styles-reworked.css?v=motivo-five-1">
+<link rel="stylesheet" href="/styles-reworked.css?v=motivo-parts-links-1">
 </head>
 <body>
   <div class="container">
@@ -887,6 +887,27 @@
 
         <div class="motivo-edit-header"><h4>Record tools</h4><p>Choose the detail you need to update. Only tools permitted for your role appear.</p></div>
         <div id="motivoDepartmentTools" class="motivo-department-tools" role="group" aria-label="Record editing tools"></div>
+        <div id="motivoPartsActions" class="motivo-parts-actions hidden">
+          <button class="btn-primary" type="button" onclick="motivoOpenPartsEditor()">Manage parts &amp; labor</button>
+          <div id="motivoPartsResearch" class="motivo-parts-research">
+            <label for="motivoPartQuery">Part to research</label>
+            <input id="motivoPartQuery" type="search" maxlength="180" placeholder="e.g. front brake pads" autocomplete="off" />
+            <div class="motivo-parts-search-links">
+              <button class="btn-secondary" type="button" onclick="motivoSearchPartSuppliers('google')">Google Shopping ↗</button>
+              <button class="btn-secondary" type="button" onclick="motivoSearchPartSuppliers('amazon')">Amazon ↗</button>
+              <button class="btn-secondary" type="button" onclick="motivoSearchPartSuppliers('ebay')">eBay ↗</button>
+              <button class="btn-secondary" type="button" onclick="motivoSearchPartSuppliers('rockauto')">RockAuto ↗</button>
+            </div>
+          </div>
+          <small>Supplier results are research only; staff must verify compatibility and pricing.</small>
+        </div>
+        <section id="motivoPartsEditor" class="motivo-parts-editor hidden" aria-label="Parts and labor line item editor">
+          <div class="motivo-parts-heading"><div><h4>Parts &amp; Labor</h4><p>Add as many line items as needed. Labor uses hours × hourly rate.</p></div><button class="btn-secondary" type="button" onclick="motivoClosePartsEditor()">Close</button></div>
+          <div id="motivoPartsRows" class="motivo-parts-rows"></div>
+          <div class="motivo-parts-footer"><div class="motivo-parts-add"><button class="btn-secondary" type="button" onclick="motivoAddPartLine('Part')">+ Add part</button><button class="btn-secondary" type="button" onclick="motivoAddPartLine('Labor')">+ Add labor</button></div><div class="motivo-parts-total"><span>Parts &amp; labor total</span><strong id="motivoPartsCalculatedTotal">$0.00</strong></div></div>
+          <p class="motivo-parts-caution">Saving these items does not send an estimate or authorize repairs. Review and save the estimate separately.</p>
+          <button class="btn-primary" id="motivoPartsSave" type="button" onclick="motivoSavePartsLines()">Save all line items</button>
+        </section>
         <form id="deptForm" class="staff-dept-form hidden" onsubmit="submitDepartment(event)">
           <div class="staff-dept-heading">
             <span class="staff-card-number">WORKFLOW</span>
@@ -929,7 +950,7 @@
   <span class="theme-label">Dark</span>
 </div>
 
-  <script src="/app.js?v=motivo-five-1"></script>
+  <script src="/app.js?v=motivo-parts-links-1"></script>
 
   <script>
     const customerTabs = Array.from(

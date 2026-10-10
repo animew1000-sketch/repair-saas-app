@@ -213,6 +213,84 @@ router.post(
   }
 );
 
+// Transactional bulk replacement for structured parts/labor line items.
+// Requires migrations/2026-10-10-parts-labor.sql before deployment.
+router.put('/job/:jobId/line-items', authenticateToken, requireStaff, async (req, res) => {
+  if (!['technician','parts_manager','manager'].includes(req.user.role)) {
+    return res.status(403).json({ error: 'This role cannot edit parts and labor.' });
+  }
+  const jobId = Number(req.params.jobId);
+  const lines = req.body?.lines;
+  if (!Number.isSafeInteger(jobId) || jobId <= 0 || !Array.isArray(lines) || lines.length > 100) {
+    return res.status(400).json({ error: 'Provide a valid job and up to 100 line items.' });
+  }
+  const prepared = [];
+  let totalCents = 0;
+  for (const item of lines) {
+    if (!item || !['Part','Labor'].includes(item.item_type) ||
+        typeof item.description !== 'string' || !item.description.trim() || item.description.trim().length > 255) {
+      return res.status(400).json({ error: 'Every line needs a type and description (max 255 characters).' });
+    }
+    const qty = Number(item.quantity);
+    const price = Number(item.unit_price);
+    if (!Number.isFinite(qty) || qty <= 0 || qty > 100000 ||
+        (item.item_type === 'Part' && !Number.isInteger(qty)) ||
+        (item.item_type === 'Labor' && Math.round(qty * 4) !== qty * 4) ||
+        !Number.isFinite(price) || price < 0 || price > 99999999.99 ||
+        Math.round(price * 100) !== price * 100 && Math.abs(Math.round(price * 100) - price * 100) > 1e-6) {
+      return res.status(400).json({ error: 'Use whole-number part quantities, quarter-hour labor, and a valid nonnegative rate.' });
+    }
+    const cents = Math.round(qty * Math.round(price * 100));
+    if (!Number.isSafeInteger(cents) || cents > 9999999999) {
+      return res.status(400).json({ error: 'Line total is too large.' });
+    }
+    totalCents += cents;
+    if (totalCents > 9999999999) return res.status(400).json({ error: 'Combined total is too large.' });
+    let sourceUrl = null;
+    if (item.source_url !== undefined && item.source_url !== null && item.source_url !== '') {
+      if (item.item_type !== 'Part' || typeof item.source_url !== 'string' || item.source_url.length > 2048) {
+        return res.status(400).json({ error: 'Listing URLs are allowed only for parts (up to 2048 characters).' });
+      }
+      try {
+        const url = new URL(item.source_url);
+        if (!['http:', 'https:'].includes(url.protocol) || url.username || url.password) throw new Error('Invalid listing URL');
+        sourceUrl = url.href;
+      } catch (_) {
+        return res.status(400).json({ error: 'Listing URL must be a valid HTTP or HTTPS address.' });
+      }
+    }
+    prepared.push([req.user.company_id,jobId,item.item_type,item.description.trim(),(cents/100).toFixed(2),qty.toFixed(2),price.toFixed(2),sourceUrl]);
+  }
+  let connection;
+  try {
+    connection = await pool.getConnection();
+    await connection.beginTransaction();
+    const [jobs] = await connection.query(
+      'SELECT id FROM repair_jobs WHERE id = ? AND company_id = ? FOR UPDATE',
+      [jobId, req.user.company_id]
+    );
+    if (!jobs.length) {
+      await connection.rollback();
+      return res.status(404).json({ error: 'Repair job not found.' });
+    }
+    await connection.query('DELETE FROM parts_and_labor WHERE repair_job_id = ? AND company_id = ?', [jobId,req.user.company_id]);
+    for (const line of prepared) {
+      await connection.query(
+        'INSERT INTO parts_and_labor (company_id,repair_job_id,item_type,description,unit_cost,quantity,unit_price,source_url) VALUES (?,?,?,?,?,?,?,?)',
+        line
+      );
+    }
+    await connection.commit();
+    return res.json({ success:true, count:prepared.length, total:(totalCents/100).toFixed(2) });
+  } catch (error) {
+    if (connection) await connection.rollback();
+    console.error('Parts and labor save failed:', error.code || error.message);
+    return res.status(500).json({ error:'Unable to save parts and labor. Verify that the database migration has been applied.' });
+  } finally {
+    if (connection) connection.release();
+  }
+});
+
 router.post(
   '/:name',
   authenticateToken,
