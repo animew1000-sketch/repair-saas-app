@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Motivo | Find Your Auto Shop Here</title>
 <link rel="stylesheet" href="/styles-reworked.css?v=motivo-parts-links-1">
+  <link rel="stylesheet" href="/operations-dashboard.css?v=ops-1">
 <style>
 /* MOT-001: accessible inactivity countdown overlay; limited to session dialog. */
 .motivo-session-dialog[hidden], .motivo-session-error[hidden] { display: none !important; }
@@ -700,7 +701,19 @@ body.motivo-session-modal-open { overflow: hidden; }
     </div>
 
     <!-- 4. EMPLOYEE & MANAGER DASHBOARD -->
-    <div id="employeeDashboard" class="card hidden staff-dashboard">
+    <div id="employeeDashboard" class="card hidden staff-dashboard motivo-ops-shell">
+      <!-- Motivo operations navigation is scoped to employee accounts. -->
+      <button id="motivoOpsMenuToggle" type="button" aria-controls="motivoOpsSidebar" aria-expanded="false">☰ Employee menu</button>
+      <aside id="motivoOpsSidebar" class="motivo-ops-side" aria-label="Employee workspace navigation">
+        <span class="motivo-ops-logo">motivo<em>.</em></span>
+        <span class="motivo-ops-side-label">Workspace</span>
+        <nav aria-label="Employee navigation">
+          <button type="button" data-motivo-ops-view="overview" class="is-active">▦ &nbsp; Dashboard</button>
+          <button type="button" data-motivo-ops-view="jobs">▤ &nbsp; My Jobs</button>
+          <button type="button" data-motivo-ops-view="team">♙ &nbsp; Team Access</button>
+        </nav>
+        <div class="motivo-ops-side-footer">Employee portal<br>Repair work stays inside the selected job.</div>
+      </aside>
 
       <section class="staff-portal-hero">
         <div class="staff-portal-copy">
@@ -721,6 +734,22 @@ body.motivo-session-modal-open { overflow: hidden; }
             Logout
           </button>
         </div>
+      </section>
+
+      <section id="motivoOpsOverview" class="motivo-ops-home hidden" aria-labelledby="motivoOpsTitle">
+        <div class="motivo-ops-heading">
+          <div><span>Employee dashboard</span><h3 id="motivoOpsTitle">Shop Overview</h3><p id="motivoOpsScope">Your job activity at a glance</p></div>
+          <button id="motivoOpsBrowseJobs" type="button" class="motivo-ops-primary">Browse Jobs →</button>
+        </div>
+        <div id="motivoOpsSummary" class="motivo-ops-stats" aria-label="Job summary"></div>
+        <div class="motivo-ops-charts">
+          <section class="motivo-ops-card"><h4>Jobs by Status</h4><p>Breakdown of visible repair orders</p><div id="motivoOpsStatusChart"></div></section>
+          <section id="motivoOpsWorkloadCard" class="motivo-ops-card" hidden><h4>Technician Workload</h4><p>Assignments by technician · managers only</p><div id="motivoOpsWorkloadChart"></div></section>
+        </div>
+        <section class="motivo-ops-card" aria-labelledby="motivoOpsRecentTitle">
+          <div class="motivo-ops-card-header"><h4 id="motivoOpsRecentTitle">Recent Jobs</h4><button id="motivoOpsRecentAll" type="button" class="motivo-ops-link">View all →</button></div>
+          <div id="motivoOpsRecent"></div>
+        </section>
       </section>
 
       <section id="staffJobsSection" class="staff-jobs-section hidden">
@@ -972,6 +1001,7 @@ body.motivo-session-modal-open { overflow: hidden; }
 </div>
 
   <script src="/app.js?v=motivo-session-dialog-2"></script>
+  <script defer src="/operations-dashboard.js?v=ops-1"></script>
 
   <script>
     const customerTabs = Array.from(

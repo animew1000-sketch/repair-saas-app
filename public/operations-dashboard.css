@@ -1,0 +1,69 @@
+/* Motivo employee work areas - scoped to staff portal only */
+#employeeDashboard.motivo-ops-shell {position:relative; display:grid;grid-template-columns:220px minmax(0,1fr);gap:22px;align-items:start;max-width:1480px;margin-inline:auto;}
+#employeeDashboard.motivo-ops-shell.hidden {display:none!important;}
+#employeeDashboard .motivo-ops-side {grid-column:1;grid-row:1 / span 4;position:sticky;top:18px;align-self:start;background:#173c3b;color:#fff;border-radius:18px;padding:22px 13px;min-height:610px;box-shadow:0 12px 32px #0c222024;}
+#employeeDashboard .motivo-ops-logo {display:block;font-size:25px;font-weight:800;letter-spacing:-.05em;color:#fff;padding:0 14px 28px;}
+#employeeDashboard .motivo-ops-logo em {color:#e86642;font-style:normal;}
+#employeeDashboard .motivo-ops-side-label {display:block;color:#bbd3c8;padding:4px 14px 11px;font-size:11px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;}
+#employeeDashboard .motivo-ops-side button {display:flex;align-items:center;gap:11px;width:100%;padding:13px 14px;border:none;border-radius:10px;background:transparent;color:#dce8e1;font:inherit;text-align:left;cursor:pointer;}
+#employeeDashboard .motivo-ops-side button:hover,#employeeDashboard .motivo-ops-side button.is-active {background:#315651;color:#fff;}
+#employeeDashboard .motivo-ops-side button:focus-visible,#employeeDashboard .motivo-ops-home button:focus-visible {outline:3px solid #e86642;outline-offset:3px;}
+#employeeDashboard .motivo-ops-side button[data-motivo-ops-view="team"] {display:none;}
+#employeeDashboard .motivo-ops-side.motivo-ops-manager button[data-motivo-ops-view="team"] {display:flex;}
+#employeeDashboard .motivo-ops-side-footer {margin-top:28px;padding:16px 12px 5px;border-top:1px solid #47675d;color:#bcd5ca;font-size:12px;line-height:1.5;}
+#employeeDashboard .staff-portal-hero,#employeeDashboard #staffJobsSection,#employeeDashboard #staffWorkflowSection,#employeeDashboard #managerControlPanel,#employeeDashboard #motivoOpsOverview {grid-column:2;min-width:0;}
+#employeeDashboard .staff-portal-hero {grid-row:1;}
+#employeeDashboard #motivoOpsOverview {grid-row:2;}
+#employeeDashboard .motivo-ops-home {background:#f8f7f2;color:#173c3b;border-radius:18px;padding:22px;}
+#employeeDashboard .motivo-ops-heading {display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:18px;}
+#employeeDashboard .motivo-ops-heading span {color:#e86642;text-transform:uppercase;letter-spacing:.12em;font-size:11px;font-weight:800;}
+#employeeDashboard .motivo-ops-heading h3 {color:#173c3b;font-size:clamp(22px,3vw,30px);margin:5px 0;}
+#employeeDashboard .motivo-ops-heading p {color:#63776c;margin:0;font-size:14px;}
+#employeeDashboard .motivo-ops-primary {border:0;border-radius:10px;background:#e86642;color:#fff;font:inherit;font-weight:700;padding:11px 17px;cursor:pointer;}
+#employeeDashboard .motivo-ops-stats {display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:15px;}
+#employeeDashboard .motivo-ops-stat {background:#fff;border:1px solid #e0e8df;border-radius:12px;padding:17px;display:flex;flex-direction:column;gap:6px;}
+#employeeDashboard .motivo-ops-stat span {font-size:12px;color:#576e62;}
+#employeeDashboard .motivo-ops-stat strong {font-size:26px;color:#173c3b;}
+#employeeDashboard .motivo-ops-charts {display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:15px;}
+#employeeDashboard .motivo-ops-card {background:#fff;border:1px solid #e0e8df;border-radius:14px;padding:21px;margin-bottom:15px;min-width:0;}
+#employeeDashboard .motivo-ops-card[hidden] {display:none!important;}
+#employeeDashboard .motivo-ops-card h4 {color:#173c3b;font-size:16px;margin:0 0 4px;}
+#employeeDashboard .motivo-ops-card > p {font-size:12px;color:#667970;margin:0 0 16px;}
+#employeeDashboard .motivo-ops-chart-wrap {display:flex;align-items:center;gap:19px;flex-wrap:wrap;}
+#employeeDashboard .motivo-ops-pie {width:168px;height:168px;flex:0 0 168px;border-radius:50%;display:grid;place-items:center;position:relative;}
+#employeeDashboard .motivo-ops-pie:before {content:"";position:absolute;inset:34px;background:#fff;border-radius:50%;}
+#employeeDashboard .motivo-ops-pie-center {position:relative;font-size:30px;font-weight:800;color:#173c3b;}
+#employeeDashboard .motivo-ops-legend {list-style:none!important;padding:0!important;margin:0!important;flex:1;min-width:128px;display:grid;gap:10px;}
+#employeeDashboard .motivo-ops-legend li {display:flex;align-items:center;gap:8px;font-size:12px;color:#41564a;}
+#employeeDashboard .motivo-ops-legend strong {margin-left:auto;color:#173c3b;}
+#employeeDashboard .motivo-ops-swatch {width:10px;height:10px;flex:0 0 10px;border-radius:3px;}
+#employeeDashboard .motivo-ops-empty {color:#63766b;font-size:14px;}
+#employeeDashboard .motivo-ops-recent-row {background:transparent;border:0;border-top:1px solid #e5ebe5;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:13px 2px;width:100%;text-align:left;cursor:pointer;color:#173c3b;}
+#employeeDashboard .motivo-ops-recent-row:hover {background:#f2f6f1;}
+#employeeDashboard .motivo-ops-recent-info {display:grid;gap:4px;}
+#employeeDashboard .motivo-ops-recent-info small {color:#6d8075;}
+#employeeDashboard .motivo-ops-recent-arrow {color:#d35734;font-weight:700;white-space:nowrap;}
+#employeeDashboard .motivo-ops-card-header {display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px;}
+#employeeDashboard .motivo-ops-link {border:0;background:transparent;color:#c84d2c;font-weight:700;cursor:pointer;}
+#employeeDashboard #motivoOpsMenuToggle {display:none;}
+body:has(#employeeDashboard:not(.hidden)) #motivo-side-menu .staff-nav-link {display:none!important;}
+body.dark-mode #employeeDashboard .motivo-ops-home {background:#142421;color:#eaf1e9;}
+body.dark-mode #employeeDashboard .motivo-ops-card,body.dark-mode #employeeDashboard .motivo-ops-stat {background:#203630;border-color:#37534a;}
+body.dark-mode #employeeDashboard .motivo-ops-heading h3,body.dark-mode #employeeDashboard .motivo-ops-card h4,body.dark-mode #employeeDashboard .motivo-ops-stat strong,body.dark-mode #employeeDashboard .motivo-ops-legend strong,body.dark-mode #employeeDashboard .motivo-ops-recent-row {color:#eaf1e9;}
+body.dark-mode #employeeDashboard .motivo-ops-pie:before {background:#203630;}
+body.dark-mode #employeeDashboard .motivo-ops-pie-center {color:#fff;}
+body.dark-mode #employeeDashboard .motivo-ops-legend li,body.dark-mode #employeeDashboard .motivo-ops-stat span {color:#c0d2c7;}
+@media (max-width:900px) {
+  #employeeDashboard.motivo-ops-shell {display:block;}
+  #employeeDashboard .motivo-ops-side {display:none;position:relative;top:auto;min-height:auto;margin-bottom:15px;}
+  #employeeDashboard .motivo-ops-side.is-open {display:block;}
+  #employeeDashboard #motivoOpsMenuToggle {display:flex;align-items:center;gap:8px;justify-content:center;padding:10px 16px;background:#173c3b;color:white;border:0;border-radius:9px;cursor:pointer;margin-bottom:10px;}
+  #employeeDashboard .motivo-ops-stats {grid-template-columns:repeat(2,minmax(0,1fr));}
+  #employeeDashboard .motivo-ops-heading {flex-direction:column;}
+}
+@media (max-width:480px) {
+  #employeeDashboard .motivo-ops-home {padding:12px;}
+  #employeeDashboard .motivo-ops-card {padding:14px;}
+  #employeeDashboard .motivo-ops-stats {gap:8px;}
+  #employeeDashboard .motivo-ops-stat {padding:11px;}
+}
