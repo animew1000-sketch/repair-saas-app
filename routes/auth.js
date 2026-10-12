@@ -1,8 +1,8 @@
 const express = require('express');
-const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const pool = require('../db/pool');
 const { sendMail } = require('../services/mail');
+const { createSession, readSession, revokeCookieSession, clearCookie, csrfGuard, issueAccess } = require('../services/session');
 
 const router = express.Router();
 
@@ -491,28 +491,7 @@ router.post('/login', async (req, res) => {
     // ==================================================
     // CREATE JWT
     // ==================================================
-    const token =
-      jwt.sign(
-        {
-          id: user.id,
-          company_id: user.company_id,
-          company_name: user.company_name,
-          primary_color:
-            user.primary_color,
-          username:
-            user.username,
-          email:
-            user.email,
-          role:
-            user.role,
-          customer_id:
-            user.customer_id
-        },
-        JWT_SECRET,
-        {
-          expiresIn: '8h'
-        }
-      );
+    const token = await createSession(user, res);
 
     // ==================================================
     // SAFE LOGIN RESPONSE
@@ -555,6 +534,34 @@ router.post('/login', async (req, res) => {
         'Unable to log in right now. Please try again.'
     });
   }
+});
+
+
+// Refresh only with the same-origin, HttpOnly session cookie.
+router.post('/session/renew', csrfGuard, async (req,res) => {
+  try {
+    const session = await readSession(req);
+    if (!session) { clearCookie(res); return res.status(401).json({ code:'SESSION_EXPIRED', error:'Session expired. Please sign in again.' }); }
+    const [users] = await pool.query(
+      `SELECT u.id,u.company_id,u.username,u.email,u.role,u.customer_id,c.company_name,c.primary_color
+       FROM users u JOIN companies c ON c.id=u.company_id WHERE u.id=? AND u.company_id=? LIMIT 1`,
+      [session.user_id,session.company_id]
+    );
+    if(!users.length) { await revokeCookieSession(req,res); return res.status(401).json({code:'SESSION_EXPIRED',error:'Account unavailable. Sign in again.'}); }
+    return res.json({token:issueAccess(users[0],session.id),expires_in:600});
+  } catch(err) { console.error('Session renewal failed:',err.code||err.message); return res.status(503).json({error:'Unable to renew session right now.'}); }
+});
+router.post('/session/activity', csrfGuard, async (req,res) => {
+  try {
+    const session = await readSession(req);
+    if(!session) { clearCookie(res); return res.status(401).json({code:'SESSION_EXPIRED',error:'Session expired.'}); }
+    await pool.query('UPDATE auth_sessions SET last_activity_at=UTC_TIMESTAMP() WHERE id=? AND revoked_at IS NULL',[session.id]);
+    return res.json({success:true});
+  } catch(err) { console.error('Session activity failed:',err.code||err.message); return res.status(503).json({error:'Session tracking temporarily unavailable.'}); }
+});
+router.post('/session/logout', csrfGuard, async (req,res) => {
+  try { await revokeCookieSession(req,res); return res.json({success:true}); }
+  catch(err) { console.error('Session logout failed:',err.code||err.message); return res.status(503).json({error:'Unable to revoke session.'}); }
 });
 
 module.exports = router;

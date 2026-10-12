@@ -5,6 +5,27 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Motivo | Find Your Auto Shop Here</title>
 <link rel="stylesheet" href="/styles-reworked.css?v=motivo-parts-links-1">
+<style>
+/* MOT-001: accessible inactivity countdown overlay; limited to session dialog. */
+.motivo-session-dialog[hidden], .motivo-session-error[hidden] { display: none !important; }
+.motivo-session-dialog { position: fixed; inset: 0; z-index: 2147483000; background: rgba(7, 25, 24, .72); display: grid; place-items: center; padding: 16px; }
+.motivo-session-panel { box-sizing: border-box; width: min(100%, 450px); max-height: min(90vh, 680px); overflow: auto; padding: 28px; border-radius: 16px; background: #f8f7f2; color: #173c3b; box-shadow: 0 22px 80px rgba(0,0,0,.3); text-align: center; font-family: inherit; }
+.motivo-session-icon { font-size: 32px; color: #e86642; margin-bottom: 10px; }
+.motivo-session-panel h2 { color: #173c3b; font-size: 23px; margin: 0 0 12px; line-height: 1.25; }
+.motivo-session-panel p { color: #536663; font-size: 15px; line-height: 1.5; margin: 0 0 20px; }
+.motivo-session-timer { background: #edf1e9; padding: 18px; border-radius: 12px; margin: 0 0 20px; display: flex; flex-direction: column; gap: 6px; }
+.motivo-session-timer-label { font-size: 11px; font-weight: 700; letter-spacing: .12em; color: #61716a; }
+#motivo-session-countdown { font-size: 42px; color: #173c3b; font-variant-numeric: tabular-nums; line-height: 1.2; }
+.motivo-session-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.motivo-session-actions button { flex: 1 1 150px; min-height: 44px; border-radius: 8px; border: 1px solid #173c3b; font: inherit; font-weight: 700; cursor: pointer; padding: 10px 12px; }
+#motivo-session-signout { background: transparent; color: #173c3b; }
+#motivo-session-stay { background: #173c3b; color: white; }
+.motivo-session-actions button:focus-visible { outline: 3px solid #e86642; outline-offset: 3px; }
+.motivo-session-actions button:disabled { opacity: .7; cursor: wait; }
+.motivo-session-panel .motivo-session-error { color: #a92c1e; font-weight: 600; font-size: 13px; }
+body.motivo-session-modal-open { overflow: hidden; }
+@media (max-width: 420px) { .motivo-session-panel { padding: 20px; } .motivo-session-panel h2 { font-size: 20px; } }
+</style>
 </head>
 <body>
   <div class="container">
@@ -950,7 +971,7 @@
   <span class="theme-label">Dark</span>
 </div>
 
-  <script src="/app.js?v=motivo-parts-links-1"></script>
+  <script src="/app.js?v=motivo-session-dialog-2"></script>
 
   <script>
     const customerTabs = Array.from(

@@ -1,3 +1,206 @@
+// MOT-001: 30-minute idle sessions with short-lived access JWT renewal.
+// Access JWTs remain in the existing storage until the separate CSP/storage hardening task.
+const MOTIVO_IDLE_MS = 30 * 60 * 1000;
+const MOTIVO_ACTIVITY_KEY = 'motivo_last_active_at';
+const motivoNativeFetch = window.fetch.bind(window);
+let motivoRenewPromise = null;
+let motivoLastActivityWrite = 0;
+const MOTIVO_WARNING_MS = 60 * 1000;
+let motivoSessionDialog = null;
+let motivoDialogBusy = false;
+let motivoDialogReturnFocus = null;
+
+function motivoIdleAge() {
+  const timestamp = Number(localStorage.getItem(MOTIVO_ACTIVITY_KEY));
+  return timestamp ? Date.now() - timestamp : Infinity;
+}
+function motivoRecordActivity() {
+  if (!localStorage.getItem('token')) return;
+  if (motivoSessionDialog && !motivoSessionDialog.hidden) return; // Only the explicit Stay Signed In action renews a warned session.
+  if (motivoIdleAge() >= MOTIVO_IDLE_MS) return; // Expired sessions cannot be revived by a click.
+  if (Date.now() - motivoLastActivityWrite < 15000) return;
+  motivoLastActivityWrite = Date.now();
+  localStorage.setItem(MOTIVO_ACTIVITY_KEY, String(motivoLastActivityWrite));
+  // Record meaningful activity on the server; background polling never extends idle time.
+  motivoNativeFetch('/api/session/activity',{method:'POST',credentials:'same-origin',cache:'no-store'})
+    .then(res => { if (res.status === 401) motivoEndSession('Your session expired. Please sign in again.'); })
+    .catch(() => {});
+}
+for (const eventName of ['pointerdown','keydown','scroll','touchstart']) {
+  window.addEventListener(eventName, motivoRecordActivity, {passive:true});
+}
+function motivoJwtExpiresSoon(token) {
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1].replace(/-/g,'+').replace(/_/g,'/')));
+    return !Number.isFinite(payload.exp) || payload.exp * 1000 < Date.now() + 90000;
+  } catch (_) { return true; }
+}
+async function motivoRenewAccess() {
+  if (motivoRenewPromise) return motivoRenewPromise;
+  motivoRenewPromise = (async () => {
+    const res = await motivoNativeFetch('/api/session/renew', {method:'POST',credentials:'same-origin',cache:'no-store'});
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      if (res.status === 401) motivoEndSession('Your session expired. Please sign in again.');
+      throw new Error(data.error || 'Session renewal temporarily unavailable.');
+    }
+    localStorage.setItem('token',data.token);
+    return data.token;
+  })();
+  try { return await motivoRenewPromise; }
+  finally { motivoRenewPromise = null; }
+}
+function motivoEndSession(message) {
+  if (!localStorage.getItem('token')) return;
+  clearAuthSession();
+  if (message) showToast(message,'error');
+  showScreen('loginSection');
+  updateHeaderAuthButtons();
+}
+window.fetch = async function motivoAuthenticatedFetch(resource, options = {}) {
+  const url = typeof resource === 'string' ? resource : resource?.url || '';
+  const isApi = /^\/api\//.test(url);
+  const skip = /^\/api\/(login|register|session\/|health)/.test(url);
+  if (isApi && !skip && localStorage.getItem('token')) {
+    if (motivoIdleAge() >= MOTIVO_IDLE_MS) {
+      motivoEndSession('You were signed out after 30 minutes of inactivity.');
+      throw new Error('Session inactive');
+    }
+    const current = localStorage.getItem('token');
+    if (motivoJwtExpiresSoon(current)) await motivoRenewAccess();
+    // Rebuild only the Authorization header; keep all existing request options.
+    const headers = new Headers(options.headers || (resource instanceof Request ? resource.headers : undefined));
+    if (headers.has('Authorization')) headers.set('Authorization',`Bearer ${localStorage.getItem('token')}`);
+    options = {...options,headers};
+  }
+  return motivoNativeFetch(resource,options);
+};
+// A focused, accessible inactivity warning. The server remains authoritative.
+function motivoEnsureSessionDialog() {
+  if (motivoSessionDialog) return motivoSessionDialog;
+  const root = document.createElement('div');
+  root.id = 'motivo-session-dialog';
+  root.className = 'motivo-session-dialog';
+  root.hidden = true;
+  root.innerHTML = `
+    <div class="motivo-session-panel" role="alertdialog" aria-modal="true"
+      aria-labelledby="motivo-session-title" aria-describedby="motivo-session-description">
+      <div class="motivo-session-icon" aria-hidden="true">&#9203;</div>
+      <h2 id="motivo-session-title">Your session is about to expire</h2>
+      <p id="motivo-session-description">You have been inactive. For your security, Motivo will sign you out shortly.</p>
+      <div class="motivo-session-timer" aria-label="Time remaining">
+        <span class="motivo-session-timer-label">TIME REMAINING</span>
+        <strong id="motivo-session-countdown" role="timer" aria-live="off">01:00</strong>
+      </div>
+      <p id="motivo-session-error" class="motivo-session-error" role="alert" hidden></p>
+      <div class="motivo-session-actions">
+        <button type="button" id="motivo-session-signout">Sign Out</button>
+        <button type="button" id="motivo-session-stay">Stay Signed In</button>
+      </div>
+    </div>`;
+  document.body.appendChild(root);
+  const stay = root.querySelector('#motivo-session-stay');
+  const signout = root.querySelector('#motivo-session-signout');
+  stay.addEventListener('click', motivoStaySignedIn);
+  signout.addEventListener('click', () => { if (!motivoDialogBusy) logout(); });
+  root.addEventListener('keydown', event => {
+    if (event.key === 'Escape') event.preventDefault();
+    if (event.key !== 'Tab') return;
+    const focused = document.activeElement;
+    if (event.shiftKey && focused === signout) { event.preventDefault(); stay.focus(); }
+    else if (!event.shiftKey && focused === stay) { event.preventDefault(); signout.focus(); }
+  });
+  motivoSessionDialog = root;
+  return root;
+}
+function motivoCloseSessionDialog() {
+  if (!motivoSessionDialog || motivoSessionDialog.hidden) return;
+  motivoSessionDialog.hidden = true;
+  document.body.classList.remove('motivo-session-modal-open');
+  if (motivoDialogReturnFocus?.isConnected) motivoDialogReturnFocus.focus();
+  motivoDialogReturnFocus = null;
+}
+function motivoShowSessionDialog() {
+  const dialog = motivoEnsureSessionDialog();
+  if (!dialog.hidden) return;
+  motivoDialogReturnFocus = document.activeElement;
+  dialog.hidden = false;
+  dialog.querySelector('#motivo-session-error').hidden = true;
+  document.body.classList.add('motivo-session-modal-open');
+  dialog.querySelector('#motivo-session-stay').focus();
+}
+function motivoSessionTick() {
+  if (!localStorage.getItem('token')) { motivoCloseSessionDialog(); return; }
+  const remaining = MOTIVO_IDLE_MS - motivoIdleAge();
+  if (remaining <= 0) {
+    motivoCloseSessionDialog();
+    motivoEndSession('You were signed out after 30 minutes of inactivity.');
+    return;
+  }
+  if (remaining <= MOTIVO_WARNING_MS) {
+    motivoShowSessionDialog();
+    const seconds = Math.ceil(remaining / 1000);
+    const counter = motivoSessionDialog.querySelector('#motivo-session-countdown');
+    counter.textContent = `${String(Math.floor(seconds / 60)).padStart(2, '0')}:${String(seconds % 60).padStart(2, '0')}`;
+  } else {
+    motivoCloseSessionDialog();
+  }
+}
+async function motivoStaySignedIn() {
+  if (motivoDialogBusy || !localStorage.getItem('token')) return;
+  if (motivoIdleAge() >= MOTIVO_IDLE_MS) { motivoSessionTick(); return; }
+  const dialog = motivoEnsureSessionDialog();
+  const stay = dialog.querySelector('#motivo-session-stay');
+  const signout = dialog.querySelector('#motivo-session-signout');
+  const errorBox = dialog.querySelector('#motivo-session-error');
+  motivoDialogBusy = true;
+  stay.disabled = true;
+  signout.disabled = true;
+  stay.textContent = 'Renewing...';
+  errorBox.hidden = true;
+  try {
+    const res = await motivoNativeFetch('/api/session/activity', {
+      method: 'POST', credentials: 'same-origin', cache: 'no-store'
+    });
+    if (res.status === 401) {
+      motivoEndSession('Your session expired. Please sign in again.');
+      return;
+    }
+    if (!res.ok) throw new Error('Could not contact the session server.');
+    // Refresh the short-lived access JWT without extending the 12-hour absolute session limit.
+    await motivoRenewAccess();
+    const now = Date.now();
+    motivoLastActivityWrite = now;
+    localStorage.setItem(MOTIVO_ACTIVITY_KEY, String(now));
+    motivoCloseSessionDialog();
+    motivoSessionTick();
+  } catch (_) {
+    if (localStorage.getItem('token')) {
+      errorBox.textContent = 'Could not renew your session. Check your connection and try again.';
+      errorBox.hidden = false;
+    }
+  } finally {
+    motivoDialogBusy = false;
+    stay.disabled = false;
+    signout.disabled = false;
+    stay.textContent = 'Stay Signed In';
+  }
+}
+window.setInterval(() => {
+  motivoSessionTick();
+  // Renewal does not count as activity, and should never extend the idle timeout.
+  if (localStorage.getItem('token') && motivoIdleAge() < MOTIVO_IDLE_MS - MOTIVO_WARNING_MS
+      && motivoIdleAge() <= 4 * 60 * 1000 && document.visibilityState === 'visible'
+      && motivoJwtExpiresSoon(localStorage.getItem('token'))) {
+    motivoRenewAccess().catch(() => {});
+  }
+}, 1000);
+window.addEventListener('visibilitychange',async () => {
+  if (document.visibilityState === 'visible' && localStorage.getItem('token') && motivoIdleAge()<MOTIVO_IDLE_MS && motivoJwtExpiresSoon(localStorage.getItem('token'))) {
+    try { await motivoRenewAccess(); } catch(_) {}
+  }
+});
+
 let activeDept = 'customer';
 let staffJobs = [];
 let activeStaffJobFilter = 'current';
@@ -95,6 +298,7 @@ function clearAuthFormFields() {
 
 
 function clearAuthSession() {
+  motivoCloseSessionDialog();
   clearAuthFormFields();
   localStorage.removeItem('token');
   localStorage.removeItem('user_id');
@@ -103,20 +307,14 @@ function clearAuthSession() {
   localStorage.removeItem('company_name');
   localStorage.removeItem('company_id');
   localStorage.removeItem('primary_color');
+  localStorage.removeItem(MOTIVO_ACTIVITY_KEY);
 }
 
 function handleExpiredSession(res, data = {}) {
   const message =
     String(data?.error || '');
 
-  const expired =
-    res.status === 401 ||
-    (
-      res.status === 403 &&
-      message
-        .toLowerCase()
-        .includes('session expired')
-    );
+  const expired = res.status === 401 && ['SESSION_EXPIRED','TOKEN_INVALID','AUTH_REQUIRED'].includes(data?.code);
 
   if (!expired) {
     return false;
@@ -739,6 +937,7 @@ async function handleLogin(e) {
       'token',
       data.token
     );
+    localStorage.setItem(MOTIVO_ACTIVITY_KEY, String(Date.now()));
 
     localStorage.setItem(
       'user_id',
@@ -2445,7 +2644,9 @@ async function markJobReady() {
   );
 }
 
-function logout() {
+async function logout() {
+  try { await motivoNativeFetch('/api/session/logout',{method:'POST',credentials:'same-origin'}); }
+  catch(err) { console.warn('Logout revocation request failed:',err.message); }
   clearAuthSession();
   renderDashboard();
 }
