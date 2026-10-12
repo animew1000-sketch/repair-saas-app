@@ -114,6 +114,8 @@ app.use(
 // ======================================================
 app.use('/api/companies', companiesRoutes);
 app.use('/api', authRoutes);
+app.use('/api/manager/scheduling/disruptions', require('./routes/appointment-disruptions'));
+app.use('/api/manager/scheduling', require('./routes/scheduling'));
 app.use('/api/manager', managerRoutes);
 app.use('/api/customer', customerRoutes);
 app.use('/api', toolsRoutes);
