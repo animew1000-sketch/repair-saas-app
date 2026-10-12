@@ -1,0 +1,44 @@
+/* MOT-028 scheduling configuration panel. Scoped to the employee dashboard. */
+#employeeDashboard #motivoSchedNav[hidden], #employeeDashboard #motivoSchedPanel.hidden, #employeeDashboard #motivoSchedAffectedTechWrap[hidden], #employeeDashboard #motivoSchedPreview[hidden] {display:none!important}
+#employeeDashboard #motivoSchedPanel {grid-column:2;grid-row:2;min-width:0;background:#f8f7f2;padding:22px;border-radius:18px;color:#173c3b;display:grid;gap:16px}
+#motivoSchedPanel .motivo-sched-heading span{color:#d65b39;font-size:11px;font-weight:800;letter-spacing:.12em}
+#motivoSchedPanel .motivo-sched-heading h3{font-size:clamp(22px,3vw,30px);margin:4px 0;color:#173c3b}
+#motivoSchedPanel .motivo-sched-heading p{margin:0;color:#5c7168}
+#motivoSchedPanel .motivo-sched-warning{padding:14px 16px;border:1px solid #e5be9e;background:#fff2e6;color:#784321;border-radius:10px;font-size:13px;line-height:1.6}
+#motivoSchedPanel .motivo-sched-status{min-height:20px;color:#2b7057;font-weight:600;font-size:13px}
+#motivoSchedPanel .motivo-sched-status.error{color:#9c3430}
+#motivoSchedPanel .motivo-sched-card{padding:19px;background:#fff;border:1px solid #dee8df;border-radius:14px;min-width:0}
+#motivoSchedPanel .motivo-sched-card h4{font-size:17px;color:#173c3b;margin:0 0 12px}
+#motivoSchedPanel .motivo-sched-card p{font-size:13px;color:#64746c;line-height:1.6}
+#motivoSchedPanel .motivo-sched-two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+#motivoSchedPanel .motivo-sched-row{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:12px}
+#motivoSchedPanel label{font-size:13px;font-weight:600;color:#294a3c;display:grid;gap:7px;flex:1 1 160px}
+#motivoSchedPanel input:not([type=checkbox]),#motivoSchedPanel select{box-sizing:border-box;background:#fff;color:#173c3b;border:1px solid #c5d5c9;border-radius:8px;font:inherit;min-height:42px;max-width:100%;padding:8px;width:100%}
+#motivoSchedPanel .motivo-sched-days{display:grid;gap:8px;margin-bottom:14px}
+#motivoSchedPanel .motivo-sched-day{display:flex;align-items:center;gap:9px;border-top:1px solid #eef1ed;padding:8px 0}
+#motivoSchedPanel .motivo-sched-day .motivo-sched-check{min-width:116px;flex:1 1 120px;display:flex;align-items:center;gap:8px}
+#motivoSchedPanel .motivo-sched-day input[type=time]{max-width:135px}
+#motivoSchedPanel .motivo-sched-stack{display:grid;gap:10px}
+#motivoSchedPanel .motivo-sched-inline{display:flex;align-items:end;gap:10px;flex-wrap:wrap}
+#motivoSchedPanel button{border:1px solid #173c3b;border-radius:8px;padding:10px 14px;min-height:40px;background:#173c3b;color:#fff;font:inherit;font-size:13px;font-weight:700;cursor:pointer}
+#motivoSchedPanel button:hover:not(:disabled){background:#2a5750}
+#motivoSchedPanel button:disabled{opacity:.5;cursor:wait}
+#motivoSchedPanel button:focus-visible,#employeeDashboard #motivoSchedNav:focus-visible{outline:3px solid #e86642;outline-offset:2px}
+#motivoSchedPanel .motivo-sched-list{margin-top:14px;display:grid;gap:8px}
+#motivoSchedPanel .motivo-sched-list>div{display:flex;align-items:center;justify-content:space-between;gap:10px;background:#f2f6f2;padding:10px;border-radius:8px;font-size:12px}
+#motivoSchedPanel .motivo-sched-list button{background:transparent;color:#173c3b;padding:6px 8px;min-height:32px}
+#motivoSchedPanel .motivo-sched-list button:hover{background:#e1eee5}
+#motivoSchedPanel .motivo-sched-disruption{border:2px solid #ead0b7}
+#motivoSchedPanel .motivo-sched-danger{background:#a73727;border-color:#a73727}
+#motivoSchedPanel .motivo-sched-danger:hover:not(:disabled){background:#852c1f}
+#motivoSchedPanel .motivo-sched-preview{padding:12px;background:#eaf4ed;border-radius:8px;font-weight:700;font-size:13px}
+#motivoSchedPanel .motivo-sched-confirm{display:flex;align-items:center;gap:9px;margin:12px 0}
+#motivoSchedPanel .motivo-sched-footnote{font-size:12px}
+body.dark-mode #employeeDashboard #motivoSchedPanel{background:#142421;color:#eaf1e9}
+body.dark-mode #motivoSchedPanel .motivo-sched-card{background:#203630;border-color:#355449}
+body.dark-mode #motivoSchedPanel .motivo-sched-card h4,body.dark-mode #motivoSchedPanel .motivo-sched-heading h3,body.dark-mode #motivoSchedPanel label{color:#eaf1e9}
+body.dark-mode #motivoSchedPanel .motivo-sched-list>div{background:#29453a}
+body.dark-mode #motivoSchedPanel .motivo-sched-list button{color:#eaf1e9}
+body.dark-mode #motivoSchedPanel .motivo-sched-preview{background:#315244;color:#eaf1e9}
+@media(max-width:900px){#employeeDashboard #motivoSchedPanel{padding:14px}#motivoSchedPanel .motivo-sched-two{grid-template-columns:1fr}}
+@media(max-width:510px){#motivoSchedPanel .motivo-sched-day{flex-wrap:wrap}#motivoSchedPanel .motivo-sched-day .motivo-sched-check{flex-basis:100%}#motivoSchedPanel .motivo-sched-day input[type=time]{flex:1}}
