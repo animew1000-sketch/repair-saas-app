@@ -119,7 +119,25 @@
     $('motivoOpsSidebar')?.classList.toggle('is-open',mobileOpen);
     $('motivoOpsMenuToggle')?.setAttribute('aria-expanded',String(mobileOpen));
   }
+  function syncAuthenticatedNavigation() {
+    const loggedIn = Boolean(localStorage.getItem('token'));
+    document.body.classList.toggle('motivo-authenticated', loggedIn);
+    if (loggedIn) {
+      document.body.classList.remove('motivo-menu-open');
+      const oldToggle = document.querySelector('.motivo-menu-toggle');
+      if (oldToggle) oldToggle.setAttribute('aria-expanded', 'false');
+    }
+  }
   function install() {
+    syncAuthenticatedNavigation();
+    const originalUpdateHeader = window.updateHeaderAuthButtons;
+    if (typeof originalUpdateHeader === 'function') {
+      window.updateHeaderAuthButtons = function(...args) {
+        const result = originalUpdateHeader.apply(this, args);
+        syncAuthenticatedNavigation();
+        return result;
+      };
+    }
     const dash=$('employeeDashboard');
     if (!dash) return;
     const nav=$('motivoOpsSidebar');
@@ -156,6 +174,7 @@
     if (typeof originalShow === 'function') {
       window.showScreen=function(...args) {
         const result=originalShow.apply(this,args);
+        syncAuthenticatedNavigation();
         if (args[0] === 'employeeDashboard' && staff()) {
           nav?.classList.toggle('motivo-ops-manager',manager());
           render();
@@ -163,6 +182,7 @@
         return result;
       };
     }
+    window.addEventListener('storage', event => { if (event.key === 'token') syncAuthenticatedNavigation(); });
     if (staff() && !dash.classList.contains('hidden')) {
       nav?.classList.toggle('motivo-ops-manager',manager());
       window.openStaffView?.('overview');

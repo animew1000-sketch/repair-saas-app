@@ -67,3 +67,9 @@ body.dark-mode #employeeDashboard .motivo-ops-legend li,body.dark-mode #employee
   #employeeDashboard .motivo-ops-stats {gap:8px;}
   #employeeDashboard .motivo-ops-stat {padding:11px;}
 }
+
+/* Motivo branding and authenticated navigation cleanup */
+#employeeDashboard .motivo-ops-logo-image { display:block; width:152px; max-width:100%; height:auto; max-height:72px; object-fit:contain; object-position:left center; margin:0 0 25px; padding:0 12px; box-sizing:border-box; }
+/* The legacy site drawer is intended for visitors, never authenticated accounts. */
+body.motivo-authenticated .container > .header .motivo-menu-toggle,
+body.motivo-authenticated .container > .header #motivo-side-menu { display:none !important; visibility:hidden !important; pointer-events:none !important; }

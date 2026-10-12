@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Motivo | Find Your Auto Shop Here</title>
 <link rel="stylesheet" href="/styles-reworked.css?v=motivo-parts-links-1">
-  <link rel="stylesheet" href="/operations-dashboard.css?v=ops-1">
+  <link rel="stylesheet" href="/operations-dashboard.css?v=ops-nav-2">
 <style>
 /* MOT-001: accessible inactivity countdown overlay; limited to session dialog. */
 .motivo-session-dialog[hidden], .motivo-session-error[hidden] { display: none !important; }
@@ -705,14 +705,14 @@ body.motivo-session-modal-open { overflow: hidden; }
       <!-- Motivo operations navigation is scoped to employee accounts. -->
       <button id="motivoOpsMenuToggle" type="button" aria-controls="motivoOpsSidebar" aria-expanded="false">☰ Employee menu</button>
       <aside id="motivoOpsSidebar" class="motivo-ops-side" aria-label="Employee workspace navigation">
-        <span class="motivo-ops-logo">motivo<em>.</em></span>
+        <img class="motivo-ops-logo-image" src="/images/Motivo-white-word-transparent.png" alt="Motivo" />
         <span class="motivo-ops-side-label">Workspace</span>
         <nav aria-label="Employee navigation">
           <button type="button" data-motivo-ops-view="overview" class="is-active">▦ &nbsp; Dashboard</button>
           <button type="button" data-motivo-ops-view="jobs">▤ &nbsp; My Jobs</button>
           <button type="button" data-motivo-ops-view="team">♙ &nbsp; Team Access</button>
         </nav>
-        <div class="motivo-ops-side-footer">Employee portal<br>Repair work stays inside the selected job.</div>
+        
       </aside>
 
       <section class="staff-portal-hero">
@@ -1001,7 +1001,7 @@ body.motivo-session-modal-open { overflow: hidden; }
 </div>
 
   <script src="/app.js?v=motivo-session-dialog-2"></script>
-  <script defer src="/operations-dashboard.js?v=ops-1"></script>
+  <script defer src="/operations-dashboard.js?v=ops-nav-2"></script>
 
   <script>
     const customerTabs = Array.from(
