@@ -1,0 +1,26 @@
+/* Read-only role permissions matrix scoped to the manager Team Access area. */
+#employeeDashboard #motivoRolePermissions{grid-column:1/-1;min-width:0;margin-top:20px;padding:22px;background:#fff;border:1px solid #dee8df;border-radius:15px;color:#173c3b}
+#employeeDashboard #motivoRolePermissions .rp-heading{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:14px}
+#employeeDashboard #motivoRolePermissions .rp-heading h4{margin:4px 0;font-size:21px;color:#173c3b}
+#employeeDashboard #motivoRolePermissions .rp-heading p{margin:0;color:#687a70;font-size:13px}
+#employeeDashboard #motivoRolePermissions .rp-kicker{font-size:11px;letter-spacing:.12em;font-weight:800;color:#d45a37}
+#employeeDashboard #motivoRolePermissions button{background:#173c3b;color:white;border:0;border-radius:9px;padding:11px 14px;font:inherit;font-size:13px;font-weight:700;cursor:pointer}
+#employeeDashboard #motivoRolePermissions button:hover{background:#315651}
+#employeeDashboard #motivoRolePermissions button:focus-visible{outline:3px solid #e86642;outline-offset:2px}
+#employeeDashboard #motivoRolePermissions .rp-note{background:#f8f7f2;border-left:3px solid #e86642;padding:11px 14px;border-radius:8px;color:#445a4f;font-size:13px;line-height:1.55;margin:0 0 14px}
+#employeeDashboard #motivoRolePermissions .rp-table-scroll{overflow-x:auto;border:1px solid #e1e9e2;border-radius:11px;max-width:100%}
+#employeeDashboard #motivoRolePermissions table{width:100%;min-width:1030px;border-collapse:collapse;text-align:center;font-size:12px}
+#employeeDashboard #motivoRolePermissions th,#employeeDashboard #motivoRolePermissions td{padding:13px 9px;border-bottom:1px solid #e6ece5;vertical-align:middle}
+#employeeDashboard #motivoRolePermissions thead th{background:#f2f6f2;color:#425e51;font-weight:700;white-space:normal}
+#employeeDashboard #motivoRolePermissions tbody tr:last-child th,#employeeDashboard #motivoRolePermissions tbody tr:last-child td{border-bottom:0}
+#employeeDashboard #motivoRolePermissions tbody th{text-align:left;min-width:160px;color:#173c3b;font-weight:700}
+#employeeDashboard #motivoRolePermissions tbody th small{display:block;color:#687a70;font-size:11px;margin-top:3px}
+#employeeDashboard #motivoRolePermissions .rp-yes{font-weight:800;color:#207453}
+#employeeDashboard #motivoRolePermissions .rp-no{color:#9aa8a0}
+#employeeDashboard #motivoRolePermissions .rp-foot,#employeeDashboard #motivoRolePermissions .rp-status{color:#62786c;font-size:12px;line-height:1.5;margin:13px 0 0}
+body.dark-mode #employeeDashboard #motivoRolePermissions{background:#203630;border-color:#355449;color:#e9f2ed}
+body.dark-mode #employeeDashboard #motivoRolePermissions .rp-heading h4,body.dark-mode #employeeDashboard #motivoRolePermissions tbody th{color:#eef4ef}
+body.dark-mode #employeeDashboard #motivoRolePermissions .rp-note,body.dark-mode #employeeDashboard #motivoRolePermissions thead th{background:#274239;color:#e0ece2}
+body.dark-mode #employeeDashboard #motivoRolePermissions th,body.dark-mode #employeeDashboard #motivoRolePermissions td{border-color:#355449}
+body.dark-mode #employeeDashboard #motivoRolePermissions .rp-yes{color:#88d3b1}
+@media(max-width:650px){#employeeDashboard #motivoRolePermissions{padding:13px}#employeeDashboard #motivoRolePermissions .rp-heading{align-items:stretch}#employeeDashboard #motivoRolePermissions .rp-heading button{width:100%}}
