@@ -73,6 +73,7 @@ router.post(
   '/job/:jobId/ready',
   authenticateToken,
   requireStaff,
+  requirePermission('repair'),
   async (req, res) => {
     const jobId = Number(req.params.jobId);
 
@@ -217,9 +218,6 @@ router.post(
 // Transactional bulk replacement for structured parts/labor line items.
 // Requires migrations/2026-10-10-parts-labor.sql before deployment.
 router.put('/job/:jobId/line-items', authenticateToken, requireStaff, requirePermission('parts_labor'), async (req, res) => {
-  if (!['technician','parts_manager','manager'].includes(req.user.role)) {
-    return res.status(403).json({ error: 'This role cannot edit parts and labor.' });
-  }
   const jobId = Number(req.params.jobId);
   const lines = req.body?.lines;
   if (!Number.isSafeInteger(jobId) || jobId <= 0 || !Array.isArray(lines) || lines.length > 100) {
