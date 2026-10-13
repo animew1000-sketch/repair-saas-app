@@ -1,0 +1,21 @@
+/* MOT-029 manager-only employee permission editor */
+#employeeDashboard #motivoEmployeePermissions{grid-column:2;background:#f8f7f2;color:#173c3b;border-radius:14px;padding:22px;margin-top:18px;border:1px solid #dce8de}
+#employeeDashboard #motivoEmployeePermissions[hidden]{display:none!important}
+#motivoEmployeePermissions h4{font-size:20px;margin:0 0 5px;color:#173c3b}
+#motivoEmployeePermissions p{color:#5e756a;font-size:13px;line-height:1.5}
+#motivoEmployeePermissions>label{display:grid;gap:7px;font-size:13px;font-weight:700;margin:14px 0}
+#motivoEmployeePermissions select{min-height:44px;width:100%;border:1px solid #c4d4c7;border-radius:9px;padding:9px;background:white;color:#173c3b}
+#motivoEmployeePermissions #mepSettings{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+#motivoEmployeePermissions .mep-item{display:flex;justify-content:space-between;align-items:center;gap:12px;border:1px solid #dbe7dd;background:white;border-radius:9px;padding:12px;cursor:pointer}
+#motivoEmployeePermissions .mep-item span{display:grid;gap:4px}
+#motivoEmployeePermissions .mep-item small{font-size:11px;color:#6b8173}
+#motivoEmployeePermissions .mep-item input{width:18px;height:18px;flex:none;accent-color:#173c3b}
+#motivoEmployeePermissions .mep-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+#motivoEmployeePermissions button{border:0;border-radius:9px;padding:11px 16px;font-weight:700;cursor:pointer;background:#173c3b;color:#fff}
+#motivoEmployeePermissions #mepReset{background:#e6eee7;color:#173c3b}
+#motivoEmployeePermissions button:focus-visible{outline:3px solid #e86642;outline-offset:2px}
+body.dark-mode #employeeDashboard #motivoEmployeePermissions{background:#203630;border-color:#34534a;color:white}
+body.dark-mode #motivoEmployeePermissions h4{color:white}
+body.dark-mode #motivoEmployeePermissions .mep-item{background:#28443a;border-color:#3c594e}
+body.dark-mode #motivoEmployeePermissions .mep-item small{color:#c1d6c6}
+@media(max-width:950px){#employeeDashboard #motivoEmployeePermissions{grid-column:1;padding:15px}#motivoEmployeePermissions #mepSettings{grid-template-columns:1fr}}

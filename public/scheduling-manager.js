@@ -12,7 +12,7 @@
   let previewKey = null;
   let busy = false;
   let active = false;
-  function scheduler() { return !!localStorage.getItem('token') && ['manager', 'service_advisor'].includes(localStorage.getItem('role')); }
+  function scheduler() { return !!localStorage.getItem('token') && (typeof window.motivoPermissionAllowed === 'function' ? window.motivoPermissionAllowed('scheduling.manage') : ['manager', 'service_advisor'].includes(localStorage.getItem('role'))); }
   function status(message, bad=false) { const e=$('motivoScheduleStatus'); if(e) {e.textContent=message;e.classList.toggle('error',bad);} }
   async function api(path, method='GET', body) {
     const token=localStorage.getItem('token');
@@ -94,7 +94,7 @@
     if(typeof originalRender==='function')window.renderDashboard=function(...args){const result=originalRender.apply(this,args);sync();return result;};
     const originalHeader=window.updateHeaderAuthButtons;
     if(typeof originalHeader==='function')window.updateHeaderAuthButtons=function(...args){const result=originalHeader.apply(this,args);sync();return result;};
-    window.addEventListener('storage',e=>{if(['token','role'].includes(e.key))sync();});sync();
+    window.addEventListener('storage',e=>{if(['token','role'].includes(e.key))sync();});window.addEventListener('motivo-permissions-updated',sync);sync();
     $('motivoSchedConfigForm').addEventListener('submit',e=>{e.preventDefault();run(async()=>{
       const hours=[...document.querySelectorAll('#motivoSchedDays .motivo-sched-day')].map(row=>({weekday:Number(row.dataset.weekday),is_open:row.querySelector('.sched-open').checked,opens_at:row.querySelector('.sched-start').value,closes_at:row.querySelector('.sched-end').value}));
       await api('/config','PUT',{timezone:$('motivoSchedTimezone').value.trim(),confirmation_policy:$('motivoSchedPolicy').value,slot_minutes:Number($('motivoSchedSlot').value),hours});await refresh();

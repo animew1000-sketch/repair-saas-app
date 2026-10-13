@@ -77,6 +77,10 @@ async function authenticateToken(req, res, next) {
       });
     }
 
+    // Refresh the current role on every request: JWT roles can be stale after demotion.
+    const [accounts] = await pool.query('SELECT role FROM users WHERE id=? AND company_id=? LIMIT 1',[user.id,user.company_id]);
+    if(!accounts.length) return res.status(401).json({code:'AUTH_REQUIRED',error:'Account unavailable.'});
+    user.role = accounts[0].role;
     req.user = user;
     return next();
   } catch (err) {
@@ -89,47 +93,11 @@ async function authenticateToken(req, res, next) {
   }
 }
 
-const ROLE_PERMISSIONS = {
-  customer: [],
-  service_advisor: [
-    'customer',
-    'vehicle',
-    'appointment',
-    'repair_order',
-    'estimate'
-  ],
-  technician: ['parts_labor', 'repair'],
-  parts_manager: ['parts_labor'],
-  billing: ['estimate', 'invoice'],
-  manager: [
-    'customer',
-    'vehicle',
-    'appointment',
-    'repair_order',
-    'parts_labor',
-    'estimate',
-    'repair',
-    'invoice'
-  ]
-};
-
-function authorizeDepartment(req, res, next) {
-  const userRole = req.user.role;
-  const dept = req.params.name;
-
-  if (userRole === 'manager') {
-    return next();
-  }
-
-  const allowedDepts = ROLE_PERMISSIONS[userRole] || [];
-
-  if (!allowedDepts.includes(dept)) {
-    return res.status(403).json({
-      error: `Unauthorized: Your rank (${userRole}) cannot modify ${dept}.`
-    });
-  }
-
-  next();
+// MOT-029: permission grants are resolved on every protected request.
+const {requirePermission} = require('../services/permissions');
+function authorizeDepartment(req,res,next) {
+  if (!require('../services/permissions').WORKFLOW.includes(req.params.name)) return res.status(400).json({error:'Invalid department.'});
+  return requirePermission(req.params.name)(req,res,next);
 }
 
 module.exports = {

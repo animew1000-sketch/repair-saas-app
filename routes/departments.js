@@ -7,6 +7,7 @@ const {
 } = require('../middleware/auth');
 
 const router = express.Router();
+const {requirePermission} = require('../services/permissions');
 
 function requireStaff(req, res, next) {
   if (req.user.role === 'customer') {
@@ -215,7 +216,7 @@ router.post(
 
 // Transactional bulk replacement for structured parts/labor line items.
 // Requires migrations/2026-10-10-parts-labor.sql before deployment.
-router.put('/job/:jobId/line-items', authenticateToken, requireStaff, async (req, res) => {
+router.put('/job/:jobId/line-items', authenticateToken, requireStaff, requirePermission('parts_labor'), async (req, res) => {
   if (!['technician','parts_manager','manager'].includes(req.user.role)) {
     return res.status(403).json({ error: 'This role cannot edit parts and labor.' });
   }

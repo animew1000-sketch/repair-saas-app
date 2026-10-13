@@ -5,7 +5,8 @@ const pool = require('../db/pool');
 const { authenticateToken } = require('../middleware/auth');
 const { sendMail } = require('../services/mail');
 const router = express.Router();
-router.use(authenticateToken, (req,res,next) => ['manager', 'service_advisor'].includes(req.user.role) ? next() : res.status(403).json({error:'Manager or service advisor access required.'}));
+const { requirePermission } = require('../services/permissions');
+router.use(authenticateToken, requirePermission('notices.send'));
 const validLocal = x => typeof x === 'string' && /^\d{4}-\d\d-\d\dT([01]\d|2[0-3]):[0-5]\d$/.test(x) && !Number.isNaN(Date.parse(x));
 function validate(body) {
  const {kind,start_at,end_at,technician_id,reason}=body||{};
