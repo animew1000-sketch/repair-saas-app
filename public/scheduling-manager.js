@@ -12,7 +12,7 @@
   let previewKey = null;
   let busy = false;
   let active = false;
-  function manager() { return !!localStorage.getItem('token') && localStorage.getItem('role') === 'manager'; }
+  function scheduler() { return !!localStorage.getItem('token') && ['manager', 'service_advisor'].includes(localStorage.getItem('role')); }
   function status(message, bad=false) { const e=$('motivoScheduleStatus'); if(e) {e.textContent=message;e.classList.toggle('error',bad);} }
   async function api(path, method='GET', body) {
     const token=localStorage.getItem('token');
@@ -22,7 +22,7 @@
     return data;
   }
   function html() {
-    return `<div class="motivo-sched-heading"><div><span>MANAGER CONTROLS</span><h3>Scheduling &amp; Availability</h3><p>Manage shop hours, service bays, technician shifts and urgent rescheduling alerts.</p></div></div>
+    return `<div class="motivo-sched-heading"><div><span>SCHEDULING OPERATIONS</span><h3>Scheduling &amp; Availability</h3><p>Manage shop hours, service bays, technician shifts and urgent rescheduling alerts.</p></div></div>
     <div class="motivo-sched-warning" role="note"><strong>Configuration stage only:</strong> Current customer appointment requests do not yet use availability checks. Selecting automatic confirmation saves a preference but does not enable auto-booking. The conflict-safe booking engine comes in Phase 2.</div>
     <div id="motivoScheduleStatus" class="motivo-sched-status" role="status" aria-live="polite"></div>
     <section class="motivo-sched-card"><h4>Shop settings &amp; regular hours</h4><form id="motivoSchedConfigForm">
@@ -70,7 +70,7 @@
     $('motivoSchedClosures').innerHTML=(data.closures||[]).map(c=>`<div><span>${esc(c.start_at)} → ${esc(c.end_at)} · ${esc(c.reason)}</span><button data-closure="${Number(c.id)}" type="button">Remove</button></div>`).join('') || '<p>No closures configured.</p>';
   }
   async function show() {
-    if(!manager())return;
+    if(!scheduler())return;
     active=true;
     const original=window.openStaffView;
     if(typeof original==='function')original('overview');
@@ -87,7 +87,7 @@
     sidebar.querySelector('nav')?.append(nav);
     const panel=document.createElement('section');panel.id='motivoSchedPanel';panel.className='motivo-sched-panel hidden';panel.innerHTML=html();dashboard.append(panel);
     nav.addEventListener('click',show);
-    const sync=()=>{nav.hidden=!manager();if(!manager()){panel.classList.add('hidden');active=false;}};
+    const sync=()=>{nav.hidden=!scheduler();if(!scheduler()){panel.classList.add('hidden');active=false;}const badge=$('userRoleBadge');if(badge && localStorage.getItem('role')==='service_advisor')badge.textContent='Service Advisor / Front Desk';};
     const originalOpen=window.openStaffView;
     if(typeof originalOpen==='function')window.openStaffView=function(which){if(which!=='scheduling'){panel.classList.add('hidden');active=false;}return originalOpen.apply(this,arguments);};
     const originalRender=window.renderDashboard;
