@@ -76,3 +76,62 @@ body.dark-mode .mot028-job{border-color:#3e5548}
 body.dark-mode #mot028Queue .mot028-request.is-selected{background:#33483a;border-color:#e86642}
 body.dark-mode #mot028Desk .mot028-secondary{background:#264035!important;color:#e9f5ec!important;border-color:#648171!important}
 @media(max-width:560px){.mot028-calendar-days{gap:4px;padding:8px}.mot028-calendar-days .mot028-day{min-height:39px}.mot028-slot-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.mot028-job{flex-direction:column;align-items:stretch}.mot028-job label,.mot028-job select{width:100%;min-width:0}.mot028-card{padding:15px}}
+
+
+/* MOT-028 technician assignment management: data-driven, compact and responsive. */
+#mot028AssignmentCard{width:100%;min-width:0;overflow:hidden}
+#mot028AssignmentCard .mot028-assignment-heading{display:flex;justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap}
+#mot028AssignmentCard .mot028-assignment-heading>div{flex:1 1 330px;min-width:0}
+#mot028AssignmentCard .mot028-assignment-heading>button{width:auto;min-width:140px;flex:0 0 auto}
+#mot028AssignmentCard .mot028-assignment-toolbar{display:grid;grid-template-columns:minmax(0,1fr) minmax(150px,205px);gap:14px;align-items:end;margin:18px 0 10px}
+#mot028AssignmentCard .mot028-assignment-toolbar label{margin:0;min-width:0;display:grid;gap:7px;font-size:12px;font-weight:700}
+#mot028AssignmentCard .mot028-assignment-count{margin:0 0 15px;color:#60766c;font-size:12px;font-weight:650}
+#mot028AssignmentCard .mot028-jobs-scroll{max-width:100%;overflow-x:auto;border:1px solid #dce7df;border-radius:13px;background:#fff}
+#mot028AssignmentCard .mot028-jobs-table{width:100%;border-collapse:collapse;table-layout:auto;margin:0;text-align:left;color:#173c3b;font-size:12px}
+#mot028AssignmentCard .mot028-jobs-table th{padding:13px 14px;text-transform:uppercase;letter-spacing:.07em;font-size:10px;font-weight:800;white-space:nowrap;color:#63776c;background:#eff4f0;border-bottom:1px solid #dce7df}
+#mot028AssignmentCard .mot028-jobs-table td{padding:13px 14px;vertical-align:middle;border-bottom:1px solid #e4eae5;min-width:0;overflow-wrap:break-word}
+#mot028AssignmentCard .mot028-jobs-table tr:last-child td{border-bottom:0}
+#mot028AssignmentCard .mot028-jobs-table tbody tr:hover{background:#f6f9f6}
+#mot028AssignmentCard .mot028-jobs-table td strong{display:block;color:#173c3b;font-size:12px;line-height:1.4}
+#mot028AssignmentCard .mot028-job-vehicle,#mot028AssignmentCard .mot028-job-id{display:block;margin-top:4px;color:#62776c;font-size:11px;line-height:1.4}
+#mot028AssignmentCard .mot028-job-number{white-space:nowrap}
+#mot028AssignmentCard .mot028-job-status{display:inline-block;color:#345d4f;font-size:11px;font-weight:700}
+#mot028AssignmentCard .mot028-assignment-badge{display:inline-flex;align-items:center;border-radius:99px;padding:5px 10px;font-weight:800;font-size:10px;white-space:nowrap}
+#mot028AssignmentCard .mot028-assignment-badge.is-assigned{background:#e4f3e9;color:#27674b}
+#mot028AssignmentCard .mot028-assignment-badge.is-unassigned{background:#fff0e8;color:#985133}
+#mot028AssignmentCard .mot028-jobs-table select{width:100%;min-width:155px;max-width:235px;min-height:38px;font-size:12px;border-radius:9px}
+#mot028AssignmentCard .mot028-assign-label{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+#mot028AssignmentCard .mot028-assign-feedback{display:block;font-size:11px;color:#a34531;margin-top:5px}
+#mot028AssignmentCard .mot028-assign-feedback:empty{display:none}
+#mot028AssignmentCard .mot028-jobs-pagination{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding-top:14px;color:#66776e;font-size:12px}
+#mot028AssignmentCard .mot028-pagination-buttons{display:flex;align-items:center;gap:11px}
+#mot028AssignmentCard .mot028-pagination-buttons button{width:auto;min-height:36px;padding:7px 13px;white-space:nowrap;font-size:11px}
+#mot028AssignmentCard .mot028-pagination-buttons button:disabled{cursor:not-allowed;opacity:.38}
+#mot028AssignmentCard .mot028-jobs-empty{padding:32px 18px;text-align:center;border:1px dashed #cbded0;border-radius:12px;color:#657b6d;font-size:13px}
+body.dark-mode #mot028AssignmentCard .mot028-jobs-scroll{background:#203630;border-color:#3a574c}
+body.dark-mode #mot028AssignmentCard .mot028-jobs-table{color:#eaf1e9}
+body.dark-mode #mot028AssignmentCard .mot028-jobs-table th{background:#29453a;color:#bfd3c7;border-color:#3a574c}
+body.dark-mode #mot028AssignmentCard .mot028-jobs-table td{border-color:#3a574c}
+body.dark-mode #mot028AssignmentCard .mot028-jobs-table tbody tr:hover{background:#29453a}
+body.dark-mode #mot028AssignmentCard .mot028-jobs-table td strong{color:#edf5ee}
+body.dark-mode #mot028AssignmentCard .mot028-job-vehicle,body.dark-mode #mot028AssignmentCard .mot028-job-id,body.dark-mode #mot028AssignmentCard .mot028-assignment-count{color:#b9d0c2}
+body.dark-mode #mot028AssignmentCard .mot028-job-status{color:#b7ddc5}
+body.dark-mode #mot028AssignmentCard .mot028-assignment-badge.is-unassigned{background:#594139;color:#ffd3b8}
+body.dark-mode #mot028AssignmentCard .mot028-assignment-badge.is-assigned{background:#294f41;color:#c2edce}
+body.dark-mode #mot028AssignmentCard .mot028-jobs-empty{border-color:#426052;color:#bfd3c7}
+@media(max-width:830px){
+ #mot028AssignmentCard .mot028-jobs-scroll{border:0;background:transparent;overflow:visible}
+ #mot028AssignmentCard .mot028-jobs-table,#mot028AssignmentCard .mot028-jobs-table tbody,#mot028AssignmentCard .mot028-jobs-table tr,#mot028AssignmentCard .mot028-jobs-table td{display:block;width:100%;box-sizing:border-box}
+ #mot028AssignmentCard .mot028-jobs-table thead{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+ #mot028AssignmentCard .mot028-jobs-table tr{margin-bottom:11px;padding:9px 12px;background:#fff;border:1px solid #dce7df;border-radius:12px}
+ #mot028AssignmentCard .mot028-jobs-table td{display:flex;justify-content:space-between;align-items:center;gap:16px;border:0;padding:8px 2px;text-align:right}
+ #mot028AssignmentCard .mot028-jobs-table td:before{content:attr(data-label);color:#61776a;text-align:left;font-size:11px;font-weight:700;flex:0 0 110px}
+ #mot028AssignmentCard .mot028-jobs-table select{min-width:0;max-width:190px}
+ body.dark-mode #mot028AssignmentCard .mot028-jobs-table tr{background:#203630;border-color:#3a574c}
+}
+@media(max-width:540px){
+ #mot028AssignmentCard .mot028-assignment-toolbar{grid-template-columns:1fr}
+ #mot028AssignmentCard .mot028-assignment-heading>button{width:100%}
+ #mot028AssignmentCard .mot028-jobs-table td:before{flex-basis:82px}
+ #mot028AssignmentCard .mot028-jobs-pagination{align-items:flex-start;flex-direction:column}
+}
