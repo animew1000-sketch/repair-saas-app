@@ -272,3 +272,85 @@ body.dark-mode #motivoSchedPanel #mot028Desk #mot028Form {background:#192d26;bor
  #motivoSchedPanel .motivo-sched-list-row button {width:auto;max-width:100%;}
  #motivoSchedPanel #mot028Desk .mot028-head button {width:100%;}
 }
+
+
+/* MOT-028 FIX: Service Bays / Technician Shifts dense, readable resource rows.
+   Scope is intentionally limited to these two lists. Earlier flex rules and
+   generic dashboard button sizing must not shrink labels into vertical text. */
+#employeeDashboard #motivoSchedPanel #motivoSchedBays > .motivo-sched-list-row,
+#employeeDashboard #motivoSchedPanel #motivoSchedShifts > .motivo-sched-list-row {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) max-content !important;
+  align-items: center !important;
+  justify-content: stretch !important;
+  gap: 16px !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  min-height: 72px;
+  padding: 14px 16px !important;
+}
+#employeeDashboard #motivoSchedPanel #motivoSchedBays > .motivo-sched-list-row > span,
+#employeeDashboard #motivoSchedPanel #motivoSchedShifts > .motivo-sched-list-row > span {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: flex-start !important;
+  flex-wrap: nowrap !important;
+  gap: 5px !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow-wrap: normal !important;
+  word-break: normal !important;
+}
+#employeeDashboard #motivoSchedPanel #motivoSchedBays > .motivo-sched-list-row > span > strong,
+#employeeDashboard #motivoSchedPanel #motivoSchedShifts > .motivo-sched-list-row > span > strong {
+  display: block !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  white-space: normal !important;
+  overflow-wrap: break-word !important;
+  word-break: normal !important;
+  font-size: 14px;
+  line-height: 1.4;
+}
+#employeeDashboard #motivoSchedPanel #motivoSchedBays > .motivo-sched-list-row > span > small,
+#employeeDashboard #motivoSchedPanel #motivoSchedShifts > .motivo-sched-list-row > span > small {
+  display: inline-flex !important;
+  flex: none !important;
+  width: auto !important;
+  max-width: 100% !important;
+  white-space: normal !important;
+  word-break: normal !important;
+  overflow-wrap: break-word !important;
+  line-height: 1.4;
+}
+#employeeDashboard #motivoSchedPanel #motivoSchedBays > .motivo-sched-list-row > button,
+#employeeDashboard #motivoSchedPanel #motivoSchedShifts > .motivo-sched-list-row > button {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  justify-self: end !important;
+  flex: 0 0 auto !important;
+  width: auto !important;
+  min-width: 108px !important;
+  max-width: 150px !important;
+  min-height: 39px !important;
+  padding: 9px 13px !important;
+  margin: 0 !important;
+  white-space: nowrap !important;
+}
+@media (max-width: 520px) {
+  #employeeDashboard #motivoSchedPanel #motivoSchedBays > .motivo-sched-list-row,
+  #employeeDashboard #motivoSchedPanel #motivoSchedShifts > .motivo-sched-list-row {
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 12px !important;
+  }
+  #employeeDashboard #motivoSchedPanel #motivoSchedBays > .motivo-sched-list-row > button,
+  #employeeDashboard #motivoSchedPanel #motivoSchedShifts > .motivo-sched-list-row > button {
+    justify-self: start !important;
+  }
+}
