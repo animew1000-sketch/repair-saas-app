@@ -1,0 +1,15 @@
+/* MOT-028: Motivo production appointment intake and scheduling cards */
+.mot028-card{margin:0 0 18px;padding:20px;background:#f8faf9;border:1px solid #dce7df;border-radius:13px;color:#173c3b}
+.mot028-card h3{font-size:19px;margin:0 0 12px;color:inherit}.mot028-card h4{font-size:14px;margin:0 0 10px;color:inherit}
+.mot028-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px}.mot028-eyebrow{font-size:10px;font-weight:800;letter-spacing:.13em;color:#e86642}
+.mot028-columns{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(240px,.8fr);gap:16px}
+.mot028-request{display:flex;flex-direction:column;align-items:flex-start;gap:6px;width:100%;text-align:left;padding:12px;margin-bottom:8px;background:#fff;border:1px solid #dce7df;border-radius:9px;color:#173c3b;font:inherit;font-size:12px}
+.mot028-pick{cursor:pointer}.mot028-pick:hover,.mot028-pick:focus-visible{border-color:#e86642;outline-offset:2px}.mot028-request span{color:#60766c;line-height:1.4}
+.mot028-card label{display:grid;gap:6px;margin:12px 0;font-size:12px;font-weight:700}.mot028-card input,.mot028-card select{box-sizing:border-box;min-height:42px;width:100%;border:1px solid #dce7df;border-radius:8px;background:white;color:#173c3b;padding:9px;font:inherit}
+.mot028-card button:not(.mot028-pick){padding:10px 14px;border:0;border-radius:8px;background:#173c3b;color:white;font:inherit;font-size:12px;font-weight:750;cursor:pointer}.mot028-card button:disabled{opacity:.6;cursor:wait}
+#mot028DeskStatus{font-size:12px;line-height:1.5;color:#526c60}#mot028MyAppointments{margin-top:14px}
+body.dark-mode .mot028-card{background:#202b30;border-color:#34464b;color:#edf5ef}body.dark-mode .mot028-request,body.dark-mode .mot028-card input,body.dark-mode .mot028-card select{background:#182329;border-color:#34464b;color:#edf5ef}body.dark-mode .mot028-request span{color:#b6c8c0}
+@media(max-width:800px){.mot028-columns{grid-template-columns:1fr}.mot028-card{padding:14px}.mot028-head{align-items:flex-start;flex-direction:column}}
+
+/* The Service Desk assigns times; customers submit untimed requests. */
+#customerTab-create-request .appointment-datetime-group{display:none!important}

@@ -22,8 +22,8 @@
     return data;
   }
   function html() {
-    return `<div class="motivo-sched-heading"><div><span>SCHEDULING OPERATIONS</span><h3>Scheduling &amp; Availability</h3><p>Manage shop hours, service bays, technician shifts and urgent rescheduling alerts.</p></div></div>
-    <div class="motivo-sched-warning" role="note"><strong>Configuration stage only:</strong> Current customer appointment requests do not yet use availability checks. Selecting automatic confirmation saves a preference but does not enable auto-booking. The conflict-safe booking engine comes in Phase 2.</div>
+    return `<div class="motivo-sched-heading"><div><span>SCHEDULING OPERATIONS</span><h3>Scheduling &amp; Availability</h3><p>Manage business hours, technician shifts, shop closures and scheduling alerts.</p></div></div>
+    
     <div id="motivoScheduleStatus" class="motivo-sched-status" role="status" aria-live="polite"></div>
     <section class="motivo-sched-card"><h4>Shop settings &amp; regular hours</h4><form id="motivoSchedConfigForm">
       <div class="motivo-sched-row"><label>Shop time zone<input id="motivoSchedTimezone" value="America/Los_Angeles" autocomplete="off" required></label>
@@ -79,7 +79,7 @@
     document.querySelectorAll('[data-motivo-ops-view]').forEach(b=>{b.classList.remove('is-active');b.removeAttribute('aria-current');});
     const nav=$('motivoSchedNav');nav?.classList.add('is-active');nav?.setAttribute('aria-current','page');
     status('Loading scheduling settings...');
-    try{await refresh();status('Shop scheduling settings loaded. Booking availability is not yet enforced.');loaded=true;}catch(e){status(e.message,true);}
+    try{await refresh();status('Shop scheduling settings loaded.');loaded=true;}catch(e){status(e.message,true);}
   }
   function install() {
     const dashboard=$('employeeDashboard'),sidebar=$('motivoOpsSidebar');if(!dashboard||!sidebar)return;
@@ -98,7 +98,7 @@
     $('motivoSchedConfigForm').addEventListener('submit',e=>{e.preventDefault();run(async()=>{
       const hours=[...document.querySelectorAll('#motivoSchedDays .motivo-sched-day')].map(row=>({weekday:Number(row.dataset.weekday),is_open:row.querySelector('.sched-open').checked,opens_at:row.querySelector('.sched-start').value,closes_at:row.querySelector('.sched-end').value}));
       await api('/config','PUT',{timezone:$('motivoSchedTimezone').value.trim(),confirmation_policy:$('motivoSchedPolicy').value,slot_minutes:Number($('motivoSchedSlot').value),hours});await refresh();
-    },'Shop schedule saved. Existing customer bookings are not affected.');});
+    },'Shop schedule saved. Existing confirmed bookings are unchanged.');});
     $('motivoSchedBayForm').addEventListener('submit',e=>{e.preventDefault();run(async()=>{await api('/bays','POST',{name:$('motivoSchedBayName').value.trim()});$('motivoSchedBayName').value='';await refresh();},'Service bay added.');});
     $('motivoSchedShiftForm').addEventListener('submit',e=>{e.preventDefault();run(async()=>{await api('/shifts','POST',{technician_id:Number($('motivoSchedTech').value),weekday:Number($('motivoSchedShiftDay').value),starts_at:$('motivoSchedShiftStart').value,ends_at:$('motivoSchedShiftEnd').value});await refresh();},'Technician shift added.');});
     $('motivoSchedClosureForm').addEventListener('submit',e=>{e.preventDefault();run(async()=>{await api('/closures','POST',{start_at:$('motivoSchedClosureStart').value,end_at:$('motivoSchedClosureEnd').value,reason:$('motivoSchedClosureReason').value.trim()});await refresh();},'Closure saved. Existing appointments were not cancelled.');});

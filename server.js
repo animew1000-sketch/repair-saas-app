@@ -118,6 +118,9 @@ app.use('/api/manager/scheduling/disruptions', require('./routes/appointment-dis
 app.use('/api/manager/scheduling', require('./routes/scheduling'));
 app.use('/api/employee-permissions', require('./routes/employee-permissions'));
 app.use('/api/manager', managerRoutes);
+// MOT-028: mount before legacy customer routes to prevent bypassing request intake.
+app.use('/api', require('./routes/mot028-booking'));
+app.use('/api/mot028', require('./routes/mot028-booking'));
 app.use('/api/customer', customerRoutes);
 app.use('/api', toolsRoutes);
 app.use('/api/department', departmentRoutes);
