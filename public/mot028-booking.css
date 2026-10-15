@@ -13,3 +13,66 @@ body.dark-mode .mot028-card{background:#202b30;border-color:#34464b;color:#edf5e
 
 /* The Service Desk assigns times; customers submit untimed requests. */
 #customerTab-create-request .appointment-datetime-group{display:none!important}
+
+/* MOT-028 preferred time picker: Motivo's forest, parchment, orange palette */
+.mot028-calendar-panel{margin:22px 0;padding:clamp(18px,3vw,27px);border-radius:18px;background:linear-gradient(140deg,#f5f8f1,#fffaf4);box-shadow:0 8px 26px #173c3b0b}
+.mot028-muted{font-size:13px;line-height:1.6;color:#61786d;margin:8px 0 15px}
+.mot028-calendar-nav{display:flex;align-items:center;justify-content:space-between;gap:12px;max-width:600px;margin:19px auto 13px}
+.mot028-calendar-nav strong{color:#173c3b;font-size:18px;letter-spacing:-.025em}
+.mot028-calendar-nav button{width:42px;height:42px;padding:0!important;border:1px solid #d6e4d8!important;background:#fff!important;color:#173c3b!important;border-radius:50%!important;font-size:25px!important;box-shadow:0 4px 12px #173c3b10}
+.mot028-calendar-days{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:7px;max-width:600px;margin:auto;padding:13px;background:#fff;border:1px solid #e1e9e0;border-radius:16px}
+.mot028-calendar-days .mot028-weekday{font-size:11px;letter-spacing:.09em;text-align:center;font-weight:800;color:#819487;padding:7px 0}
+.mot028-calendar-days .mot028-day{border:1px solid transparent!important;min-height:47px;border-radius:11px!important;background:#f5f8f3!important;color:#204f43!important;font-weight:750!important;padding:5px!important;transition:transform .13s,background .13s}
+.mot028-calendar-days .mot028-day:hover:not(:disabled){background:#e1efe5!important;border-color:#8db19c!important;transform:translateY(-1px)}
+.mot028-calendar-days .mot028-day.is-selected{background:#173c3b!important;color:#fff!important;border-color:#173c3b!important;box-shadow:0 5px 13px #173c3b29}
+.mot028-calendar-days .mot028-day:disabled{background:#f0f1ee!important;color:#b1b9b2!important;opacity:1!important;cursor:not-allowed!important;text-decoration:line-through}
+.mot028-slot-title{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;margin:22px 0 12px;color:#173c3b;font-size:14px}
+.mot028-slot-title span{color:#647a6c;font-size:12px}
+.mot028-slot-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(115px,1fr));gap:9px}
+.mot028-card .mot028-slot{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;min-height:63px;border:1px solid #d7e5dc!important;background:#fff!important;color:#173c3b!important;border-radius:12px!important;font-weight:750!important;font-size:12px!important}
+.mot028-card .mot028-slot small{font-size:10px;font-weight:600;color:#6d897a}
+.mot028-card .mot028-slot:not(:disabled):hover{border-color:#e86642!important;background:#fff5ed!important}
+.mot028-card .mot028-slot.is-selected{background:#173c3b!important;color:#fff!important;border-color:#173c3b!important;box-shadow:0 5px 15px #173c3b2b}
+.mot028-card .mot028-slot.is-selected small{color:#d6ebdc}
+.mot028-card .mot028-slot:disabled{opacity:1!important;background:#eef0ee!important;border-color:#e5e8e5!important;color:#a1aca4!important;cursor:not-allowed!important}
+.mot028-card .mot028-slot:disabled small{color:#a1aca4}
+.mot028-selection{margin:18px 0 0;padding:14px;border-radius:11px;background:#e7f0e8;color:#225744;font-size:13px;font-weight:700}
+.mot028-request{border-radius:12px;background:#fff;padding:15px;box-shadow:0 2px 10px #173c3b09}
+.mot028-request-head{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;flex-wrap:wrap}
+.mot028-request p{margin:5px 0;font-size:12px;line-height:1.5;color:#526c60}
+.mot028-status{font-size:10px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;border-radius:30px;padding:5px 10px;background:#eef2ed;color:#526b5e}
+.mot028-status.confirmed{background:#e2f2e8;color:#1f7046}
+.mot028-status.proposed{background:#fff0df;color:#98502d}
+.mot028-status.requested{background:#eaf0f5;color:#375c78}
+.mot028-card .mot028-accept{width:100%;margin-top:8px;background:#e86642!important;color:#fff!important}
+.mot028-desk{background:#fff;border-radius:16px}
+.mot028-desk .mot028-head h3{font-size:20px}
+#mot028Queue{max-height:470px;overflow:auto;padding-right:4px}
+#mot028Queue .mot028-request{cursor:pointer}
+#mot028Queue .mot028-request.is-selected{border-color:#e86642;background:#fff8f1;box-shadow:0 4px 13px #e8664220}
+#mot028Form{padding:17px;border:1px solid #e2eae3;background:#f9faf7;border-radius:14px}
+#mot028Form h4{font-size:16px}
+.mot028-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+.mot028-actions button{flex:1 1 150px}
+#mot028Desk .mot028-secondary{background:#fff!important;color:#173c3b!important;border:1px solid #bacdc0!important}
+#mot028DeskStatus{margin:10px 0 0;font-weight:650;min-height:20px}
+.mot028-job{display:flex;justify-content:space-between;align-items:center;gap:18px;padding:15px 4px;border-top:1px solid #e1eae2}
+.mot028-job:first-child{border-top:0}.mot028-job strong{font-size:13px;color:#173c3b}.mot028-job p{margin:5px 0 0;font-size:12px;color:#64766b}
+.mot028-job label{min-width:190px;margin:0}.mot028-job select{min-width:190px}
+body.dark-mode .mot028-calendar-panel{background:linear-gradient(140deg,#1d352b,#23332e);border-color:#40574c}
+body.dark-mode .mot028-calendar-nav strong,body.dark-mode .mot028-slot-title,body.dark-mode .mot028-job strong{color:#e9f5ec}
+body.dark-mode .mot028-calendar-days{background:#203630;border-color:#3c594d}
+body.dark-mode .mot028-calendar-days .mot028-day{background:#2e483c!important;color:#f2f8f2!important}
+body.dark-mode .mot028-calendar-days .mot028-day.is-selected{background:#e86642!important;color:white!important;border-color:#e86642!important}
+body.dark-mode .mot028-calendar-days .mot028-day:disabled{background:#293b32!important;color:#6e8979!important}
+body.dark-mode .mot028-card .mot028-slot{background:#294438!important;color:#f1f8f2!important;border-color:#496456!important}
+body.dark-mode .mot028-card .mot028-slot.is-selected{background:#e86642!important;border-color:#e86642!important}
+body.dark-mode .mot028-card .mot028-slot:disabled{background:#26372e!important;border-color:#354b3d!important;color:#738e7d!important}
+body.dark-mode .mot028-card .mot028-slot:disabled small{color:#738e7d}
+body.dark-mode .mot028-selection{background:#2e4e3e;color:#e2f8e8}
+body.dark-mode .mot028-muted,body.dark-mode .mot028-job p,body.dark-mode .mot028-request p{color:#bbd3c2}
+body.dark-mode #mot028Form{background:#1b3028;border-color:#435c4e}
+body.dark-mode .mot028-job{border-color:#3e5548}
+body.dark-mode #mot028Queue .mot028-request.is-selected{background:#33483a;border-color:#e86642}
+body.dark-mode #mot028Desk .mot028-secondary{background:#264035!important;color:#e9f5ec!important;border-color:#648171!important}
+@media(max-width:560px){.mot028-calendar-days{gap:4px;padding:8px}.mot028-calendar-days .mot028-day{min-height:39px}.mot028-slot-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.mot028-job{flex-direction:column;align-items:stretch}.mot028-job label,.mot028-job select{width:100%;min-width:0}.mot028-card{padding:15px}}
