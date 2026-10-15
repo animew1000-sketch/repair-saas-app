@@ -25,22 +25,22 @@
     return `<div class="motivo-sched-heading"><div><span>SCHEDULING OPERATIONS</span><h3>Scheduling &amp; Availability</h3><p>Manage business hours, technician shifts, shop closures and scheduling alerts.</p></div></div>
     
     <div id="motivoScheduleStatus" class="motivo-sched-status" role="status" aria-live="polite"></div>
-    <section class="motivo-sched-card"><h4>Shop settings &amp; regular hours</h4><form id="motivoSchedConfigForm">
+    <section class="motivo-sched-card motivo-sched-hours-card"><div class="motivo-sched-section-lead"><span class="motivo-sched-section-icon">01</span><div><h4>Business hours &amp; booking rules</h4><p>Set your shop hours and booking preferences in one place.</p></div></div><form id="motivoSchedConfigForm">
       <div class="motivo-sched-row"><label>Shop time zone<input id="motivoSchedTimezone" value="America/Los_Angeles" autocomplete="off" required></label>
       <label>Appointment slot length<select id="motivoSchedSlot"><option value="15">15 minutes</option><option value="30">30 minutes</option><option value="60">60 minutes</option></select></label>
       <label>Confirmation policy<select id="motivoSchedPolicy"><option value="manager_approval">Manager approval</option><option value="automatic">Automatic (future phase)</option></select></label></div>
       <div class="motivo-sched-days" id="motivoSchedDays"></div><button class="motivo-sched-primary" type="submit">Save shop schedule</button></form></section>
-    <div class="motivo-sched-two"><section class="motivo-sched-card"><h4>Service bays</h4><form id="motivoSchedBayForm" class="motivo-sched-inline"><label>New service bay<input id="motivoSchedBayName" maxlength="80" placeholder="Bay 1" required></label><button type="submit">Add bay</button></form><div id="motivoSchedBays" class="motivo-sched-list"></div></section>
-    <section class="motivo-sched-card"><h4>Technician shifts</h4><form id="motivoSchedShiftForm" class="motivo-sched-stack"><label>Technician<select id="motivoSchedTech"></select></label><div class="motivo-sched-row"><label>Day<select id="motivoSchedShiftDay">${days.map((d,i)=>`<option value="${i}">${d}</option>`).join('')}</select></label><label>Start<input id="motivoSchedShiftStart" type="time" value="08:00" required></label><label>End<input id="motivoSchedShiftEnd" type="time" value="17:00" required></label></div><button type="submit">Add shift</button></form><div id="motivoSchedShifts" class="motivo-sched-list"></div></section></div>
-    <section class="motivo-sched-card"><h4>Shop closures</h4><p>Add an exception to your shop's regular hours. Existing appointments are <strong>not</strong> automatically cancelled or emailed.</p><form id="motivoSchedClosureForm" class="motivo-sched-stack"><div class="motivo-sched-row"><label>Start<input id="motivoSchedClosureStart" type="datetime-local" required></label><label>End<input id="motivoSchedClosureEnd" type="datetime-local" required></label><label>Reason<input id="motivoSchedClosureReason" maxlength="160" placeholder="Unexpected closure" required></label></div><button type="submit">Add closure</button></form><div id="motivoSchedClosures" class="motivo-sched-list"></div></section>
-    <section class="motivo-sched-card motivo-sched-disruption"><h4>Notify customers about schedule disruptions</h4><p>Preview the appointments affected by a shop closure or a technician absence. A separate confirmation is required to send <strong>real emails</strong>. The original appointments will not be cancelled or rescheduled.</p>
+    <div class="motivo-sched-two motivo-sched-resources"><section class="motivo-sched-card"><div class="motivo-sched-section-lead"><span class="motivo-sched-section-icon">02</span><div><h4>Service bays</h4><p>Manage active work areas. Booking capacity is based on technicians, not bays.</p></div></div><form id="motivoSchedBayForm" class="motivo-sched-inline"><label>New service bay<input id="motivoSchedBayName" maxlength="80" placeholder="Bay 1" required></label><button type="submit">Add bay</button></form><div id="motivoSchedBays" class="motivo-sched-list"></div></section>
+    <section class="motivo-sched-card"><div class="motivo-sched-section-lead"><span class="motivo-sched-section-icon">03</span><div><h4>Technician shifts</h4><p>Keep coverage up to date for customer appointment availability.</p></div></div><form id="motivoSchedShiftForm" class="motivo-sched-stack"><label>Technician<select id="motivoSchedTech"></select></label><div class="motivo-sched-row"><label>Day<select id="motivoSchedShiftDay">${days.map((d,i)=>`<option value="${i}">${d}</option>`).join('')}</select></label><label>Start<input id="motivoSchedShiftStart" type="time" value="08:00" required></label><label>End<input id="motivoSchedShiftEnd" type="time" value="17:00" required></label></div><button type="submit">Add shift</button></form><div id="motivoSchedShifts" class="motivo-sched-list"></div></section></div>
+    <section class="motivo-sched-card motivo-sched-exceptions"><div class="motivo-sched-section-lead"><span class="motivo-sched-section-icon">04</span><div><h4>Closures &amp; customer notices</h4><p>Block unavailable dates and notify affected customers when necessary.</p></div></div><div class="motivo-sched-exception-grid"><div class="motivo-sched-exception-col"><h5>Shop closures</h5><p>Add an exception to your shop's regular hours. Existing appointments are <strong>not</strong> automatically cancelled or emailed.</p><form id="motivoSchedClosureForm" class="motivo-sched-stack"><div class="motivo-sched-row"><label>Start<input id="motivoSchedClosureStart" type="datetime-local" required></label><label>End<input id="motivoSchedClosureEnd" type="datetime-local" required></label><label>Reason<input id="motivoSchedClosureReason" maxlength="160" placeholder="Unexpected closure" required></label></div><button type="submit">Add closure</button></form><div id="motivoSchedClosures" class="motivo-sched-list"></div></div>
+    <div class="motivo-sched-exception-col motivo-sched-disruption"><h5>Notify affected customers</h5><p>Preview the appointments affected by a shop closure or a technician absence. A separate confirmation is required to send <strong>real emails</strong>. The original appointments will not be cancelled or rescheduled.</p>
       <form id="motivoSchedNoticeForm" class="motivo-sched-stack"><div class="motivo-sched-row"><label>Issue<select id="motivoSchedKind"><option value="closure">Unexpected shop closure</option><option value="technician_absence">Technician absence</option></select></label><label id="motivoSchedAffectedTechWrap" hidden>Affected technician<select id="motivoSchedAffectedTech"></select></label></div>
       <div class="motivo-sched-row"><label>From<input id="motivoSchedNoticeStart" type="datetime-local" required></label><label>Until<input id="motivoSchedNoticeEnd" type="datetime-local" required></label><label>Internal reason<input id="motivoSchedNoticeReason" maxlength="200" minlength="4" placeholder="Unexpected shop closure" required></label></div>
       <div class="motivo-sched-actions"><button type="submit">Preview affected appointments</button></div></form>
       <div id="motivoSchedPreview" class="motivo-sched-preview" hidden></div>
       <label class="motivo-sched-confirm"><input id="motivoSchedConfirm" type="checkbox" disabled> I reviewed this preview and authorize sending real rescheduling emails.</label>
       <button id="motivoSchedNotify" class="motivo-sched-danger" type="button" disabled>Notify Affected Customers</button>
-      <p class="motivo-sched-footnote">Customers without an email address and failed delivery attempts require manual follow-up. Sending notices doesn't block additional bookings.</p>
+      <p class="motivo-sched-footnote">Customers without an email address and failed delivery attempts require manual follow-up. Sending notices doesn't block additional bookings.</p></div></div>
     </section>`;
   }
   function clearPreview() { previewKey=null; $('motivoSchedPreview').hidden=true; $('motivoSchedConfirm').checked=false; $('motivoSchedConfirm').disabled=true; $('motivoSchedNotify').disabled=true; }
@@ -49,7 +49,7 @@
     if(body.kind==='technician_absence')body.technician_id=Number($('motivoSchedAffectedTech').value);
     return body;
   }
-  function setBusy(value) {busy=value;document.querySelectorAll('#motivoSchedPanel button').forEach(b=>{ if(value)b.disabled=true; });if(!value){document.querySelectorAll('#motivoSchedPanel button').forEach(b=>b.disabled=false);$('motivoSchedNotify').disabled=!previewKey || !$('motivoSchedConfirm').checked;$('motivoSchedConfirm').disabled=!previewKey;}}
+  function setBusy(value) {busy=value;document.querySelectorAll('#motivoSchedConfigForm button,#motivoSchedBayForm button,#motivoSchedShiftForm button,#motivoSchedClosureForm button,#motivoSchedNoticeForm button,#motivoSchedBays button,#motivoSchedShifts button,#motivoSchedClosures button').forEach(b=>b.disabled=value);if(!value){$('motivoSchedNotify').disabled=!previewKey || !$('motivoSchedConfirm').checked;$('motivoSchedConfirm').disabled=!previewKey;}}
   async function run(work, success) { if(busy)return;setBusy(true);try{await work();status(success||'Changes saved.');}catch(err){status(err.message,true);}finally{setBusy(false);} }
   async function refresh() {
     const data=await api('/config');
@@ -65,9 +65,9 @@
     const techOptions=technicians.map(t=>`<option value="${Number(t.id)}">${esc(t.username)}</option>`).join('');
     $('motivoSchedTech').innerHTML=techOptions;
     $('motivoSchedAffectedTech').innerHTML=techOptions;
-    $('motivoSchedBays').innerHTML=(data.bays||[]).map(b=>`<div><span>${esc(b.name)} · ${b.is_active?'Active':'Unavailable'}</span><button data-bay="${Number(b.id)}" data-active="${b.is_active?0:1}" type="button">${b.is_active?'Deactivate':'Activate'}</button></div>`).join('') || '<p>No service bays configured.</p>';
-    $('motivoSchedShifts').innerHTML=(data.shifts||[]).map(s=>`<div><span>${esc(technicians.find(t=>Number(t.id)===Number(s.technician_id))?.username||'Technician')} · ${days[Number(s.weekday)]} ${esc(s.starts_at)}–${esc(s.ends_at)}</span><button data-shift="${Number(s.id)}" type="button">Remove</button></div>`).join('') || '<p>No shifts configured.</p>';
-    $('motivoSchedClosures').innerHTML=(data.closures||[]).map(c=>`<div><span>${esc(c.start_at)} → ${esc(c.end_at)} · ${esc(c.reason)}</span><button data-closure="${Number(c.id)}" type="button">Remove</button></div>`).join('') || '<p>No closures configured.</p>';
+    $('motivoSchedBays').innerHTML=(data.bays||[]).map(b=>`<div class="motivo-sched-list-row"><span><strong>${esc(b.name)}</strong><small class="motivo-sched-pill ${b.is_active?'is-on':'is-off'}">${b.is_active?'Active':'Inactive'}</small></span><button data-bay="${Number(b.id)}" data-active="${b.is_active?0:1}" type="button">${b.is_active?'Deactivate':'Activate'}</button></div>`).join('') || '<p>No service bays configured.</p>';
+    $('motivoSchedShifts').innerHTML=(data.shifts||[]).map(s=>`<div class="motivo-sched-list-row"><span><strong>${esc(technicians.find(t=>Number(t.id)===Number(s.technician_id))?.username||'Technician')}</strong><small>${days[Number(s.weekday)]} · ${esc(s.starts_at)}–${esc(s.ends_at)}</small></span><button data-shift="${Number(s.id)}" type="button">Remove</button></div>`).join('') || '<p>No shifts configured.</p>';
+    $('motivoSchedClosures').innerHTML=(data.closures||[]).map(c=>`<div class="motivo-sched-list-row"><span><strong>${esc(c.reason)}</strong><small>${esc(c.start_at)} → ${esc(c.end_at)}</small></span><button data-closure="${Number(c.id)}" type="button">Remove</button></div>`).join('') || '<p>No closures configured.</p>';
   }
   async function show() {
     if(!scheduler())return;
@@ -87,9 +87,15 @@
     sidebar.querySelector('nav')?.append(nav);
     const panel=document.createElement('section');panel.id='motivoSchedPanel';panel.className='motivo-sched-panel hidden';panel.innerHTML=html();dashboard.append(panel);
     nav.addEventListener('click',show);
-    const sync=()=>{nav.hidden=!scheduler();if(!scheduler()){panel.classList.add('hidden');active=false;}const badge=$('userRoleBadge');if(badge && localStorage.getItem('role')==='service_advisor')badge.textContent='Service Advisor / Front Desk';};
+    // Keep sidebar selection in sync with the current staff workspace.
+    sidebar.addEventListener('click', e => {
+      const choice=e.target.closest('button[data-motivo-ops-view]');
+      if (choice) { panel.classList.add('hidden');active=false;nav.classList.remove('is-active');nav.removeAttribute('aria-current'); }
+    });
+
+    const sync=()=>{nav.hidden=!scheduler();if(!scheduler()){panel.classList.add('hidden');active=false;nav.classList.remove('is-active');nav.removeAttribute('aria-current');}const badge=$('userRoleBadge');if(badge && localStorage.getItem('role')==='service_advisor')badge.textContent='Service Advisor / Front Desk';};
     const originalOpen=window.openStaffView;
-    if(typeof originalOpen==='function')window.openStaffView=function(which){if(which!=='scheduling'){panel.classList.add('hidden');active=false;}return originalOpen.apply(this,arguments);};
+    if(typeof originalOpen==='function')window.openStaffView=function(which){if(which!=='scheduling'){panel.classList.add('hidden');active=false;nav.classList.remove('is-active');nav.removeAttribute('aria-current');}return originalOpen.apply(this,arguments);};
     const originalRender=window.renderDashboard;
     if(typeof originalRender==='function')window.renderDashboard=function(...args){const result=originalRender.apply(this,args);sync();return result;};
     const originalHeader=window.updateHeaderAuthButtons;

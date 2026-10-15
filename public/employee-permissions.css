@@ -1,139 +1,115 @@
-/* MOT-029 UI polish: unified Team Access design. No permission logic changes.
-   Replaces employee-permissions.css, which loads after other staff styles. */
+/* MOT-029 Team Access visual refinement. Drop-in replacement CSS; no API changes. */
 #employeeDashboard #managerControlPanel {
-  --ta-bg: #ffffff;
-  --ta-card: #f8faf9;
-  --ta-field: #ffffff;
-  --ta-text: #173c3b;
-  --ta-muted: #60766c;
-  --ta-line: #dce7df;
-  --ta-accent: #e86642;
-  --ta-primary: #173c3b;
-  color: var(--ta-text);
-  background: var(--ta-bg);
-  border: 1px solid var(--ta-line);
-  border-radius: 16px;
-  box-shadow: 0 12px 34px rgba(12,34,32,.07);
-  padding: clamp(16px,2.5vw,28px);
+  --ta-bg:#fff;--ta-card:#fff;--ta-soft:#f8f7f2;--ta-ink:#173c3b;
+  --ta-muted:#61766c;--ta-border:#d9e6dd;--ta-primary:#173c3b;--ta-accent:#e86642;
+  --ta-field:#fff;
+  box-sizing:border-box;min-width:0;width:100%;padding:clamp(18px,2.6vw,32px);
+  background:var(--ta-bg);color:var(--ta-ink);border:1px solid var(--ta-border);
+  border-radius:20px;box-shadow:0 14px 42px rgba(23,60,59,.055);
 }
-body.dark-mode #employeeDashboard #managerControlPanel {
-  --ta-bg: #171e25;
-  --ta-card: #202b30;
-  --ta-field: #182329;
-  --ta-text: #edf5ef;
-  --ta-muted: #b6c8c0;
-  --ta-line: #34464b;
-  --ta-primary: #254e4b;
-  box-shadow: none;
-}
-#employeeDashboard #managerControlPanel, #employeeDashboard #managerControlPanel * {box-sizing:border-box}
-#employeeDashboard #managerControlPanel .staff-section-heading {margin:0 0 18px;padding:0 0 17px;border-bottom:1px solid var(--ta-line);align-items:center}
-#employeeDashboard #managerControlPanel .staff-section-kicker {font-size:11px;font-weight:800;letter-spacing:.12em;color:var(--ta-accent)}
-#employeeDashboard #managerControlPanel .staff-section-heading h3 {color:var(--ta-text);font-size:clamp(21px,2vw,27px);line-height:1.2;margin:5px 0 7px}
-#employeeDashboard #managerControlPanel .staff-section-heading p {color:var(--ta-muted);font-size:13px;line-height:1.55;max-width:620px}
-#employeeDashboard #managerControlPanel .staff-manager-chip {color:var(--ta-text);border:1px solid var(--ta-line);background:var(--ta-card);border-radius:8px;font-size:10px;padding:8px 11px}
-#employeeDashboard #managerControlPanel .staff-manager-grid {display:grid;grid-template-columns:minmax(260px,.85fr) minmax(0,1.3fr);gap:14px;align-items:stretch}
+#employeeDashboard #managerControlPanel *,#employeeDashboard #managerControlPanel *::before,#employeeDashboard #managerControlPanel *::after {box-sizing:border-box}
+#employeeDashboard #managerControlPanel .staff-section-heading {display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin:0 0 20px;padding:0 0 20px;border-bottom:1px solid var(--ta-border)}
+#employeeDashboard #managerControlPanel .staff-section-kicker {font-size:11px;letter-spacing:.15em;font-weight:800;color:var(--ta-accent)}
+#employeeDashboard #managerControlPanel .staff-section-heading h3 {margin:5px 0 9px;color:var(--ta-ink);font-size:clamp(23px,2.5vw,31px);letter-spacing:-.035em;line-height:1.15}
+#employeeDashboard #managerControlPanel .staff-section-heading p {margin:0;color:var(--ta-muted);font-size:13px;line-height:1.65;max-width:66ch}
+#employeeDashboard #managerControlPanel .staff-manager-chip {align-self:start;white-space:nowrap;display:inline-flex;align-items:center;padding:10px 13px;background:var(--ta-soft);border:1px solid var(--ta-border);border-radius:999px;color:var(--ta-ink);font-size:10px;font-weight:800;letter-spacing:.06em}
+/* Full-width, consistent sections: no table competing with a narrow form column. */
+#employeeDashboard #managerControlPanel .staff-manager-grid {display:grid;grid-template-columns:minmax(0,1fr);gap:18px;align-items:start;min-width:0;margin:0}
 #employeeDashboard #managerControlPanel .staff-create-card,
 #employeeDashboard #managerControlPanel .staff-roster-card,
 #employeeDashboard #motivoRolePermissions,
-#employeeDashboard #motivoEmployeePermissions {
-  min-width:0;margin:0;background:var(--ta-card);border:1px solid var(--ta-line);border-radius:13px;
-  color:var(--ta-text);padding:clamp(14px,1.6vw,20px);box-shadow:none;
-}
-#employeeDashboard #managerControlPanel .staff-create-card,
-#employeeDashboard #managerControlPanel .staff-roster-card {height:100%}
-#employeeDashboard #managerControlPanel .staff-card-heading {gap:10px;margin-bottom:16px;align-items:flex-start}
-#employeeDashboard #managerControlPanel .staff-card-number {height:28px;min-width:28px;border-radius:7px;padding:0 6px;color:var(--ta-accent);background:rgba(232,102,66,.12);font-size:11px}
-#employeeDashboard #managerControlPanel .staff-card-heading h4 {font-size:16px;font-weight:750;color:var(--ta-text);margin:0 0 5px}
-#employeeDashboard #managerControlPanel .staff-card-heading p {font-size:12px;color:var(--ta-muted);line-height:1.5}
-#employeeDashboard #managerControlPanel .staff-field-grid {gap:12px;grid-template-columns:repeat(2,minmax(0,1fr))}
-#employeeDashboard #managerControlPanel .staff-create-form label {display:block;color:var(--ta-text);font-size:11px;font-weight:750;line-height:1.4;margin:0 0 6px}
+#employeeDashboard #motivoEmployeePermissions {box-sizing:border-box;min-width:0;width:100%;height:auto;margin:0;padding:clamp(18px,2.2vw,26px);border:1px solid var(--ta-border);border-radius:16px;background:var(--ta-card);color:var(--ta-ink);box-shadow:0 4px 15px rgba(23,60,59,.035)}
+#employeeDashboard #managerControlPanel .staff-create-card {background:linear-gradient(135deg,var(--ta-soft),var(--ta-card) 75%)}
+#employeeDashboard #managerControlPanel .staff-card-heading {display:flex;align-items:flex-start;gap:13px;margin:0 0 19px}
+#employeeDashboard #managerControlPanel .staff-card-number {display:grid;place-items:center;flex:0 0 36px;width:36px;height:36px;margin:0;border-radius:11px;background:rgba(232,102,66,.12);color:#ce5939;font-size:12px;font-weight:800}
+#employeeDashboard #managerControlPanel .staff-card-heading h4 {color:var(--ta-ink);margin:0 0 5px;font-size:19px;line-height:1.3;letter-spacing:-.02em;font-weight:800}
+#employeeDashboard #managerControlPanel .staff-card-heading p {margin:0;color:var(--ta-muted);font-size:13px;line-height:1.5}
+#employeeDashboard #managerControlPanel .staff-create-form {width:100%;max-width:100%}
+#employeeDashboard #managerControlPanel .staff-field-grid {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 22px}
+#employeeDashboard #managerControlPanel .staff-field-grid>div {min-width:0}
+#employeeDashboard #managerControlPanel .staff-create-form label {display:block;margin:0 0 8px;color:var(--ta-ink);font-size:12px;line-height:1.4;font-weight:760}
 #employeeDashboard #managerControlPanel .staff-create-form input,
 #employeeDashboard #managerControlPanel .staff-create-form select,
 #employeeDashboard #managerControlPanel .staff-table input,
 #employeeDashboard #managerControlPanel .staff-table select,
-#employeeDashboard #motivoEmployeePermissions select {
-  width:100%;max-width:100%;min-width:0;min-height:40px;padding:9px 11px;
-  background:var(--ta-field);color:var(--ta-text);border:1px solid var(--ta-line);
-  border-radius:8px;font:inherit;font-size:13px;box-shadow:none;outline-offset:2px;
-}
+#employeeDashboard #motivoEmployeePermissions select {display:block;box-sizing:border-box;width:100%;max-width:100%;min-width:0;min-height:44px;margin:0;padding:10px 12px;border:1px solid var(--ta-border);border-radius:10px;background:var(--ta-field);color:var(--ta-ink);font:inherit;font-size:13px;box-shadow:none;outline-offset:2px}
+#employeeDashboard #managerControlPanel .staff-create-form input::placeholder,
+#employeeDashboard #managerControlPanel .staff-table input::placeholder {color:#84988e}
 #employeeDashboard #managerControlPanel input:focus-visible,
 #employeeDashboard #managerControlPanel select:focus-visible,
-#employeeDashboard #managerControlPanel button:focus-visible {outline:2px solid var(--ta-accent);outline-offset:2px}
+#employeeDashboard #managerControlPanel button:focus-visible {outline:3px solid var(--ta-accent);outline-offset:3px}
 #employeeDashboard #managerControlPanel .staff-create-btn,
 #employeeDashboard #managerControlPanel .staff-table button,
 #employeeDashboard #motivoRolePermissions button,
-#employeeDashboard #motivoEmployeePermissions button {
-  min-height:40px;margin:0;border:1px solid transparent;border-radius:8px;
-  padding:10px 14px;font:inherit;font-size:12px;font-weight:750;line-height:1.3;
-  background:var(--ta-primary);color:#fff;cursor:pointer;box-shadow:none;transform:none;
-}
-#employeeDashboard #managerControlPanel .staff-create-btn {margin-top:17px;width:auto}
-#employeeDashboard #managerControlPanel .staff-table button {min-width:112px;white-space:nowrap}
-#employeeDashboard #managerControlPanel button:hover {filter:brightness(1.13);transform:none}
-#employeeDashboard #managerControlPanel button:disabled {opacity:.6;cursor:wait}
-#employeeDashboard #managerControlPanel .staff-table-shell {width:100%;max-width:100%;overflow-x:auto;border:1px solid var(--ta-line);border-radius:9px;background:var(--ta-field)}
-#employeeDashboard #managerControlPanel .staff-table {min-width:690px;width:100%;border-collapse:collapse;margin:0}
-#employeeDashboard #managerControlPanel .staff-table thead {background:var(--ta-card)}
-#employeeDashboard #managerControlPanel .staff-table th {white-space:nowrap;color:var(--ta-muted);font-size:10px;letter-spacing:.045em;font-weight:800;padding:12px 10px;border-color:var(--ta-line)}
-#employeeDashboard #managerControlPanel .staff-table td {font-size:12px;color:var(--ta-text);padding:10px;border-color:var(--ta-line)}
-#employeeDashboard #managerControlPanel .staff-table tbody tr:hover {background:rgba(120,154,138,.08)}
-#employeeDashboard #managerControlPanel .staff-table input {width:126px}
-#employeeDashboard #managerControlPanel .staff-table select {width:145px}
-/* Role matrix belongs below both staff cards and uses the same surfaces. */
-#employeeDashboard #motivoRolePermissions {grid-column:1/-1;margin-top:16px;width:100%}
-#employeeDashboard #motivoRolePermissions .rp-heading {align-items:center;gap:12px;margin-bottom:14px}
-#employeeDashboard #motivoRolePermissions .rp-heading h4 {font-size:17px;color:var(--ta-text);margin:4px 0 5px}
+#employeeDashboard #motivoEmployeePermissions button {display:inline-flex;align-items:center;justify-content:center;min-height:43px;margin:0;padding:10px 16px;border:1px solid var(--ta-primary);border-radius:10px;background:var(--ta-primary);color:#fff;font:inherit;font-size:12px;font-weight:780;line-height:1.3;cursor:pointer;transform:none;box-shadow:none;white-space:normal;text-align:center}
+#employeeDashboard #managerControlPanel button:hover:not(:disabled) {filter:brightness(1.12);transform:none}
+#employeeDashboard #managerControlPanel button:disabled {opacity:.55;cursor:not-allowed}
+#employeeDashboard #managerControlPanel .staff-create-btn {margin-top:21px;min-width:204px}
+/* Roster: balanced columns at normal desktop widths. */
+#employeeDashboard #managerControlPanel .staff-table-shell {width:100%;max-width:100%;overflow-x:auto;overflow-y:hidden;border:1px solid var(--ta-border);border-radius:12px;background:var(--ta-card);-webkit-overflow-scrolling:touch}
+#employeeDashboard #managerControlPanel .staff-table {table-layout:fixed;min-width:0;width:100%;border-collapse:collapse;margin:0}
+#employeeDashboard #managerControlPanel .staff-table th {padding:13px 12px;background:var(--ta-soft);color:var(--ta-muted);font-size:10px;font-weight:850;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap;text-align:left;border-bottom:1px solid var(--ta-border)}
+#employeeDashboard #managerControlPanel .staff-table td {padding:13px 12px;color:var(--ta-ink);font-size:12px;vertical-align:middle;border-bottom:1px solid var(--ta-border);overflow-wrap:anywhere}
+#employeeDashboard #managerControlPanel .staff-table tbody tr:last-child td {border-bottom:0}
+#employeeDashboard #managerControlPanel .staff-table tbody tr:hover {background:rgba(29,107,82,.045)}
+#employeeDashboard #managerControlPanel .staff-table th:nth-child(1) {width:5%}
+#employeeDashboard #managerControlPanel .staff-table th:nth-child(2) {width:15%}
+#employeeDashboard #managerControlPanel .staff-table th:nth-child(3) {width:25%}
+#employeeDashboard #managerControlPanel .staff-table th:nth-child(4) {width:17%}
+#employeeDashboard #managerControlPanel .staff-table th:nth-child(5) {width:20%}
+#employeeDashboard #managerControlPanel .staff-table th:nth-child(6) {width:18%}
+#employeeDashboard #managerControlPanel .staff-table input,
+#employeeDashboard #managerControlPanel .staff-table select {width:100%;min-height:41px;padding:8px 9px;font-size:12px}
+#employeeDashboard #managerControlPanel .staff-table button {width:100%;min-width:0;min-height:41px;padding:9px 10px;white-space:normal}
+/* Access overview and individual permissions use the same surface rhythm. */
+#employeeDashboard #motivoRolePermissions {grid-column:1/-1;margin-top:18px}
+#employeeDashboard #motivoRolePermissions .rp-heading {display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:14px}
+#employeeDashboard #motivoRolePermissions .rp-heading h4 {font-size:19px;letter-spacing:-.02em;color:var(--ta-ink);margin:0 0 6px}
 #employeeDashboard #motivoRolePermissions .rp-heading p,
 #employeeDashboard #motivoRolePermissions .rp-foot,
 #employeeDashboard #motivoRolePermissions .rp-status {color:var(--ta-muted);font-size:12px;line-height:1.55}
-#employeeDashboard #motivoRolePermissions .rp-kicker {color:var(--ta-accent);font-size:10px}
-#employeeDashboard #motivoRolePermissions .rp-note {padding:11px 13px;margin-bottom:14px;background:var(--ta-bg);color:var(--ta-muted);border:1px solid var(--ta-line);border-left:3px solid var(--ta-accent);border-radius:8px;font-size:12px}
-#employeeDashboard #motivoRolePermissions .rp-table-scroll {max-width:100%;overflow:auto;border:1px solid var(--ta-line);border-radius:9px;background:var(--ta-field)}
-#employeeDashboard #motivoRolePermissions table {min-width:920px;width:100%;font-size:11px}
-#employeeDashboard #motivoRolePermissions thead th {background:var(--ta-card);color:var(--ta-muted);font-size:10px;font-weight:800}
-#employeeDashboard #motivoRolePermissions th,
-#employeeDashboard #motivoRolePermissions td {padding:11px 8px;border-color:var(--ta-line);color:var(--ta-text)}
-#employeeDashboard #motivoRolePermissions tbody th {color:var(--ta-text);min-width:145px}
+#employeeDashboard #motivoRolePermissions .rp-kicker {color:var(--ta-accent);letter-spacing:.1em;font-size:10px;font-weight:800}
+#employeeDashboard #motivoRolePermissions .rp-note {padding:12px 14px;margin:13px 0;background:var(--ta-soft);color:var(--ta-muted);border:1px solid var(--ta-border);border-left:3px solid var(--ta-accent);border-radius:10px;font-size:12px}
+#employeeDashboard #motivoRolePermissions .rp-table-scroll {width:100%;max-width:100%;overflow:auto;border:1px solid var(--ta-border);border-radius:12px;background:var(--ta-field)}
+#employeeDashboard #motivoRolePermissions table {min-width:900px;width:100%;font-size:12px}
+#employeeDashboard #motivoRolePermissions thead th {background:var(--ta-soft);color:var(--ta-muted);font-size:10px;font-weight:800}
+#employeeDashboard #motivoRolePermissions th,#employeeDashboard #motivoRolePermissions td {padding:12px 10px;color:var(--ta-ink);border-color:var(--ta-border)}
 #employeeDashboard #motivoRolePermissions tbody th small {color:var(--ta-muted)}
-#employeeDashboard #motivoRolePermissions .rp-yes {color:#38a47b}
+#employeeDashboard #motivoRolePermissions .rp-yes {color:#2d996e}
 #employeeDashboard #motivoRolePermissions .rp-no {color:var(--ta-muted)}
-/* Individual editor: compact, aligned with Team Access cards. */
-#employeeDashboard #motivoEmployeePermissions {grid-column:1/-1;margin-top:14px;width:100%}
+#employeeDashboard #motivoEmployeePermissions {grid-column:1/-1;margin-top:18px}
 #employeeDashboard #motivoEmployeePermissions[hidden] {display:none!important}
-#employeeDashboard #motivoEmployeePermissions .mep-title h4 {font-size:17px;line-height:1.35;color:var(--ta-text);margin:0 0 4px}
-#employeeDashboard #motivoEmployeePermissions .mep-title p {color:var(--ta-muted);font-size:12px;line-height:1.5;margin:0 0 14px}
-#employeeDashboard #motivoEmployeePermissions > label {display:grid;gap:7px;color:var(--ta-text);font-size:12px;font-weight:750;margin:0 0 16px}
-#employeeDashboard #motivoEmployeePermissions #mepEmployee {min-height:43px}
-#employeeDashboard #motivoEmployeePermissions #mepSettings {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
-#employeeDashboard #motivoEmployeePermissions .mep-item {
-  display:flex;align-items:center;justify-content:space-between;min-width:0;gap:12px;
-  margin:0;padding:12px 13px;background:var(--ta-field);border:1px solid var(--ta-line);
-  border-radius:9px;cursor:pointer;min-height:65px;transition:border-color .15s,background .15s;
+#employeeDashboard #motivoEmployeePermissions .mep-title {padding-bottom:15px;margin-bottom:18px;border-bottom:1px solid var(--ta-border)}
+#employeeDashboard #motivoEmployeePermissions .mep-title h4 {margin:0;color:var(--ta-ink);font-size:19px;font-weight:800;letter-spacing:-.02em}
+#employeeDashboard #motivoEmployeePermissions .mep-title h4::after {content:'Customize access for each team member';display:block;margin-top:5px;color:var(--ta-muted);font-size:12px;font-weight:450;letter-spacing:normal}
+#employeeDashboard #motivoEmployeePermissions>label {display:grid;gap:9px;max-width:550px;margin:0 0 20px;color:var(--ta-ink);font-weight:750;font-size:12px}
+#employeeDashboard #motivoEmployeePermissions #mepEmployee {min-height:48px;background:var(--ta-field);border-radius:11px;padding:11px 13px;font-size:14px}
+#employeeDashboard #motivoEmployeePermissions #mepSettings {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+#employeeDashboard #motivoEmployeePermissions .mep-item {display:flex;align-items:center;justify-content:space-between;min-width:0;min-height:76px;gap:12px;margin:0;padding:15px 16px;background:var(--ta-soft);border:1px solid var(--ta-border);border-radius:12px;cursor:pointer;transition:background .15s,border-color .15s,box-shadow .15s}
+#employeeDashboard #motivoEmployeePermissions .mep-item:hover {background:var(--ta-field);border-color:#83a697;box-shadow:0 3px 12px rgba(23,60,59,.06)}
+#employeeDashboard #motivoEmployeePermissions .mep-item:focus-within {outline:2px solid var(--ta-accent);outline-offset:2px}
+#employeeDashboard #motivoEmployeePermissions .mep-item span {display:grid;gap:6px;min-width:0}
+#employeeDashboard #motivoEmployeePermissions .mep-item strong {color:var(--ta-ink);font-size:13px;font-weight:800;line-height:1.35}
+#employeeDashboard #motivoEmployeePermissions .mep-item small {color:var(--ta-muted);font-size:11px;line-height:1.5}
+#employeeDashboard #motivoEmployeePermissions .mep-item input[type=checkbox] {flex:none;width:20px;height:20px;margin:0;accent-color:#2e866c;cursor:pointer}
+#employeeDashboard #motivoEmployeePermissions .mep-actions {display:flex;flex-wrap:wrap;justify-content:flex-end;align-items:center;gap:12px;margin-top:22px;padding-top:18px;border-top:1px solid var(--ta-border)}
+#employeeDashboard #motivoEmployeePermissions #mepReset {background:var(--ta-field);color:var(--ta-ink);border:1px solid var(--ta-border)}
+#employeeDashboard #motivoEmployeePermissions #mepStatus {color:var(--ta-muted);font-size:12px;font-weight:650;margin:13px 0 4px;line-height:1.5}
+#employeeDashboard #motivoEmployeePermissions #mepAudit {font-size:11px;color:var(--ta-muted);margin-top:8px}
+body.dark-mode #employeeDashboard #managerControlPanel {--ta-bg:#142421;--ta-card:#203630;--ta-soft:#243d34;--ta-field:#192f29;--ta-ink:#eff6f0;--ta-muted:#bdd0c2;--ta-border:#3d5c4e;--ta-primary:#285e51;box-shadow:none}
+body.dark-mode #employeeDashboard #managerControlPanel .staff-create-card {background:linear-gradient(135deg,#253d33,#203630 78%)}
+body.dark-mode #employeeDashboard #managerControlPanel .staff-create-form input::placeholder,
+body.dark-mode #employeeDashboard #managerControlPanel .staff-table input::placeholder {color:#9cb4a7}
+body.dark-mode #employeeDashboard #motivoEmployeePermissions .mep-item:hover {background:#2d493c}
+@media(max-width:950px) {#employeeDashboard #managerControlPanel .staff-table {min-width:740px}#employeeDashboard #managerControlPanel .staff-table-shell {overflow-x:auto}}
+@media(max-width:680px) {
+ #employeeDashboard #managerControlPanel {padding:13px;border-radius:14px}
+ #employeeDashboard #managerControlPanel .staff-section-heading {align-items:flex-start;flex-direction:column}
+ #employeeDashboard #managerControlPanel .staff-field-grid,#employeeDashboard #motivoEmployeePermissions #mepSettings {grid-template-columns:1fr}
+ #employeeDashboard #managerControlPanel .staff-create-btn {width:100%}
+ #employeeDashboard #managerControlPanel .staff-create-card,#employeeDashboard #managerControlPanel .staff-roster-card,#employeeDashboard #motivoEmployeePermissions,#employeeDashboard #motivoRolePermissions {padding:17px}
+ #employeeDashboard #motivoEmployeePermissions .mep-actions {flex-direction:column;align-items:stretch}
+ #employeeDashboard #motivoEmployeePermissions .mep-actions button {width:100%}
+ #employeeDashboard #managerControlPanel .staff-table {min-width:700px}
 }
-#employeeDashboard #motivoEmployeePermissions .mep-item:hover {border-color:#6e9c87;background:var(--ta-bg)}
-#employeeDashboard #motivoEmployeePermissions .mep-item span {display:grid;gap:4px;min-width:0}
-#employeeDashboard #motivoEmployeePermissions .mep-item strong {color:var(--ta-text);font-size:13px;line-height:1.25;font-weight:750}
-#employeeDashboard #motivoEmployeePermissions .mep-item small {color:var(--ta-muted);font-size:11px;line-height:1.35}
-#employeeDashboard #motivoEmployeePermissions .mep-item input[type=checkbox] {flex:none;width:18px;height:18px;margin:0;accent-color:#328b70;cursor:pointer}
-#employeeDashboard #motivoEmployeePermissions .mep-actions {display:flex;align-items:center;justify-content:flex-end;gap:9px;flex-wrap:wrap;margin-top:16px}
-#employeeDashboard #motivoEmployeePermissions #mepReset {background:transparent;color:var(--ta-text);border-color:var(--ta-line)}
-#employeeDashboard #motivoEmployeePermissions #mepStatus {font-size:12px;font-weight:650;color:var(--ta-muted);margin:12px 0 5px;line-height:1.5}
-#employeeDashboard #motivoEmployeePermissions #mepAudit {font-size:11px;color:var(--ta-muted);margin-top:4px;padding-top:11px;border-top:1px solid var(--ta-line)}
-@media (max-width:1150px) {
-  #employeeDashboard #managerControlPanel .staff-manager-grid {grid-template-columns:1fr}
-}
-@media (max-width:700px) {
-  #employeeDashboard #managerControlPanel {padding:14px}
-  #employeeDashboard #managerControlPanel .staff-section-heading {flex-direction:column;align-items:flex-start;gap:10px}
-  #employeeDashboard #managerControlPanel .staff-field-grid,
-  #employeeDashboard #motivoEmployeePermissions #mepSettings {grid-template-columns:1fr}
-  #employeeDashboard #managerControlPanel .staff-create-btn {width:100%}
-  #employeeDashboard #motivoEmployeePermissions .mep-actions {flex-direction:column}
-  #employeeDashboard #motivoEmployeePermissions .mep-actions button {width:100%}
-  #employeeDashboard #motivoRolePermissions .rp-heading {align-items:stretch}
-  #employeeDashboard #motivoRolePermissions .rp-heading button {width:100%}
-}
-@media (prefers-reduced-motion:reduce) {
-  #employeeDashboard #motivoEmployeePermissions .mep-item {transition:none}
-}
+@media(prefers-reduced-motion:reduce){#employeeDashboard #motivoEmployeePermissions .mep-item{transition:none}}
