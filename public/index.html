@@ -248,12 +248,9 @@ body.motivo-session-modal-open { overflow: hidden; }
       <div class="auth-split auth-register-layout">
         <section class="auth-form-panel">
           <div class="auth-form-wrap">
-            <div class="auth-kicker">CUSTOMER ONBOARDING</div>
-            <h1>Create Your Service Account</h1>
-            <p class="auth-subtitle">
-              Create an account for your selected repair shop to request
-              service, track repairs, and review invoices.
-            </p>
+            <div class="auth-kicker">MOTIVO ACCOUNT</div>
+            <h1>Create an Account</h1>
+            <p class="auth-subtitle">Your shop. Your service, all in one place.</p>
 
             <form onsubmit="handleRegister(event)" class="auth-form">
               <div class="auth-field">
@@ -340,16 +337,13 @@ body.motivo-session-modal-open { overflow: hidden; }
           <div class="auth-form-wrap auth-login-wrap">
             <div class="auth-kicker">SECURE PORTAL ACCESS</div>
             <h1>Welcome Back</h1>
-            <p class="auth-subtitle">
-              Customers can sign in with email or username and password.
-              Staff can use their assigned 6-digit PIN.
-            </p>
+            <p class="auth-subtitle">Sign in to your Motivo account.</p>
 
             <form onsubmit="handleLogin(event)" class="auth-form">
               <div class="auth-field">
                 <label for="login_company_id">Repair Shop</label>
                 <select id="login_company_id">
-                  <option value="">-- Auto-Detect Shop by PIN/Account --</option>
+                  <option value="">Select your shop (optional)</option>
                 </select>
               </div>
 
@@ -359,7 +353,7 @@ body.motivo-session-modal-open { overflow: hidden; }
                   type="text"
                   id="login_input"
                   autocomplete="username"
-                  placeholder="Email / username / 6-digit PIN"
+                  placeholder="Email, username, or PIN"
                   required
                 />
               </div>
@@ -367,7 +361,6 @@ body.motivo-session-modal-open { overflow: hidden; }
               <div class="auth-field">
                 <label for="password">
                   Password
-                  <span class="auth-label-note">Customer accounts only</span>
                 </label>
                 <input
                   type="password"
@@ -381,13 +374,8 @@ body.motivo-session-modal-open { overflow: hidden; }
                 Log In
               </button>
 
-              <div class="auth-login-note">
-                <strong>Staff login:</strong>
-                enter your 6-digit PIN above. A password is not required.
-              </div>
-
               <p class="auth-switch-copy">
-                Need a customer account?
+                New to Motivo?
                 <button type="button" class="auth-text-link" onclick="showScreen('registerSection')">
                   Create one
                 </button>
