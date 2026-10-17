@@ -118,6 +118,11 @@ app.use(
 // ======================================================
 // MOT-030: Independent developer administration API (password + TOTP + session).
 app.use('/api/platform', require('./routes/platform-admin'));
+
+// MOT-030 V2: Enforce shop lifecycle status before customer/staff API routes.
+// Keep platform administrator routes outside tenant lifecycle middleware.
+app.use(require('./routes/platform-status-gate'));
+
 app.use('/api/companies', companiesRoutes);
 app.use('/api', authRoutes);
 app.use('/api/manager/scheduling/disruptions', require('./routes/appointment-disruptions'));
