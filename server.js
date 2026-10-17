@@ -100,6 +100,10 @@ app.use('/api/register', registerLimiter);
 // General protection for all API requests.
 app.use('/api', apiLimiter);
 
+// MOT-030: Restrict platform administration resources to the DuckDNS developer host.
+// This MUST run before express.static so public Motivo domains cannot fetch the dashboard.
+app.use(require('./routes/platform-host-gate'));
+
 // ======================================================
 // STATIC FILES
 // ======================================================
@@ -112,6 +116,8 @@ app.use(
 // ======================================================
 // API ROUTES
 // ======================================================
+// MOT-030: Independent developer administration API (password + TOTP + session).
+app.use('/api/platform', require('./routes/platform-admin'));
 app.use('/api/companies', companiesRoutes);
 app.use('/api', authRoutes);
 app.use('/api/manager/scheduling/disruptions', require('./routes/appointment-disruptions'));
