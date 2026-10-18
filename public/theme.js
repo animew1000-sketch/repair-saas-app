@@ -108,7 +108,7 @@ document.addEventListener('click', (event) => {
 
   const stylesheet = document.createElement('link');
   stylesheet.rel = 'stylesheet';
-  stylesheet.href = '/i18n.css?v=7';
+  stylesheet.href = '/i18n.css?v=8';
   document.head.appendChild(stylesheet);
 
   const dictionary = document.createElement('script');
@@ -126,15 +126,7 @@ document.addEventListener('click', (event) => {
   document.head.appendChild(dictionary);
 })();
 
-// Decorative scroll glow: separate from language and theme functionality.
-(function bootstrapMotivoScrollGradient() {
-  if (window.__motivoScrollGradientRequested) return;
-  window.__motivoScrollGradientRequested = true;
-  const script = document.createElement('script');
-  script.src = '/scroll-gradient.js?v=7';
-  document.head.appendChild(script);
-})();
-
+// Motivo v8: decorative gradients are pre-rendered; no scroll or pointer JS.
 
 // Motivo shared wordmark: decorate legacy HTML headers without changing
 // forms, account data, click handlers, or the existing navigation drawers.
