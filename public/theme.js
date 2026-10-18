@@ -69,7 +69,7 @@ function toggleMotivoMenu(toggle) {
 document.addEventListener('click', (event) => {
   if (
     document.body.classList.contains('motivo-menu-open') &&
-    !event.target.closest('.header, .motivo-universal-menu, .motivo-preferences-popover')
+    !event.target.closest('.header, .motivo-universal-menu, .motivo-preferences-popover, .motivo-menu-toggle')
   ) {
     document.body.classList.remove('motivo-menu-open');
   }
@@ -108,7 +108,7 @@ document.addEventListener('click', (event) => {
 
   const stylesheet = document.createElement('link');
   stylesheet.rel = 'stylesheet';
-  stylesheet.href = '/i18n.css?v=4';
+  stylesheet.href = '/i18n.css?v=6';
   document.head.appendChild(stylesheet);
 
   const dictionary = document.createElement('script');
@@ -133,4 +133,60 @@ document.addEventListener('click', (event) => {
   const script = document.createElement('script');
   script.src = '/scroll-gradient.js?v=4';
   document.head.appendChild(script);
+})();
+
+
+// Motivo shared wordmark: decorate legacy HTML headers without changing
+// forms, account data, click handlers, or the existing navigation drawers.
+(function unifyMotivoBrand() {
+  function apply() {
+    if (!document.body) return;
+    const wordmark = '/images/Motivo-white-word-transparent.png';
+    if (document.body.classList.contains('motivo-public-page')) {
+      document.querySelectorAll('.header .brand').forEach(function (brand) {
+        if (brand.querySelector('img')) return;
+        const label = brand.textContent.trim();
+        if (label.toLowerCase() !== 'motivo') return;
+        brand.textContent = '';
+        const logo = document.createElement('img');
+        logo.src = wordmark;
+        logo.alt = 'Motivo';
+        logo.className = 'brand-logo';
+        brand.appendChild(logo);
+      });
+    }
+    if (!document.body.classList.contains('motivo-universal-page')) return;
+    const header = document.querySelector('body > header');
+    const left = header && header.querySelector(':scope > div:first-child');
+    if (!left || left.querySelector('.motivo-unified-brand')) return;
+    const link = document.createElement('a');
+    link.href = '/';
+    link.className = 'motivo-unified-brand';
+    link.setAttribute('aria-label', 'Motivo home');
+    const logo = document.createElement('img');
+    logo.src = wordmark;
+    logo.alt = 'Motivo';
+    logo.decoding = 'async';
+    link.appendChild(logo);
+    left.insertBefore(link, left.firstChild);
+    for (const sibling of Array.from(left.children)) {
+      if (sibling === link) continue;
+      if (sibling.tagName === 'SPAN' && /^(?:🚗|🚨|🔧|MOTIVO|MOTIVO CUSTOMER PORTAL)$/u.test(sibling.textContent.trim())) {
+        sibling.classList.add('motivo-legacy-brand-hidden');
+        sibling.setAttribute('aria-hidden', 'true');
+      }
+      if (sibling.tagName === 'DIV' && sibling.textContent.trim() === 'R' && sibling.classList.contains('bg-orange-500')) {
+        sibling.classList.add('motivo-legacy-brand-hidden');
+        sibling.setAttribute('aria-hidden', 'true');
+      }
+      if (sibling.tagName === 'DIV') {
+        const caption = Array.from(sibling.children).find(function (el) {
+          return /MOTIVO CUSTOMER PORTAL/i.test(el.textContent.trim()) && !el.id;
+        });
+        if (caption) caption.textContent = 'Customer Portal';
+      }
+    }
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', apply, {once: true});
+  else apply();
 })();
