@@ -1,0 +1,134 @@
+/* Motivo v5 - scroll-reactive panel gradients.
+ * Loaded AFTER the v4 body gradients by i18n.css.
+ * The existing scroll-gradient.js updates the inherited --motivo-glow-*
+ * variables on scroll. All movement stays behind UI content.
+ * No pseudo-element overlays, pointer interception, or data changes.
+ */
+
+/* Large homepage panels: pronounced, independent forest-green color fields. */
+body:has(#landingSection:not(.hidden)) .motivo-finder {
+  background:
+    radial-gradient(ellipse 95% 160% at calc(12% + var(--motivo-glow-top-x, 0px) + var(--motivo-ambient-drift, 0px)) calc(2% + var(--motivo-glow-mid-y, 0px)), rgba(126, 199, 128, .46), transparent 73%),
+    radial-gradient(ellipse 92% 160% at calc(95% + var(--motivo-glow-bottom-x, 0px)) calc(94% - var(--motivo-glow-top-y, 0px)), rgba(50, 147, 98, .21), transparent 75%),
+    linear-gradient(120deg, #edf6e9 0%, #d3e9d6 55%, #e6f4e7 100%) !important;
+  border-color: rgba(76, 143, 97, .32) !important;
+  background-repeat: no-repeat !important;
+}
+body.dark-mode:has(#landingSection:not(.hidden)) .motivo-finder {
+  background:
+    radial-gradient(ellipse 110% 165% at calc(10% + var(--motivo-glow-top-x, 0px) + var(--motivo-ambient-drift, 0px)) calc(0% + var(--motivo-glow-mid-y, 0px)), rgba(70, 164, 97, .46), transparent 73%),
+    radial-gradient(ellipse 92% 150% at calc(95% + var(--motivo-glow-bottom-x, 0px)) 100%, rgba(19, 101, 81, .48), transparent 73%),
+    linear-gradient(118deg, #203b29 0%, #142c21 52%, #0f2724 100%) !important;
+  border-color: rgba(118, 188, 134, .33) !important;
+}
+
+/* Keep the finder form legible: calm inner gradient, white/dark inputs unchanged. */
+body:has(#landingSection:not(.hidden)) .motivo-finder-controls {
+  background:
+    radial-gradient(ellipse 105% 165% at calc(90% + var(--motivo-glow-mid-x, 0px)) 6%, rgba(109, 195, 137, .15), transparent 78%),
+    linear-gradient(120deg, rgba(255, 255, 255, .98), rgba(242, 250, 243, .96)) !important;
+}
+body.dark-mode:has(#landingSection:not(.hidden)) .motivo-finder-controls {
+  background:
+    radial-gradient(ellipse 110% 180% at calc(95% + var(--motivo-glow-mid-x, 0px)) 0%, rgba(51, 145, 99, .22), transparent 76%),
+    linear-gradient(125deg, #0e2421 0%, #142b26 100%) !important;
+}
+
+/* Dark storytelling section: deep, moving gradients with stable white text. */
+body:has(#landingSection:not(.hidden)) .motivo-feature-section {
+  background:
+    radial-gradient(ellipse 80% 125% at calc(4% + var(--motivo-glow-mid-x, 0px) + var(--motivo-ambient-drift, 0px)) 13%, rgba(59, 161, 103, .38), transparent 76%),
+    radial-gradient(ellipse 82% 142% at calc(100% + var(--motivo-glow-bottom-x, 0px)) 92%, rgba(40, 112, 103, .37), transparent 80%),
+    linear-gradient(118deg, #10271c 0%, #174631 53%, #0e2b27 100%) !important;
+  color: #f5faf5 !important;
+  background-repeat: no-repeat !important;
+}
+body.dark-mode:has(#landingSection:not(.hidden)) .motivo-feature-section {
+  background:
+    radial-gradient(ellipse 90% 140% at calc(10% + var(--motivo-glow-mid-x, 0px) + var(--motivo-ambient-drift, 0px)) 4%, rgba(35, 139, 78, .38), transparent 75%),
+    radial-gradient(ellipse 96% 145% at calc(105% + var(--motivo-glow-bottom-x, 0px)) 100%, rgba(18, 82, 73, .43), transparent 78%),
+    linear-gradient(122deg, #07130d 0%, #103024 55%, #081915 100%) !important;
+}
+
+/* Shop signup banner stays saturated and accessible, but no longer a flat slab. */
+body:has(#landingSection:not(.hidden)) .motivo-shop-cta {
+  background:
+    radial-gradient(ellipse 83% 148% at calc(0% + var(--motivo-glow-top-x, 0px) + var(--motivo-ambient-drift, 0px)) 12%, rgba(142, 228, 144, .35), transparent 78%),
+    radial-gradient(ellipse 90% 155% at calc(102% + var(--motivo-glow-bottom-x, 0px)) 100%, rgba(12, 74, 70, .44), transparent 76%),
+    linear-gradient(115deg, #206d42 0%, #2a8c4d 42%, #124b3a 100%) !important;
+  color: #fff !important;
+  background-repeat: no-repeat !important;
+}
+body.dark-mode:has(#landingSection:not(.hidden)) .motivo-shop-cta {
+  background:
+    radial-gradient(ellipse 90% 160% at calc(5% + var(--motivo-glow-top-x, 0px) + var(--motivo-ambient-drift, 0px)) 10%, rgba(87, 207, 113, .31), transparent 75%),
+    radial-gradient(ellipse 95% 145% at calc(103% + var(--motivo-glow-bottom-x, 0px)) 93%, rgba(3, 56, 58, .45), transparent 74%),
+    linear-gradient(120deg, #184c30 0%, #226d3e 48%, #0d3b35 100%) !important;
+}
+
+/* A restrained glow on the image-caption card; text remains unobscured. */
+body:has(#landingSection:not(.hidden)) .motivo-art-note {
+  background:
+    radial-gradient(circle at calc(96% + var(--motivo-glow-mid-x, 0px)) 5%, rgba(92, 181, 126, .18), transparent 85%),
+    linear-gradient(125deg, #ffffff, #edf8ef) !important;
+  background-repeat: no-repeat !important;
+}
+body.dark-mode:has(#landingSection:not(.hidden)) .motivo-art-note {
+  background:
+    radial-gradient(circle at calc(95% + var(--motivo-glow-mid-x, 0px)) 10%, rgba(75, 159, 112, .23), transparent 86%),
+    linear-gradient(125deg, #112822, #1b3d32) !important;
+}
+
+/* Small light surfaces: subdued motion, not an intense effect behind forms. */
+body:has(#customerDashboard:not(.hidden)) :is(.customer-home-card, .customer-home-shop-card),
+body:has(#employeeDashboard:not(.hidden)) :is(.motivo-ops-card, .motivo-ops-stat),
+body:has(#employeeDashboard:not(.hidden)) #motivoSchedPanel .motivo-sched-card,
+body:has(#employeeDashboard:not(.hidden)) #staffWorkflowSection .motivo-summary-card,
+body.motivo-public-page :is(.feature-card, .contact-detail, .contact-form) {
+  background:
+    radial-gradient(ellipse 110% 130% at calc(5% + var(--motivo-glow-mid-x, 0px) + var(--motivo-ambient-drift, 0px)) 0%, rgba(96, 172, 125, .15), transparent 77%),
+    radial-gradient(ellipse 125% 115% at calc(101% + var(--motivo-glow-top-x, 0px)) 100%, rgba(107, 194, 131, .14), transparent 78%),
+    linear-gradient(128deg, #ffffff 0%, #f1f8f1 100%) !important;
+  background-repeat: no-repeat !important;
+}
+body.dark-mode:has(#customerDashboard:not(.hidden)) :is(.customer-home-card, .customer-home-shop-card),
+body.dark-mode:has(#employeeDashboard:not(.hidden)) :is(.motivo-ops-card, .motivo-ops-stat),
+body.dark-mode:has(#employeeDashboard:not(.hidden)) #motivoSchedPanel .motivo-sched-card,
+body.dark-mode:has(#employeeDashboard:not(.hidden)) #staffWorkflowSection .motivo-summary-card,
+body.dark-mode.motivo-public-page :is(.feature-card, .contact-detail, .contact-form) {
+  background:
+    radial-gradient(ellipse 120% 140% at calc(0% + var(--motivo-glow-mid-x, 0px) + var(--motivo-ambient-drift, 0px)) 0%, rgba(55, 136, 95, .23), transparent 78%),
+    radial-gradient(ellipse 125% 120% at calc(103% + var(--motivo-glow-top-x, 0px)) 98%, rgba(39, 108, 99, .17), transparent 79%),
+    linear-gradient(128deg, #14231d 0%, #203b2f 100%) !important;
+}
+
+/* Workspaces with white text: use richer gradients, not pale card backgrounds. */
+body:has(#customerDashboard:not(.hidden)) #customerDashboard .customer-portal-header,
+body:has(#employeeDashboard:not(.hidden)) #employeeDashboard .staff-portal-hero,
+body:has(#employeeDashboard:not(.hidden)) #staffWorkflowSection .motivo-job-hero {
+  background:
+    radial-gradient(ellipse 90% 155% at calc(4% + var(--motivo-glow-top-x, 0px) + var(--motivo-ambient-drift, 0px)) 8%, rgba(81, 182, 124, .33), transparent 76%),
+    radial-gradient(ellipse 110% 140% at calc(98% + var(--motivo-glow-bottom-x, 0px)) 100%, rgba(23, 96, 96, .31), transparent 80%),
+    linear-gradient(122deg, #123328, #22513f 50%, #0d2b30) !important;
+  color: #f5faf5 !important;
+  background-repeat: no-repeat !important;
+}
+
+/* Respect motion preference. Scroll-gradient.js already freezes the CSS
+   variables in reduced-motion mode; do not animate card backgrounds separately. */
+@media (prefers-reduced-motion: reduce) {
+  body:has(#landingSection:not(.hidden)) :is(.motivo-finder, .motivo-finder-controls, .motivo-feature-section, .motivo-shop-cta, .motivo-art-note),
+  body:has(#customerDashboard:not(.hidden)) :is(.customer-home-card, .customer-home-shop-card),
+  body:has(#employeeDashboard:not(.hidden)) :is(.motivo-ops-card, .motivo-ops-stat),
+  body.motivo-public-page :is(.feature-card, .contact-detail, .contact-form) {
+    animation: none !important;
+  }
+}
+@media print {
+  /* Neutral printed panels; avoid using ink for decorative glows. */
+  body:has(#landingSection:not(.hidden)) :is(.motivo-finder, .motivo-feature-section, .motivo-shop-cta),
+  body.motivo-public-page :is(.feature-card, .contact-detail, .contact-form) {
+    background: #fff !important;
+    color: #111 !important;
+  }
+}
