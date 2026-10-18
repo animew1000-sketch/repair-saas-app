@@ -1,5 +1,6 @@
 /* Shared Motivo header polish. Loaded first, so the existing language selector styles remain intact. */
 @import url('/header-gradient.css?v=2');
+@import url('/scroll-gradient.css?v=1');
 
 /* Lightweight universal language selector, independent of each page's CSS framework. */
 .motivo-language-control {

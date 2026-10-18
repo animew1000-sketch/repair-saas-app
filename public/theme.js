@@ -125,3 +125,12 @@ document.addEventListener('click', (event) => {
   };
   document.head.appendChild(dictionary);
 })();
+
+// Decorative scroll glow: separate from language and theme functionality.
+(function bootstrapMotivoScrollGradient() {
+  if (window.__motivoScrollGradientRequested) return;
+  window.__motivoScrollGradientRequested = true;
+  const script = document.createElement('script');
+  script.src = '/scroll-gradient.js?v=1';
+  document.head.appendChild(script);
+})();
