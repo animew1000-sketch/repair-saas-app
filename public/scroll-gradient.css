@@ -1,105 +1,137 @@
-/* Motivo scroll-reactive edge glow (v3).
- * Additive styling: header-gradient.css v2 still handles the header, logo,
- * navigation, and non-animated fallback.
- * Motion values are written by scroll-gradient.js and default to static values.
+/* Motivo v4 — full-page, scroll-responsive atmosphere.
+ * One continuous page background, top to bottom (including footer).
+ * No overlays intercepting links, menu clicks, forms or text selection.
+ * Keep header-gradient.css v2 for the logo and navigation framing.
  */
 :root {
   --motivo-glow-top-x: 0px;
+  --motivo-glow-mid-x: 0px;
   --motivo-glow-bottom-x: 0px;
-  --motivo-glow-bottom-alpha: .13;
+  --motivo-glow-top-y: 0px;
+  --motivo-glow-mid-y: 0px;
+  --motivo-glow-bottom-alpha: .28;
 }
 
-/* LANDING PAGE: paint both edges *behind* all hero/content instead of
-   placing a translucent overlay in front of headings or controls. */
-.container:has(#landingSection:not(.hidden)) {
-  background:
-    radial-gradient(ellipse 67% 245px at calc(50% + var(--motivo-glow-top-x)) 0%, rgba(91, 146, 104, .19), transparent 100%) top center / 100% 330px no-repeat,
-    linear-gradient(180deg, #e0ebe1 0%, rgba(231, 239, 229, .93) 21%, rgba(240, 242, 235, .68) 48%, rgba(248, 247, 242, 0) 100%) top center / 100% 315px no-repeat,
-    radial-gradient(ellipse 77% 330px at calc(50% + var(--motivo-glow-bottom-x)) 100%, rgba(60, 124, 83, var(--motivo-glow-bottom-alpha)) 0%, transparent 78%) bottom center / 100% 420px no-repeat,
-    linear-gradient(0deg, rgba(217, 233, 217, .68) 0%, rgba(248, 247, 242, 0) 100%) bottom center / 100% 340px no-repeat,
-    #f8f7f2 !important;
+/* Typed custom property makes the ambient motion interpolate smoothly in
+   browsers that support @property; scroll movement works without it. */
+@property --motivo-ambient-drift {
+  syntax: '<length>';
+  inherits: true;
+  initial-value: 0px;
 }
-body.dark-mode .container:has(#landingSection:not(.hidden)) {
-  background:
-    radial-gradient(ellipse 70% 260px at calc(50% + var(--motivo-glow-top-x)) 0%, rgba(61, 126, 80, .28), transparent 100%) top center / 100% 315px no-repeat,
-    linear-gradient(180deg, #173a2e 0%, rgba(17, 43, 34, .98) 23%, rgba(11, 28, 22, .82) 50%, rgba(5, 8, 5, 0) 100%) top center / 100% 315px no-repeat,
-    radial-gradient(ellipse 77% 340px at calc(50% + var(--motivo-glow-bottom-x)) 100%, rgba(42, 139, 86, var(--motivo-glow-bottom-alpha)) 0%, transparent 78%) bottom center / 100% 445px no-repeat,
-    linear-gradient(0deg, rgba(20, 58, 36, .77) 0%, rgba(5, 8, 5, 0) 100%) bottom center / 100% 360px no-repeat,
-    #050805 !important;
+@keyframes motivo-atmosphere-drift {
+  0%   { --motivo-ambient-drift: -95px; }
+  50%  { --motivo-ambient-drift: 120px; }
+  100% { --motivo-ambient-drift: -65px; }
 }
 
-/* The last home CTA was an opaque rectangle; let the bottom glow flow behind it.
-   It remains a normal content section with no click-blocking pseudo overlays. */
-.container:has(#landingSection:not(.hidden)) .motivo-final-cta,
-body.dark-mode .container:has(#landingSection:not(.hidden)) .motivo-final-cta {
-  background: transparent !important;
-}
-
-/* The legal links and appearance switch sit after .container on index.html.
-   Continue a quiet version of the same glow behind this lower page edge. */
-body:has(#landingSection:not(.hidden)) {
-  background:
-    radial-gradient(ellipse 75% 260px at calc(50% + var(--motivo-glow-bottom-x)) 100%, rgba(60, 124, 83, var(--motivo-glow-bottom-alpha)), transparent 78%) bottom center / 100% 270px no-repeat,
-    #f8f7f2 !important;
-}
-body.dark-mode:has(#landingSection:not(.hidden)) {
-  background:
-    radial-gradient(ellipse 75% 260px at calc(50% + var(--motivo-glow-bottom-x)) 100%, rgba(42, 139, 86, var(--motivo-glow-bottom-alpha)), transparent 78%) bottom center / 100% 270px no-repeat,
-    #050805 !important;
-}
-
-/* OTHER MOTIVO SCREENS: preserve their original v2 top fade while adding a
-   subtle moving glow to the lower edge. Do not affect the platform console. */
-:is(
-  body:has(#registerSection:not(.hidden)) .container,
-  body:has(#loginSection:not(.hidden)) .container,
-  body:has(#customerDashboard:not(.hidden)) .container,
-  body:has(#employeeDashboard:not(.hidden)) .container
-) {
-  background-image:
-    linear-gradient(180deg, #e4eee4 0%, rgba(248, 247, 242, 0) 100%),
-    radial-gradient(ellipse 76% 300px at calc(50% + var(--motivo-glow-bottom-x)) 100%, rgba(60, 124, 83, var(--motivo-glow-bottom-alpha)), transparent 80%) !important;
-  background-position: top center, bottom center !important;
-  background-size: 100% 260px, 100% 390px !important;
-  background-repeat: no-repeat !important;
-}
-body.dark-mode :is(
-  .container:has(#registerSection:not(.hidden)),
-  .container:has(#loginSection:not(.hidden)),
-  .container:has(#customerDashboard:not(.hidden)),
-  .container:has(#employeeDashboard:not(.hidden))
-) {
-  background-image:
-    linear-gradient(180deg, #17382c 0%, rgba(13, 23, 23, 0) 100%),
-    radial-gradient(ellipse 76% 300px at calc(50% + var(--motivo-glow-bottom-x)) 100%, rgba(42, 139, 86, var(--motivo-glow-bottom-alpha)), transparent 80%) !important;
-}
-
-/* Standalone contact/overview/notice and older customer/staff pages. */
+/* Paint on BODY, which extends beyond the SPA container and includes
+   its legal footer. The color wash therefore reaches the very bottom. */
+body:has(#landingSection:not(.hidden)),
+body:has(#registerSection:not(.hidden)),
+body:has(#loginSection:not(.hidden)),
+body:has(#customerDashboard:not(.hidden)),
+body:has(#employeeDashboard:not(.hidden)),
 body.motivo-public-page,
 body.motivo-universal-page {
-  background-image:
-    linear-gradient(180deg, #e2eee3 0%, rgba(248, 247, 242, 0) 100%),
-    radial-gradient(ellipse 76% 260px at calc(50% + var(--motivo-glow-bottom-x)) 100%, rgba(60, 124, 83, var(--motivo-glow-bottom-alpha)), transparent 80%) !important;
-  background-position: top center, bottom center !important;
-  background-size: 100% 270px, 100% 350px !important;
+  animation: motivo-atmosphere-drift 16s ease-in-out infinite alternate;
   background-repeat: no-repeat !important;
+  background-size: 100% 100% !important;
+  min-height: 100vh;
 }
+
+/* LIGHT: forest-green shimmer at top, middle and bottom; a real
+   page-height gradient keeps every gap between sections connected. */
+body:has(#landingSection:not(.hidden)),
+body:has(#registerSection:not(.hidden)),
+body:has(#loginSection:not(.hidden)),
+body:has(#customerDashboard:not(.hidden)),
+body:has(#employeeDashboard:not(.hidden)),
+body.motivo-public-page:not(.dark-mode),
+body.motivo-universal-page:not(.dark-mode) {
+  background-image:
+    radial-gradient(ellipse 86% 27% at calc(48% + var(--motivo-glow-top-x) + var(--motivo-ambient-drift)) calc(2% + var(--motivo-glow-top-y)), rgba(79, 157, 107, .38) 0%, transparent 79%),
+    radial-gradient(ellipse 65% 31% at calc(34% + var(--motivo-glow-mid-x) - var(--motivo-ambient-drift)) calc(51% + var(--motivo-glow-mid-y)), rgba(84, 167, 114, .19), transparent 84%),
+    radial-gradient(ellipse 82% 32% at calc(51% + var(--motivo-glow-bottom-x) + var(--motivo-ambient-drift)) 99%, rgba(61, 155, 100, var(--motivo-glow-bottom-alpha)), transparent 79%),
+    linear-gradient(180deg, #dcebdd 0%, #f7f8f2 19%, #eef5eb 37%, #eaf4ea 59%, #dceedd 83%, #cbe6d2 100%) !important;
+  background-color: #e8f0e7 !important;
+}
+
+/* DARK: keep the user's nearly-black theme, with a visible but controlled
+   green aurora moving behind rather than on top of the repair content. */
+body.dark-mode:has(#landingSection:not(.hidden)),
+body.dark-mode:has(#registerSection:not(.hidden)),
+body.dark-mode:has(#loginSection:not(.hidden)),
+body.dark-mode:has(#customerDashboard:not(.hidden)),
+body.dark-mode:has(#employeeDashboard:not(.hidden)),
 body.dark-mode.motivo-public-page,
 body.dark-mode.motivo-universal-page {
   background-image:
-    linear-gradient(180deg, #17382c 0%, rgba(13, 23, 23, 0) 100%),
-    radial-gradient(ellipse 76% 260px at calc(50% + var(--motivo-glow-bottom-x)) 100%, rgba(42, 139, 86, var(--motivo-glow-bottom-alpha)), transparent 80%) !important;
+    radial-gradient(ellipse 82% 25% at calc(48% + var(--motivo-glow-top-x) + var(--motivo-ambient-drift)) calc(1% + var(--motivo-glow-top-y)), rgba(45, 142, 79, .46) 0%, transparent 80%),
+    radial-gradient(ellipse 72% 31% at calc(36% + var(--motivo-glow-mid-x) - var(--motivo-ambient-drift)) calc(53% + var(--motivo-glow-mid-y)), rgba(19, 102, 63, .28), transparent 82%),
+    radial-gradient(ellipse 84% 32% at calc(50% + var(--motivo-glow-bottom-x) + var(--motivo-ambient-drift)) 99%, rgba(37, 152, 87, var(--motivo-glow-bottom-alpha)), transparent 76%),
+    linear-gradient(180deg, #102b1d 0%, #07150e 17%, #050805 32%, #07130e 54%, #07170f 77%, #133924 100%) !important;
+  background-color: #050805 !important;
 }
 
-/* No scrolling-driven motion for visitors requesting reduced motion. */
+/* The previous v2/v3 container gradient and hard-colored landing sections
+   mask page-wide color. Clear ONLY the page wrappers and neutral home sections.
+   Distinctive shop/promo panels keep their backgrounds for legibility. */
+body.dark-mode:has(#landingSection:not(.hidden)) .container,
+body.dark-mode:has(#registerSection:not(.hidden)) .container,
+body.dark-mode:has(#loginSection:not(.hidden)) .container,
+body.dark-mode:has(#customerDashboard:not(.hidden)) .container,
+body.dark-mode:has(#employeeDashboard:not(.hidden)) .container,
+body:has(#landingSection:not(.hidden)) .container,
+body:has(#registerSection:not(.hidden)) .container,
+body:has(#loginSection:not(.hidden)) .container,
+body:has(#customerDashboard:not(.hidden)) .container,
+body:has(#employeeDashboard:not(.hidden)) .container,
+body.motivo-public-page > .container,
+body.motivo-universal-page > .container {
+  background: transparent !important;
+  background-image: none !important;
+}
+body:has(#landingSection:not(.hidden)) .motivo-landing,
+body:has(#landingSection:not(.hidden)) .motivo-hero,
+body:has(#landingSection:not(.hidden)) .motivo-benefits,
+body:has(#landingSection:not(.hidden)) .motivo-final-cta {
+  background: transparent !important;
+}
+body:has(#landingSection:not(.hidden)) .legal-footer,
+body:has(#landingSection:not(.hidden)) .theme-footer,
+body.motivo-public-page .legal-footer {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+/* Standalone staff/customer pages sometimes carry Tailwind's opaque body
+   background utility. Their main cards stay intact; only the outer canvas glows. */
+body.motivo-universal-page:not(.dark-mode).bg-slate-950,
+body.dark-mode.motivo-universal-page.bg-slate-950 {
+  background-color: transparent !important;
+}
+
 @media (prefers-reduced-motion: reduce) {
+  body:has(#landingSection:not(.hidden)),
+  body:has(#registerSection:not(.hidden)),
+  body:has(#loginSection:not(.hidden)),
+  body:has(#customerDashboard:not(.hidden)),
+  body:has(#employeeDashboard:not(.hidden)),
+  body.motivo-public-page,
+  body.motivo-universal-page {
+    animation: none !important;
+    --motivo-ambient-drift: 0px !important;
+  }
   :root {
     --motivo-glow-top-x: 0px !important;
+    --motivo-glow-mid-x: 0px !important;
     --motivo-glow-bottom-x: 0px !important;
-    --motivo-glow-bottom-alpha: .13 !important;
+    --motivo-glow-top-y: 0px !important;
+    --motivo-glow-mid-y: 0px !important;
+    --motivo-glow-bottom-alpha: .32 !important;
   }
 }
-
 @media print {
-  .container:has(#landingSection:not(.hidden)) .motivo-final-cta { background: transparent !important; }
+  body { animation: none !important; }
 }

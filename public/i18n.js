@@ -39,7 +39,9 @@
     return 'en';
   }
 
-  let locale = AVAILABLE[safeRead()] ? safeRead() : browserLanguage();
+  // An explicit English/Spanish selection wins; Auto follows browser/device preferences.
+  let preference = AVAILABLE[safeRead()] ? safeRead() : 'auto';
+  let locale = preference === 'auto' ? browserLanguage() : preference;
   const lookupCaches = Object.create(null);
 
   function lookup(input, code) {
@@ -152,9 +154,28 @@
     }
   }
 
+  // Place language selection beside Appearance inside the existing hamburger drawer.
+  // The developer console has no drawer, so use a compact topbar Preferences menu.
   function renderControl() {
     const doc = root.document;
     if (!doc || !doc.body || doc.getElementById('motivo-language-control')) return;
+
+    const menu = typeof doc.querySelector === 'function'
+      ? doc.querySelector('#motivo-side-menu, .motivo-universal-menu') : null;
+    let host = menu;
+    if (!host) {
+      const details = doc.createElement('details');
+      details.className = 'motivo-preferences-popover';
+      const summary = doc.createElement('summary');
+      summary.textContent = '⚙ Preferences';
+      summary.setAttribute('data-i18n-ignore', '');
+      details.appendChild(summary);
+      const topbar = typeof doc.querySelector === 'function'
+        ? doc.querySelector('.top-actions') : null;
+      (topbar || doc.body).appendChild(details);
+      host = details;
+    }
+
     const container = doc.createElement('div');
     container.id = 'motivo-language-control';
     container.className = 'motivo-language-control';
@@ -163,30 +184,55 @@
     label.htmlFor = 'motivo-language-select';
     const select = doc.createElement('select');
     select.id = 'motivo-language-select';
+    const automatic = doc.createElement('option');
+    automatic.value = 'auto';
+    select.appendChild(automatic);
     for (const [code, info] of Object.entries(AVAILABLE)) {
       const option = doc.createElement('option');
       option.value = code;
       option.textContent = info.nativeName;
       select.appendChild(option);
     }
-    select.value = locale;
+    select.value = preference;
     select.addEventListener('change', () => setLanguage(select.value));
     container.appendChild(label);
     container.appendChild(select);
-    doc.body.appendChild(container);
-    return updateControl();
+
+    const themeButton = menu && typeof menu.querySelector === 'function'
+      ? menu.querySelector('.motivo-menu-theme') : null;
+    if (themeButton && typeof menu.insertBefore === 'function') {
+      menu.insertBefore(container, themeButton);
+      const heading = doc.createElement('div');
+      heading.className = 'motivo-preference-heading';
+      heading.setAttribute('data-i18n-ignore', '');
+      heading.textContent = 'Appearance';
+      menu.insertBefore(heading, themeButton);
+    } else {
+      host.appendChild(container);
+    }
+    updateControl();
   }
 
   function updateControl() {
     const doc = root.document;
     if (!doc) return;
+    const spanish = locale === 'es';
     const label = doc.getElementById('motivo-language-control')?.querySelector('label');
     const select = doc.getElementById('motivo-language-select');
-    if (label) label.textContent = locale === 'es' ? '🌐 Idioma' : '🌐 Language';
+    if (label) label.textContent = spanish ? '🌐 Idioma' : '🌐 Language';
     if (select) {
-      select.value = locale;
-      select.setAttribute('aria-label', locale === 'es' ? 'Seleccionar idioma' : 'Select language');
+      select.value = preference;
+      select.setAttribute('aria-label', spanish ? 'Seleccionar idioma' : 'Select language');
+      const option = select.querySelector('option[value="auto"]');
+      if (option) option.textContent = (spanish ? 'Automático (dispositivo)' : 'Auto (device)') +
+        ' · ' + (browserLanguage() === 'es' ? 'Español' : 'English');
     }
+    const heading = typeof doc.querySelector === 'function'
+      ? doc.querySelector('.motivo-preference-heading') : null;
+    if (heading) heading.textContent = spanish ? 'Apariencia' : 'Appearance';
+    const prefs = typeof doc.querySelector === 'function'
+      ? doc.querySelector('.motivo-preferences-popover > summary') : null;
+    if (prefs) prefs.textContent = spanish ? '⚙ Preferencias' : '⚙ Preferences';
     const notice = doc.getElementById('motivo-legal-language-note');
     if (notice) notice.hidden = locale !== 'es';
   }
@@ -205,17 +251,18 @@
     doc.body.insertBefore(banner, doc.body.firstChild);
   }
 
-  function setLanguage(next) {
-    if (!Object.prototype.hasOwnProperty.call(AVAILABLE, next)) return false;
-    locale = next;
-    safeWrite(next);
+  function setLanguage(next, persist = true) {
+    if (next !== 'auto' && !Object.prototype.hasOwnProperty.call(AVAILABLE, next)) return false;
+    preference = next;
+    locale = next === 'auto' ? browserLanguage() : next;
+    if (persist) safeWrite(next);
     if (root.document) {
-      root.document.documentElement.lang = next;
-      root.document.documentElement.dir = AVAILABLE[next].dir;
+      root.document.documentElement.lang = locale;
+      root.document.documentElement.dir = AVAILABLE[locale].dir;
       translateTree(root.document.documentElement);
       updateControl();
       if (typeof root.CustomEvent === 'function') {
-        root.document.dispatchEvent(new root.CustomEvent('motivo:languagechange', { detail: { language: next } }));
+        root.document.dispatchEvent(new root.CustomEvent('motivo:languagechange', { detail: { language: locale, preference }  }));
       }
     }
     return true;
@@ -249,6 +296,8 @@
     translate: translate,
     setLanguage: setLanguage,
     getLanguage: () => locale,
+    getPreference: () => preference,
+    deviceLanguage: browserLanguage,
     supportedLanguages: () => Object.keys(AVAILABLE),
     formatNumber: (n, opts) => new Intl.NumberFormat(locale, opts).format(n),
     formatCurrency: (n, currency = 'USD') => new Intl.NumberFormat(locale, {style: 'currency', currency}).format(n),
@@ -257,9 +306,16 @@
 
   if (typeof root.addEventListener === 'function') {
     root.addEventListener('storage', event => {
-      if (event.key === STORAGE_KEY && AVAILABLE[event.newValue] && event.newValue !== locale) {
-        setLanguage(event.newValue);
+      if (event.key === STORAGE_KEY) {
+        const next = AVAILABLE[event.newValue] ? event.newValue : 'auto';
+        if (next !== preference) setLanguage(next, false);
       }
+    });
+  }
+
+  if (typeof root.addEventListener === 'function') {
+    root.addEventListener('languagechange', () => {
+      if (preference === 'auto') setLanguage('auto', false);
     });
   }
 

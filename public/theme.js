@@ -69,7 +69,7 @@ function toggleMotivoMenu(toggle) {
 document.addEventListener('click', (event) => {
   if (
     document.body.classList.contains('motivo-menu-open') &&
-    !event.target.closest('.header')
+    !event.target.closest('.header, .motivo-universal-menu, .motivo-preferences-popover')
   ) {
     document.body.classList.remove('motivo-menu-open');
   }
@@ -108,7 +108,7 @@ document.addEventListener('click', (event) => {
 
   const stylesheet = document.createElement('link');
   stylesheet.rel = 'stylesheet';
-  stylesheet.href = '/i18n.css?v=1';
+  stylesheet.href = '/i18n.css?v=4';
   document.head.appendChild(stylesheet);
 
   const dictionary = document.createElement('script');
@@ -116,7 +116,7 @@ document.addEventListener('click', (event) => {
   dictionary.async = false;
   dictionary.onload = function () {
     const framework = document.createElement('script');
-    framework.src = '/i18n.js?v=1';
+    framework.src = '/i18n.js?v=4';
     framework.async = false;
     document.head.appendChild(framework);
   };
@@ -131,6 +131,6 @@ document.addEventListener('click', (event) => {
   if (window.__motivoScrollGradientRequested) return;
   window.__motivoScrollGradientRequested = true;
   const script = document.createElement('script');
-  script.src = '/scroll-gradient.js?v=1';
+  script.src = '/scroll-gradient.js?v=4';
   document.head.appendChild(script);
 })();

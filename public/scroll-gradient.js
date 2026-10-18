@@ -1,6 +1,6 @@
-/* Motivo v3: subtle scroll-driven movement for the existing edge gradients.
- * Visual enhancement only: does not inspect forms, user records, or navigation.
- * Works without third-party dependencies and respects prefers-reduced-motion.
+/* Motivo v4: noticeably moving top/middle/bottom gradients on scroll.
+ * Only paints CSS variables (no data, DOM markup, auth or API interception).
+ * Scroll listeners are passive, updates are throttled to animation frames.
  */
 (function motivoScrollGradient(root) {
   'use strict';
@@ -8,68 +8,61 @@
   root.__motivoScrollGradientStarted = true;
 
   const doc = root.document;
-  const element = doc.documentElement;
-  const reducedMotion = typeof root.matchMedia === 'function'
+  const html = doc.documentElement;
+  const reduce = typeof root.matchMedia === 'function'
     ? root.matchMedia('(prefers-reduced-motion: reduce)') : null;
-  const clamp = (value, low, high) => Math.max(low, Math.min(high, value));
-  let framePending = false;
+  const clamp = (x, a, b) => Math.min(b, Math.max(a, x));
+  const properties = [
+    '--motivo-glow-top-x', '--motivo-glow-mid-x', '--motivo-glow-bottom-x',
+    '--motivo-glow-top-y', '--motivo-glow-mid-y', '--motivo-glow-bottom-alpha'
+  ];
+  let pending = false;
 
-  function resetMotion() {
-    element.style.removeProperty('--motivo-glow-top-x');
-    element.style.removeProperty('--motivo-glow-bottom-x');
-    element.style.removeProperty('--motivo-glow-bottom-alpha');
-  }
+  function reset() { properties.forEach(name => html.style.removeProperty(name)); }
 
   function paint() {
-    framePending = false;
-    if (reducedMotion && reducedMotion.matches) {
-      resetMotion();
-      return;
-    }
+    pending = false;
+    if (reduce && reduce.matches) { reset(); return; }
+    const el = doc.scrollingElement || html;
+    const viewport = Math.max(1, root.innerHeight || html.clientHeight || 1);
+    const totalHeight = Math.max(el.scrollHeight || 0, html.scrollHeight || 0);
+    const maxScroll = Math.max(0, totalHeight - viewport);
+    const y = clamp(el.scrollTop || root.scrollY || 0, 0, maxScroll);
+    const progress = maxScroll ? y / maxScroll : 0;
+    const proximity = clamp(1 - (maxScroll - y) / Math.max(650, viewport * 2), 0, 1);
 
-    const scrollElement = doc.scrollingElement || element;
-    const viewportHeight = root.innerHeight || element.clientHeight || 1;
-    const height = Math.max(scrollElement.scrollHeight || 0, element.scrollHeight || 0);
-    const maxScroll = Math.max(0, height - viewportHeight);
-    const scrollTop = clamp(scrollElement.scrollTop || root.scrollY || 0, 0, maxScroll);
-    const progress = maxScroll ? scrollTop / maxScroll : 0;
+    // Intentionally obvious but slow-moving: 140-230px of movement over
+    // a typical scroll, with independent curves for the three glows.
+    const topX = Math.sin(y / 285 + .20) * 155 + progress * 55;
+    const midX = Math.cos(y / 355 + 1.35) * 175;
+    const bottomX = Math.sin(y / 260 + .75) * 225;
+    const topY = Math.sin(y / 370) * 65;
+    const midY = Math.cos(y / 495 + .4) * 55;
+    const alpha = .26 + .30 * proximity;
 
-    // The upper glow drifts quietly while users leave the top of the page.
-    const topDrift = Math.sin(progress * Math.PI * 2.2) * 80;
-    // The lower glow follows a different curve, drawing the eye toward the footer.
-    const bottomDrift = Math.sin(progress * Math.PI * 2.8 + .35) * 120;
-    const distanceFromEnd = maxScroll - scrollTop;
-    const nearFooter = clamp(1 - distanceFromEnd / Math.max(viewportHeight * 1.6, 550), 0, 1);
-    const bottomAlpha = .13 + .23 * nearFooter;
-
-    element.style.setProperty('--motivo-glow-top-x', `${topDrift.toFixed(1)}px`);
-    element.style.setProperty('--motivo-glow-bottom-x', `${bottomDrift.toFixed(1)}px`);
-    element.style.setProperty('--motivo-glow-bottom-alpha', bottomAlpha.toFixed(3));
+    html.style.setProperty('--motivo-glow-top-x', `${topX.toFixed(1)}px`);
+    html.style.setProperty('--motivo-glow-mid-x', `${midX.toFixed(1)}px`);
+    html.style.setProperty('--motivo-glow-bottom-x', `${bottomX.toFixed(1)}px`);
+    html.style.setProperty('--motivo-glow-top-y', `${topY.toFixed(1)}px`);
+    html.style.setProperty('--motivo-glow-mid-y', `${midY.toFixed(1)}px`);
+    html.style.setProperty('--motivo-glow-bottom-alpha', alpha.toFixed(3));
   }
 
-  function schedulePaint() {
-    if (framePending) return;
-    framePending = true;
+  function schedule() {
+    if (pending) return;
+    pending = true;
     if (typeof root.requestAnimationFrame === 'function') root.requestAnimationFrame(paint);
     else paint();
   }
 
-  function preferenceChanged() {
-    if (reducedMotion && reducedMotion.matches) resetMotion();
-    else schedulePaint();
+  if (reduce) {
+    const onChange = () => { if (reduce.matches) reset(); else schedule(); };
+    if (typeof reduce.addEventListener === 'function') reduce.addEventListener('change', onChange);
+    else if (typeof reduce.addListener === 'function') reduce.addListener(onChange);
   }
-
-  if (reducedMotion) {
-    if (typeof reducedMotion.addEventListener === 'function')
-      reducedMotion.addEventListener('change', preferenceChanged);
-    else if (typeof reducedMotion.addListener === 'function')
-      reducedMotion.addListener(preferenceChanged);
-  }
-
-  root.addEventListener('scroll', schedulePaint, {passive: true});
-  root.addEventListener('resize', schedulePaint, {passive: true});
-  root.addEventListener('pageshow', schedulePaint);
-  // A page with dynamically loaded shop records may grow after initial paint.
-  if (doc.readyState === 'loading') doc.addEventListener('DOMContentLoaded', schedulePaint, {once: true});
-  schedulePaint();
+  root.addEventListener('scroll', schedule, {passive: true});
+  root.addEventListener('resize', schedule, {passive: true});
+  root.addEventListener('pageshow', schedule);
+  if (doc.readyState === 'loading') doc.addEventListener('DOMContentLoaded', schedule, {once: true});
+  schedule();
 })(typeof window !== 'undefined' ? window : null);

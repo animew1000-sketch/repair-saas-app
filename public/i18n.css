@@ -1,6 +1,6 @@
 /* Shared Motivo header polish. Loaded first, so the existing language selector styles remain intact. */
 @import url('/header-gradient.css?v=2');
-@import url('/scroll-gradient.css?v=1');
+@import url('/scroll-gradient.css?v=4');
 
 /* Lightweight universal language selector, independent of each page's CSS framework. */
 .motivo-language-control {
@@ -48,3 +48,127 @@
   .motivo-language-control select { min-width: 72px; max-width: 110px; font-size: 12px; }
 }
 @media print { .motivo-language-control, .motivo-legal-language-note { display: none !important; } }
+
+/* Long navigation menus must remain scrollable, particularly on phones,
+   now that Language and Appearance live underneath the page links. */
+.header-nav#motivo-side-menu,
+.motivo-universal-menu {
+  overflow-y: auto !important;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* v4: All preference controls live INSIDE the existing navigation drawer.
+   The original footer theme switch is retained in HTML for compatibility but hidden. */
+.theme-footer { display: none !important; }
+
+#motivo-side-menu .motivo-language-control,
+.motivo-universal-menu .motivo-language-control {
+  position: static !important;
+  inset: auto !important;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  width: 100%;
+  max-width: 100%;
+  padding: 18px 12px 10px;
+  margin: 12px 0 0;
+  border: 0;
+  border-top: 1px solid rgba(90, 132, 107, .30);
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  color: #173c3b;
+  font: 650 13px/1.4 system-ui, sans-serif;
+}
+#motivo-side-menu .motivo-language-control label,
+.motivo-universal-menu .motivo-language-control label {
+  color: inherit;
+  display: block;
+  font-weight: 750;
+  font-size: .81rem;
+}
+#motivo-side-menu .motivo-language-control select,
+.motivo-universal-menu .motivo-language-control select {
+  width: 100%;
+  min-height: 44px;
+  max-width: none;
+  border: 1px solid #b7c9be;
+  border-radius: 10px;
+  background: #fff;
+  color: #173c3b;
+  font: 650 14px/1.3 system-ui, sans-serif;
+  padding: 9px 12px;
+}
+#motivo-side-menu .motivo-preference-heading,
+.motivo-universal-menu .motivo-preference-heading {
+  padding: 12px 12px 2px;
+  font-size: .81rem;
+  font-weight: 750;
+  color: #173c3b;
+}
+#motivo-side-menu .motivo-menu-theme,
+.motivo-universal-menu .motivo-menu-theme {
+  width: calc(100% - 24px);
+  margin: 6px 12px 14px !important;
+  padding: 11px 12px !important;
+  min-height: 44px;
+  border-radius: 10px;
+  justify-content: flex-start;
+  text-align: left;
+}
+body.dark-mode #motivo-side-menu .motivo-language-control,
+body.dark-mode .motivo-universal-menu .motivo-language-control,
+body.dark-mode #motivo-side-menu .motivo-language-control label,
+body.dark-mode .motivo-universal-menu .motivo-language-control label,
+body.dark-mode #motivo-side-menu .motivo-preference-heading,
+body.dark-mode .motivo-universal-menu .motivo-preference-heading { color: #edf2ed; }
+body.dark-mode #motivo-side-menu .motivo-language-control select,
+body.dark-mode .motivo-universal-menu .motivo-language-control select {
+  background: #122b24;
+  color: #edf2ed;
+  border-color: #416452;
+}
+/* The older Tailwind pages use the same drawer, with a dark surface even in light mode. */
+body.motivo-universal-page:not(.dark-mode) .motivo-universal-menu .motivo-language-control,
+body.motivo-universal-page:not(.dark-mode) .motivo-universal-menu .motivo-preference-heading { color: #f1f5f9; }
+
+/* Developer console has no hamburger: its language setting gets a compact
+   accessible Preferences dropdown in the top-right toolbar, never a floating badge. */
+.motivo-preferences-popover { position: relative; flex: 0 0 auto; z-index: 120; }
+.motivo-preferences-popover > summary {
+  list-style: none;
+  cursor: pointer;
+  padding: 9px 12px;
+  border: 1px solid rgba(131, 167, 145, .55);
+  border-radius: 9px;
+  font: 700 12px/1.3 system-ui, sans-serif;
+  color: #e3f2e8;
+  white-space: nowrap;
+}
+.motivo-preferences-popover > summary::-webkit-details-marker { display: none; }
+.motivo-preferences-popover > summary:focus-visible { outline: 3px solid #81c784; outline-offset: 2px; }
+.motivo-preferences-popover .motivo-language-control {
+  position: absolute !important;
+  inset: calc(100% + 8px) 0 auto auto !important;
+  width: 230px;
+  max-width: calc(100vw - 24px);
+  padding: 14px;
+  gap: 9px;
+  display: flex;
+  flex-direction: column;
+  background: #152b22;
+  color: #edf2ed;
+  border-color: #416452;
+}
+.motivo-preferences-popover .motivo-language-control select {
+  width: 100%;
+  max-width: none;
+  min-height: 44px;
+}
+@media (max-width: 420px) {
+  #motivo-side-menu .motivo-language-control,
+  .motivo-universal-menu .motivo-language-control { padding: 14px 9px 8px; }
+  #motivo-side-menu .motivo-language-control select,
+  .motivo-universal-menu .motivo-language-control select { width: 100%; }
+}
