@@ -1,0 +1,116 @@
+/* Motivo Header Gradient v1
+ * A visual-only override for the top navigation bars.
+ * Leaves the repair workflow, drawer navigation, platform admin and app logic unchanged.
+ * Loaded from /i18n.css, which is already present on Motivo's browser pages.
+ */
+
+/* Home, registration/login, customer & employee dashboards, public info pages.
+   Bottom stop is transparent so the warm page background becomes the transition. */
+.container:has(#landingSection:not(.hidden)) > .header,
+body:has(#registerSection:not(.hidden)) .container > .header,
+body:has(#loginSection:not(.hidden)) .container > .header,
+body:has(#customerDashboard:not(.hidden)) .container > .header,
+body:has(#employeeDashboard:not(.hidden)) .container > .header,
+body.motivo-public-page > .header,
+body.motivo-public-page > .container > .header {
+  background: linear-gradient(
+    180deg,
+    rgba(221, 232, 217, .98) 0%,
+    rgba(235, 238, 227, .66) 47%,
+    rgba(248, 247, 242, 0) 100%
+  ) !important;
+  border-bottom: 0 !important;
+  box-shadow: none !important;
+}
+
+body.dark-mode .container:has(#landingSection:not(.hidden)) > .header,
+body.dark-mode:has(#registerSection:not(.hidden)) .container > .header,
+body.dark-mode:has(#loginSection:not(.hidden)) .container > .header,
+body.dark-mode:has(#customerDashboard:not(.hidden)) .container > .header,
+body.dark-mode:has(#employeeDashboard:not(.hidden)) .container > .header,
+body.dark-mode.motivo-public-page > .header,
+body.dark-mode.motivo-public-page > .container > .header {
+  background: linear-gradient(
+    180deg,
+    rgba(29, 58, 46, .96) 0%,
+    rgba(22, 43, 37, .62) 47%,
+    rgba(13, 23, 23, 0) 100%
+  ) !important;
+  border-bottom: 0 !important;
+}
+
+/* The older standalone entry pages use <header> rather than the .header div. */
+body.motivo-universal-page:not(.dark-mode) > header {
+  background-image: linear-gradient(
+    to bottom,
+    rgba(219, 232, 218, .96),
+    rgba(240, 244, 237, .52) 55%,
+    rgba(255, 255, 255, 0) 100%
+  ) !important;
+  border-bottom: 0 !important;
+  box-shadow: none !important;
+}
+body.dark-mode.motivo-universal-page > header {
+  background-image: linear-gradient(
+    to bottom,
+    rgba(33, 66, 49, .95),
+    rgba(22, 45, 33, .65) 55%,
+    rgba(16, 23, 16, 0) 100%
+  ) !important;
+  border-bottom: 0 !important;
+  box-shadow: none !important;
+}
+
+/* Soften the box around the hamburger. Keep hitbox, focus and open-state intact. */
+.container:has(#landingSection:not(.hidden)) .motivo-menu-toggle,
+body:has(#registerSection:not(.hidden)) .container > .header .motivo-menu-toggle,
+body:has(#loginSection:not(.hidden)) .container > .header .motivo-menu-toggle,
+body:has(#customerDashboard:not(.hidden)) .container > .header .motivo-menu-toggle,
+body:has(#employeeDashboard:not(.hidden)) .container > .header .motivo-menu-toggle,
+body.motivo-public-page > .header .motivo-menu-toggle,
+body.motivo-public-page > .container > .header .motivo-menu-toggle,
+body.motivo-universal-page > header .motivo-menu-toggle {
+  border-color: transparent !important;
+  border-radius: 13px !important;
+  box-shadow: none !important;
+}
+
+.container:has(#landingSection:not(.hidden)) .motivo-menu-toggle:hover,
+body:has(#registerSection:not(.hidden)) .container > .header .motivo-menu-toggle:hover,
+body:has(#loginSection:not(.hidden)) .container > .header .motivo-menu-toggle:hover,
+body:has(#customerDashboard:not(.hidden)) .container > .header .motivo-menu-toggle:hover,
+body:has(#employeeDashboard:not(.hidden)) .container > .header .motivo-menu-toggle:hover,
+body.motivo-public-page > .header .motivo-menu-toggle:hover,
+body.motivo-public-page > .container > .header .motivo-menu-toggle:hover,
+body.motivo-universal-page:not(.dark-mode) > header .motivo-menu-toggle:hover {
+  background: rgba(23, 60, 59, .09) !important;
+}
+body.dark-mode .container:has(#landingSection:not(.hidden)) .motivo-menu-toggle:hover,
+body.dark-mode:has(#registerSection:not(.hidden)) .container > .header .motivo-menu-toggle:hover,
+body.dark-mode:has(#loginSection:not(.hidden)) .container > .header .motivo-menu-toggle:hover,
+body.dark-mode:has(#customerDashboard:not(.hidden)) .container > .header .motivo-menu-toggle:hover,
+body.dark-mode:has(#employeeDashboard:not(.hidden)) .container > .header .motivo-menu-toggle:hover,
+body.dark-mode.motivo-public-page > .header .motivo-menu-toggle:hover,
+body.dark-mode.motivo-public-page > .container > .header .motivo-menu-toggle:hover,
+body.dark-mode.motivo-universal-page > header .motivo-menu-toggle:hover {
+  background: rgba(234, 243, 237, .12) !important;
+}
+
+/* The white brand artwork needs its green backing for readable contrast. */
+.container:has(#landingSection:not(.hidden)) .brand-logo,
+body:has(#registerSection:not(.hidden)) .container > .header .brand-logo,
+body:has(#loginSection:not(.hidden)) .container > .header .brand-logo,
+body:has(#customerDashboard:not(.hidden)) .container > .header .brand-logo,
+body:has(#employeeDashboard:not(.hidden)) .container > .header .brand-logo,
+body.motivo-public-page .header .brand-logo {
+  border-radius: 10px !important;
+}
+
+/* Keyboard focus stays visible even without the menu's square outline. */
+.motivo-menu-toggle:focus-visible {
+  outline: 3px solid #2e7d32 !important;
+  outline-offset: 3px;
+}
+body.dark-mode .motivo-menu-toggle:focus-visible {
+  outline-color: #81c784 !important;
+}
