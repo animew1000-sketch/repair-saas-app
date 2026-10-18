@@ -18,7 +18,7 @@ body:has(#landingSection:not(.hidden)) {
       #dcebdd 0%, #f7f8f2 20%, #edf5e9 45%, #e8f2e7 64%,
       rgba(216, 234, 216, .94) 78%, rgba(210, 232, 216, .77) 86%,
       rgba(224, 240, 227, .50) 100%),
-    url('/images/motivo-coastal-cars.jpg') !important;
+    none !important;
   background-size:
     100% 100%, 100% 100%, 100% 100%, 100% 100%,
     auto clamp(640px, 66vw, 1200px) !important;
@@ -36,7 +36,7 @@ body.dark-mode:has(#landingSection:not(.hidden)) {
       #102b1d 0%, #07150e 21%, #050805 43%, #081810 62%,
       rgba(8, 27, 18, .97) 76%, rgba(7, 29, 21, .85) 86%,
       rgba(5, 17, 14, .60) 100%),
-    url('/images/motivo-coastal-cars.jpg') !important;
+    none !important;
   background-color: #050805 !important;
 }
 
@@ -187,7 +187,7 @@ body.dark-mode {
   --motivo-panel-stroke: rgba(126, 194, 146, .15);
 }
 
-/* The same coastal photo and top-to-bottom atmosphere on all Motivo
+/* The unified green page atmosphere on all Motivo
    pages, not just / (including signed-in views and the developer console).
    Each background layer is document-positioned; the PHOTO is anchored at
    the page's end, not fixed to the viewport or stretched vertically. */
@@ -200,7 +200,7 @@ body.dark-mode {
     radial-gradient(ellipse 82% 28% at calc(38% + var(--motivo-glow-mid-x, 0px)) 51%, rgba(71, 162, 108, .20), transparent 84%),
     radial-gradient(ellipse 88% 33% at calc(51% + var(--motivo-glow-bottom-x, 0px)) 99%, rgba(48, 144, 94, var(--motivo-glow-bottom-alpha, .30)), transparent 80%),
     linear-gradient(180deg, #dcebdd 0%, #f4f7f0 19%, #ecf4e9 47%, #e3f1e4 68%, rgba(205,228,209,.93) 82%, rgba(226,241,226,.50) 100%),
-    url('/images/motivo-coastal-cars.jpg') !important;
+    none !important;
   background-size: 100% 100%, 100% 100%, 100% 100%, 100% 100%, auto clamp(640px, 66vw, 1200px) !important;
   background-position: center top, center top, center top, center top, center bottom !important;
   background-repeat: no-repeat !important;
@@ -214,7 +214,7 @@ body.dark-mode {
     radial-gradient(ellipse 80% 28% at calc(38% + var(--motivo-glow-mid-x, 0px)) 51%, rgba(24,112,77,.31), transparent 84%),
     radial-gradient(ellipse 88% 33% at calc(50% + var(--motivo-glow-bottom-x, 0px)) 99%, rgba(38,154,86,var(--motivo-glow-bottom-alpha,.31)), transparent 80%),
     linear-gradient(180deg, #102b1d 0%, #07160f 21%, #050805 47%, #081a11 68%, rgba(8,28,20,.94) 83%, rgba(6,18,16,.60) 100%),
-    url('/images/motivo-coastal-cars.jpg') !important;
+    none !important;
   background-color: #050805 !important;
   background-size: 100% 100%, 100% 100%, 100% 100%, 100% 100%, auto clamp(640px, 66vw, 1200px) !important;
   background-position: center top, center top, center top, center top, center bottom !important;
