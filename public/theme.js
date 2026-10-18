@@ -99,3 +99,29 @@ document.addEventListener('click', (event) => {
     menuButton.setAttribute('aria-label', 'Open navigation menu');
   }
 });
+
+// Language support is bootstrapped here because existing Motivo pages
+// already load theme.js. Preserve all theme/menu behavior above.
+(function bootstrapMotivoLanguage() {
+  if (window.__motivoI18nBootstrapped) return;
+  window.__motivoI18nBootstrapped = true;
+
+  const stylesheet = document.createElement('link');
+  stylesheet.rel = 'stylesheet';
+  stylesheet.href = '/i18n.css?v=1';
+  document.head.appendChild(stylesheet);
+
+  const dictionary = document.createElement('script');
+  dictionary.src = '/i18n/es.js?v=1';
+  dictionary.async = false;
+  dictionary.onload = function () {
+    const framework = document.createElement('script');
+    framework.src = '/i18n.js?v=1';
+    framework.async = false;
+    document.head.appendChild(framework);
+  };
+  dictionary.onerror = function () {
+    console.warn('Motivo language dictionary unavailable; English UI retained.');
+  };
+  document.head.appendChild(dictionary);
+})();
