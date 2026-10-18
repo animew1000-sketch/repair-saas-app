@@ -108,7 +108,7 @@ document.addEventListener('click', (event) => {
 
   const stylesheet = document.createElement('link');
   stylesheet.rel = 'stylesheet';
-  stylesheet.href = '/i18n.css?v=6';
+  stylesheet.href = '/i18n.css?v=7';
   document.head.appendChild(stylesheet);
 
   const dictionary = document.createElement('script');
@@ -131,7 +131,7 @@ document.addEventListener('click', (event) => {
   if (window.__motivoScrollGradientRequested) return;
   window.__motivoScrollGradientRequested = true;
   const script = document.createElement('script');
-  script.src = '/scroll-gradient.js?v=4';
+  script.src = '/scroll-gradient.js?v=7';
   document.head.appendChild(script);
 })();
 

@@ -1,0 +1,205 @@
+/* Motivo v7 | Magnetic liquid atmosphere, optimized for scrolling.
+ * The body keeps a STATIC two-layer gradient + bottom-anchored coastal photo.
+ * Only the three small, isolated glow elements move using composited transforms.
+ * This replaces expensive whole-document background/gradient animation.
+ */
+
+/* No registered-property animation on the entire BODY. In v4 this forced large
+ * areas of the page and cards to repaint on each animation frame. */
+html body:has(#landingSection:not(.hidden)),
+html body:has(#registerSection:not(.hidden)),
+html body:has(#loginSection:not(.hidden)),
+html body:has(#customerDashboard:not(.hidden)),
+html body:has(#employeeDashboard:not(.hidden)),
+html body.motivo-public-page,
+html body.motivo-universal-page,
+html body:has(> .topbar) {
+  animation: none !important;
+  --motivo-ambient-drift: 0px !important;
+  background-repeat: no-repeat !important;
+}
+
+/* Preserve the v6 coastal photo, in the bottommost layer, but stop animating
+ * huge radial gradients painted at 100% of document height. */
+html body:not(.dark-mode):is(
+  :has(#landingSection:not(.hidden)),
+  :has(#registerSection:not(.hidden)),
+  :has(#loginSection:not(.hidden)),
+  :has(#customerDashboard:not(.hidden)),
+  :has(#employeeDashboard:not(.hidden)),
+  .motivo-public-page,
+  .motivo-universal-page,
+  :has(> .topbar)
+) {
+  background-image:
+    linear-gradient(180deg, #e0eee2 0%, #f4f8f0 25%, #e8f2e9 64%, rgba(215,234,218,.93) 82%, rgba(224,239,227,.50) 100%),
+    url('/images/motivo-coastal-cars.jpg') !important;
+  background-size: 100% 100%, auto clamp(640px, 66vw, 1200px) !important;
+  background-position: center top, center bottom !important;
+  background-color: #e8f0e7 !important;
+}
+html body.dark-mode:is(
+  :has(#landingSection:not(.hidden)),
+  :has(#registerSection:not(.hidden)),
+  :has(#loginSection:not(.hidden)),
+  :has(#customerDashboard:not(.hidden)),
+  :has(#employeeDashboard:not(.hidden)),
+  .motivo-public-page,
+  .motivo-universal-page,
+  :has(> .topbar)
+) {
+  background-image:
+    linear-gradient(180deg, #10271b 0%, #07160f 22%, #050805 49%, #0b2118 78%, rgba(7,23,17,.57) 100%),
+    url('/images/motivo-coastal-cars.jpg') !important;
+  background-size: 100% 100%, auto clamp(640px, 66vw, 1200px) !important;
+  background-position: center top, center bottom !important;
+  background-color: #050805 !important;
+}
+
+/* Compositor-only glows live over the static background and BELOW document
+ * content, menus, headings and controls. The layer never receives input. */
+#motivo-liquid-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  isolation: isolate;
+  contain: layout paint style;
+}
+#motivo-liquid-layer .motivo-liquid-blob {
+  position: absolute;
+  display: block;
+  width: clamp(310px, 58vw, 750px);
+  height: clamp(310px, 69vh, 680px);
+  pointer-events: none;
+  transform: translate3d(0,0,0);
+  transform-origin: center center;
+  will-change: transform;
+}
+#motivo-liquid-layer .motivo-liquid-core {
+  display: block;
+  position: absolute;
+  inset: 0;
+  border-radius: 55% 45% 62% 38% / 45% 59% 41% 55%;
+  transform: translate3d(0,0,0);
+  will-change: transform;
+  background-repeat: no-repeat;
+}
+#motivo-liquid-layer .motivo-liquid-blob--a {
+  left: -14vw;
+  top: -21vh;
+  opacity: .68;
+}
+#motivo-liquid-layer .motivo-liquid-blob--b {
+  right: -20vw;
+  top: 14vh;
+  opacity: .52;
+}
+#motivo-liquid-layer .motivo-liquid-blob--c {
+  left: 30vw;
+  bottom: -28vh;
+  opacity: .47;
+}
+#motivo-liquid-layer .motivo-liquid-blob--a .motivo-liquid-core {
+  background: radial-gradient(ellipse at 43% 49%, rgba(60,160,97,.53) 0%, rgba(63,170,109,.28) 38%, rgba(86,174,116,0) 75%);
+  animation: motivo-liquid-breathe-a 18s ease-in-out infinite alternate;
+}
+#motivo-liquid-layer .motivo-liquid-blob--b .motivo-liquid-core {
+  background: radial-gradient(ellipse at 56% 49%, rgba(38,146,121,.46) 0%, rgba(56,148,109,.24) 43%, rgba(63,164,104,0) 76%);
+  animation: motivo-liquid-breathe-b 24s ease-in-out infinite alternate;
+}
+#motivo-liquid-layer .motivo-liquid-blob--c .motivo-liquid-core {
+  background: radial-gradient(ellipse at 46% 52%, rgba(67,166,89,.49) 0%, rgba(57,172,115,.24) 40%, rgba(55,158,94,0) 76%);
+  animation: motivo-liquid-breathe-c 21s ease-in-out infinite alternate;
+}
+body.dark-mode #motivo-liquid-layer .motivo-liquid-blob--a { opacity: .78; }
+body.dark-mode #motivo-liquid-layer .motivo-liquid-blob--b { opacity: .66; }
+body.dark-mode #motivo-liquid-layer .motivo-liquid-blob--c { opacity: .58; }
+body.dark-mode #motivo-liquid-layer .motivo-liquid-blob--a .motivo-liquid-core {
+  background: radial-gradient(ellipse at 43% 49%, rgba(45,187,97,.49) 0%, rgba(33,133,103,.27) 38%, transparent 76%);
+}
+body.dark-mode #motivo-liquid-layer .motivo-liquid-blob--b .motivo-liquid-core {
+  background: radial-gradient(ellipse at 56% 49%, rgba(26,143,115,.48) 0%, rgba(38,114,102,.25) 42%, transparent 76%);
+}
+body.dark-mode #motivo-liquid-layer .motivo-liquid-blob--c .motivo-liquid-core {
+  background: radial-gradient(ellipse at 46% 52%, rgba(34,179,94,.48) 0%, rgba(46,139,93,.25) 40%, transparent 77%);
+}
+
+@keyframes motivo-liquid-breathe-a {
+  from { transform: translate3d(-12px, 11px, 0) rotate(-9deg) scale(1.01); }
+  to   { transform: translate3d(30px,-14px, 0) rotate(13deg) scale(1.19, .91); }
+}
+@keyframes motivo-liquid-breathe-b {
+  from { transform: translate3d(17px,-10px, 0) rotate(14deg) scale(1.08, .92); }
+  to   { transform: translate3d(-27px,19px, 0) rotate(-11deg) scale(.93, 1.16); }
+}
+@keyframes motivo-liquid-breathe-c {
+  from { transform: translate3d(-19px,15px, 0) rotate(-9deg) scale(.97, 1.10); }
+  to   { transform: translate3d(23px,-19px, 0) rotate(12deg) scale(1.13, .93); }
+}
+
+/* Raise only existing top-level content above the atmospheric layer.
+ * Avoid overriding position on sticky headers and fixed navigation. */
+body > .container,
+body > main,
+body > .legal-footer,
+body > .motivo-legal-language-note,
+body > .theme-footer,
+body > footer,
+body > .contact-page {
+  position: relative;
+  z-index: 1;
+}
+body > header,
+body > .header,
+body > .topbar,
+body > .motivo-universal-menu {
+  z-index: 20;
+}
+/* On the platform dashboard, this is a fixed-position popover in a toolbar. */
+body > .motivo-preferences-popover { z-index: 120; }
+
+/* Marketing panels keep v6's feathery edges. Move the PRE-PAINTED
+ * gradient layer with transforms instead of re-painting its color field. */
+body:has(#landingSection:not(.hidden)) :is(.motivo-feature-section, .motivo-shop-cta)::before {
+  animation: motivo-liquid-panel-drift 19s ease-in-out infinite alternate !important;
+  will-change: transform;
+  transform: translate3d(0,0,0);
+}
+@keyframes motivo-liquid-panel-drift {
+  0%   { transform: translate3d(-12px,6px,0) scale(1.03,1.02) rotate(-.45deg); }
+  50%  { transform: translate3d(17px,-12px,0) scale(1.08,.97) rotate(.55deg); }
+  100% { transform: translate3d(-8px,10px,0) scale(1.02,1.06) rotate(-.4deg); }
+}
+
+/* Mobile/compositor budget: use two glows and gentler opacity/size. */
+@media (max-width: 600px) {
+  #motivo-liquid-layer .motivo-liquid-blob { width: 94vw; height: 56vh; }
+  #motivo-liquid-layer .motivo-liquid-blob--a { left: -32vw; opacity: .58; }
+  #motivo-liquid-layer .motivo-liquid-blob--b { right: -45vw; opacity: .41; }
+  #motivo-liquid-layer .motivo-liquid-blob--c { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #motivo-liquid-layer .motivo-liquid-core,
+  body:has(#landingSection:not(.hidden)) :is(.motivo-feature-section, .motivo-shop-cta)::before {
+    animation: none !important;
+    transform: none !important;
+    will-change: auto;
+  }
+  #motivo-liquid-layer .motivo-liquid-blob {
+    transform: none !important;
+    will-change: auto;
+  }
+}
+@media print {
+  #motivo-liquid-layer { display: none !important; }
+  body:has(#landingSection:not(.hidden)) :is(.motivo-feature-section, .motivo-shop-cta)::before {
+    animation: none !important;
+  }
+}
+
+/* Moving, feathered wide panels may overhang the viewport by a few pixels.
+ * Clip horizontal overflow without creating a second scroll container. */
+html { overflow-x: clip; }
+body { overflow-x: clip; }
