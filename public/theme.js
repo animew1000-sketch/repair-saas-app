@@ -108,7 +108,7 @@ document.addEventListener('click', (event) => {
 
   const stylesheet = document.createElement('link');
   stylesheet.rel = 'stylesheet';
-  stylesheet.href = '/i18n.css?v=11';
+  stylesheet.href = '/i18n.css?v=12';
   document.head.appendChild(stylesheet);
 
   const dictionary = document.createElement('script');
