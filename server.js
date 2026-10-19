@@ -123,20 +123,6 @@ app.use('/api/platform', require('./routes/platform-admin'));
 // Keep platform administrator routes outside tenant lifecycle middleware.
 app.use(require('./routes/platform-status-gate'));
 
-app.use('/api/companies', companiesRoutes);
-app.use('/api', authRoutes);
-app.use('/api/manager/scheduling/disruptions', require('./routes/appointment-disruptions'));
-app.use('/api/manager/scheduling', require('./routes/scheduling'));
-app.use('/api/employee-permissions', require('./routes/employee-permissions'));
-app.use('/api/manager', managerRoutes);
-// MOT-028: mount before legacy customer routes to prevent bypassing request intake.
-app.use('/api', require('./routes/mot028-booking'));
-app.use('/api/mot028', require('./routes/mot028-booking'));
-app.use('/api/customer', customerRoutes);
-app.use('/api', toolsRoutes);
-app.use('/api/department', departmentRoutes);
-
-
 // ======================================================
 // HEALTH CHECK
 // ======================================================
@@ -158,6 +144,20 @@ app.get('/api/health', async (req, res) => {
     });
   }
 });
+
+
+app.use('/api/companies', companiesRoutes);
+app.use('/api', authRoutes);
+app.use('/api/manager/scheduling/disruptions', require('./routes/appointment-disruptions'));
+app.use('/api/manager/scheduling', require('./routes/scheduling'));
+app.use('/api/employee-permissions', require('./routes/employee-permissions'));
+app.use('/api/manager', managerRoutes);
+// MOT-028: mount before legacy customer routes to prevent bypassing request intake.
+app.use('/api', require('./routes/mot028-booking'));
+app.use('/api/mot028', require('./routes/mot028-booking'));
+app.use('/api/customer', customerRoutes);
+app.use('/api', toolsRoutes);
+app.use('/api/department', departmentRoutes);
 
 
 // ======================================================

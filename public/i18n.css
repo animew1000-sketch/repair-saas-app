@@ -175,109 +175,199 @@ body.motivo-universal-page:not(.dark-mode) .motivo-universal-menu .motivo-prefer
   .motivo-universal-menu .motivo-language-control select { width: 100%; }
 }
 
+/* Motivo v11 | Single-surface, highly translucent navigation.
+ * Intentional: ONE glass tone, ONE row pattern, ONE rhythm.
+ * No backdrop-filter, blur, animation, layout JS, or pointer tracking.
+ * All existing language/theme controls, links and drawer behavior remain.
+ */
 
-/* Motivo v10 | Aurora-glass navigation drawer.
-   Semi-transparent forest/mint surfaces reveal the real page behind them.
-   Intentionally NO backdrop-filter blur: desktop scrolling remains cheap.
-   Preserve the original menu slide, hit areas and language/theme controls. */
+/* A genuinely see-through sheet: alpha .54 light / .53 dark, rather than
+   the near-opaque v10 layered gradients. The content BEHIND it is visible. */
 html body #motivo-side-menu.header-nav,
 html body.motivo-universal-page .motivo-universal-menu {
-  background: linear-gradient(152deg,
-    rgba(240, 250, 241, .91) 0%,
-    rgba(221, 242, 228, .86) 54%,
-    rgba(229, 246, 234, .80) 100%) !important;
-  border-right: 1px solid rgba(40, 112, 69, .24) !important;
-  box-shadow: 16px 0 38px rgba(20, 60, 34, .14) !important;
-  color: #153c27 !important;
+  --motivo-drawer-ink: #153b28;
+  --motivo-drawer-muted: #416c52;
+  --motivo-drawer-rule: rgba(26, 100, 56, .23);
+  --motivo-drawer-hover: rgba(255, 255, 255, .19);
+  background: rgba(221, 247, 225, .54) !important;
+  background-image: none !important;
+  color: var(--motivo-drawer-ink) !important;
+  border: 0 !important;
+  border-right: 1px solid var(--motivo-drawer-rule) !important;
+  box-shadow: 10px 0 28px rgba(15, 60, 35, .10) !important;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
   background-clip: padding-box !important;
+  gap: 10px !important;
 }
 html body.dark-mode #motivo-side-menu.header-nav,
 html body.dark-mode.motivo-universal-page .motivo-universal-menu {
-  background: linear-gradient(150deg,
-    rgba(6, 24, 13, .92) 0%,
-    rgba(10, 36, 23, .86) 52%,
-    rgba(15, 48, 29, .79) 100%) !important;
-  border-right-color: rgba(117, 206, 139, .25) !important;
-  box-shadow: 16px 0 38px rgba(0, 0, 0, .29) !important;
-  color: #eff8f0 !important;
+  --motivo-drawer-ink: #e9f9ed;
+  --motivo-drawer-muted: #c2e4ca;
+  --motivo-drawer-rule: rgba(166, 224, 177, .25);
+  --motivo-drawer-hover: rgba(185, 248, 196, .10);
+  background: rgba(5, 32, 17, .53) !important;
+  background-image: none !important;
+  border-right-color: var(--motivo-drawer-rule) !important;
+  box-shadow: 10px 0 28px rgba(0, 0, 0, .22) !important;
 }
-/* Restrained surface highlights: they don't obscure the aurora or compete
-   with the labels, and apply to both standalone and built-in portals. */
-html body:not(.dark-mode) #motivo-side-menu .header-link,
-html body.motivo-universal-page:not(.dark-mode) .motivo-universal-menu :is(a,button),
-html body:not(.dark-mode) #motivo-side-menu :is(.motivo-preference-heading, .motivo-language-control, .motivo-language-control label),
-html body.motivo-universal-page:not(.dark-mode) .motivo-universal-menu :is(.motivo-preference-heading, .motivo-language-control, .motivo-language-control label) {
-  color: #153c27 !important;
+
+/* All navigation destinations and actions have the SAME size, type weight,
+   indentation and corners. Overrides old bright buttons and pill tiles. */
+html body #motivo-side-menu :is(.header-links, .header-actions),
+html body.motivo-universal-page .motivo-universal-menu :is(.header-links, .header-actions) {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  width: 100%;
+  gap: 3px !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
-html body.dark-mode #motivo-side-menu .header-link,
-html body.dark-mode.motivo-universal-page .motivo-universal-menu :is(a,button),
-html body.dark-mode #motivo-side-menu :is(.motivo-preference-heading, .motivo-language-control, .motivo-language-control label),
-html body.dark-mode.motivo-universal-page .motivo-universal-menu :is(.motivo-preference-heading, .motivo-language-control, .motivo-language-control label) {
-  color: #edf8ee !important;
+html body #motivo-side-menu :is(.header-link, .motivo-menu-theme),
+html body.motivo-universal-page .motivo-universal-menu :is(.header-link, .motivo-menu-theme),
+html body.motivo-universal-page .motivo-universal-menu > :is(a,button):not(.motivo-menu-toggle) {
+  box-sizing: border-box;
+  display: flex !important;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 11px !important;
+  width: 100% !important;
+  min-height: 45px !important;
+  margin: 0 !important;
+  padding: 11px 14px !important;
+  border: 1px solid transparent !important;
+  border-radius: 11px !important;
+  background: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  color: var(--motivo-drawer-ink) !important;
+  font: 600 14px/1.4 system-ui, -apple-system, sans-serif !important;
+  text-align: left;
+  text-decoration: none !important;
+  letter-spacing: 0 !important;
+  transform: none !important;
 }
-html body:not(.dark-mode) #motivo-side-menu .header-link:hover,
-html body.motivo-universal-page:not(.dark-mode) .motivo-universal-menu :is(a,button):hover {
-  background: rgba(71, 161, 98, .13) !important;
+/* Hidden portal destinations remain hidden rather than becoming visible. */
+html body #motivo-side-menu .hidden,
+html body.motivo-universal-page .motivo-universal-menu .hidden {
+  display: none !important;
 }
-html body.dark-mode #motivo-side-menu .header-link:hover,
-html body.dark-mode.motivo-universal-page .motivo-universal-menu :is(a,button):hover {
-  background: rgba(106, 208, 139, .15) !important;
+html body #motivo-side-menu :is(.header-link, .motivo-menu-theme):is(:hover,:focus-visible),
+html body.motivo-universal-page .motivo-universal-menu :is(.header-link, .motivo-menu-theme):is(:hover,:focus-visible),
+html body.motivo-universal-page .motivo-universal-menu > :is(a,button):not(.motivo-menu-toggle):is(:hover,:focus-visible) {
+  background: var(--motivo-drawer-hover) !important;
+  color: var(--motivo-drawer-ink) !important;
 }
 html body #motivo-side-menu :is(a,button,select):focus-visible,
 html body.motivo-universal-page .motivo-universal-menu :is(a,button,select):focus-visible {
-  outline: 2px solid #47a66a !important;
-  outline-offset: 2px;
+  outline: 2px solid #4ba36b !important;
+  outline-offset: 2px !important;
 }
-/* Inputs must be readable even when content shifts behind the translucent drawer. */
-html body:not(.dark-mode) #motivo-side-menu .motivo-language-control select,
-html body.motivo-universal-page:not(.dark-mode) .motivo-universal-menu .motivo-language-control select {
-  background: rgba(248, 255, 249, .96) !important;
-  color: #163e2b !important;
-  border-color: rgba(57, 124, 81, .36) !important;
+
+/* A single quiet section break. No separate boxed theme or language cards. */
+html body #motivo-side-menu .motivo-language-control,
+html body.motivo-universal-page .motivo-universal-menu .motivo-language-control {
+  box-sizing: border-box;
+  position: static !important;
+  inset: auto !important;
+  display: flex !important;
+  align-items: stretch !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+  padding: 16px 0 0 !important;
+  margin: 10px 0 0 !important;
+  width: 100% !important;
+  max-width: none !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-top: 1px solid var(--motivo-drawer-rule) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  color: var(--motivo-drawer-ink) !important;
+  font: 600 14px/1.4 system-ui, -apple-system, sans-serif !important;
+}
+html body #motivo-side-menu .motivo-language-control label,
+html body.motivo-universal-page .motivo-universal-menu .motivo-language-control label,
+html body #motivo-side-menu .motivo-preference-heading,
+html body.motivo-universal-page .motivo-universal-menu .motivo-preference-heading {
+  color: var(--motivo-drawer-muted) !important;
+  font: 600 12px/1.35 system-ui, -apple-system, sans-serif !important;
+  letter-spacing: .02em !important;
+  padding: 0 14px !important;
+  margin: 0 !important;
+  text-transform: none !important;
+}
+html body #motivo-side-menu .motivo-language-control select,
+html body.motivo-universal-page .motivo-universal-menu .motivo-language-control select {
+  box-sizing: border-box;
+  display: block !important;
+  width: calc(100% - 0px) !important;
+  min-height: 44px !important;
+  max-width: none !important;
+  padding: 10px 13px !important;
+  margin: 0 !important;
+  border-radius: 11px !important;
+  border: 1px solid var(--motivo-drawer-rule) !important;
+  background: rgba(247, 255, 248, .34) !important;
+  color: var(--motivo-drawer-ink) !important;
+  box-shadow: none !important;
+  font: 600 14px/1.4 system-ui, -apple-system, sans-serif !important;
 }
 html body.dark-mode #motivo-side-menu .motivo-language-control select,
 html body.dark-mode.motivo-universal-page .motivo-universal-menu .motivo-language-control select {
-  background: rgba(11, 39, 22, .97) !important;
-  color: #edf8ee !important;
-  border-color: rgba(136, 202, 154, .40) !important;
+  background: rgba(5, 35, 19, .46) !important;
+  color: #f1fff3 !important;
 }
-/* Theme switch is a quiet glass tile, not a bright solid button. */
+/* The appearance action uses exactly the same row as the navigation links. */
 html body #motivo-side-menu .motivo-menu-theme,
 html body.motivo-universal-page .motivo-universal-menu .motivo-menu-theme {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  background: rgba(80, 167, 106, .10) !important;
-  color: #153c27 !important;
-  border: 1px solid rgba(56, 129, 79, .22) !important;
-  border-radius: 12px !important;
+  flex: 0 0 auto;
+  width: 100% !important;
+  margin: 1px 0 0 !important;
+}
+html body #motivo-side-menu .motivo-menu-theme span[aria-hidden],
+html body.motivo-universal-page .motivo-universal-menu .motivo-menu-theme span[aria-hidden] {
+  display: inline-flex;
+  width: 18px;
+  justify-content: center;
+  opacity: .76;
+}
+/* Drawer logo sits in line, instead of a separately tinted emblem. */
+html body #motivo-side-menu .motivo-drawer-heading,
+html body.motivo-universal-page .motivo-universal-menu .motivo-drawer-heading {
+  padding: 0 14px 16px !important;
+  margin: 0 0 7px !important;
+  border: 0 !important;
+  border-bottom: 1px solid var(--motivo-drawer-rule) !important;
+  background: transparent !important;
   box-shadow: none !important;
+  gap: 5px !important;
 }
-html body.dark-mode #motivo-side-menu .motivo-menu-theme,
-html body.dark-mode.motivo-universal-page .motivo-universal-menu .motivo-menu-theme {
-  background: rgba(100, 201, 127, .10) !important;
-  color: #edf8ee !important;
-  border-color: rgba(126, 202, 146, .25) !important;
-}
-
-/* Let the Motivo wordmark sit directly on the glass, without the old badge. */
 html body #motivo-side-menu .motivo-drawer-heading img,
 html body.motivo-universal-page .motivo-universal-menu .motivo-drawer-heading img {
-  background: transparent !important;
-  border-radius: 0 !important;
+  display: block;
+  width: 130px !important;
+  height: auto !important;
+  max-height: 42px;
   padding: 0 !important;
-  filter: brightness(0) saturate(100%) invert(21%) sepia(16%) saturate(1187%) hue-rotate(100deg) !important;
+  background: none !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  filter: brightness(0) saturate(100%) invert(18%) sepia(24%) saturate(1199%) hue-rotate(94deg) !important;
 }
 html body.dark-mode #motivo-side-menu .motivo-drawer-heading img,
 html body.dark-mode.motivo-universal-page .motivo-universal-menu .motivo-drawer-heading img {
   filter: none !important;
 }
-
+html body #motivo-side-menu .motivo-drawer-heading span,
+html body.motivo-universal-page .motivo-universal-menu .motivo-drawer-heading span {
+  color: var(--motivo-drawer-muted) !important;
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  letter-spacing: .11em !important;
+}
 @media print {
   html body #motivo-side-menu.header-nav,
-  html body.motivo-universal-page .motivo-universal-menu {
-    display: none !important;
-  }
+  html body.motivo-universal-page .motivo-universal-menu { display: none !important; }
 }
