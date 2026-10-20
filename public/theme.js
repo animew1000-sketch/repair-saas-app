@@ -53,52 +53,79 @@ function toggleTheme() {
   updateThemeMenuButtons();
 }
 
-function toggleMotivoMenu(toggle) {
-  toggle = toggle || document.querySelector('.motivo-menu-toggle');
-
-  const isOpen =
-    document.body.classList.toggle('motivo-menu-open');
-
-  toggle?.setAttribute('aria-expanded', String(isOpen));
-  toggle?.setAttribute(
-    'aria-label',
-    isOpen ? 'Close navigation menu' : 'Open navigation menu'
-  );
+// A single source of truth for menu visibility and accessibility state.
+function setMotivoMenuOpen(isOpen, restoreFocus) {
+  document.body.classList.toggle('motivo-menu-open', !!isOpen);
+  document.querySelectorAll('.motivo-menu-toggle').forEach((toggle) => {
+    toggle.setAttribute('aria-expanded', String(!!isOpen));
+    toggle.setAttribute('aria-label', isOpen ? 'Close navigation menu' : 'Open navigation menu');
+  });
+  if (!isOpen && restoreFocus) {
+    document.querySelector('.motivo-menu-toggle')?.focus();
+  }
 }
 
+function toggleMotivoMenu(toggle) {
+  setMotivoMenuOpen(!document.body.classList.contains('motivo-menu-open'));
+}
+
+// Keep the existing outside-click and Escape behavior, but also reset
+// aria-expanded (previously it could stay true after the drawer closed).
 document.addEventListener('click', (event) => {
   if (
     document.body.classList.contains('motivo-menu-open') &&
     !event.target.closest('.header, .motivo-universal-menu, .motivo-preferences-popover, .motivo-menu-toggle')
   ) {
-    document.body.classList.remove('motivo-menu-open');
+    setMotivoMenuOpen(false);
   }
 });
 
 document.addEventListener('keydown', (event) => {
-  if (event.key === 'Escape') {
-    document.body.classList.remove('motivo-menu-open');
+  if (event.key === 'Escape' && document.body.classList.contains('motivo-menu-open')) {
+    setMotivoMenuOpen(false, true);
   }
 });
 
 applySavedTheme();
-// Automatically close the sidebar after selecting a destination.
+// Selecting a navigation destination closes the drawer without changing
+// the application's existing button/link handlers.
 document.addEventListener('click', (event) => {
-  const navigationLink = event.target.closest(
-    '#motivo-side-menu .header-link'
-  );
-
-  if (!navigationLink) return;
-
-  document.body.classList.remove('motivo-menu-open');
-
-  const menuButton = document.querySelector('.motivo-menu-toggle');
-
-  if (menuButton) {
-    menuButton.setAttribute('aria-expanded', 'false');
-    menuButton.setAttribute('aria-label', 'Open navigation menu');
+  if (event.target.closest('#motivo-side-menu .header-link, .motivo-universal-menu > a')) {
+    setMotivoMenuOpen(false);
   }
 });
+
+// Mobile gets an explicit in-drawer Close button and an outside-tap surface.
+// Place the scrim in the same stacking context as its drawer; the main SPA
+// header and older standalone portal header have different DOM structures.
+(function enhanceMotivoMobileMenu() {
+  function apply() {
+    const drawer = document.querySelector('#motivo-side-menu, .motivo-universal-menu');
+    if (!drawer || drawer.querySelector('.motivo-drawer-close')) return;
+    const heading = drawer.querySelector('.motivo-drawer-heading');
+    if (!heading) return;
+
+    const close = document.createElement('button');
+    close.type = 'button';
+    close.className = 'motivo-drawer-close';
+    close.setAttribute('aria-label', 'Close navigation menu');
+    close.textContent = '\u00d7';
+    close.addEventListener('click', () => setMotivoMenuOpen(false, true));
+    heading.appendChild(close);
+
+    const scrim = document.createElement('div');
+    scrim.className = 'motivo-mobile-scrim';
+    scrim.setAttribute('aria-hidden', 'true');
+    scrim.addEventListener('click', () => setMotivoMenuOpen(false, true));
+    const scrimHost = drawer.id === 'motivo-side-menu' ? drawer.parentElement : document.body;
+    scrimHost.insertBefore(scrim, drawer);
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', apply, { once: true });
+  } else {
+    apply();
+  }
+})();
 
 // Language support is bootstrapped here because existing Motivo pages
 // already load theme.js. Preserve all theme/menu behavior above.
@@ -108,7 +135,7 @@ document.addEventListener('click', (event) => {
 
   const stylesheet = document.createElement('link');
   stylesheet.rel = 'stylesheet';
-  stylesheet.href = '/i18n.css?v=12';
+  stylesheet.href = '/i18n.css?v=13';
   document.head.appendChild(stylesheet);
 
   const dictionary = document.createElement('script');

@@ -4,6 +4,7 @@
 @import url('/motivo-aurora-v9.css?v=9');
 @import url('/motivo-integrated-sections-v10.css?v=10');
 @import url('/motivo-continuous-surfaces-v12.css?v=12');
+@import url('/motivo-auth-v13.css?v=13');
 
 /* Lightweight universal language selector, independent of each page's CSS framework. */
 .motivo-language-control {
@@ -371,4 +372,167 @@ html body.motivo-universal-page .motivo-universal-menu .motivo-drawer-heading sp
 @media print {
   html body #motivo-side-menu.header-nav,
   html body.motivo-universal-page .motivo-universal-menu { display: none !important; }
+}
+
+
+/* Motivo v13 — Mobile menu layout and hit-area corrections. */
+@media (max-width: 760px) {
+  /* Both built-in and standalone drawers have the same usable top edge. */
+  html body #motivo-side-menu.header-nav,
+  html body.motivo-universal-page .motivo-universal-menu {
+    box-sizing: border-box;
+    position: fixed !important;
+    top: 0 !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    width: min(88vw, 365px) !important;
+    max-width: 365px !important;
+    height: 100vh !important;
+    height: 100dvh !important;
+    padding: max(14px, env(safe-area-inset-top)) 18px max(20px, env(safe-area-inset-bottom)) !important;
+    margin: 0 !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    overscroll-behavior: contain;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    justify-content: flex-start !important;
+    gap: 6px !important;
+    z-index: 101 !important;
+    /* Keep translucency, but provide enough contrast on small screens. */
+    background: rgba(222, 247, 229, .64) !important;
+    border-right: 1px solid var(--motivo-drawer-rule) !important;
+    transition: transform .2s ease, opacity .15s ease;
+  }
+  html body.dark-mode #motivo-side-menu.header-nav,
+  html body.dark-mode.motivo-universal-page .motivo-universal-menu {
+    background: rgba(7, 32, 18, .66) !important;
+  }
+  /* A single top row: logo, descriptor and reachable close button. */
+  html body #motivo-side-menu .motivo-drawer-heading,
+  html body.motivo-universal-page .motivo-universal-menu .motivo-drawer-heading {
+    box-sizing: border-box;
+    flex: 0 0 auto;
+    display: grid !important;
+    grid-template-columns: minmax(0,1fr) 42px !important;
+    grid-template-rows: auto auto !important;
+    align-items: center;
+    column-gap: 10px;
+    padding: 8px 0 15px !important;
+    margin: 0 0 10px !important;
+    min-height: 72px;
+    border-bottom: 1px solid var(--motivo-drawer-rule) !important;
+  }
+  html body #motivo-side-menu .motivo-drawer-heading img,
+  html body.motivo-universal-page .motivo-universal-menu .motivo-drawer-heading img {
+    grid-column: 1;
+    grid-row: 1;
+    width: 125px !important;
+    max-width: 100%;
+  }
+  html body #motivo-side-menu .motivo-drawer-heading span,
+  html body.motivo-universal-page .motivo-universal-menu .motivo-drawer-heading span {
+    grid-column: 1;
+    grid-row: 2;
+  }
+  html body #motivo-side-menu .motivo-drawer-heading .motivo-drawer-close,
+  html body.motivo-universal-page .motivo-universal-menu .motivo-drawer-heading .motivo-drawer-close {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    box-sizing: border-box;
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    width: 42px !important;
+    height: 42px !important;
+    min-height: 42px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border-radius: 12px !important;
+    border: 1px solid var(--motivo-drawer-rule) !important;
+    background: var(--motivo-drawer-hover) !important;
+    box-shadow: none !important;
+    color: var(--motivo-drawer-ink) !important;
+    font: 500 26px/1 system-ui, sans-serif !important;
+    cursor: pointer;
+    text-align: center;
+    flex: 0 0 42px;
+  }
+  html body #motivo-side-menu :is(.header-links,.header-actions),
+  html body.motivo-universal-page .motivo-universal-menu :is(.header-links,.header-actions) {
+    flex: 0 0 auto;
+    gap: 2px !important;
+    padding: 0 !important;
+  }
+  html body #motivo-side-menu :is(.header-link, .motivo-menu-theme),
+  html body.motivo-universal-page .motivo-universal-menu > :is(a,button):not(.motivo-drawer-close) {
+    min-height: 48px !important;
+    padding: 12px 13px !important;
+    border-radius: 11px !important;
+    flex-shrink: 0;
+  }
+  html body #motivo-side-menu .motivo-language-control,
+  html body.motivo-universal-page .motivo-universal-menu .motivo-language-control {
+    flex: 0 0 auto;
+    margin-top: 10px !important;
+    padding-top: 13px !important;
+  }
+  /* Remove the real cause of mobile visual overlap: busy form and page text
+   * should not show THROUGH the open transparent drawer. Keep the actual
+   * static aurora visible so the glass effect still has depth. */
+  html body.motivo-menu-open .container:has(> .header #motivo-side-menu) > :not(.header),
+  html body.motivo-menu-open .container:not(:has(#motivo-side-menu)),
+  html body.motivo-menu-open.motivo-universal-page > main,
+  html body.motivo-menu-open > main,
+  html body.motivo-menu-open > .contact-page {
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+  html body.motivo-menu-open .header > .brand,
+  html body.motivo-menu-open.motivo-universal-page > header > :not(.motivo-menu-toggle),
+  html body.motivo-menu-open .motivo-menu-toggle {
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+  /* Scrim lives inside the SPA header or next to the legacy nav as needed,
+   * so existing stacking contexts still put it BELOW the drawer. */
+  html body .motivo-mobile-scrim {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(1, 15, 8, .25);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    z-index: 100;
+    transition: opacity .16s ease;
+  }
+  html body.motivo-menu-open .motivo-mobile-scrim {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
+  /* Keep hamburger out of the open sheet; the visible close button owns
+     the action. On opening, it is still reachable by keyboard. */
+  html body.motivo-menu-open .motivo-menu-toggle {
+    pointer-events: none !important;
+  }
+  html body.motivo-menu-open {
+    overflow: hidden !important;
+  }
+}
+/* Desktop does not need a second close icon or scrim. */
+@media (min-width: 761px) {
+  html body .motivo-drawer-close,
+  html body .motivo-mobile-scrim {
+    display: none !important;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  html body .motivo-mobile-scrim,
+  html body #motivo-side-menu.header-nav,
+  html body.motivo-universal-page .motivo-universal-menu {
+    transition: none !important;
+  }
 }
