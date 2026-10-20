@@ -1,0 +1,534 @@
+/* Motivo developer console v15 — focused operations, not the marketing aurora.
+   - Full data density and contrast pass, responsive directory, secure shop drawer.
+   - Independent System / Dim / Light preference on this page only.
+   - Presentation only: no edits to platform.js or backend routes.
+   - Static background, no blur, filters, scroll animation, or extra images. */
+
+html[data-console-theme="light"] { color-scheme: light; }
+html[data-console-theme="dark"] { color-scheme: dark; }
+
+html body.motivo-console-v15 {
+  --c15-bg: #edf2ee;
+  --c15-ink: #22362c;
+  --c15-subtle: #526a5b;
+  --c15-faint: #63796b;
+  --c15-panel: #f8fbf8;
+  --c15-surface: #f1f6f1;
+  --c15-elevated: #fff;
+  --c15-border: #d1ded3;
+  --c15-divider: #dfebe1;
+  --c15-accent: #2a7452;
+  --c15-accent-text: #fff;
+  --c15-focus: #287f5a;
+  --c15-topbar: #e6efe8;
+  --c15-tint: rgba(55, 110, 80, .045);
+  --c15-hover: #e9f2ec;
+  --c15-shadow: 0 6px 20px rgba(21,52,35,.045);
+  --c15-chart: #699f80;
+  --c15-chart-dark: #397455;
+  --c15-grid: #d6e3d8;
+  color: var(--c15-ink) !important;
+  background: var(--c15-bg) !important;
+  background-image: none !important;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  font-size: 14px;
+  line-height: 1.46;
+}
+html[data-console-theme="dark"] body.motivo-console-v15 {
+  --c15-bg: #101b18;
+  --c15-ink: #dde9e0;
+  --c15-subtle: #afc4b7;
+  --c15-faint: #94afa0;
+  --c15-panel: #182824;
+  --c15-surface: #20342d;
+  --c15-elevated: #263c32;
+  --c15-border: #344d40;
+  --c15-divider: #2b4236;
+  --c15-accent: #98d6ac;
+  --c15-accent-text: #102719;
+  --c15-focus: #a9e3bd;
+  --c15-topbar: #152520;
+  --c15-tint: rgba(159,216,178,.035);
+  --c15-hover: #274335;
+  --c15-shadow: 0 6px 20px rgba(0,0,0,.09);
+  --c15-chart: #76b38f;
+  --c15-chart-dark: #4c8565;
+  --c15-grid: #354d41;
+}
+/* The v9 public aurora is too saturated for long admin sessions. Scope the
+   calm canvas to this document; Motivo's public pages are unaffected. */
+html body.motivo-console-v15::before,
+html body.motivo-console-v15::after {
+  display: none !important;
+  content: none !important;
+}
+html body.motivo-console-v15 :is(.panel, .metric, .tabs, .drawer, .confirm, .activity) {
+  border-color: var(--c15-border) !important;
+}
+html body.motivo-console-v15 * { scrollbar-color: var(--c15-border) transparent; }
+
+/* Compact identity and utilities. */
+html body.motivo-console-v15 > .topbar {
+  position: relative;
+  z-index: 5;
+  background: var(--c15-topbar) !important;
+  background-image: none !important;
+  border: 0 !important;
+  border-bottom: 1px solid var(--c15-border) !important;
+  box-shadow: none !important;
+  color: var(--c15-ink) !important;
+}
+html body.motivo-console-v15 .topbar-inner {
+  box-sizing: border-box;
+  width: min(100%, 1260px);
+  min-height: 65px;
+  padding: 9px 24px !important;
+  gap: 18px;
+}
+html body.motivo-console-v15 .identity { gap: 12px !important; }
+html body.motivo-console-v15 .platform-brand-logo {
+  width: 123px !important;
+  max-width: 123px !important;
+  max-height: 42px !important;
+  height: auto;
+  object-fit: contain;
+  filter: none !important;
+}
+html[data-console-theme="light"] body.motivo-console-v15 .platform-brand-logo {
+  filter: brightness(0) saturate(100%) invert(24%) sepia(22%) saturate(1056%) hue-rotate(91deg) !important;
+}
+html body.motivo-console-v15 .platform-brand-caption {
+  font-size: 10px !important;
+  line-height: 1.25;
+  letter-spacing: .10em !important;
+  font-weight: 720;
+  opacity: 1 !important;
+  color: var(--c15-subtle) !important;
+  margin: 0;
+}
+html body.motivo-console-v15 .top-actions { gap: 12px; flex-wrap: wrap; justify-content: flex-end; }
+html body.motivo-console-v15 .private-label {
+  color: var(--c15-faint) !important;
+  font-size: 10px;
+  letter-spacing: .075em;
+  font-weight: 650;
+}
+html body.motivo-console-v15 .console-theme-control {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font: inherit;
+  font-size: 11px;
+  font-weight: 650;
+  color: var(--c15-subtle) !important;
+  white-space: nowrap;
+}
+html body.motivo-console-v15 #consoleThemeSelect {
+  box-sizing: border-box;
+  width: auto;
+  min-width: 98px;
+  min-height: 34px;
+  padding: 6px 24px 6px 10px;
+  font-size: 12px;
+  font-weight: 650;
+  border: 1px solid var(--c15-border) !important;
+  border-radius: 9px;
+  color: var(--c15-ink) !important;
+  background: var(--c15-panel) !important;
+}
+
+/* Everything intentionally fits without giant blank vertical gaps. */
+html body.motivo-console-v15 > main {
+  box-sizing: border-box;
+  width: min(100%, 1260px);
+  max-width: 1260px;
+  margin: 0 auto !important;
+  padding: 26px 24px 60px !important;
+  background: transparent !important;
+}
+html body.motivo-console-v15 .pageheading { margin-bottom: 15px; gap: 12px; }
+html body.motivo-console-v15 .pageheading h1 {
+  font-size: clamp(25px, 2.6vw, 31px);
+  letter-spacing: -.045em;
+  margin: 2px 0 4px;
+  line-height: 1.14;
+  color: var(--c15-ink) !important;
+}
+html body.motivo-console-v15 .eyebrow {
+  color: var(--c15-accent) !important;
+  font-size: 10px;
+  font-weight: 780;
+  letter-spacing: .115em;
+}
+html body.motivo-console-v15 :is(.pageheading p,.section-header p,.panel > p,.pageheading p span) {
+  color: var(--c15-subtle) !important;
+  font-size: 12px;
+  line-height: 1.5;
+}
+html body.motivo-console-v15 :is(.panel,.metric) {
+  border: 1px solid var(--c15-border) !important;
+  background: var(--c15-panel) !important;
+  background-image: none !important;
+  box-shadow: var(--c15-shadow) !important;
+  color: var(--c15-ink) !important;
+}
+html body.motivo-console-v15 .panel {
+  box-sizing: border-box;
+  min-width: 0;
+  border-radius: 13px;
+  padding: 19px 21px;
+}
+html body.motivo-console-v15 :is(.panel h1,.panel h2,.panel h3,.pageheading h1) {
+  color: var(--c15-ink) !important;
+}
+html body.motivo-console-v15 .section-header { margin-bottom: 13px; gap: 12px; }
+html body.motivo-console-v15 .section-header h2,
+html body.motivo-console-v15 .panel h2 {
+  font-size: 16px;
+  line-height: 1.25;
+  margin: 0 0 3px;
+  letter-spacing: -.02em;
+}
+
+/* Navigation is a subdued segmented line, not a giant set of banners. */
+html body.motivo-console-v15 .tabs {
+  gap: 4px;
+  margin-bottom: 16px;
+  border: 0 !important;
+  border-bottom: 1px solid var(--c15-border) !important;
+  background: transparent !important;
+}
+html body.motivo-console-v15 .tab {
+  box-sizing: border-box;
+  border: 1px solid transparent !important;
+  border-radius: 8px 8px 0 0;
+  padding: 9px 16px;
+  min-height: 39px;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: var(--c15-subtle) !important;
+  font-size: 12px;
+  font-weight: 650;
+}
+html body.motivo-console-v15 .tab:hover { background: var(--c15-hover) !important; color: var(--c15-ink) !important; }
+html body.motivo-console-v15 .tab.selected {
+  background: var(--c15-surface) !important;
+  border-color: var(--c15-border) !important;
+  border-bottom-color: transparent !important;
+  color: var(--c15-ink) !important;
+  box-shadow: inset 0 -2px var(--c15-accent) !important;
+}
+
+/* Less visual weight in numbers and analytic charts. */
+html body.motivo-console-v15 .metrics { gap: 10px; margin-bottom: 12px; }
+html body.motivo-console-v15 .metric {
+  border-radius: 12px;
+  padding: 15px 18px;
+  display: grid;
+  gap: 3px;
+  min-height: 108px;
+  align-content: center;
+  border-top-width: 1px !important;
+}
+html body.motivo-console-v15 .metric span {
+  color: var(--c15-subtle) !important;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .01em;
+}
+html body.motivo-console-v15 .metric strong {
+  color: var(--c15-ink) !important;
+  font-size: 30px;
+  font-weight: 760;
+  line-height: 1.11;
+  letter-spacing: -.05em;
+}
+html body.motivo-console-v15 .metric small { color: var(--c15-faint) !important; font-size: 10px; }
+html body.motivo-console-v15 :is(.overview-grid,.bottom-grid) {
+  grid-template-columns: minmax(0,1fr) minmax(0,1.07fr);
+  gap: 12px;
+  margin-bottom: 12px;
+}
+html body.motivo-console-v15 .status-visual { min-height: 156px; gap: 30px; }
+html body.motivo-console-v15 .donut { width: 132px; height: 132px; }
+html body.motivo-console-v15 .donut>div {
+  width: 92px;
+  height: 92px;
+  background: var(--c15-panel) !important;
+  color: var(--c15-ink);
+}
+html body.motivo-console-v15 .donut strong { font-size: 28px; color: var(--c15-ink); }
+html body.motivo-console-v15 .donut small { color: var(--c15-subtle); }
+html body.motivo-console-v15 .legend { min-width: 126px; gap: 12px; color: var(--c15-subtle); }
+html body.motivo-console-v15 .legend strong { color: var(--c15-ink) !important; }
+html body.motivo-console-v15 .bar-chart { min-height: 145px; }
+html body.motivo-console-v15 .chart-column { height: 153px; gap: 4px; }
+html body.motivo-console-v15 .bar-track {
+  height: 104px;
+  background: repeating-linear-gradient(0deg, transparent 0, transparent 25%, var(--c15-tint) 25%, var(--c15-tint) 26%);
+  border-bottom: 1px solid var(--c15-grid);
+}
+html body.motivo-console-v15 .bar-fill {
+  background: linear-gradient(180deg, var(--c15-chart), var(--c15-chart-dark)) !important;
+  border-radius: 4px 4px 0 0;
+}
+html body.motivo-console-v15 :is(.bar-value,.bar-label) { color: var(--c15-subtle); font-size: 10px; }
+html body.motivo-console-v15 .dot.active { background: #67ad85; }
+html body.motivo-console-v15 .dot.paused { background: #d6ac6c; }
+html body.motivo-console-v15 .dot.archived { background: #8d9f95; }
+html body.motivo-console-v15 .footprint { gap: 3px; }
+html body.motivo-console-v15 .footprint>div {
+  padding: 12px 13px;
+  background: var(--c15-surface);
+  border: 1px solid var(--c15-divider);
+  border-radius: 8px;
+  min-height: 45px;
+}
+html body.motivo-console-v15 .footprint span { color: var(--c15-subtle); font-size: 11px; }
+html body.motivo-console-v15 .footprint strong { color: var(--c15-ink); font-size: 19px; }
+html body.motivo-console-v15 .activity { max-height: 184px; }
+html body.motivo-console-v15 .activity-entry {
+  padding: 9px 0;
+  border-color: var(--c15-divider) !important;
+}
+html body.motivo-console-v15 .activity-entry :is(small,time) { color: var(--c15-subtle); }
+
+/* Directory with density, visible focus, no endless padding. */
+html body.motivo-console-v15 .filters { gap: 7px; }
+html body.motivo-console-v15 .filters input { min-width: 190px; }
+html body.motivo-console-v15 .table-scroll {
+  max-width: 100%;
+  overflow: auto;
+  border: 1px solid var(--c15-border);
+  border-radius: 10px;
+}
+html body.motivo-console-v15 table { color: var(--c15-ink); font-size: 12px; }
+html body.motivo-console-v15 th {
+  background: var(--c15-surface);
+  color: var(--c15-subtle);
+  font-size: 10px;
+  letter-spacing: .06em;
+  font-weight: 750;
+}
+html body.motivo-console-v15 th,
+html body.motivo-console-v15 td {
+  padding: 11px 12px;
+  border-bottom: 1px solid var(--c15-divider);
+}
+html body.motivo-console-v15 tbody tr:hover { background: var(--c15-hover); }
+html body.motivo-console-v15 .shop-label strong { font-size: 12px; }
+html body.motivo-console-v15 .shop-label small { color: var(--c15-subtle); margin-top: 2px; }
+html body.motivo-console-v15 .pill {
+  padding: 4px 10px;
+  background: #dceddf;
+  color: #245b42;
+  border: 1px solid transparent;
+  font-size: 10px;
+  font-weight: 750;
+  letter-spacing: .01em;
+}
+html body.motivo-console-v15 .pill.paused { background: #fcf1da; color: #845c24; }
+html body.motivo-console-v15 .pill.archived { background: #e6ece8; color: #566a5b; }
+html[data-console-theme="dark"] body.motivo-console-v15 .pill.active { background: #234632; color: #c4efd1; border-color: #3a7350; }
+html[data-console-theme="dark"] body.motivo-console-v15 .pill.paused { background: #493b25; color: #f5d8a0; border-color: #775c36; }
+html[data-console-theme="dark"] body.motivo-console-v15 .pill.archived { background: #344339; color: #cbd9cf; border-color: #56695b; }
+
+/* Calm, consistent controls. Severity colors are reserved for real actions. */
+html body.motivo-console-v15 button:not(.tab),
+html body.motivo-console-v15 .motivo-preferences-popover > summary {
+  box-sizing: border-box;
+  min-height: 36px;
+  border-radius: 9px;
+  padding: 8px 13px;
+  border: 1px solid var(--c15-accent);
+  background: var(--c15-accent);
+  color: var(--c15-accent-text);
+  font-size: 12px;
+  font-weight: 700;
+  box-shadow: none !important;
+  transform: none !important;
+  transition: background .15s ease, border-color .15s ease;
+}
+html body.motivo-console-v15 button:not(.tab):hover:not(:disabled) { filter: brightness(.94); }
+html body.motivo-console-v15 button.outline,
+html body.motivo-console-v15 .motivo-preferences-popover > summary {
+  background: var(--c15-panel) !important;
+  border: 1px solid var(--c15-border) !important;
+  color: var(--c15-ink) !important;
+}
+html body.motivo-console-v15 button.warning {
+  color: #6a451a !important;
+  border-color: #d9b685 !important;
+  background: #f9e9cd !important;
+}
+html body.motivo-console-v15 button.danger {
+  background: #9e514d !important;
+  border-color: #9e514d !important;
+  color: #fff !important;
+}
+html body.motivo-console-v15 :is(input, select, textarea) {
+  box-sizing: border-box;
+  background: var(--c15-elevated) !important;
+  border: 1px solid var(--c15-border) !important;
+  border-radius: 9px;
+  min-height: 40px;
+  padding: 9px 11px;
+  color: var(--c15-ink) !important;
+  font-size: 13px;
+  outline: none;
+}
+html body.motivo-console-v15 :is(input,textarea)::placeholder { color: var(--c15-faint); }
+html body.motivo-console-v15 :is(input,select,textarea,button):focus-visible,
+html body.motivo-console-v15 .motivo-preferences-popover > summary:focus-visible {
+  outline: 2px solid var(--c15-focus) !important;
+  outline-offset: 3px;
+}
+html body.motivo-console-v15 label { color: var(--c15-subtle); font-size: 12px; gap: 6px; }
+html body.motivo-console-v15 form { gap: 12px; }
+html body.motivo-console-v15 .actions { gap: 8px; }
+
+/* A real utility panel: sign-in and shop creation are stable, opaque surfaces. */
+html body.motivo-console-v15 .login.panel {
+  max-width: 424px;
+  width: min(100%, 424px);
+  margin: clamp(38px, 8vh, 82px) auto;
+  padding: 27px;
+  background: var(--c15-panel) !important;
+}
+html body.motivo-console-v15 .login h1 { font-size: 26px; margin: 7px 0 5px; }
+html body.motivo-console-v15 .login p { margin: 0 0 20px; }
+html body.motivo-console-v15 .form-panel {
+  max-width: 620px;
+  margin: 0 auto;
+  background: var(--c15-panel) !important;
+}
+html body.motivo-console-v15 .form-panel p { margin: 7px 0 17px; }
+html body.motivo-console-v15 .flash { color: var(--c15-accent); }
+html body.motivo-console-v15 .flash.error { color: #c57c6b; }
+
+/* Editing and lifecycle decisions must be readable even when the board is dim. */
+html body.motivo-console-v15 .drawer,
+html body.motivo-console-v15 .drawer-header,
+html body.motivo-console-v15 dialog.confirm {
+  background: var(--c15-panel) !important;
+  color: var(--c15-ink) !important;
+  border-color: var(--c15-border) !important;
+  background-image: none !important;
+  box-shadow: none !important;
+}
+html body.motivo-console-v15 .drawer {
+  box-sizing: border-box;
+  z-index: 1001;
+  width: min(430px, 100vw);
+  box-shadow: -12px 0 48px rgba(0,0,0,.27) !important;
+}
+html body.motivo-console-v15 .drawer-header {
+  padding: 17px 20px;
+  border-bottom: 1px solid var(--c15-border) !important;
+}
+html body.motivo-console-v15 .drawer-content { padding: 18px 20px 32px; }
+html body.motivo-console-v15 .drawer-header h2 { font-size: 21px; margin: 3px 0; }
+html body.motivo-console-v15 .drawer-content :is(p,small),
+html body.motivo-console-v15 .drawer-header span { color: var(--c15-subtle) !important; }
+html body.motivo-console-v15 .drawer-content h3 { margin: 17px 0 9px; font-size: 14px; color: var(--c15-ink); }
+html body.motivo-console-v15 .drawer-content hr { border-top-color: var(--c15-divider); margin: 17px 0; }
+html body.motivo-console-v15 .mini-metrics { gap: 7px; margin: 14px 0; }
+html body.motivo-console-v15 .mini-metrics>div {
+  padding: 11px 7px;
+  border: 1px solid var(--c15-divider);
+  background: var(--c15-surface) !important;
+}
+html body.motivo-console-v15 .mini-metrics span { color: var(--c15-subtle); }
+html body.motivo-console-v15 .mini-metrics strong { font-size: 19px; }
+html body.motivo-console-v15 .scrim { z-index: 1000; background: rgba(2,12,8,.56); }
+html body.motivo-console-v15 dialog.confirm {
+  z-index: 2000;
+  max-height: calc(100dvh - 32px);
+  overflow-y: auto;
+  border: 1px solid var(--c15-border);
+  border-radius: 14px;
+  width: min(450px, calc(100vw - 26px));
+  padding: 25px;
+  box-shadow: 0 20px 70px rgba(0,0,0,.36) !important;
+}
+html body.motivo-console-v15 .confirm p { color: var(--c15-subtle); }
+html body.motivo-console-v15 dialog::backdrop { background: rgba(0,10,4,.7); }
+
+/* Preserve screen-reader and application state, no CSS display hacks. */
+html body.motivo-console-v15 [hidden] { display: none !important; }
+@media(max-width: 1000px) {
+  html body.motivo-console-v15 .overview-grid,
+  html body.motivo-console-v15 .bottom-grid { grid-template-columns: 1fr; }
+}
+@media(max-width: 660px) {
+  html body.motivo-console-v15 .topbar-inner { min-height: 57px; padding: 7px 14px !important; }
+  html body.motivo-console-v15 .platform-brand-logo { width: 102px !important; max-width: 102px !important; }
+  html body.motivo-console-v15 .platform-brand-caption { font-size: 8px !important; letter-spacing: .04em !important; }
+  html body.motivo-console-v15 .private-label { display: none; }
+  html body.motivo-console-v15 .top-actions { gap: 6px; }
+  html body.motivo-console-v15 .console-theme-control span { display: none; }
+  html body.motivo-console-v15 #consoleThemeSelect { min-width: 77px; padding: 5px 7px; font-size: 11px; min-height: 33px; }
+  html body.motivo-console-v15 > main { padding: 18px 14px 35px !important; }
+  html body.motivo-console-v15 .pageheading { align-items: flex-start; flex-direction: column; }
+  html body.motivo-console-v15 .pageheading h1 { font-size: 24px; }
+  html body.motivo-console-v15 .panel { padding: 15px; }
+  html body.motivo-console-v15 .metrics { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 9px; }
+  html body.motivo-console-v15 .metric { min-height: 95px; padding: 13px; }
+  html body.motivo-console-v15 .metric strong { font-size: 26px; }
+  html body.motivo-console-v15 .metric small { font-size: 9px; }
+  html body.motivo-console-v15 .tabs { overflow-x: auto; overflow-y: hidden; white-space: nowrap; }
+  html body.motivo-console-v15 .tab { flex: 0 0 auto; min-width: 0; padding: 9px 12px; }
+  html body.motivo-console-v15 .status-visual { gap: 14px; }
+  html body.motivo-console-v15 .donut { width: 115px; height: 115px; }
+  html body.motivo-console-v15 .donut>div { width: 82px; height: 82px; }
+  html body.motivo-console-v15 .donut strong { font-size: 23px; }
+  html body.motivo-console-v15 .legend { min-width: 100px; gap: 7px; font-size: 11px; }
+  html body.motivo-console-v15 .section-header.controls { flex-direction: column; align-items: stretch; }
+  html body.motivo-console-v15 .filters { align-items: stretch; display: grid; grid-template-columns: 1fr 1fr; }
+  html body.motivo-console-v15 .filters input { min-width: 0; grid-column: 1 / -1; width: 100%; }
+  html body.motivo-console-v15 .filters :is(select,button) { min-width: 0; width: 100%; }
+  html body.motivo-console-v15 .drawer { width: min(100vw, 430px); }
+  html body.motivo-console-v15 .drawer-content { padding: 15px 17px 25px; }
+  html body.motivo-console-v15 .login.panel { padding: 20px; margin-top: 35px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html body.motivo-console-v15 *, html body.motivo-console-v15 *::before {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* The existing i18n Preferences dropdown is injected by i18n.js. Tone it down
+   as well, and let it share the compact utility row rather than overlap it. */
+html body.motivo-console-v15 .motivo-preferences-popover { z-index: 120; flex: 0 0 auto; }
+html body.motivo-console-v15 .motivo-preferences-popover .motivo-language-control {
+  background: var(--c15-panel) !important;
+  border: 1px solid var(--c15-border) !important;
+  color: var(--c15-ink) !important;
+  box-shadow: var(--c15-shadow) !important;
+  border-radius: 10px;
+  width: 232px;
+}
+html body.motivo-console-v15 .motivo-preferences-popover .motivo-language-control label {
+  color: var(--c15-subtle) !important;
+}
+@media (max-width:660px) {
+  html body.motivo-console-v15 .topbar-inner {
+    flex-wrap: wrap !important;
+    row-gap: 7px !important;
+  }
+  html body.motivo-console-v15 .top-actions {
+    width: 100%;
+    flex: 1 1 100%;
+    justify-content: flex-end;
+  }
+  html body.motivo-console-v15 .topbar .identity { flex: 1 0 auto; }
+}
+html body.motivo-console-v15 .activity-entry strong { display: block; font-size: 12px; }
+html body.motivo-console-v15 .activity-entry small { display: block; margin-top: 3px; font-size: 11px; }
+@media (min-width:661px) and (max-width:1050px) {
+  html body.motivo-console-v15 .private-label { display:none; }
+  html body.motivo-console-v15 .topbar-inner { gap: 11px; }
+  html body.motivo-console-v15 .top-actions { gap: 8px; }
+}
