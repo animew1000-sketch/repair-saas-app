@@ -638,3 +638,48 @@ html body.motivo-universal-page .motivo-universal-menu .motivo-drawer-heading sp
   }
   /* Existing icon/label formatting is unchanged, so theme.js/i18n still own state. */
 }
+
+
+/* Motivo mobile Safari band correction (v15).
+   Safari's bottom toolbar can expose the underlying HTML canvas beneath our
+   100dvh fixed aurora. Give it a matching forest/mint canvas and overscan the
+   existing static aurora layer. No animation, blur, or app logic changes. */
+@media screen and (max-width: 900px) {
+  /* The pre-v9 HTML canvas was slate-black (#0e1116); this was the abrupt
+     rectangle below the emerald aurora in iPhone Safari. */
+  html:has(body.dark-mode #landingSection:not(.hidden)) {
+    background: #0d4a2c !important;
+    color-scheme: dark;
+  }
+  html:has(body:not(.dark-mode) #landingSection:not(.hidden)) {
+    background: #e3f4e8 !important;
+    color-scheme: light;
+  }
+  /* Safe fallback when the browser briefly exposes body instead of ::before.
+     Match the green atmosphere, not the old dark almost-black page color. */
+  html body.dark-mode:has(#landingSection:not(.hidden)) {
+    background-color: #0d4a2c !important;
+    background-image: linear-gradient(180deg,
+      #0b301e 0%, #0e5633 30%, #105a35 65%, #0b452a 100%) !important;
+    background-size: 100% 100% !important;
+    background-repeat: no-repeat !important;
+  }
+  /* iOS Safari's dynamic toolbar changes the visual viewport height.
+     Extend the SAME pre-rendered WebP beyond its usual bottom edge so a
+     resize cannot uncover the black canvas while the toolbar settles. */
+  html body:has(#landingSection:not(.hidden))::before {
+    top: -36px !important;
+    bottom: auto !important;
+    height: calc(100dvh + 280px) !important;
+    min-height: calc(100vh + 280px) !important;
+    background-position: center center !important;
+  }
+  /* No dark tile behind the next section: the aurora should continue
+     directly from the hero image into the shop finder. */
+  html body:has(#landingSection:not(.hidden)) #landingSection,
+  html body:has(#landingSection:not(.hidden)) #shop-finder {
+    background: transparent !important;
+    background-image: none !important;
+    box-shadow: none !important;
+  }
+}
