@@ -1,0 +1,249 @@
+/* MOTIVO v16 | An inviting, compact signup experience.
+   Customer registration remains a single native HTML form; no inputs, required
+   fields, authentication handlers, routes, or acknowledgments are removed.
+   Scoped exclusively to SPA #registerSection; sign-in screens are untouched. */
+
+/* Reduce decorative weight while leaving the desktop editorial split intact. */
+html body:has(#registerSection:not(.hidden)) #registerSection .auth-form-wrap h1 {
+  letter-spacing: -.055em;
+}
+html body:has(#registerSection:not(.hidden)) #registerSection .auth-form :is(input, select) {
+  accent-color: #91e4ab;
+}
+html body:has(#registerSection:not(.hidden)) #registerSection .auth-check-row {
+  align-items: flex-start;
+}
+
+/* Phones get ONE compact form. The former oversized second pitch at the end
+   duplicated the homepage and made a simple account signup feel interminable. */
+@media screen and (max-width: 760px) {
+  /* A full-document surface avoids the viewport-height fixed aurora ending
+     midway through iOS Safari's tall page / full-page screenshot capture. */
+  html:has(body:has(#registerSection:not(.hidden))) {
+    background: #0b3f29 !important;
+  }
+  html body:has(#registerSection:not(.hidden)) {
+    background-color: #0b4b2e !important;
+    background-image:
+      radial-gradient(ellipse 95% 46% at 58% 35%, rgba(35, 157, 91, .34), transparent 85%),
+      linear-gradient(180deg, #0b3022 0%, #136d40 43%, #0b4d30 100%) !important;
+    background-size: 100% 100%, 100% 100% !important;
+    background-repeat: no-repeat !important;
+    background-attachment: scroll !important;
+  }
+  html body:has(#registerSection:not(.hidden))::before {
+    display: none !important;
+    content: none !important;
+  }
+  html body:has(#registerSection:not(.hidden)) .container,
+  html body:has(#registerSection:not(.hidden)) .container > #registerSection,
+  html body:has(#registerSection:not(.hidden)) #registerSection.auth-screen,
+  html body:has(#registerSection:not(.hidden)) #registerSection .auth-split,
+  html body:has(#registerSection:not(.hidden)) #registerSection .auth-form-panel,
+  html body:has(#registerSection:not(.hidden)) #registerSection .auth-form-wrap {
+    background: transparent !important;
+    background-image: none !important;
+    box-shadow: none !important;
+  }
+  html body:has(#registerSection:not(.hidden)) .container {
+    min-height: 0 !important;
+    border: 0 !important;
+  }
+  html body:has(#registerSection:not(.hidden)) #registerSection.auth-screen {
+    min-height: 0 !important;
+    overflow: visible !important;
+  }
+  html body:has(#registerSection:not(.hidden)) #registerSection .auth-register-layout {
+    box-sizing: border-box;
+    display: block !important;
+    width: min(100%, 565px) !important;
+    max-width: 100% !important;
+    min-height: 0 !important;
+    padding: 12px clamp(18px, 5vw, 26px) 18px !important;
+    margin-inline: auto !important;
+    gap: 0 !important;
+  }
+  html body:has(#registerSection:not(.hidden)) #registerSection .auth-form-panel {
+    width: 100% !important;
+    min-height: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    align-items: start !important;
+  }
+  html body:has(#registerSection:not(.hidden)) #registerSection .auth-form-wrap {
+    max-width: 100% !important;
+    width: 100% !important;
+    margin: 0 !important;
+  }
+  html body:has(#registerSection:not(.hidden)) #registerSection .auth-kicker {
+    margin: 2px 0 8px !important;
+    color: #a7ecc0 !important;
+    font-size: 11px !important;
+    font-weight: 750 !important;
+    letter-spacing: .13em !important;
+  }
+  html body:has(#registerSection:not(.hidden)) #registerSection .auth-form-wrap h1 {
+    font-size: clamp(30px, 8vw, 38px) !important;
+    line-height: 1.09 !important;
+    letter-spacing: -.055em !important;
+    margin: 0 0 7px !important;
+    text-wrap: balance;
+    color: #f4fff5 !important;
+  }
+  html body:has(#registerSection:not(.hidden)) #registerSection .auth-subtitle {
+    color: #cae7d2 !important;
+    font-size: 14px !important;
+    line-height: 1.48 !important;
+    margin: 0 0 20px !important;
+    max-width: none !important;
+  }
+  html body:has(#registerSection:not(.hidden)) #registerSection .auth-form {
+    gap: 13px !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    width: 100%;
+  }
+  html body:has(#registerSection:not(.hidden)) #registerSection .auth-field {
+    min-width: 0 !important;
+    gap: 5px !important;
+  }
+  html body:has(#registerSection:not(.hidden)) #registerSection .auth-form > .auth-grid-two:nth-child(2) {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 11px !important;
+  }
+  /* Email requires the full width to avoid truncating long addresses. */
+  html body:has(#registerSection:not(.hidden)) #registerSection .auth-form > .auth-grid-two:nth-child(4) {
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 13px !important;
+  }
+  html body:has(#registerSection:not(.hidden)) #registerSection .auth-field label {
+    color: #d8eee0 !important;
+    font-size: 12px !important;
+    font-weight: 720 !important;
+    line-height: 1.25 !important;
+  }
+  html body:has(#registerSection:not(.hidden)) #registerSection .auth-field :is(input:not([type="checkbox"]), select) {
+    box-sizing: border-box;
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 47px !important;
+    height: 47px !important;
+    padding: 9px 12px !important;
+    border: 1px solid rgba(187, 235, 202, .33) !important;
+    border-radius: 11px !important;
+    background: rgba(5, 42, 26, .69) !important;
+    color: #f6fff6 !important;
+    font-size: 16px !important;
+    box-shadow: none !important;
+  }
+  html body:has(#registerSection:not(.hidden)) #registerSection .auth-field input::placeholder {
+    color: #aec8b7 !important;
+    opacity: 1 !important;
+  }
+  html body:has(#registerSection:not(.hidden)) #registerSection .auth-field :is(input, select):focus-visible {
+    outline: 2px solid #b6f6c3 !important;
+    outline-offset: 2px !important;
+    border-color: #b6f6c3 !important;
+  }
+  html body:has(#registerSection:not(.hidden)) #registerSection .auth-check-row {
+    margin: 2px 0 0 !important;
+    padding: 0 !important;
+    gap: 10px !important;
+    color: #d4e8db !important;
+    font-size: 12px !important;
+    line-height: 1.52 !important;
+  }
+  html body:has(#registerSection:not(.hidden)) #registerSection .auth-check-row input[type="checkbox"] {
+    width: 21px !important;
+    height: 21px !important;
+    flex: 0 0 21px !important;
+    margin: 1px 0 0 !important;
+    accent-color: #91e4ab !important;
+  }
+  html body:has(#registerSection:not(.hidden)) #registerSection .auth-check-row a,
+  html body:has(#registerSection:not(.hidden)) #registerSection .auth-text-link {
+    color: #aeefc4 !important;
+    text-decoration-color: #aeefc4 !important;
+  }
+  html body:has(#registerSection:not(.hidden)) #registerSection .auth-submit-btn {
+    min-height: 49px !important;
+    margin: 2px 0 0 !important;
+    border: 1px solid #a7ebbb !important;
+    border-radius: 12px !important;
+    color: #082d1c !important;
+    background: #a2e7b5 !important;
+    font-size: 15px !important;
+    font-weight: 800 !important;
+    box-shadow: none !important;
+  }
+  html body:has(#registerSection:not(.hidden)) #registerSection .auth-submit-btn:hover {
+    background: #b8f2c8 !important;
+  }
+  html body:has(#registerSection:not(.hidden)) #registerSection .auth-switch-copy {
+    margin: 2px 0 0 !important;
+    color: #cbe4d4 !important;
+    font-size: 13px !important;
+    line-height: 1.5 !important;
+  }
+  /* No redundant 300px+ marketing pitch below the form on a phone. */
+  html body:has(#registerSection:not(.hidden)) #registerSection .auth-register-visual {
+    display: none !important;
+  }
+  html body:has(#registerSection:not(.hidden)) .legal-footer {
+    background: transparent !important;
+    margin: 0 auto 0 !important;
+    padding: 18px 12px 22px !important;
+    border: 0 !important;
+  }
+  html body:has(#registerSection:not(.hidden)) .legal-footer a {
+    color: #d0e8d9 !important;
+  }
+}
+
+/* The light appearance gets the SAME compact layout with readable dark ink. */
+@media screen and (max-width: 760px) {
+  html:has(body:not(.dark-mode):has(#registerSection:not(.hidden))) {
+    background: #e2f1e6 !important;
+  }
+  html body:not(.dark-mode):has(#registerSection:not(.hidden)) {
+    background-color: #e4f3e7 !important;
+    background-image:
+      radial-gradient(ellipse 97% 46% at 50% 33%, rgba(99, 184, 119, .24), transparent 82%),
+      linear-gradient(180deg, #deede0 0%, #eef8ed 49%, #c7e9d1 100%) !important;
+    background-size: 100% 100%, 100% 100% !important;
+  }
+  html body:not(.dark-mode):has(#registerSection:not(.hidden)) #registerSection :is(.auth-form-wrap h1, .auth-field label) {
+    color: #153e2b !important;
+  }
+  html body:not(.dark-mode):has(#registerSection:not(.hidden)) #registerSection .auth-kicker {
+    color: #287c46 !important;
+  }
+  html body:not(.dark-mode):has(#registerSection:not(.hidden)) #registerSection :is(.auth-subtitle, .auth-check-row, .auth-switch-copy) {
+    color: #4e6b58 !important;
+  }
+  html body:not(.dark-mode):has(#registerSection:not(.hidden)) #registerSection .auth-field :is(input:not([type="checkbox"]), select) {
+    background: rgba(252, 255, 251, .87) !important;
+    color: #133b2a !important;
+    border-color: rgba(65, 122, 81, .32) !important;
+  }
+  html body:not(.dark-mode):has(#registerSection:not(.hidden)) #registerSection .auth-field input::placeholder {
+    color: #667d6e !important;
+  }
+  html body:not(.dark-mode):has(#registerSection:not(.hidden)) #registerSection .auth-check-row a,
+  html body:not(.dark-mode):has(#registerSection:not(.hidden)) #registerSection .auth-text-link {
+    color: #176d3e !important;
+  }
+  html body:not(.dark-mode):has(#registerSection:not(.hidden)) #registerSection .auth-submit-btn {
+    background: #176c40 !important;
+    border-color: #176c40 !important;
+    color: #fff !important;
+  }
+  html body:not(.dark-mode):has(#registerSection:not(.hidden)) .legal-footer a {
+    color: #2e7150 !important;
+  }
+}
+
+@media screen and (max-width: 350px) {
+  html body:has(#registerSection:not(.hidden)) #registerSection .auth-form > .auth-grid-two:nth-child(2) {
+    grid-template-columns: minmax(0,1fr) !important;
+  }
+}

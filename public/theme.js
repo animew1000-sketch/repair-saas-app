@@ -169,7 +169,7 @@ document.addEventListener('click', (event) => {
 
   const stylesheet = document.createElement('link');
   stylesheet.rel = 'stylesheet';
-  stylesheet.href = '/i18n.css?v=15';
+  stylesheet.href = '/i18n.css?v=16';
   document.head.appendChild(stylesheet);
 
   const dictionary = document.createElement('script');
