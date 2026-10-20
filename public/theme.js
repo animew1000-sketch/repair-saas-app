@@ -60,8 +60,21 @@ function setMotivoMenuOpen(isOpen, restoreFocus) {
     toggle.setAttribute('aria-expanded', String(!!isOpen));
     toggle.setAttribute('aria-label', isOpen ? 'Close navigation menu' : 'Open navigation menu');
   });
+  if (isOpen) {
+    const activeToggle = document.activeElement?.closest?.('.motivo-menu-toggle');
+    if (activeToggle) window.__motivoLastMenuToggle = activeToggle;
+    window.requestAnimationFrame(() => {
+      const drawer = document.querySelector('#motivo-side-menu, .motivo-universal-menu');
+      const items = drawer && Array.from(drawer.querySelectorAll('button, a, select, input')).filter(el =>
+        !el.disabled && !el.classList.contains('hidden') && el.getClientRects().length > 0 &&
+        getComputedStyle(el).visibility !== 'hidden' && getComputedStyle(el).display !== 'none'
+      );
+      const preferred = items?.find(el => el.classList.contains('motivo-drawer-close')) || items?.[0];
+      preferred?.focus({ preventScroll: true });
+    });
+  }
   if (!isOpen && restoreFocus) {
-    document.querySelector('.motivo-menu-toggle')?.focus();
+    (window.__motivoLastMenuToggle || document.querySelector('.motivo-menu-toggle'))?.focus({ preventScroll: true });
   }
 }
 
@@ -77,6 +90,27 @@ document.addEventListener('click', (event) => {
     !event.target.closest('.header, .motivo-universal-menu, .motivo-preferences-popover, .motivo-menu-toggle')
   ) {
     setMotivoMenuOpen(false);
+  }
+});
+
+// Keep keyboard Tab focus inside the open drawer. Escape still closes it.
+document.addEventListener('keydown', (event) => {
+  if (event.key !== 'Tab' || !document.body.classList.contains('motivo-menu-open')) return;
+  const drawer = document.querySelector('#motivo-side-menu, .motivo-universal-menu');
+  if (!drawer) return;
+  const focusable = Array.from(drawer.querySelectorAll('a, button, input, select, textarea, [tabindex]')).filter(el =>
+    !el.disabled && el.tabIndex >= 0 && !el.classList.contains('hidden') &&
+    el.getClientRects().length > 0 && getComputedStyle(el).visibility !== 'hidden' &&
+    getComputedStyle(el).display !== 'none'
+  );
+  if (!focusable.length) return;
+  const first = focusable[0], last = focusable[focusable.length - 1];
+  if (!drawer.contains(document.activeElement)) {
+    event.preventDefault(); (event.shiftKey ? last : first).focus();
+  } else if (event.shiftKey && document.activeElement === first) {
+    event.preventDefault(); last.focus();
+  } else if (!event.shiftKey && document.activeElement === last) {
+    event.preventDefault(); first.focus();
   }
 });
 
@@ -135,7 +169,7 @@ document.addEventListener('click', (event) => {
 
   const stylesheet = document.createElement('link');
   stylesheet.rel = 'stylesheet';
-  stylesheet.href = '/i18n.css?v=13';
+  stylesheet.href = '/i18n.css?v=14';
   document.head.appendChild(stylesheet);
 
   const dictionary = document.createElement('script');

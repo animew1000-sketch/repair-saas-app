@@ -5,6 +5,7 @@
 @import url('/motivo-integrated-sections-v10.css?v=10');
 @import url('/motivo-continuous-surfaces-v12.css?v=12');
 @import url('/motivo-auth-v13.css?v=13');
+@import url('/motivo-experience-v14.css?v=14');
 
 /* Lightweight universal language selector, independent of each page's CSS framework. */
 .motivo-language-control {
@@ -535,4 +536,105 @@ html body.motivo-universal-page .motivo-universal-menu .motivo-drawer-heading sp
   html body.motivo-universal-page .motivo-universal-menu {
     transition: none !important;
   }
+}
+
+
+/* MOTIVO v14 | True single-column mobile navigation, no stacked overlap.
+   Keep the underlying aurora visible through an easy-to-read drawer. */
+@media (max-width: 760px) {
+  html body #motivo-side-menu.header-nav,
+  html body.motivo-universal-page .motivo-universal-menu {
+    width: min(86vw, 342px) !important;
+    max-width: 342px !important;
+    gap: 0 !important;
+    padding-inline: 18px !important;
+    background: rgba(237, 254, 240, .81) !important;
+  }
+  html body.dark-mode #motivo-side-menu.header-nav,
+  html body.dark-mode.motivo-universal-page .motivo-universal-menu {
+    background: rgba(6, 34, 19, .81) !important;
+  }
+  html body #motivo-side-menu .motivo-drawer-heading,
+  html body.motivo-universal-page .motivo-universal-menu .motivo-drawer-heading {
+    flex: 0 0 auto !important;
+    width: 100% !important;
+    padding-top: 11px !important;
+    padding-bottom: 19px !important;
+    margin-bottom: 12px !important;
+    min-height: 89px !important;
+  }
+  html body #motivo-side-menu .header-links,
+  html body #motivo-side-menu .header-actions {
+    box-sizing: border-box !important;
+    display: flex !important;
+    flex-direction: column !important;
+    flex-wrap: nowrap !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    align-items: stretch !important;
+    justify-content: flex-start !important;
+    gap: 3px !important;
+  }
+  html body #motivo-side-menu .header-links > .header-link,
+  html body #motivo-side-menu .header-actions > .header-link,
+  html body.motivo-universal-page .motivo-universal-menu > a {
+    box-sizing: border-box !important;
+    display: flex !important;
+    flex: none !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    min-width: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-height: 47px !important;
+    padding: 12px 13px !important;
+    font-size: 15px !important;
+    font-weight: 650 !important;
+    text-align: left !important;
+    white-space: normal !important;
+    border-radius: 10px !important;
+  }
+  html body #motivo-side-menu .header-links > .header-link.hidden,
+  html body #motivo-side-menu .header-actions > .header-link.hidden {
+    display: none !important;
+  }
+  html body #motivo-side-menu .header-actions {
+    flex: 0 0 auto !important;
+    margin-top: 13px !important;
+    padding-top: 14px !important;
+    border-top: 1px solid var(--motivo-drawer-rule) !important;
+  }
+  html body #motivo-side-menu .motivo-language-control,
+  html body.motivo-universal-page .motivo-universal-menu .motivo-language-control {
+    flex: 0 0 auto !important;
+    margin-top: auto !important;
+    padding: 25px 0 0 !important;
+    border: 0 !important;
+    border-top: 1px solid var(--motivo-drawer-rule) !important;
+    width: 100% !important;
+  }
+  html body #motivo-side-menu .motivo-language-control select,
+  html body.motivo-universal-page .motivo-universal-menu .motivo-language-control select {
+    width: 100% !important;
+    min-height: 48px !important;
+    padding-inline: 13px !important;
+  }
+  html body #motivo-side-menu .motivo-preference-heading,
+  html body.motivo-universal-page .motivo-universal-menu .motivo-preference-heading {
+    flex: 0 0 auto !important;
+    width: 100% !important;
+    padding-top: 14px !important;
+    padding-bottom: 6px !important;
+    margin: 0 !important;
+  }
+  html body #motivo-side-menu .motivo-menu-theme,
+  html body.motivo-universal-page .motivo-universal-menu .motivo-menu-theme {
+    flex: 0 0 auto !important;
+    width: 100% !important;
+    min-height: 47px !important;
+    margin: 0 !important;
+    padding: 12px 13px !important;
+    text-align: left !important;
+  }
+  /* Existing icon/label formatting is unchanged, so theme.js/i18n still own state. */
 }
