@@ -1,7 +1,7 @@
 /* Shared Motivo header polish. Loaded first, so the existing language selector styles remain intact. */
 @import url('/header-gradient.css?v=2');
 @import url('/motivo-unified-v6.css?v=6');
-@import url('/motivo-aurora-v9.css?v=9');
+@import url('/motivo-aurora-v9.css?v=18');
 @import url('/motivo-integrated-sections-v10.css?v=10');
 @import url('/motivo-continuous-surfaces-v12.css?v=12');
 @import url('/motivo-auth-v13.css?v=13');
@@ -682,5 +682,26 @@ html body.motivo-universal-page .motivo-universal-menu .motivo-drawer-heading sp
     background: transparent !important;
     background-image: none !important;
     box-shadow: none !important;
+  }
+}
+
+
+/* Motivo v18 | Mobile signup has no fixed ::before layer by design.
+ * Continue the same dark-to-emerald aurora with a faint orange corner glow.
+ * Keep readable contrast and do not alter forms or validation. */
+@media screen and (max-width: 760px) {
+  html body.dark-mode:has(#registerSection:not(.hidden)) {
+    background-color: #010b06 !important;
+    background-image:
+      radial-gradient(ellipse 70% 34% at 99% 91%, rgba(190, 94, 43, .30), transparent 85%),
+      linear-gradient(135deg, #010b06 0%, #052617 25%, #10683e 53%, #246c40 73%, #382b1b 100%) !important;
+    background-size: 100% 100% !important;
+  }
+  html body:not(.dark-mode):has(#registerSection:not(.hidden)) {
+    background-color: #e9f5e9 !important;
+    background-image:
+      radial-gradient(ellipse 70% 34% at 99% 91%, rgba(240, 153, 105, .18), transparent 84%),
+      linear-gradient(135deg, #d7eada 0%, #eaf6e8 50%, #e9eee1 78%, #f4e6db 100%) !important;
+    background-size: 100% 100% !important;
   }
 }

@@ -252,6 +252,54 @@ body:has(#landingSection:not(.hidden)) .motivo-shop-cta::before {
   will-change: auto !important;
 }
 
+
+
+/* Motivo v18 | Midnight Forest + warm ember aurora.
+ * Static CSS gradient layers over the EXISTING v9 WebP artwork.
+ * No blur, animation, canvas, pointer tracking, or scroll listeners.
+ * Developer console is excluded deliberately to preserve its calm v15 theme.
+ * Light mode gets just a subtle warm tint to keep its dark text readable. */
+html body:not(.dark-mode):not(:has(> .topbar))::before {
+  background:
+    radial-gradient(ellipse 70% 66% at 97% 91%,
+      rgba(245, 158, 100, .27) 0%, rgba(239, 154, 104, .13) 43%, transparent 76%),
+    linear-gradient(135deg,
+      rgba(19, 63, 32, .10) 0%, rgba(56, 139, 81, .08) 38%,
+      rgba(245, 253, 241, .02) 72%, rgba(240, 158, 109, .10) 100%),
+    url('/images/motivo-aurora-light-v9.webp') center center / cover no-repeat !important;
+  background-size: 100% 100%, 100% 100%, cover !important;
+  background-repeat: no-repeat !important;
+}
+html body.dark-mode:not(:has(> .topbar))::before {
+  background:
+    radial-gradient(ellipse 73% 71% at 101% 95%,
+      rgba(230, 111, 44, .66) 0%, rgba(192, 89, 39, .29) 46%, transparent 80%),
+    linear-gradient(135deg,
+      rgba(1, 11, 6, .97) 0%,
+      rgba(5, 38, 23, .76) 25%,
+      rgba(16, 104, 62, .35) 53%,
+      rgba(36, 108, 64, .25) 73%,
+      rgba(168, 90, 46, .26) 100%),
+    url('/images/motivo-aurora-dark-v9.webp') center center / cover no-repeat !important;
+  background-size: 100% 100%, 100% 100%, cover !important;
+  background-repeat: no-repeat !important;
+}
+/* Fallback canvas behind the static artwork on long pages and mobile Safari. */
+html body.dark-mode:not(:has(> .topbar)):is(
+  :has(#landingSection:not(.hidden)), :has(#registerSection:not(.hidden)),
+  :has(#loginSection:not(.hidden)), :has(#customerDashboard:not(.hidden)),
+  :has(#employeeDashboard:not(.hidden)), .motivo-public-page,
+  .motivo-universal-page
+) {
+  background-color: #010b06 !important;
+  background-image:
+    radial-gradient(ellipse 65% 52% at 98% 93%, rgba(217, 104, 42, .47), transparent 82%),
+    linear-gradient(135deg, #010b06 0%, #052617 25%, #10683e 53%, #246c40 73%, #653a26 100%) !important;
+  background-size: 100% 100%, 100% 100% !important;
+  background-position: center center, center center !important;
+  background-repeat: no-repeat !important;
+}
+
 @media (max-width: 640px) {
   html body::before { background-position: 58% center !important; }
   body:has(#landingSection:not(.hidden)) :is(.motivo-feature-section, .motivo-shop-cta)::before { inset: -8px 0; }
