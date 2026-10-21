@@ -1,7 +1,7 @@
 /* Shared Motivo header polish. Loaded first, so the existing language selector styles remain intact. */
 @import url('/header-gradient.css?v=2');
 @import url('/motivo-unified-v6.css?v=6');
-@import url('/motivo-aurora-v9.css?v=18');
+@import url('/motivo-aurora-v9.css?v=19');
 @import url('/motivo-integrated-sections-v10.css?v=10');
 @import url('/motivo-continuous-surfaces-v12.css?v=12');
 @import url('/motivo-auth-v13.css?v=13');
@@ -685,23 +685,46 @@ html body.motivo-universal-page .motivo-universal-menu .motivo-drawer-heading sp
   }
 }
 
-
-/* Motivo v18 | Mobile signup has no fixed ::before layer by design.
- * Continue the same dark-to-emerald aurora with a faint orange corner glow.
- * Keep readable contrast and do not alter forms or validation. */
-@media screen and (max-width: 760px) {
-  html body.dark-mode:has(#registerSection:not(.hidden)) {
-    background-color: #010b06 !important;
-    background-image:
-      radial-gradient(ellipse 70% 34% at 99% 91%, rgba(190, 94, 43, .30), transparent 85%),
-      linear-gradient(135deg, #010b06 0%, #052617 25%, #10683e 53%, #246c40 73%, #382b1b 100%) !important;
-    background-size: 100% 100% !important;
+/* v19 | Consistent low-gradient fallback for narrow screens.
+ * Keep iOS Safari's HTML canvas the same color as the painted background.
+ * Covers registration, which deliberately disables the fixed ::before layer. */
+@media screen and (max-width: 900px) {
+  html:has(body.dark-mode #landingSection:not(.hidden)) {
+    background: #0b291c !important;
   }
-  html body:not(.dark-mode):has(#registerSection:not(.hidden)) {
-    background-color: #e9f5e9 !important;
-    background-image:
-      radial-gradient(ellipse 70% 34% at 99% 91%, rgba(240, 153, 105, .18), transparent 84%),
-      linear-gradient(135deg, #d7eada 0%, #eaf6e8 50%, #e9eee1 78%, #f4e6db 100%) !important;
-    background-size: 100% 100% !important;
+  html:has(body:not(.dark-mode) #landingSection:not(.hidden)) {
+    background: #e7f1e9 !important;
+  }
+  html body.dark-mode:has(#landingSection:not(.hidden)) {
+    background-color: #0b291c !important;
+    background-image: none !important;
+  }
+  html body:not(.dark-mode):has(#landingSection:not(.hidden)) {
+    background-color: #e7f1e9 !important;
+    background-image: none !important;
+  }
+}
+@media screen and (max-width: 760px) {
+  html:has(body.dark-mode #registerSection:not(.hidden)) {
+    background: #0b291c !important;
+  }
+  html:has(body:not(.dark-mode) #registerSection:not(.hidden)) {
+    background: #e7f1e9 !important;
+  }
+  html body.dark-mode:not(:has(> .topbar)):has(#registerSection:not(.hidden)) {
+    background-color: #0b291c !important;
+    background-image: radial-gradient(ellipse 42% 19% at 96% 96%,
+        rgba(176, 83, 40, .09), transparent 82%),
+      linear-gradient(180deg, #06170f 0%, #0b291c 20%, #0b291c 100%) !important;
+    background-size: 100% 100%, 100% 100% !important;
+    background-repeat: no-repeat !important;
+  }
+  html body:not(.dark-mode):not(:has(> .topbar)):has(#registerSection:not(.hidden)) {
+    background-color: #e7f1e9 !important;
+    background-image: radial-gradient(ellipse 41% 19% at 96% 96%,
+        rgba(203, 130, 79, .055), transparent 82%),
+      linear-gradient(180deg, #deece1 0%, #e7f1e9 20%, #e7f1e9 100%) !important;
+    background-size: 100% 100%, 100% 100% !important;
+    background-repeat: no-repeat !important;
   }
 }

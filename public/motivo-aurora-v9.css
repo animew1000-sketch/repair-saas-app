@@ -254,50 +254,62 @@ body:has(#landingSection:not(.hidden)) .motivo-shop-cta::before {
 
 
 
-/* Motivo v18 | Midnight Forest + warm ember aurora.
- * Static CSS gradient layers over the EXISTING v9 WebP artwork.
- * No blur, animation, canvas, pointer tracking, or scroll listeners.
- * Developer console is excluded deliberately to preserve its calm v15 theme.
- * Light mode gets just a subtle warm tint to keep its dark text readable. */
+/* Motivo v19 | Quiet forest / understated ember.
+ * v18 introduced prominent green/orange gradients. This deliberately flattens
+ * the background without changing any layout, form, or UI behavior.
+ * No WebP backgrounds are painted: the solid CSS colors are less distracting.
+ * No backdrop filters, animations, moving backgrounds, or new assets.
+ * Private platform pages (which have a direct .topbar child) are excluded. */
+
+/* Light: predominantly a single soft sage background. */
 html body:not(.dark-mode):not(:has(> .topbar))::before {
-  background:
-    radial-gradient(ellipse 70% 66% at 97% 91%,
-      rgba(245, 158, 100, .27) 0%, rgba(239, 154, 104, .13) 43%, transparent 76%),
-    linear-gradient(135deg,
-      rgba(19, 63, 32, .10) 0%, rgba(56, 139, 81, .08) 38%,
-      rgba(245, 253, 241, .02) 72%, rgba(240, 158, 109, .10) 100%),
-    url('/images/motivo-aurora-light-v9.webp') center center / cover no-repeat !important;
-  background-size: 100% 100%, 100% 100%, cover !important;
+  background: radial-gradient(ellipse 40% 31% at 94% 94%,
+    rgba(204, 126, 75, .065) 0%, transparent 76%), #e7f1e9 !important;
+  background-size: 100% 100%, 100% 100% !important;
   background-repeat: no-repeat !important;
+  background-position: center center !important;
 }
+
+/* Dark: first ~20% shades from midnight forest to a flat deep green.
+ * The burnt orange is merely a localized hint, not a second color band. */
 html body.dark-mode:not(:has(> .topbar))::before {
-  background:
-    radial-gradient(ellipse 73% 71% at 101% 95%,
-      rgba(230, 111, 44, .66) 0%, rgba(192, 89, 39, .29) 46%, transparent 80%),
-    linear-gradient(135deg,
-      rgba(1, 11, 6, .97) 0%,
-      rgba(5, 38, 23, .76) 25%,
-      rgba(16, 104, 62, .35) 53%,
-      rgba(36, 108, 64, .25) 73%,
-      rgba(168, 90, 46, .26) 100%),
-    url('/images/motivo-aurora-dark-v9.webp') center center / cover no-repeat !important;
-  background-size: 100% 100%, 100% 100%, cover !important;
+  background: radial-gradient(ellipse 43% 31% at 95% 93%,
+    rgba(185, 93, 45, .115) 0%, transparent 78%),
+    linear-gradient(180deg, #06170f 0%, #0b291c 22%, #0b291c 100%) !important;
+  background-size: 100% 100%, 100% 100% !important;
   background-repeat: no-repeat !important;
+  background-position: center center !important;
 }
-/* Fallback canvas behind the static artwork on long pages and mobile Safari. */
+
+/* Match the real canvas to the background layer; iPhone Safari changes the
+ * viewport height while scrolling, so it must never expose the old black tile. */
+html body:not(.dark-mode):not(:has(> .topbar)):is(
+  :has(#landingSection:not(.hidden)), :has(#registerSection:not(.hidden)),
+  :has(#loginSection:not(.hidden)), :has(#customerDashboard:not(.hidden)),
+  :has(#employeeDashboard:not(.hidden)), .motivo-public-page,
+  .motivo-universal-page
+) {
+  background-color: #e7f1e9 !important;
+  background-image: none !important;
+}
 html body.dark-mode:not(:has(> .topbar)):is(
   :has(#landingSection:not(.hidden)), :has(#registerSection:not(.hidden)),
   :has(#loginSection:not(.hidden)), :has(#customerDashboard:not(.hidden)),
   :has(#employeeDashboard:not(.hidden)), .motivo-public-page,
   .motivo-universal-page
 ) {
-  background-color: #010b06 !important;
-  background-image:
-    radial-gradient(ellipse 65% 52% at 98% 93%, rgba(217, 104, 42, .47), transparent 82%),
-    linear-gradient(135deg, #010b06 0%, #052617 25%, #10683e 53%, #246c40 73%, #653a26 100%) !important;
-  background-size: 100% 100%, 100% 100% !important;
-  background-position: center center, center center !important;
-  background-repeat: no-repeat !important;
+  background-color: #0b291c !important;
+  background-image: none !important;
+}
+
+/* The old header glow is now redundant: let the single continuous page
+ * background run beneath the wordmark and navigation. */
+html body:not(:has(> .topbar)) .container > .header,
+html body.motivo-public-page > .header,
+html body.motivo-public-page > .container > .header,
+html body.motivo-universal-page > header {
+  background: transparent !important;
+  background-image: none !important;
 }
 
 @media (max-width: 640px) {
