@@ -74,7 +74,6 @@ test('Developer console directly loads dictionary before runtime, and keeps its 
   assert.match(html, /id="confirmDialog"/);
 });
 
-
 test('Auto (device) uses Spanish for Spanish browsers and preserves manual overrides', () => {
   environment.navigator.languages = ['es-MX', 'en-US'];
   assert.equal(i18n.setLanguage('auto'), true);
@@ -90,14 +89,13 @@ test('Auto (device) uses Spanish for Spanish browsers and preserves manual overr
   assert.equal(i18n.getLanguage(), 'en', 'unsupported primary language defaults to English');
 });
 
-test('Full-length gradients and reduced-motion support are included', () => {
-  const css = fs.readFileSync(path.join(root, 'public/scroll-gradient.css'), 'utf8');
-  const js = fs.readFileSync(path.join(root, 'public/scroll-gradient.js'), 'utf8');
+test('Consolidated design system preserves backgrounds and reduced-motion support', () => {
+  const css = fs.readFileSync(path.join(root, 'public/motivo-design-system.css'), 'utf8');
   const menuCss = fs.readFileSync(path.join(root, 'public/i18n.css'), 'utf8');
+  assert.match(menuCss, /@import url\('\/motivo-design-system\.css\?v=\d+'\)/);
   assert.match(css, /background-size: 100% 100%/);
   assert.match(css, /prefers-reduced-motion: reduce/);
-  assert.match(js, /requestAnimationFrame/);
-  assert.match(js, /--motivo-glow-mid-x/);
+  assert.match(css, /#motivo-liquid-layer\s*\{\s*display:\s*none\s*!important;\s*\}/);
   assert.match(menuCss, /\.theme-footer \{ display: none !important; \}/);
   assert.match(menuCss, /#motivo-side-menu \.motivo-language-control/);
 });
