@@ -1,0 +1,3409 @@
+/* MOTIVO CORE THEME v20 -- previously eight versioned imports, consolidated.
+   Source order preserved exactly; feature-specific styles remain separate.
+   This file is deliberately kept in the public root for drop-in deployment. */
+
+/* ===== PRESERVED CASCADE: header-gradient.css ===== */
+/* Motivo seamless navigation v2
+ * Presentation-only CSS. No changes to routing, auth, menus, translations, or forms.
+ * The old gradient ended at the header's ~82px height; the glow below now extends
+ * well into the hero so there is no visible dark rectangular band.
+ */
+
+/* Scoping deliberately excludes the platform admin dashboard and side drawers. */
+:is(
+  .container:has(#landingSection:not(.hidden)) > .header,
+  body:has(#registerSection:not(.hidden)) .container > .header,
+  body:has(#loginSection:not(.hidden)) .container > .header,
+  body:has(#customerDashboard:not(.hidden)) .container > .header,
+  body:has(#employeeDashboard:not(.hidden)) .container > .header,
+  body.motivo-public-page > .header,
+  body.motivo-public-page > .container > .header,
+  body.motivo-universal-page > header
+) {
+  background: transparent !important;
+  border-bottom: 0 !important;
+  box-shadow: none !important;
+  overflow: visible !important;
+  isolation: isolate;
+}
+
+/* Paint behind the page content instead of layering over it. A header-attached
+   pseudo-element would cover the hero because the header has a higher z-index. */
+.container:has(#landingSection:not(.hidden)) {
+  background:
+    radial-gradient(ellipse 62% 190px at 50% 0%, rgba(91, 146, 104, .16), transparent 100%) top center / 100% 300px no-repeat,
+    linear-gradient(180deg, #e0ebe1 0%, rgba(231, 239, 229, .93) 21%, rgba(240, 242, 235, .68) 48%, rgba(248, 247, 242, 0) 100%) top center / 100% 300px no-repeat,
+    #f8f7f2 !important;
+}
+body.dark-mode .container:has(#landingSection:not(.hidden)) {
+  background:
+    radial-gradient(ellipse 70% 210px at 50% 0%, rgba(61, 126, 80, .25), transparent 100%) top center / 100% 295px no-repeat,
+    linear-gradient(180deg, #173a2e 0%, rgba(17, 43, 34, .98) 23%, rgba(11, 28, 22, .82) 50%, rgba(5, 8, 5, 0) 100%) top center / 100% 295px no-repeat,
+    #050805 !important;
+}
+
+/* Existing hero backgrounds were opaque; make just the current home screen
+   transparent so the parent gradient fades seamlessly through its heading. */
+.container:has(#landingSection:not(.hidden)) .motivo-landing,
+.container:has(#landingSection:not(.hidden)) .motivo-hero {
+  background: transparent !important;
+}
+
+/* On other application states the containing background continues the fade. */
+body:has(#registerSection:not(.hidden)) .container,
+body:has(#loginSection:not(.hidden)) .container,
+body:has(#customerDashboard:not(.hidden)) .container,
+body:has(#employeeDashboard:not(.hidden)) .container {
+  background-image: linear-gradient(180deg, #e4eee4 0%, rgba(248,247,242,0) 245px) !important;
+  background-repeat: no-repeat !important;
+}
+body.dark-mode:has(#registerSection:not(.hidden)) .container,
+body.dark-mode:has(#loginSection:not(.hidden)) .container,
+body.dark-mode:has(#customerDashboard:not(.hidden)) .container,
+body.dark-mode:has(#employeeDashboard:not(.hidden)) .container {
+  background-image: linear-gradient(180deg, #17382c 0%, rgba(13,23,23,0) 245px) !important;
+  background-repeat: no-repeat !important;
+}
+
+/* Public and legacy HTML pages have their header directly under the body. */
+body.motivo-public-page,
+body.motivo-universal-page {
+  background-image: linear-gradient(180deg, #e2eee3 0%, rgba(248,247,242,0) 265px) !important;
+  background-repeat: no-repeat !important;
+}
+body.dark-mode.motivo-public-page,
+body.dark-mode.motivo-universal-page {
+  background-image: linear-gradient(180deg, #17382c 0%, rgba(13,23,23,0) 265px) !important;
+  background-repeat: no-repeat !important;
+}
+
+/* Free the logo from its filled rectangular badge. The source image is a
+   transparent white wordmark, so use a deep forest tint in light mode. */
+:is(
+  .container:has(#landingSection:not(.hidden)) > .header .brand-logo,
+  body:has(#registerSection:not(.hidden)) .container > .header .brand-logo,
+  body:has(#loginSection:not(.hidden)) .container > .header .brand-logo,
+  body:has(#customerDashboard:not(.hidden)) .container > .header .brand-logo,
+  body:has(#employeeDashboard:not(.hidden)) .container > .header .brand-logo,
+  body.motivo-public-page > .header .brand-logo,
+  body.motivo-public-page > .container > .header .brand-logo
+) {
+  background: transparent !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  width: 158px !important;
+  height: 48px !important;
+  max-width: 100% !important;
+  object-fit: contain !important;
+  filter: brightness(0) saturate(100%) invert(20%) sepia(17%) saturate(1080%) hue-rotate(108deg) brightness(85%) contrast(95%) !important;
+}
+
+:is(
+  body.dark-mode .container:has(#landingSection:not(.hidden)) > .header .brand-logo,
+  body.dark-mode:has(#registerSection:not(.hidden)) .container > .header .brand-logo,
+  body.dark-mode:has(#loginSection:not(.hidden)) .container > .header .brand-logo,
+  body.dark-mode:has(#customerDashboard:not(.hidden)) .container > .header .brand-logo,
+  body.dark-mode:has(#employeeDashboard:not(.hidden)) .container > .header .brand-logo,
+  body.dark-mode.motivo-public-page > .header .brand-logo,
+  body.dark-mode.motivo-public-page > .container > .header .brand-logo
+) {
+  filter: drop-shadow(0 2px 10px rgba(0, 0, 0, .18)) !important;
+}
+
+/* Remove the hamburger button's little frame without shrinking its click area. */
+:is(
+  .container:has(#landingSection:not(.hidden)) .motivo-menu-toggle,
+  body:has(#registerSection:not(.hidden)) .container > .header .motivo-menu-toggle,
+  body:has(#loginSection:not(.hidden)) .container > .header .motivo-menu-toggle,
+  body:has(#customerDashboard:not(.hidden)) .container > .header .motivo-menu-toggle,
+  body:has(#employeeDashboard:not(.hidden)) .container > .header .motivo-menu-toggle,
+  body.motivo-public-page > .header .motivo-menu-toggle,
+  body.motivo-public-page > .container > .header .motivo-menu-toggle,
+  body.motivo-universal-page > header .motivo-menu-toggle
+) {
+  background: transparent !important;
+  border: 1px solid transparent !important;
+  border-radius: 12px !important;
+  box-shadow: none !important;
+}
+
+:is(
+  .container:has(#landingSection:not(.hidden)) .motivo-menu-toggle,
+  body:has(#registerSection:not(.hidden)) .container > .header .motivo-menu-toggle,
+  body:has(#loginSection:not(.hidden)) .container > .header .motivo-menu-toggle,
+  body:has(#customerDashboard:not(.hidden)) .container > .header .motivo-menu-toggle,
+  body:has(#employeeDashboard:not(.hidden)) .container > .header .motivo-menu-toggle,
+  body.motivo-public-page > .header .motivo-menu-toggle,
+  body.motivo-public-page > .container > .header .motivo-menu-toggle,
+  body.motivo-universal-page > header .motivo-menu-toggle
+):hover {
+  background: rgba(23, 60, 59, .09) !important;
+}
+body.dark-mode :is(.container, .header) .motivo-menu-toggle:hover,
+body.dark-mode.motivo-universal-page > header .motivo-menu-toggle:hover {
+  background: rgba(231, 245, 237, .12) !important;
+}
+
+/* Keep the menu accessible when navigating with a keyboard. */
+.motivo-menu-toggle:focus-visible {
+  outline: 3px solid #2e7d32 !important;
+  outline-offset: 3px;
+}
+body.dark-mode .motivo-menu-toggle:focus-visible {
+  outline-color: #81c784 !important;
+}
+
+@media (max-width: 640px) {
+  :is(
+    .container:has(#landingSection:not(.hidden)) > .header .brand-logo,
+    body:has(#registerSection:not(.hidden)) .container > .header .brand-logo,
+    body:has(#loginSection:not(.hidden)) .container > .header .brand-logo,
+    body:has(#customerDashboard:not(.hidden)) .container > .header .brand-logo,
+    body:has(#employeeDashboard:not(.hidden)) .container > .header .brand-logo,
+    body.motivo-public-page > .header .brand-logo,
+    body.motivo-public-page > .container > .header .brand-logo
+  ) { width: 133px !important; height: 42px !important; }
+}
+
+
+/* ===== PRESERVED CASCADE: motivo-unified-v6.css ===== */
+/* Motivo v6 — coastal photo + feathered panel atmosphere.
+ * Additive presentation-only stylesheet loaded last through i18n.css.
+ * All responsive scroll values are inherited from Motivo's existing
+ * scroll-gradient.js. No new listeners, overlays over controls, or API calls.
+ */
+
+/* LANDING PHOTO: the user's original image stays sharp and bottom-anchored.
+   It is the deepest background layer, behind the full-page green glow.
+   Unlike background-size:cover, the photo does not expand to the full
+   document height on long pages. It stays approximately one viewport tall.
+   The final translucent linear gradient controls readability and fade-in. */
+body:has(#landingSection:not(.hidden)) {
+  background-image:
+    radial-gradient(ellipse 87% 26% at calc(48% + var(--motivo-glow-top-x, 0px) + var(--motivo-ambient-drift, 0px)) calc(2% + var(--motivo-glow-top-y, 0px)), rgba(72, 160, 102, .37), transparent 80%),
+    radial-gradient(ellipse 72% 27% at calc(35% + var(--motivo-glow-mid-x, 0px) - var(--motivo-ambient-drift, 0px)) calc(54% + var(--motivo-glow-mid-y, 0px)), rgba(75, 167, 113, .21), transparent 83%),
+    radial-gradient(ellipse 91% 31% at calc(52% + var(--motivo-glow-bottom-x, 0px) + var(--motivo-ambient-drift, 0px)) 99%, rgba(56, 148, 95, var(--motivo-glow-bottom-alpha, .32)), transparent 79%),
+    linear-gradient(180deg,
+      #dcebdd 0%, #f7f8f2 20%, #edf5e9 45%, #e8f2e7 64%,
+      rgba(216, 234, 216, .94) 78%, rgba(210, 232, 216, .77) 86%,
+      rgba(224, 240, 227, .50) 100%),
+    none !important;
+  background-size:
+    100% 100%, 100% 100%, 100% 100%, 100% 100%,
+    auto clamp(640px, 66vw, 1200px) !important;
+  background-position:
+    center top, center top, center top, center top, center bottom !important;
+  background-repeat: no-repeat !important;
+  background-color: #e8f0e7 !important;
+}
+body.dark-mode:has(#landingSection:not(.hidden)) {
+  background-image:
+    radial-gradient(ellipse 85% 26% at calc(48% + var(--motivo-glow-top-x, 0px) + var(--motivo-ambient-drift, 0px)) calc(2% + var(--motivo-glow-top-y, 0px)), rgba(37, 146, 80, .45), transparent 80%),
+    radial-gradient(ellipse 77% 28% at calc(36% + var(--motivo-glow-mid-x, 0px) - var(--motivo-ambient-drift, 0px)) calc(54% + var(--motivo-glow-mid-y, 0px)), rgba(20, 115, 70, .30), transparent 83%),
+    radial-gradient(ellipse 92% 32% at calc(50% + var(--motivo-glow-bottom-x, 0px) + var(--motivo-ambient-drift, 0px)) 99%, rgba(33, 150, 84, var(--motivo-glow-bottom-alpha, .32)), transparent 78%),
+    linear-gradient(180deg,
+      #102b1d 0%, #07150e 21%, #050805 43%, #081810 62%,
+      rgba(8, 27, 18, .97) 76%, rgba(7, 29, 21, .85) 86%,
+      rgba(5, 17, 14, .60) 100%),
+    none !important;
+  background-color: #050805 !important;
+}
+
+/* Smaller public cards: no opaque linear fill, no hard outlined rectangles.
+   Transparent radial tint lets the continuous page atmosphere show through. */
+body:has(#landingSection:not(.hidden)) :is(.motivo-finder, .motivo-finder-controls, .motivo-art-note),
+body.motivo-public-page :is(.feature-card, .contact-detail, .contact-form, .card, .overview-features) {
+  background:
+    radial-gradient(ellipse 145% 170% at calc(9% + var(--motivo-glow-mid-x, 0px) + var(--motivo-ambient-drift, 0px)) 0%, rgba(108, 179, 128, .24), transparent 72%),
+    radial-gradient(ellipse 135% 165% at calc(96% + var(--motivo-glow-top-x, 0px)) 100%, rgba(82, 166, 115, .14), transparent 73%),
+    linear-gradient(117deg, rgba(239, 250, 240, .21), rgba(239, 250, 240, .055)) !important;
+  border-color: rgba(71, 127, 89, .13) !important;
+  box-shadow: 0 12px 55px rgba(15, 70, 45, .035) !important;
+  background-repeat: no-repeat !important;
+}
+body.dark-mode:has(#landingSection:not(.hidden)) :is(.motivo-finder, .motivo-finder-controls, .motivo-art-note),
+body.dark-mode.motivo-public-page :is(.feature-card, .contact-detail, .contact-form, .card, .overview-features) {
+  background:
+    radial-gradient(ellipse 155% 180% at calc(11% + var(--motivo-glow-mid-x, 0px) + var(--motivo-ambient-drift, 0px)) 0%, rgba(65, 155, 100, .27), transparent 72%),
+    radial-gradient(ellipse 135% 165% at calc(101% + var(--motivo-glow-top-x, 0px)) 100%, rgba(35, 121, 94, .19), transparent 76%),
+    linear-gradient(117deg, rgba(14, 42, 33, .42), rgba(14, 42, 33, .19)) !important;
+  border-color: rgba(100, 173, 121, .16) !important;
+  box-shadow: 0 18px 58px rgba(0, 0, 0, .09) !important;
+}
+
+/* The finder has room for a little extra green mist. The nested controls
+   are still visibly grouped, but no longer look like a separate solid box. */
+body:has(#landingSection:not(.hidden)) .motivo-finder {
+  border-radius: 25px;
+  box-shadow: 0 15px 65px rgba(34, 112, 70, .06) !important;
+}
+body:has(#landingSection:not(.hidden)) .motivo-finder-controls {
+  background:
+    radial-gradient(ellipse 150% 150% at calc(88% + var(--motivo-glow-mid-x, 0px)) 0%, rgba(123, 198, 141, .12), transparent 76%),
+    linear-gradient(110deg, rgba(255, 255, 255, .78), rgba(250, 255, 249, .46)) !important;
+  border-color: rgba(60, 125, 83, .14) !important;
+  box-shadow: none !important;
+}
+body.dark-mode:has(#landingSection:not(.hidden)) .motivo-finder-controls {
+  background:
+    radial-gradient(ellipse 150% 155% at calc(88% + var(--motivo-glow-mid-x, 0px)) 0%, rgba(54, 145, 90, .19), transparent 76%),
+    linear-gradient(110deg, rgba(9, 35, 27, .61), rgba(7, 35, 29, .34)) !important;
+  border-color: rgba(112, 171, 125, .17) !important;
+}
+
+/* LARGE STORY BLOCKS: blurred color fields behind the actual content.
+   The softly feathered edges remove the solid slab transition without
+   reducing the contrast of the white headings. */
+body:has(#landingSection:not(.hidden)) :is(.motivo-feature-section, .motivo-shop-cta) {
+  position: relative;
+  isolation: isolate;
+  overflow: visible;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  color: #fff !important;
+}
+body:has(#landingSection:not(.hidden)) :is(.motivo-feature-section, .motivo-shop-cta)::before {
+  content: '';
+  position: absolute;
+  inset: -20px 0;
+  z-index: -1;
+  pointer-events: none;
+  filter: blur(27px);
+  background-repeat: no-repeat;
+}
+body:has(#landingSection:not(.hidden)) .motivo-feature-section::before {
+  background:
+    radial-gradient(ellipse 97% 126% at calc(17% + var(--motivo-glow-mid-x, 0px) + var(--motivo-ambient-drift, 0px)) 13%, rgba(53, 142, 90, .52), transparent 80%),
+    radial-gradient(ellipse 120% 135% at calc(94% + var(--motivo-glow-bottom-x, 0px)) 92%, rgba(17, 87, 74, .55), transparent 78%),
+    linear-gradient(110deg, rgba(9, 32, 25, .96), rgba(12, 52, 37, .96) 57%, rgba(8, 32, 29, .96));
+}
+body:has(#landingSection:not(.hidden)) .motivo-shop-cta::before {
+  background:
+    radial-gradient(ellipse 98% 141% at calc(5% + var(--motivo-glow-top-x, 0px) + var(--motivo-ambient-drift, 0px)) 14%, rgba(139, 217, 153, .44), transparent 82%),
+    radial-gradient(ellipse 125% 150% at calc(97% + var(--motivo-glow-bottom-x, 0px)) 89%, rgba(15, 91, 78, .46), transparent 80%),
+    linear-gradient(120deg, rgba(21, 104, 62, .97), rgba(36, 128, 74, .97) 52%, rgba(13, 73, 60, .97));
+}
+body.dark-mode:has(#landingSection:not(.hidden)) .motivo-feature-section::before {
+  background:
+    radial-gradient(ellipse 100% 140% at calc(10% + var(--motivo-glow-mid-x, 0px) + var(--motivo-ambient-drift, 0px)) 6%, rgba(52, 150, 91, .39), transparent 80%),
+    linear-gradient(117deg, rgba(4, 20, 14, .97), rgba(15, 55, 37, .97) 55%, rgba(5, 26, 21, .97));
+}
+body.dark-mode:has(#landingSection:not(.hidden)) .motivo-shop-cta::before {
+  background:
+    radial-gradient(ellipse 106% 155% at calc(8% + var(--motivo-glow-top-x, 0px) + var(--motivo-ambient-drift, 0px)) 14%, rgba(90, 206, 121, .44), transparent 81%),
+    linear-gradient(115deg, rgba(14, 65, 39, .96), rgba(28, 104, 56, .96) 54%, rgba(9, 58, 48, .96));
+}
+
+/* Dashboard summary tiles inherit the same motion, but need calmer surfaces
+   so long customer names, job details and totals stay easy to scan. */
+body:has(#customerDashboard:not(.hidden)) :is(.customer-home-card, .customer-home-shop-card),
+body:has(#employeeDashboard:not(.hidden)) :is(.motivo-ops-card, .motivo-ops-stat),
+body:has(#employeeDashboard:not(.hidden)) #motivoSchedPanel .motivo-sched-card,
+body:has(#employeeDashboard:not(.hidden)) #staffWorkflowSection .motivo-summary-card {
+  background:
+    radial-gradient(ellipse 146% 160% at calc(12% + var(--motivo-glow-mid-x, 0px) + var(--motivo-ambient-drift, 0px)) 0%, rgba(91, 174, 120, .15), transparent 76%),
+    linear-gradient(120deg, rgba(255, 255, 255, .86), rgba(246, 252, 246, .67)) !important;
+  border-color: rgba(68, 134, 90, .14) !important;
+  box-shadow: 0 8px 28px rgba(19, 79, 49, .035) !important;
+}
+body.dark-mode:has(#customerDashboard:not(.hidden)) :is(.customer-home-card, .customer-home-shop-card),
+body.dark-mode:has(#employeeDashboard:not(.hidden)) :is(.motivo-ops-card, .motivo-ops-stat),
+body.dark-mode:has(#employeeDashboard:not(.hidden)) #motivoSchedPanel .motivo-sched-card,
+body.dark-mode:has(#employeeDashboard:not(.hidden)) #staffWorkflowSection .motivo-summary-card {
+  background:
+    radial-gradient(ellipse 156% 170% at calc(12% + var(--motivo-glow-mid-x, 0px) + var(--motivo-ambient-drift, 0px)) 0%, rgba(63, 141, 95, .18), transparent 76%),
+    linear-gradient(120deg, rgba(18, 41, 31, .86), rgba(21, 48, 38, .72)) !important;
+  border-color: rgba(118, 182, 134, .16) !important;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, .06) !important;
+}
+
+/* Scroll animations remain opt-out for reduced motion, as in v4/v5.
+   This file adds no animation on its own; all glows reuse the v4 variables. */
+@media (prefers-reduced-motion: reduce) {
+  body:has(#landingSection:not(.hidden)) :is(.motivo-feature-section, .motivo-shop-cta)::before {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+@media print {
+  body:has(#landingSection:not(.hidden)) {
+    background-image: none !important;
+  }
+  body:has(#landingSection:not(.hidden)) :is(.motivo-feature-section, .motivo-shop-cta)::before {
+    content: none !important;
+  }
+}
+
+
+/* ==============================================================
+   MOTIVO UNIFIED BRAND SYSTEM - v6
+   Applies to all existing entry points without replacing forms,
+   menus, route IDs, session logic, or dashboard tab components.
+   ============================================================== */
+:root {
+  --motivo-forest: #173c3b;
+  --motivo-green: #347f4b;
+  --motivo-green-soft: #dcebdd;
+  --motivo-text: #173c3b;
+  --motivo-panel-stroke: rgba(66, 128, 88, .14);
+  --motivo-panel-radius: 18px;
+}
+body.dark-mode {
+  --motivo-forest: #d5f0dd;
+  --motivo-green: #76c888;
+  --motivo-text: #e6f2e9;
+  --motivo-panel-stroke: rgba(126, 194, 146, .15);
+}
+
+/* The unified green page atmosphere on all Motivo
+   pages, not just / (including signed-in views and the developer console).
+   Each background layer is document-positioned; the PHOTO is anchored at
+   the page's end, not fixed to the viewport or stretched vertically. */
+:is(body.motivo-public-page, body.motivo-universal-page,
+    body:has(#registerSection:not(.hidden)), body:has(#loginSection:not(.hidden)),
+    body:has(#customerDashboard:not(.hidden)), body:has(#employeeDashboard:not(.hidden)),
+    body:has(> .topbar)):not(.dark-mode) {
+  background-image:
+    radial-gradient(ellipse 87% 27% at calc(47% + var(--motivo-glow-top-x, 0px) + var(--motivo-ambient-drift, 0px)) 2%, rgba(70, 157, 105, .35), transparent 81%),
+    radial-gradient(ellipse 82% 28% at calc(38% + var(--motivo-glow-mid-x, 0px)) 51%, rgba(71, 162, 108, .20), transparent 84%),
+    radial-gradient(ellipse 88% 33% at calc(51% + var(--motivo-glow-bottom-x, 0px)) 99%, rgba(48, 144, 94, var(--motivo-glow-bottom-alpha, .30)), transparent 80%),
+    linear-gradient(180deg, #dcebdd 0%, #f4f7f0 19%, #ecf4e9 47%, #e3f1e4 68%, rgba(205,228,209,.93) 82%, rgba(226,241,226,.50) 100%),
+    none !important;
+  background-size: 100% 100%, 100% 100%, 100% 100%, 100% 100%, auto clamp(640px, 66vw, 1200px) !important;
+  background-position: center top, center top, center top, center top, center bottom !important;
+  background-repeat: no-repeat !important;
+  background-color: #e8f0e7 !important;
+}
+:is(body.motivo-public-page, body.motivo-universal-page,
+    body:has(#registerSection:not(.hidden)), body:has(#loginSection:not(.hidden)),
+    body:has(#customerDashboard:not(.hidden)), body:has(#employeeDashboard:not(.hidden))):is(.dark-mode) {
+  background-image:
+    radial-gradient(ellipse 85% 27% at calc(48% + var(--motivo-glow-top-x, 0px) + var(--motivo-ambient-drift, 0px)) 2%, rgba(39,146,81,.46), transparent 81%),
+    radial-gradient(ellipse 80% 28% at calc(38% + var(--motivo-glow-mid-x, 0px)) 51%, rgba(24,112,77,.31), transparent 84%),
+    radial-gradient(ellipse 88% 33% at calc(50% + var(--motivo-glow-bottom-x, 0px)) 99%, rgba(38,154,86,var(--motivo-glow-bottom-alpha,.31)), transparent 80%),
+    linear-gradient(180deg, #102b1d 0%, #07160f 21%, #050805 47%, #081a11 68%, rgba(8,28,20,.94) 83%, rgba(6,18,16,.60) 100%),
+    none !important;
+  background-color: #050805 !important;
+  background-size: 100% 100%, 100% 100%, 100% 100%, 100% 100%, auto clamp(640px, 66vw, 1200px) !important;
+  background-position: center top, center top, center top, center top, center bottom !important;
+  background-repeat: no-repeat !important;
+}
+
+/* Portal wrappers must not repaint a flat background over the photo. */
+body.motivo-public-page :is(.container, .contact-page),
+body.motivo-universal-page > main,
+body:has(> .topbar) > main {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+/* Contextual page chrome shares the same soft gradient treatment. */
+body.motivo-public-page > .header,
+body.motivo-public-page > .container > .header,
+body.motivo-universal-page > header,
+body:has(> .topbar) > .topbar {
+  background: transparent !important;
+  background-image: none !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+body.motivo-universal-page > header {
+  box-sizing: border-box;
+  max-width: none !important;
+  width: 100% !important;
+  min-height: 78px;
+  padding: 15px clamp(18px,4vw,64px) !important;
+  z-index: 45;
+  gap: clamp(12px,2vw,28px);
+}
+body.motivo-universal-page > header > div:first-child {
+  min-width: 0;
+  gap: 10px;
+}
+body.motivo-universal-page > header .motivo-unified-brand {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  width: clamp(120px, 12vw, 155px);
+  text-decoration: none;
+}
+body.motivo-universal-page > header .motivo-unified-brand img {
+  display: block;
+  width: 100%;
+  height: 46px;
+  object-fit: contain;
+  filter: brightness(0) saturate(100%) invert(22%) sepia(18%) saturate(1140%) hue-rotate(108deg) brightness(88%) contrast(92%);
+}
+body.dark-mode.motivo-universal-page > header .motivo-unified-brand img {
+  filter: drop-shadow(0 3px 7px rgba(0,0,0,.22));
+}
+body.motivo-universal-page .motivo-legacy-brand-hidden { display: none !important; }
+body.motivo-universal-page:not(.dark-mode) > header :is(.text-white, .text-slate-400, .text-slate-100) {
+  color: #173c3b !important;
+}
+body.motivo-universal-page > header .motivo-menu-toggle {
+  border: 1px solid transparent !important;
+  border-radius: 12px;
+  width: 44px; height: 44px; flex: 0 0 44px;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+body.motivo-universal-page:not(.dark-mode) > header .motivo-menu-toggle span { background: #173c3b; }
+body.dark-mode.motivo-universal-page > header .motivo-menu-toggle span { background: #edf2ed; }
+body.motivo-universal-page > header .motivo-menu-toggle:hover { background: rgba(87,166,114,.13) !important; }
+body.motivo-universal-page .motivo-universal-menu {
+  background: linear-gradient(155deg, #edf8ee 0%, #d9ebdf 100%) !important;
+  border-right-color: rgba(69,132,88,.20) !important;
+  color: #173c3b !important;
+}
+body.dark-mode.motivo-universal-page .motivo-universal-menu {
+  background: linear-gradient(155deg, #10291f 0%, #0a1b16 100%) !important;
+  color: #edf2ed !important;
+}
+body.motivo-universal-page:not(.dark-mode) .motivo-universal-menu :is(a,button) { color: #173c3b !important; }
+body.dark-mode.motivo-universal-page .motivo-universal-menu :is(a,button) { color: #edf2ed !important; }
+body.motivo-universal-page:not(.dark-mode) .motivo-universal-menu .motivo-language-control select {color:#173c3b !important;}
+body.motivo-universal-page .motivo-universal-menu .motivo-drawer-heading img { max-width: 150px; }
+
+/* Legacy Tailwind screens were mixing navy/orange with the green brand.
+   Match their cards and indicators to Motivo without changing IDs or forms.
+   Dark card surfaces remain dark even on pale light-mode pages, which
+   preserves contrast for their existing white text and input labels. */
+body.motivo-universal-page :is(.bg-slate-900, .bg-slate-800):not(input):not(select):not(textarea) {
+  background-image:
+    radial-gradient(ellipse 115% 190% at calc(13% + var(--motivo-glow-mid-x,0px) + var(--motivo-ambient-drift,0px)) 5%, rgba(71,163,105,.17), transparent 78%),
+    linear-gradient(128deg, rgba(13,50,34,.94), rgba(13,37,34,.91)) !important;
+  background-color: #132b24 !important;
+  border-color: rgba(110,187,137,.22) !important;
+}
+body.motivo-universal-page :is(.text-orange-500, .text-orange-400) { color: #87d699 !important; }
+body.motivo-universal-page :is(.bg-orange-500, .bg-orange-600) { background-color: #2e7d46 !important; }
+body.motivo-universal-page :is(.bg-orange-500, .bg-orange-600):hover { background-color: #20683c !important; }
+body.motivo-universal-page [class*="border-orange-"] { border-color: #4a9e69 !important; }
+body.motivo-universal-page :is(.input-dark, input.bg-slate-950, textarea.bg-slate-950, select.bg-slate-950) {
+  border-color: rgba(109,174,127,.35) !important;
+  background: #0b241d !important;
+  color: #effaf1 !important;
+}
+body.motivo-universal-page :is(.input-dark, input, textarea, select):focus-visible {
+  outline: 2px solid #82d69c;
+  outline-offset: 2px;
+}
+body.motivo-universal-page:not(.dark-mode) > main :is(h1,h2,h3):not(.text-orange-500) { color: #173c3b; }
+body.motivo-universal-page:not(.dark-mode) > main .bg-slate-900 :is(h1,h2,h3),
+body.motivo-universal-page:not(.dark-mode) > main .bg-slate-800 :is(h1,h2,h3) { color: #f0f9f0; }
+body.motivo-universal-page .motivo-unified-context {
+  color: #59766b;
+  font-size: 11px;
+  font-weight: 750;
+  letter-spacing: .04em;
+  line-height: 1.4;
+}
+body.dark-mode.motivo-universal-page .motivo-unified-context { color: #b6d6c4; }
+
+/* Homepage and app feature cards use consistent softly feathered surfaces;
+   functional tables, status badges, alerts and editable input fields are
+   deliberately excluded from the decorative card treatment. */
+body:has(#landingSection:not(.hidden)) .motivo-benefit-grid article {
+  border-color: rgba(99,161,114,.17) !important;
+}
+body:has(#landingSection:not(.hidden)) .motivo-finder,
+body.motivo-public-page :is(.feature-card, .card, .overview-features, .contact-detail, .contact-form),
+body:has(#customerDashboard:not(.hidden)) :is(.customer-home-card, .customer-home-shop-card),
+body:has(#employeeDashboard:not(.hidden)) :is(.motivo-ops-home, .motivo-ops-card, .motivo-ops-stat, .motivo-ops-side),
+body:has(#employeeDashboard:not(.hidden)) #motivoSchedPanel .motivo-sched-card,
+body:has(#employeeDashboard:not(.hidden)) #staffWorkflowSection .motivo-summary-card {
+  border-color: var(--motivo-panel-stroke) !important;
+  border-radius: var(--motivo-panel-radius);
+  box-shadow: 0 16px 50px rgba(25,80,54,.045) !important;
+}
+body:has(#employeeDashboard:not(.hidden)) #employeeDashboard .motivo-ops-side {
+  background:
+    radial-gradient(ellipse 130% 100% at calc(5% + var(--motivo-glow-mid-x,0px) + var(--motivo-ambient-drift,0px)) 0%, rgba(59,147,95,.26), transparent 78%),
+    linear-gradient(135deg, rgba(14,58,42,.95), rgba(11,42,37,.91)) !important;
+  color: #f1f7f2;
+}
+body:has(#employeeDashboard:not(.hidden)) #employeeDashboard .motivo-ops-home {
+  background:
+    radial-gradient(ellipse 128% 122% at calc(5% + var(--motivo-glow-mid-x,0px)) 0%, rgba(100,181,127,.17), transparent 78%),
+    linear-gradient(115deg, rgba(243,251,243,.78), rgba(226,244,230,.59)) !important;
+}
+body.dark-mode:has(#employeeDashboard:not(.hidden)) #employeeDashboard .motivo-ops-home {
+  background:
+    radial-gradient(ellipse 128% 122% at calc(5% + var(--motivo-glow-mid-x,0px)) 0%, rgba(67,155,100,.25), transparent 78%),
+    linear-gradient(115deg, rgba(16,48,33,.81), rgba(10,35,29,.74)) !important;
+}
+body:has(#employeeDashboard:not(.hidden)) #motivoSchedPanel,
+body:has(#employeeDashboard:not(.hidden)) #staffWorkflowSection {
+  border-color: rgba(79,153,100,.16) !important;
+  box-shadow: 0 14px 56px rgba(15,68,39,.045);
+}
+
+/* Developer console keeps its own access controls/layout and gains the
+   shared background, borders, typography and palette only. */
+body:has(> .topbar) {
+  color: #173c3b;
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+body:has(> .topbar) > .topbar .platform-brand-logo { display:block; max-width:168px; height:auto; filter: brightness(0) saturate(100%) invert(19%) sepia(25%) saturate(738%) hue-rotate(106deg) brightness(92%); }
+body:has(> .topbar) :is(.panel, .metric, .drawer, .confirm, .tabs, .activity) {
+  border-color: rgba(80,145,99,.19) !important;
+}
+body:has(> .topbar) :is(.panel, .metric) {
+  background:
+    radial-gradient(ellipse 135% 140% at calc(12% + var(--motivo-glow-mid-x,0px) + var(--motivo-ambient-drift,0px)) 0%, rgba(86,171,115,.16), transparent 78%),
+    linear-gradient(120deg, rgba(255,255,255,.84), rgba(234,248,237,.66)) !important;
+  box-shadow: 0 14px 44px rgba(25,80,54,.05) !important;
+}
+body:has(> .topbar) :is(.tab.selected, .selected.tab) { background: #deefe2; color: #173c3b; }
+body:has(> .topbar) .topbar .private-label { color: #315c4a; }
+body:has(> .topbar) .topbar .platform-brand-caption { color: #315c4a; }
+body:has(> .topbar) .topbar button { color: #173c3b; border-color: rgba(77,139,95,.40); }
+body:has(> .topbar) .motivo-preferences-popover > summary { color: #173c3b; border-color: rgba(69,132,88,.38); }
+
+/* Legal notice and the right-hand drawer must remain clear and readable. */
+body.motivo-public-page .legal-footer,
+body:has(#landingSection:not(.hidden)) .legal-footer {
+  background: rgba(8,31,22,.03) !important;
+  border-radius: 16px;
+  backdrop-filter: blur(3px);
+}
+body.dark-mode.motivo-public-page .legal-footer,
+body.dark-mode:has(#landingSection:not(.hidden)) .legal-footer {
+  background: rgba(9,31,20,.16) !important;
+}
+
+@media (max-width: 640px) {
+  body.motivo-universal-page > header .motivo-unified-brand { width: 123px; }
+  body.motivo-universal-page > header .motivo-unified-brand img { height: 38px; }
+  body.motivo-universal-page > header {padding: 10px 14px !important;}
+  body.motivo-universal-page > header .motivo-unified-context { display:none; }
+  body.motivo-universal-page > header .motivo-menu-toggle { width:42px;flex-basis:42px; }
+  /* Older staff terminal has a duplicate Home text link beside the Motivo logo;
+     the drawer already provides Home. Keep the clickable logo and shop label. */
+  body.motivo-universal-page > header > div:first-child > a:not(.motivo-unified-brand) { display:none !important; }
+  body.motivo-universal-page > header > div:first-child > div:not(.motivo-legacy-brand-hidden) { min-width:0; }
+  body.motivo-universal-page > header > div:first-child > div:not(.motivo-legacy-brand-hidden) > span:first-child {
+    display:block; max-width:clamp(75px,22vw,155px); overflow:hidden;
+    text-overflow:ellipsis; white-space:nowrap;
+  }
+  body:has(> .topbar) .topbar-inner {padding: 14px 15px;}
+}
+@media (prefers-reduced-motion: reduce) {
+  body.motivo-universal-page .motivo-ops-side,
+  body:has(> .topbar) .panel { animation: none !important; }
+}
+@media print {
+  body.motivo-public-page,
+  body.motivo-universal-page,
+  body:has(> .topbar) { background: #fff !important; color:#111 !important; }
+}
+
+/* Override the more-specific dark v5 fills: new blurred shadows own the background. */
+body.dark-mode:has(#landingSection:not(.hidden)) :is(.motivo-feature-section, .motivo-shop-cta) {
+  background: transparent !important; border:0 !important; box-shadow:none !important;
+}
+
+
+/* ===== PRESERVED CASCADE: motivo-aurora-v9.css ===== */
+/* Motivo v9 — Monopo-inspired atmospheric design, tuned for desktop scrolling.
+ * Original Motivo artwork and branding. No WebGL, canvas, tracking, blurring,
+ * background animations, scroll listeners or backdrop filtering.
+ * Two small pre-rendered WebP auroras are simply painted in place.
+ */
+
+/* Stop the older full-page custom-property animation and isolate the one
+ * still image from page content. The old v7 script is no longer loaded. */
+html { overflow-x: clip; }
+body {
+  position: relative;
+  isolation: isolate;
+  overflow-x: clip;
+  animation: none !important;
+  --motivo-ambient-drift: 0px !important;
+  --motivo-glow-top-x: 0px !important;
+  --motivo-glow-mid-x: 0px !important;
+  --motivo-glow-bottom-x: 0px !important;
+  --motivo-glow-top-y: 0px !important;
+  --motivo-glow-mid-y: 0px !important;
+}
+
+/* Motivo v9: one opaque, low-cost forest spectrum page background.
+ * No coastal image, fixed attachment, moving gradient or tracked pointer. */
+html body:not(.dark-mode):is(
+  :has(#landingSection:not(.hidden)), :has(#registerSection:not(.hidden)),
+  :has(#loginSection:not(.hidden)), :has(#customerDashboard:not(.hidden)),
+  :has(#employeeDashboard:not(.hidden)), .motivo-public-page,
+  .motivo-universal-page, :has(> .topbar)
+) {
+  background-color: #edf5eb !important;
+  background-image: linear-gradient(180deg,
+    #d3e9d5 0%, #edf6ea 31%, #dcefe0 72%, #9cccae 100%) !important;
+  background-size: 100% 100% !important;
+  background-position: center top !important;
+  background-repeat: no-repeat !important;
+}
+html body.dark-mode:is(
+  :has(#landingSection:not(.hidden)), :has(#registerSection:not(.hidden)),
+  :has(#loginSection:not(.hidden)), :has(#customerDashboard:not(.hidden)),
+  :has(#employeeDashboard:not(.hidden)), .motivo-public-page,
+  .motivo-universal-page, :has(> .topbar)
+) {
+  background-color: #040805 !important;
+  background-image: linear-gradient(180deg,
+    #030704 0%, #07140b 30%, #05100a 62%, #0c2818 100%) !important;
+  background-size: 100% 100% !important;
+  background-position: center top !important;
+  background-repeat: no-repeat !important;
+}
+
+/* Pre-rendered blurred color: no CSS filter(), CSS blur(), repaint animation,
+ * scroll velocity calculation or mouse-following JavaScript. */
+html body::before {
+  content: '' !important;
+  position: fixed !important;
+  inset: 0 !important;
+  display: block !important;
+  width: 100% !important;
+  height: 100vh !important;
+  height: 100dvh !important;
+  background: url('/images/motivo-aurora-light-v9.webp') center center / cover no-repeat !important;
+  z-index: 0 !important;
+  pointer-events: none !important;
+  opacity: 1 !important;
+  transform: none !important;
+  animation: none !important;
+  filter: none !important;
+  contain: paint;
+}
+html body.dark-mode::before {
+  background-image: url('/images/motivo-aurora-dark-v9.webp') !important;
+}
+#motivo-liquid-layer { display: none !important; }
+
+/* Raise page content above the painted atmosphere without touching sticky
+ * header coordinates or overriding drawer stacking. */
+body > .container,
+body > main,
+body > footer,
+body > .legal-footer,
+body > .motivo-legal-language-note,
+body > .contact-page {
+  position: relative;
+  z-index: 1;
+}
+body > header,
+body > .header,
+body > .topbar,
+body > .motivo-universal-menu {
+  z-index: 20;
+}
+body > header,
+body > .header,
+body > .topbar { border-bottom: 0 !important; }
+
+/* Shared brand treatment. Retain v6's wordmarks, real buttons and drawer. */
+body.motivo-public-page > .header,
+body.motivo-public-page > .container > .header,
+body.motivo-universal-page > header,
+body:has(> .topbar) > .topbar {
+  background-color: transparent !important;
+  background-image: linear-gradient(180deg, rgba(224,242,230,.16), transparent) !important;
+  box-shadow: none !important;
+}
+body.dark-mode.motivo-public-page > .header,
+body.dark-mode.motivo-public-page > .container > .header,
+body.dark-mode.motivo-universal-page > header {
+  background-image: linear-gradient(180deg, rgba(3,13,7,.65), transparent) !important;
+}
+
+/* Never turn Motivo's page back into a solid old-style rectangle. */
+body .container,
+body .contact-page,
+body.motivo-universal-page > main,
+body:has(> .topbar) > main,
+body:has(#landingSection:not(.hidden)) .motivo-landing,
+body:has(#landingSection:not(.hidden)) .motivo-hero,
+body:has(#landingSection:not(.hidden)) .motivo-benefits,
+body:has(#landingSection:not(.hidden)) .motivo-final-cta {
+  background: transparent !important;
+  background-image: none !important;
+}
+
+/* Earlier v2 header CSS painted an OPAQUE full-height SPA container.
+ * Its high-specificity background must be cleared or the aurora is hidden. */
+html body .container:has(#landingSection:not(.hidden)),
+html body.dark-mode .container:has(#landingSection:not(.hidden)),
+html body:has(#registerSection:not(.hidden)) .container,
+html body:has(#loginSection:not(.hidden)) .container,
+html body:has(#customerDashboard:not(.hidden)) .container,
+html body:has(#employeeDashboard:not(.hidden)) .container {
+  background: transparent !important;
+  background-image: none !important;
+}
+
+/* Monopo-inspired editorial spacing and strong legible headings: no content
+ * replacement, no changed links or components. */
+body:has(#landingSection:not(.hidden)) .motivo-hero h1 {
+  letter-spacing: -.065em;
+  text-wrap: balance;
+}
+body.dark-mode:has(#landingSection:not(.hidden)) .motivo-hero h1 {
+  color: #f7faf9 !important;
+  text-shadow: 0 3px 26px rgba(1,9,4,.23);
+}
+body.dark-mode:has(#landingSection:not(.hidden)) .motivo-hero h1 span {
+  color: #9de4c0 !important;
+}
+body.dark-mode:has(#landingSection:not(.hidden)) .motivo-hero-subtitle {
+  color: #e3efec !important;
+  text-shadow: 0 2px 11px rgba(0,0,0,.20);
+}
+body:has(#landingSection:not(.hidden)) .motivo-eyebrow {
+  letter-spacing: .13em;
+}
+
+/* Remove the wide, expensive CSS-blurred section masks entirely. Replace
+ * them with static, smoothly transparent radial gradients. */
+body:has(#landingSection:not(.hidden)) :is(.motivo-feature-section, .motivo-shop-cta) {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  isolation: isolate;
+  position: relative;
+}
+body:has(#landingSection:not(.hidden)) :is(.motivo-feature-section, .motivo-shop-cta)::before {
+  content: '';
+  position: absolute;
+  inset: -12px 0;
+  z-index: -1;
+  background: radial-gradient(ellipse 95% 100% at 48% 52%, rgba(12,53,42,.85), rgba(8,34,19,.62) 45%, transparent 80%) !important;
+  filter: none !important;
+  backdrop-filter: none !important;
+  animation: none !important;
+  transform: none !important;
+  will-change: auto !important;
+  pointer-events: none;
+}
+body:has(#landingSection:not(.hidden)) .motivo-shop-cta::before {
+  background: radial-gradient(ellipse 95% 100% at 42% 55%, rgba(26,107,69,.84), rgba(9,62,28,.60) 50%, transparent 80%) !important;
+}
+body.dark-mode:has(#landingSection:not(.hidden)) .motivo-feature-section::before {
+  background: radial-gradient(ellipse 95% 100% at 48% 52%, rgba(6,25,13,.91), rgba(7,23,12,.68) 47%, transparent 81%) !important;
+}
+body.dark-mode:has(#landingSection:not(.hidden)) .motivo-shop-cta::before {
+  background: radial-gradient(ellipse 95% 100% at 42% 55%, rgba(11,65,56,.85), rgba(9,41,22,.60) 49%, transparent 81%) !important;
+}
+
+/* Soft translucent panels instead of solid rectangular green blocks.
+ * Keep borders light; keep the form controls themselves opaque for usability. */
+body:has(#landingSection:not(.hidden)) :is(.motivo-finder, .motivo-finder-controls, .motivo-art-note),
+body.motivo-public-page :is(.card, .feature-card, .contact-form, .contact-detail, .overview-features),
+body:has(#customerDashboard:not(.hidden)) :is(.customer-home-card, .customer-home-shop-card),
+body:has(#employeeDashboard:not(.hidden)) :is(.motivo-ops-card, .motivo-ops-stat),
+body:has(#employeeDashboard:not(.hidden)) #motivoSchedPanel .motivo-sched-card,
+body:has(#employeeDashboard:not(.hidden)) #staffWorkflowSection .motivo-summary-card,
+body:has(> .topbar) :is(.panel, .metric) {
+  background: linear-gradient(125deg, rgba(249,255,248,.75), rgba(218,242,220,.34)) !important;
+  border-color: rgba(47,125,74,.15) !important;
+  box-shadow: 0 12px 35px rgba(14,64,34,.045) !important;
+  backdrop-filter: none !important;
+}
+body.dark-mode:has(#landingSection:not(.hidden)) :is(.motivo-finder, .motivo-finder-controls, .motivo-art-note),
+body.dark-mode.motivo-public-page :is(.card, .feature-card, .contact-form, .contact-detail, .overview-features),
+body.dark-mode:has(#customerDashboard:not(.hidden)) :is(.customer-home-card, .customer-home-shop-card),
+body.dark-mode:has(#employeeDashboard:not(.hidden)) :is(.motivo-ops-card, .motivo-ops-stat),
+body.dark-mode:has(#employeeDashboard:not(.hidden)) #motivoSchedPanel .motivo-sched-card,
+body.dark-mode:has(#employeeDashboard:not(.hidden)) #staffWorkflowSection .motivo-summary-card {
+  background: linear-gradient(125deg, rgba(7,30,16,.73), rgba(11,37,20,.42)) !important;
+  border-color: rgba(118,198,140,.17) !important;
+  box-shadow: 0 18px 40px rgba(0,0,0,.06) !important;
+}
+/* The darker cards remain readable against forest-green glows. */
+body.dark-mode:has(#landingSection:not(.hidden)) .motivo-art-note,
+body.dark-mode:has(#landingSection:not(.hidden)) .motivo-finder-controls {
+  color: #eff9f4 !important;
+}
+
+/* Older Tailwind screens retain their structural UI, while the brand cards
+ * gain the same translucent surfaces rather than the original navy blocks. */
+body.motivo-universal-page :is(.bg-slate-900,.bg-slate-800):not(input):not(select):not(textarea),
+body.motivo-universal-page form.bg-slate-900 {
+  background: linear-gradient(130deg, rgba(248,255,248,.75), rgba(230,247,233,.53)) !important;
+  border-color: rgba(57,131,76,.17) !important;
+}
+body.dark-mode.motivo-universal-page :is(.bg-slate-900,.bg-slate-800):not(input):not(select):not(textarea),
+body.dark-mode.motivo-universal-page form.bg-slate-900 {
+  background: linear-gradient(135deg, rgba(9,31,16,.79), rgba(10,28,16,.55)) !important;
+  border-color: rgba(113,189,136,.20) !important;
+}
+/* Exception: dark and light menus use their own navigation surfaces. */
+body.motivo-universal-page .motivo-universal-menu { background: rgba(230,245,232,.98) !important; }
+body.dark-mode.motivo-universal-page .motivo-universal-menu { background: rgba(7,24,14,.98) !important; }
+body:has(> .topbar) .topbar .topbar-inner,
+body.motivo-universal-page > header { isolation: isolate; }
+
+/* Explicitly remove prior v6 backdrop and blur filters, which were also
+ * expensive when scrolling under a fixed/transparent header. */
+body .legal-footer,
+body .theme-footer,
+body .motivo-finder,
+body .motivo-art-note,
+body .motivo-universal-menu {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* Avoid forced GPU layers or infinite animations for decorative elements. */
+body:has(#landingSection:not(.hidden)) .motivo-feature-section::before,
+body:has(#landingSection:not(.hidden)) .motivo-shop-cta::before {
+  will-change: auto !important;
+}
+
+
+
+/* Motivo v19 | Quiet forest / understated ember.
+ * v18 introduced prominent green/orange gradients. This deliberately flattens
+ * the background without changing any layout, form, or UI behavior.
+ * No WebP backgrounds are painted: the solid CSS colors are less distracting.
+ * No backdrop filters, animations, moving backgrounds, or new assets.
+ * Private platform pages (which have a direct .topbar child) are excluded. */
+
+/* Light: predominantly a single soft sage background. */
+html body:not(.dark-mode):not(:has(> .topbar))::before {
+  background: radial-gradient(ellipse 40% 31% at 94% 94%,
+    rgba(204, 126, 75, .065) 0%, transparent 76%), #e7f1e9 !important;
+  background-size: 100% 100%, 100% 100% !important;
+  background-repeat: no-repeat !important;
+  background-position: center center !important;
+}
+
+/* Dark: first ~20% shades from midnight forest to a flat deep green.
+ * The burnt orange is merely a localized hint, not a second color band. */
+html body.dark-mode:not(:has(> .topbar))::before {
+  background: radial-gradient(ellipse 43% 31% at 95% 93%,
+    rgba(185, 93, 45, .115) 0%, transparent 78%),
+    linear-gradient(180deg, #06170f 0%, #0b291c 22%, #0b291c 100%) !important;
+  background-size: 100% 100%, 100% 100% !important;
+  background-repeat: no-repeat !important;
+  background-position: center center !important;
+}
+
+/* Match the real canvas to the background layer; iPhone Safari changes the
+ * viewport height while scrolling, so it must never expose the old black tile. */
+html body:not(.dark-mode):not(:has(> .topbar)):is(
+  :has(#landingSection:not(.hidden)), :has(#registerSection:not(.hidden)),
+  :has(#loginSection:not(.hidden)), :has(#customerDashboard:not(.hidden)),
+  :has(#employeeDashboard:not(.hidden)), .motivo-public-page,
+  .motivo-universal-page
+) {
+  background-color: #e7f1e9 !important;
+  background-image: none !important;
+}
+html body.dark-mode:not(:has(> .topbar)):is(
+  :has(#landingSection:not(.hidden)), :has(#registerSection:not(.hidden)),
+  :has(#loginSection:not(.hidden)), :has(#customerDashboard:not(.hidden)),
+  :has(#employeeDashboard:not(.hidden)), .motivo-public-page,
+  .motivo-universal-page
+) {
+  background-color: #0b291c !important;
+  background-image: none !important;
+}
+
+/* The old header glow is now redundant: let the single continuous page
+ * background run beneath the wordmark and navigation. */
+html body:not(:has(> .topbar)) .container > .header,
+html body.motivo-public-page > .header,
+html body.motivo-public-page > .container > .header,
+html body.motivo-universal-page > header {
+  background: transparent !important;
+  background-image: none !important;
+}
+
+@media (max-width: 640px) {
+  html body::before { background-position: 58% center !important; }
+  body:has(#landingSection:not(.hidden)) :is(.motivo-feature-section, .motivo-shop-cta)::before { inset: -8px 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html body::before { animation: none !important; }
+}
+@media print {
+  html body, html body.dark-mode { background: #fff !important; color: #111 !important; }
+  html body::before { display: none !important; }
+  body:has(#landingSection:not(.hidden)) :is(.motivo-feature-section,.motivo-shop-cta)::before { display: none !important; }
+}
+
+
+/* ===== PRESERVED CASCADE: motivo-integrated-sections-v10.css ===== */
+/* Motivo v10 | Editorial homepage sections integrated with the aurora.
+   Based on the v9 black/forest-green design. Presentation only.
+   No blur, canvas, scroll handler, gradients animated per frame, or JS.
+   Only the two requested marketing sections are affected. */
+
+/* Both sections should feel like part of the PAGE, not opaque cards.
+   Specifically remove the old v6/v9 painted pseudo-elements that leave
+   obvious rectangular dark bands in light and dark themes. */
+html body:has(#landingSection:not(.hidden)) :is(.motivo-feature-section, .motivo-shop-cta) {
+  position: relative;
+  isolation: auto;
+  overflow: visible;
+  background: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  color: #193426 !important;
+}
+html body:has(#landingSection:not(.hidden)) :is(.motivo-feature-section, .motivo-shop-cta)::before,
+html body:has(#landingSection:not(.hidden)) :is(.motivo-feature-section, .motivo-shop-cta)::after {
+  content: none !important;
+  display: none !important;
+  background: none !important;
+  filter: none !important;
+  animation: none !important;
+  box-shadow: none !important;
+}
+html body.dark-mode:has(#landingSection:not(.hidden)) :is(.motivo-feature-section, .motivo-shop-cta) {
+  color: #f2faf3 !important;
+}
+
+/* Feature story: open editorial typography, calm separators, no cards. */
+html body:has(#landingSection:not(.hidden)) .motivo-feature-section {
+  display: grid;
+  grid-template-columns: minmax(230px, .88fr) minmax(0, 1.12fr);
+  column-gap: clamp(46px, 8vw, 136px);
+  row-gap: 34px;
+  padding: clamp(82px, 10vw, 152px) max(26px, calc((100vw - 1140px) / 2)) !important;
+  align-items: start;
+}
+html body:has(#landingSection:not(.hidden)) .motivo-feature-intro {
+  max-width: 480px;
+  align-self: start;
+}
+html body:has(#landingSection:not(.hidden)) .motivo-feature-intro .motivo-eyebrow,
+html body:has(#landingSection:not(.hidden)) .motivo-shop-cta .motivo-eyebrow {
+  color: #237746 !important;
+  font-size: .73rem;
+  font-weight: 800;
+  letter-spacing: .135em;
+  text-transform: uppercase;
+  margin: 0 0 19px;
+}
+html body:has(#landingSection:not(.hidden)) .motivo-feature-intro h2,
+html body:has(#landingSection:not(.hidden)) .motivo-shop-cta h2 {
+  color: #142c21 !important;
+  font-size: clamp(2.35rem, 4.2vw, 4.45rem);
+  font-weight: 750;
+  letter-spacing: -.065em;
+  line-height: 1.05;
+  max-width: 570px;
+  text-wrap: balance;
+}
+html body:has(#landingSection:not(.hidden)) .motivo-feature-intro > p:last-child,
+html body:has(#landingSection:not(.hidden)) .motivo-shop-cta > div:first-child > p:last-child {
+  color: #506b5b !important;
+  max-width: 490px;
+  font-size: clamp(.97rem, 1.2vw, 1.08rem);
+  line-height: 1.75;
+  margin: 24px 0 0;
+}
+html body:has(#landingSection:not(.hidden)) .motivo-feature-list {
+  min-width: 0;
+  background: transparent !important;
+}
+html body:has(#landingSection:not(.hidden)) .motivo-feature-list article {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr);
+  gap: clamp(15px, 2.2vw, 27px);
+  padding: 24px 0 26px;
+  background: transparent !important;
+  background-image: none !important;
+  border: 0 !important;
+  border-top: 1px solid rgba(28, 93, 54, .19) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  align-items: start;
+}
+html body:has(#landingSection:not(.hidden)) .motivo-feature-list article:last-child {
+  border-bottom: 1px solid rgba(28, 93, 54, .19) !important;
+}
+html body:has(#landingSection:not(.hidden)) .motivo-feature-list article > span {
+  color: #258454 !important;
+  font-size: .79rem;
+  line-height: 1.8;
+  letter-spacing: .08em;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+html body:has(#landingSection:not(.hidden)) .motivo-feature-list h3 {
+  color: #163629 !important;
+  font-size: clamp(1.10rem, 1.5vw, 1.3rem);
+  font-weight: 700;
+  letter-spacing: -.025em;
+  margin: 0 0 8px;
+}
+html body:has(#landingSection:not(.hidden)) .motivo-feature-list p {
+  color: #526e60 !important;
+  max-width: 410px;
+  line-height: 1.64;
+  font-size: .96rem;
+  margin: 0;
+}
+
+/* Repair-shop CTA is a chapter in the same page, not a giant banner.
+   Retain its real links and onboarding text; change only presentation. */
+html body:has(#landingSection:not(.hidden)) .motivo-shop-cta {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(190px, auto);
+  gap: clamp(34px, 5vw, 70px);
+  padding: clamp(72px, 9vw, 124px) max(26px, calc((100vw - 1140px) / 2)) clamp(76px, 9vw, 120px) !important;
+  align-items: center;
+}
+html body:has(#landingSection:not(.hidden)) .motivo-shop-actions {
+  align-items: flex-start;
+  display: flex;
+  flex-direction: column;
+  gap: 19px;
+}
+html body:has(#landingSection:not(.hidden)) .motivo-shop-actions .motivo-button-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  min-width: 173px;
+  min-height: 50px;
+  padding: 13px 24px !important;
+  margin: 0;
+  background: #1c6b43 !important;
+  color: #fff !important;
+  border: 1px solid rgba(25, 108, 67, .65) !important;
+  border-radius: 999px !important;
+  box-shadow: 0 9px 24px rgba(22, 93, 55, .13) !important;
+  text-decoration: none;
+  font-size: .94rem;
+  font-weight: 750;
+  transition: background-color .18s ease, transform .18s ease;
+}
+html body:has(#landingSection:not(.hidden)) .motivo-shop-actions .motivo-button-primary:hover {
+  background: #165738 !important;
+  transform: translateY(-2px);
+}
+html body:has(#landingSection:not(.hidden)) .motivo-shop-actions .motivo-button-primary:focus-visible,
+html body:has(#landingSection:not(.hidden)) .motivo-shop-actions .motivo-text-link:focus-visible {
+  outline: 3px solid #3ab878;
+  outline-offset: 4px;
+}
+html body:has(#landingSection:not(.hidden)) .motivo-shop-actions .motivo-text-link {
+  color: #245c3d !important;
+  font-size: .95rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+html body:has(#landingSection:not(.hidden)) .motivo-shop-actions .motivo-text-link:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+html body:has(#landingSection:not(.hidden)) .motivo-onboarding {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(22px, 4vw, 57px);
+  margin: 0;
+  padding: clamp(28px, 4vw, 42px) 0 0;
+  list-style: none;
+  border: 0 !important;
+  border-top: 1px solid rgba(28, 93, 54, .20) !important;
+  background: transparent !important;
+  counter-reset: motivo-steps;
+}
+html body:has(#landingSection:not(.hidden)) .motivo-onboarding li {
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  counter-increment: motivo-steps;
+}
+html body:has(#landingSection:not(.hidden)) .motivo-onboarding li::before {
+  content: counter(motivo-steps, decimal-leading-zero);
+  color: #278051;
+  font-weight: 800;
+  letter-spacing: .11em;
+  font-size: .76rem;
+  line-height: 1.7;
+  margin-bottom: 6px;
+}
+html body:has(#landingSection:not(.hidden)) .motivo-onboarding strong {
+  color: #1a3829 !important;
+  font-size: 1.04rem;
+  font-weight: 750;
+  line-height: 1.4;
+}
+html body:has(#landingSection:not(.hidden)) .motivo-onboarding span {
+  color: #567063 !important;
+  font-size: .93rem;
+  line-height: 1.65;
+  max-width: 315px;
+}
+
+/* Dark mode: balanced warm-white type and restrained luminous green accents.
+   No dark rectangular masks over the black/green v9 artwork. */
+html body.dark-mode:has(#landingSection:not(.hidden)) .motivo-feature-intro .motivo-eyebrow,
+html body.dark-mode:has(#landingSection:not(.hidden)) .motivo-shop-cta .motivo-eyebrow,
+html body.dark-mode:has(#landingSection:not(.hidden)) .motivo-feature-list article > span,
+html body.dark-mode:has(#landingSection:not(.hidden)) .motivo-onboarding li::before {
+  color: #7ddd9c !important;
+}
+html body.dark-mode:has(#landingSection:not(.hidden)) .motivo-feature-intro h2,
+html body.dark-mode:has(#landingSection:not(.hidden)) .motivo-shop-cta h2,
+html body.dark-mode:has(#landingSection:not(.hidden)) .motivo-feature-list h3,
+html body.dark-mode:has(#landingSection:not(.hidden)) .motivo-onboarding strong {
+  color: #f1f7f0 !important;
+}
+html body.dark-mode:has(#landingSection:not(.hidden)) .motivo-feature-intro > p:last-child,
+html body.dark-mode:has(#landingSection:not(.hidden)) .motivo-shop-cta > div:first-child > p:last-child,
+html body.dark-mode:has(#landingSection:not(.hidden)) .motivo-feature-list p,
+html body.dark-mode:has(#landingSection:not(.hidden)) .motivo-onboarding span {
+  color: #bed4c3 !important;
+}
+html body.dark-mode:has(#landingSection:not(.hidden)) .motivo-feature-list article,
+html body.dark-mode:has(#landingSection:not(.hidden)) .motivo-feature-list article:last-child {
+  border-color: rgba(151, 223, 166, .22) !important;
+}
+html body.dark-mode:has(#landingSection:not(.hidden)) .motivo-onboarding {
+  border-top-color: rgba(151, 223, 166, .23) !important;
+}
+html body.dark-mode:has(#landingSection:not(.hidden)) .motivo-shop-actions .motivo-button-primary {
+  background: #8ee1a8 !important;
+  color: #092318 !important;
+  border-color: #8ee1a8 !important;
+  box-shadow: 0 9px 22px rgba(21, 77, 42, .18) !important;
+}
+html body.dark-mode:has(#landingSection:not(.hidden)) .motivo-shop-actions .motivo-button-primary:hover {
+  background: #b2f0bf !important;
+}
+html body.dark-mode:has(#landingSection:not(.hidden)) .motivo-shop-actions .motivo-text-link {
+  color: #b2ecc5 !important;
+}
+
+/* Responsive: keep the open editorial rhythm instead of stacked dark panels. */
+@media (max-width: 950px) {
+  html body:has(#landingSection:not(.hidden)) .motivo-feature-section,
+  html body:has(#landingSection:not(.hidden)) .motivo-shop-cta {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 32px;
+  }
+  html body:has(#landingSection:not(.hidden)) .motivo-feature-intro { max-width: 660px; }
+  html body:has(#landingSection:not(.hidden)) .motivo-shop-actions { flex-direction: row; align-items: center; flex-wrap: wrap; }
+}
+@media (max-width: 600px) {
+  html body:has(#landingSection:not(.hidden)) .motivo-feature-section {
+    padding: 70px 23px 68px !important;
+  }
+  html body:has(#landingSection:not(.hidden)) .motivo-shop-cta {
+    padding: 68px 23px 83px !important;
+  }
+  html body:has(#landingSection:not(.hidden)) .motivo-feature-list article {
+    grid-template-columns: 35px minmax(0,1fr);
+    gap: 15px;
+    padding: 21px 0;
+  }
+  html body:has(#landingSection:not(.hidden)) .motivo-onboarding {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  html body:has(#landingSection:not(.hidden)) .motivo-onboarding li {
+    grid-template-columns: 35px minmax(0, 1fr);
+    gap: 2px 14px;
+  }
+  html body:has(#landingSection:not(.hidden)) .motivo-onboarding li::before {
+    grid-row: 1 / span 2;
+    margin: 0;
+  }
+  html body:has(#landingSection:not(.hidden)) .motivo-onboarding li strong {
+    grid-column: 2;
+  }
+  html body:has(#landingSection:not(.hidden)) .motivo-onboarding li span {
+    grid-column: 2;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  html body:has(#landingSection:not(.hidden)) .motivo-shop-actions .motivo-button-primary {
+    transition: none !important;
+    transform: none !important;
+  }
+}
+@media print {
+  html body:has(#landingSection:not(.hidden)) :is(.motivo-feature-section, .motivo-shop-cta) {
+    color: #111 !important;
+  }
+  html body:has(#landingSection:not(.hidden)) :is(.motivo-feature-section, .motivo-shop-cta) :is(h2,h3,p,span,strong) {
+    color: #111 !important;
+  }
+}
+
+
+/* ===== PRESERVED CASCADE: motivo-continuous-surfaces-v12.css ===== */
+/* MOTIVO v12 | Continuous surfaces
+   One brand language across the landing, public pages, customer/staff portals,
+   legacy Tailwind pages, and the private platform console.
+   Visual-only: no route, button, form, data, or auth logic changes.
+   Deliberately no backdrop-filter, animated gradients, canvas, or JS listeners. */
+
+/* Keep the one static v9 aurora visible. Component styling is translucent,
+   rather than introducing its own isolated gradient canvas. */
+html body {
+  --motivo-v12-ink: #163928;
+  --motivo-v12-muted: #506f5d;
+  --motivo-v12-accent: #176b3d;
+  --motivo-v12-rule: rgba(27, 93, 54, .21);
+  --motivo-v12-wash: rgba(243, 253, 241, .23);
+  --motivo-v12-wash-strong: rgba(245, 254, 246, .49);
+  --motivo-v12-field: rgba(251, 255, 251, .86);
+  --motivo-v12-modal: #f5fbf5;
+  --motivo-v12-action: #176943;
+  --motivo-v12-action-text: #fff;
+  --motivo-v12-radius: 18px;
+}
+html body.dark-mode {
+  --motivo-v12-ink: #eff8f0;
+  --motivo-v12-muted: #bed5c2;
+  --motivo-v12-accent: #91e4ab;
+  --motivo-v12-rule: rgba(148, 218, 166, .23);
+  --motivo-v12-wash: rgba(10, 43, 24, .21);
+  --motivo-v12-wash-strong: rgba(11, 42, 24, .49);
+  --motivo-v12-field: rgba(6, 30, 18, .86);
+  --motivo-v12-modal: #0b2417;
+  --motivo-v12-action: #91e4ab;
+  --motivo-v12-action-text: #07301d;
+}
+
+/* HOMEPAGE: an editorial flow; the How It Works steps are no longer a
+   separate visual block sitting on the background. */
+html body:has(#landingSection:not(.hidden)) .motivo-benefits,
+html body:has(#landingSection:not(.hidden)) .motivo-final-cta {
+  background: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  border: 0 !important;
+  color: var(--motivo-v12-ink) !important;
+}
+html body:has(#landingSection:not(.hidden)) .motivo-benefits {
+  max-width: 1180px;
+  padding: clamp(74px, 10vw, 140px) clamp(24px, 4vw, 52px) clamp(72px, 8vw, 110px) !important;
+}
+html body:has(#landingSection:not(.hidden)) .motivo-section-heading .motivo-eyebrow,
+html body:has(#landingSection:not(.hidden)) .motivo-benefits .motivo-step,
+html body:has(#landingSection:not(.hidden)) .motivo-final-cta .motivo-eyebrow {
+  color: var(--motivo-v12-accent) !important;
+  font-weight: 800;
+  letter-spacing: .13em;
+}
+html body:has(#landingSection:not(.hidden)) .motivo-benefits h2,
+html body:has(#landingSection:not(.hidden)) .motivo-final-cta h2 {
+  color: var(--motivo-v12-ink) !important;
+  letter-spacing: -.055em;
+  text-wrap: balance;
+}
+html body:has(#landingSection:not(.hidden)) .motivo-benefit-grid {
+  background: none !important;
+  gap: clamp(20px, 4vw, 58px);
+  align-items: stretch;
+}
+html body:has(#landingSection:not(.hidden)) .motivo-benefit-grid article,
+html body:has(#landingSection:not(.hidden)) .motivo-benefit-grid article:first-child {
+  background: transparent !important;
+  background-image: none !important;
+  border: 0 !important;
+  border-top: 1px solid var(--motivo-v12-rule) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  margin: 0;
+  padding: 25px 0 0 !important;
+}
+html body:has(#landingSection:not(.hidden)) .motivo-benefit-grid h3 {
+  color: var(--motivo-v12-ink) !important;
+  font-weight: 740;
+  letter-spacing: -.03em;
+  margin: 19px 0 10px;
+}
+html body:has(#landingSection:not(.hidden)) .motivo-benefit-grid p {
+  color: var(--motivo-v12-muted) !important;
+  line-height: 1.72;
+  max-width: 330px;
+}
+html body:has(#landingSection:not(.hidden)) .motivo-final-cta {
+  position: relative;
+  max-width: 1110px;
+  margin: 0 auto;
+  padding: clamp(65px, 9vw, 120px) 24px clamp(85px, 10vw, 140px) !important;
+  border-top: 1px solid var(--motivo-v12-rule) !important;
+}
+html body:has(#landingSection:not(.hidden)) .motivo-final-cta .motivo-text-link {
+  color: var(--motivo-v12-accent) !important;
+}
+
+/* Shop finder is one cohesive work area rather than two nested opaque slabs. */
+html body:has(#landingSection:not(.hidden)) .motivo-finder {
+  background: transparent !important;
+  background-image: none !important;
+  border: 0 !important;
+  border-top: 1px solid var(--motivo-v12-rule) !important;
+  border-bottom: 1px solid var(--motivo-v12-rule) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  color: var(--motivo-v12-ink) !important;
+  padding: clamp(38px, 5vw, 65px) clamp(24px, 4vw, 48px) !important;
+}
+html body:has(#landingSection:not(.hidden)) .motivo-finder :is(h2, .motivo-eyebrow) {
+  color: var(--motivo-v12-ink) !important;
+}
+html body:has(#landingSection:not(.hidden)) .motivo-finder .motivo-eyebrow {
+  color: var(--motivo-v12-accent) !important;
+}
+html body:has(#landingSection:not(.hidden)) .motivo-finder p:not(.motivo-eyebrow) {
+  color: var(--motivo-v12-muted) !important;
+}
+html body:has(#landingSection:not(.hidden)) .motivo-finder-controls {
+  background: var(--motivo-v12-wash) !important;
+  border: 1px solid var(--motivo-v12-rule) !important;
+  border-radius: 17px !important;
+  box-shadow: none !important;
+}
+html body:has(#landingSection:not(.hidden)) .motivo-finder-controls :is(input, select) {
+  background: var(--motivo-v12-field) !important;
+  color: var(--motivo-v12-ink) !important;
+  border: 1px solid var(--motivo-v12-rule) !important;
+  border-radius: 11px !important;
+}
+html body:has(#landingSection:not(.hidden)) .motivo-finder-controls :is(input, select):focus-visible {
+  outline: 2px solid var(--motivo-v12-accent) !important;
+  outline-offset: 2px;
+}
+
+/* PUBLIC PAGES: How It Works accordion, Contact, and legal notice use one
+   open information hierarchy. The accordion panels keep their existing sizing,
+   aria-expanded handling, and interactive behavior. */
+html body.motivo-public-page .contact-page {
+  background: transparent !important;
+  color: var(--motivo-v12-ink) !important;
+}
+html body.motivo-public-page .contact-intro {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+html body.motivo-public-page .contact-intro :is(h1, h2),
+html body.motivo-public-page :is(.overview-features, .contact-form, .card, .feature-card) :is(h2, h3),
+html body.motivo-public-page .contact-detail strong {
+  color: var(--motivo-v12-ink) !important;
+  letter-spacing: -.035em;
+}
+html body.motivo-public-page .contact-intro > p,
+html body.motivo-public-page :is(.card, .feature-card, .contact-detail, .overview-features) p {
+  color: var(--motivo-v12-muted) !important;
+  line-height: 1.73;
+}
+html body.motivo-public-page .marketing-pill {
+  color: var(--motivo-v12-accent) !important;
+  border-color: var(--motivo-v12-rule) !important;
+  background: var(--motivo-v12-wash) !important;
+}
+/* A single thin rule frames the accordion chapter; individual items become
+   transparent rows, not stacked cards. Keep height/overflow for the image. */
+html body.motivo-public-page .overview-features {
+  background: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  border: 0 !important;
+  border-top: 1px solid var(--motivo-v12-rule) !important;
+  border-bottom: 1px solid var(--motivo-v12-rule) !important;
+  border-radius: 0 !important;
+}
+html body.motivo-public-page .feature-list,
+html body.motivo-public-page .feature-item,
+html body.motivo-public-page .feature-card {
+  background: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+}
+html body.motivo-public-page .feature-item {
+  border-color: var(--motivo-v12-rule) !important;
+}
+html body.motivo-public-page .feature-summary {
+  color: var(--motivo-v12-ink) !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  border-radius: 10px;
+}
+html body.motivo-public-page .feature-summary:hover,
+html body.motivo-public-page .feature-summary:focus-visible {
+  background: var(--motivo-v12-wash) !important;
+}
+html body.motivo-public-page :is(.feature-number, .feature-icon) {
+  color: var(--motivo-v12-accent) !important;
+}
+html body.motivo-public-page .feature-content,
+html body.motivo-public-page .feature-content-inner {
+  color: var(--motivo-v12-muted) !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+html body.motivo-public-page .overview-feature-image {
+  border: 1px solid var(--motivo-v12-rule) !important;
+  border-radius: 18px !important;
+  box-shadow: none !important;
+  overflow: hidden;
+}
+/* Contact cards become an aligned list with faint separators; keep the
+   actual contact form legible with one lightly tinted grouping surface. */
+html body.motivo-public-page .contact-detail {
+  background: transparent !important;
+  background-image: none !important;
+  border: 0 !important;
+  border-bottom: 1px solid var(--motivo-v12-rule) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  padding: 19px 4px !important;
+}
+html body.motivo-public-page .contact-detail :is(a, span:not(.contact-icon)) {
+  color: var(--motivo-v12-muted) !important;
+}
+html body.motivo-public-page .contact-icon {
+  background: var(--motivo-v12-wash) !important;
+  color: var(--motivo-v12-accent) !important;
+  border: 1px solid var(--motivo-v12-rule) !important;
+  box-shadow: none !important;
+}
+html body.motivo-public-page .contact-form {
+  background: var(--motivo-v12-wash) !important;
+  background-image: none !important;
+  border: 1px solid var(--motivo-v12-rule) !important;
+  border-radius: var(--motivo-v12-radius) !important;
+  box-shadow: none !important;
+}
+html body.motivo-public-page .contact-form :is(input, select, textarea) {
+  background: var(--motivo-v12-field) !important;
+  color: var(--motivo-v12-ink) !important;
+  border: 1px solid var(--motivo-v12-rule) !important;
+  border-radius: 10px !important;
+}
+html body.motivo-public-page .contact-form :is(label, strong) {
+  color: var(--motivo-v12-ink) !important;
+}
+/* Legal notices read as one document separated by rules, not seven cards. */
+html body.motivo-public-page .contact-page > .card {
+  background: transparent !important;
+  background-image: none !important;
+  border: 0 !important;
+  border-top: 1px solid var(--motivo-v12-rule) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  margin: 24px 0 0 !important;
+  padding: clamp(20px, 3vw, 32px) 0 !important;
+}
+
+/* MAIN AUTH + CUSTOMER/STAFF: one continuous application workspace. Do not
+   turn navigational, warning, invoice, tab, or password surfaces transparent. */
+html body:has(#registerSection:not(.hidden)) .auth-form-panel,
+html body:has(#loginSection:not(.hidden)) .auth-form-panel {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+html body:has(#registerSection:not(.hidden)) .auth-split,
+html body:has(#loginSection:not(.hidden)) .auth-split {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+html body:has(#registerSection:not(.hidden)) .auth-form-wrap,
+html body:has(#loginSection:not(.hidden)) .auth-form-wrap {
+  color: var(--motivo-v12-ink) !important;
+}
+html body:has(#registerSection:not(.hidden)) .auth-form-wrap :is(h1, label),
+html body:has(#loginSection:not(.hidden)) .auth-form-wrap :is(h1, label) {
+  color: var(--motivo-v12-ink) !important;
+}
+html body:has(#registerSection:not(.hidden)) .auth-subtitle,
+html body:has(#loginSection:not(.hidden)) .auth-subtitle {
+  color: var(--motivo-v12-muted) !important;
+}
+html body:has(#registerSection:not(.hidden)) .auth-visual-panel,
+html body:has(#loginSection:not(.hidden)) .auth-visual-panel {
+  background: linear-gradient(135deg, var(--motivo-v12-wash-strong), var(--motivo-v12-wash)) !important;
+  border: 1px solid var(--motivo-v12-rule) !important;
+  border-radius: 23px !important;
+  box-shadow: none !important;
+  color: var(--motivo-v12-ink) !important;
+}
+html body:has(#registerSection:not(.hidden)) .auth-visual-panel .auth-visual-overlay,
+html body:has(#loginSection:not(.hidden)) .auth-visual-panel .auth-visual-overlay {
+  background: transparent !important;
+}
+html body:has(#registerSection:not(.hidden)) .auth-visual-copy :is(h2, p, span),
+html body:has(#loginSection:not(.hidden)) .auth-visual-copy :is(h2, p, span) {
+  color: var(--motivo-v12-ink) !important;
+  text-shadow: none !important;
+}
+html body:has(#registerSection:not(.hidden)) .auth-form :is(input, select),
+html body:has(#loginSection:not(.hidden)) .auth-form :is(input, select) {
+  background: var(--motivo-v12-field) !important;
+  border-color: var(--motivo-v12-rule) !important;
+  color: var(--motivo-v12-ink) !important;
+}
+html body:has(#customerDashboard:not(.hidden)) #customerDashboard.card,
+html body:has(#employeeDashboard:not(.hidden)) #employeeDashboard.card {
+  background: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  border: 0 !important;
+}
+html body:has(#customerDashboard:not(.hidden)) :is(.customer-portal-header, .customer-home-hero, .customer-home-shop-card),
+html body:has(#employeeDashboard:not(.hidden)) :is(.staff-portal-hero, .motivo-ops-home) {
+  background: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+}
+html body:has(#customerDashboard:not(.hidden)) :is(.customer-home-card, .customer-home-shop-card),
+html body:has(#employeeDashboard:not(.hidden)) :is(.motivo-ops-card, .motivo-ops-stat),
+html body:has(#employeeDashboard:not(.hidden)) #motivoSchedPanel .motivo-sched-card,
+html body:has(#employeeDashboard:not(.hidden)) #staffWorkflowSection .motivo-summary-card {
+  background: var(--motivo-v12-wash) !important;
+  background-image: none !important;
+  border: 1px solid var(--motivo-v12-rule) !important;
+  border-radius: var(--motivo-v12-radius) !important;
+  box-shadow: none !important;
+}
+html body:has(#customerDashboard:not(.hidden)) :is(.customer-home-label, .customer-home-shop-card p),
+html body:has(#employeeDashboard:not(.hidden)) :is(.motivo-ops-card p, .staff-shop-name) {
+  color: var(--motivo-v12-muted) !important;
+}
+html body:has(#customerDashboard:not(.hidden)) :is(.customer-home-card strong, .customer-home-shop-card h3),
+html body:has(#employeeDashboard:not(.hidden)) :is(.motivo-ops-card h4, .motivo-ops-heading h3) {
+  color: var(--motivo-v12-ink) !important;
+}
+/* Staff navigation retains its separate structural rail, but softens its edge. */
+html body:has(#employeeDashboard:not(.hidden)) #employeeDashboard .motivo-ops-side {
+  background: linear-gradient(148deg, rgba(9, 47, 26, .88), rgba(7, 36, 22, .74)) !important;
+  border: 1px solid var(--motivo-v12-rule) !important;
+  box-shadow: none !important;
+}
+
+/* LEGACY CUSTOMER AND STAFF TERMINALS: remove opaque navy/green blocks,
+   keep controls and data legible. Their Tailwind utility classes are structural
+   and remain untouched; only the visual presentation is unified. */
+html body.motivo-universal-page > header {
+  background: transparent !important;
+  background-image: none !important;
+  border-bottom: 1px solid var(--motivo-v12-rule) !important;
+  box-shadow: none !important;
+}
+html body.motivo-universal-page > main :is(.bg-slate-900, .bg-slate-800, .bg-slate-950):not(button):not(a):not(input):not(select):not(textarea),
+html body.motivo-universal-page > main form.bg-slate-900 {
+  background: var(--motivo-v12-wash) !important;
+  background-image: none !important;
+  border-color: var(--motivo-v12-rule) !important;
+  box-shadow: none !important;
+}
+html body.motivo-universal-page > main :is(.shadow-xl, .shadow-2xl, .shadow-lg) {
+  box-shadow: none !important;
+}
+html body.motivo-universal-page > main :is(.rounded-2xl, .rounded-xl) {
+  border-radius: var(--motivo-v12-radius) !important;
+}
+/* Tailwind's old 'white-on-navy' text is unreadable over light glass. */
+html body.motivo-universal-page:not(.dark-mode) > main :is(.text-white, .text-slate-100, .text-slate-200),
+html body.motivo-universal-page:not(.dark-mode) > main :is(h1,h2,h3) {
+  color: var(--motivo-v12-ink) !important;
+}
+html body.motivo-universal-page:not(.dark-mode) > main :is(.text-slate-400, .text-slate-500, .text-slate-300),
+html body.motivo-universal-page:not(.dark-mode) > main :is(label, p):not(.text-red-400) {
+  color: var(--motivo-v12-muted) !important;
+}
+html body.dark-mode.motivo-universal-page > main :is(.text-white, .text-slate-100, .text-slate-200),
+html body.dark-mode.motivo-universal-page > main :is(h1,h2,h3) {
+  color: var(--motivo-v12-ink) !important;
+}
+html body.dark-mode.motivo-universal-page > main :is(.text-slate-400, .text-slate-500, .text-slate-300) {
+  color: var(--motivo-v12-muted) !important;
+}
+html body.motivo-universal-page > main :is(.text-orange-500, .text-orange-400) {
+  color: var(--motivo-v12-accent) !important;
+}
+/* Inputs must have stable contrast and predictable focus cues. */
+html body.motivo-universal-page > main :is(.input-dark, input, textarea, select):not([type='checkbox']):not([type='radio']) {
+  background: var(--motivo-v12-field) !important;
+  border-color: var(--motivo-v12-rule) !important;
+  color: var(--motivo-v12-ink) !important;
+  border-radius: 10px;
+}
+html body.motivo-universal-page > main :is(input, textarea)::placeholder {
+  color: var(--motivo-v12-muted) !important;
+  opacity: .9;
+}
+html body.motivo-universal-page > main :is(.input-dark, input, textarea, select):focus-visible {
+  outline: 2px solid var(--motivo-v12-accent) !important;
+  outline-offset: 2px;
+}
+/* Buttons, statuses, and auth warnings retain unmistakable affordances. */
+html body.motivo-universal-page:not(.dark-mode) > main :is(a,button).bg-orange-500,
+html body.motivo-universal-page:not(.dark-mode) > main :is(a,button).bg-orange-600 {
+  background: #1a7544 !important;
+  color: #fff !important;
+}
+html body.dark-mode.motivo-universal-page > main :is(a,button).bg-orange-500,
+html body.dark-mode.motivo-universal-page > main :is(a,button).bg-orange-600 {
+  background: #8cdda6 !important;
+  color: #0b2f1c !important;
+}
+html body.motivo-universal-page > main :is(.border-slate-800, .border-slate-700) {
+  border-color: var(--motivo-v12-rule) !important;
+}
+/* Same shared rail and controls as v11—its CSS stays in i18n.css. */
+
+/* DEVELOPER CONSOLE: soften dashboard tiles and filter panels, but leave
+   secure sign-in, dialogs and side drawers solid to prevent obscured forms. */
+html body:has(> .topbar) :is(.metric, .panel:not(.login):not(.form-panel)) {
+  background: var(--motivo-v12-wash) !important;
+  background-image: none !important;
+  border: 1px solid var(--motivo-v12-rule) !important;
+  box-shadow: none !important;
+  color: var(--motivo-v12-ink) !important;
+}
+html body:has(> .topbar) .login.panel,
+html body:has(> .topbar) .form-panel.panel {
+  background: var(--motivo-v12-wash-strong) !important;
+  border-color: var(--motivo-v12-rule) !important;
+  box-shadow: none !important;
+}
+html body:has(> .topbar) .metric :is(span, small),
+html body:has(> .topbar) :is(.section-header p, .pageheading p) {
+  color: var(--motivo-v12-muted) !important;
+}
+html body:has(> .topbar) .metric strong,
+html body:has(> .topbar) .pageheading h1,
+html body:has(> .topbar) .panel :is(h1,h2,h3) {
+  color: var(--motivo-v12-ink) !important;
+}
+html body:has(> .topbar) .tabs {
+  background: transparent !important;
+  border-bottom: 1px solid var(--motivo-v12-rule) !important;
+}
+html body:has(> .topbar) .tab.selected {
+  background: var(--motivo-v12-wash-strong) !important;
+  color: var(--motivo-v12-ink) !important;
+  box-shadow: inset 0 -2px var(--motivo-v12-accent);
+}
+html body:has(> .topbar) .activity-entry {
+  border-color: var(--motivo-v12-rule) !important;
+}
+/* These elements are security-sensitive forms and decision surfaces;
+   transparency here would reduce readability and modal clarity. */
+html body:has(> .topbar) :is(.drawer, dialog.confirm, .confirm) {
+  background: var(--motivo-v12-modal) !important;
+  color: var(--motivo-v12-ink) !important;
+  border-color: var(--motivo-v12-rule) !important;
+}
+html body:has(> .topbar) .drawer-header {
+  background: var(--motivo-v12-modal) !important;
+  border-color: var(--motivo-v12-rule) !important;
+}
+html body.dark-mode:has(> .topbar) :is(.panel, .metric, .drawer, .confirm) {
+  color: var(--motivo-v12-ink) !important;
+}
+
+/* Accessibility and performance: no decorative repaints on scroll. */
+@media (max-width: 700px) {
+  html body:has(#landingSection:not(.hidden)) .motivo-benefits {
+    padding: 72px 24px 75px !important;
+  }
+  html body:has(#landingSection:not(.hidden)) .motivo-benefit-grid {
+    grid-template-columns: minmax(0,1fr);
+    gap: 31px;
+  }
+  html body:has(#landingSection:not(.hidden)) .motivo-final-cta {
+    padding-inline: 25px !important;
+  }
+  html body:has(#landingSection:not(.hidden)) .motivo-finder {
+    padding: 30px 22px !important;
+  }
+  html body.motivo-public-page .overview-features { min-height: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html body:has(#landingSection:not(.hidden)) :is(.motivo-finder, .motivo-benefits, .motivo-final-cta) *,
+  html body.motivo-public-page .feature-summary {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+@media print {
+  html body:has(#landingSection:not(.hidden)) :is(.motivo-benefits, .motivo-finder, .motivo-final-cta),
+  html body.motivo-public-page .contact-page {
+    color: #111 !important;
+  }
+  html body:has(#landingSection:not(.hidden)) :is(.motivo-benefits, .motivo-finder, .motivo-final-cta),
+  html body.motivo-public-page :is(.contact-form, .contact-detail, .card, .overview-features) {
+    background: #fff !important;
+    border-color: #bbb !important;
+  }
+}
+
+/* DARK-MODE CASCADE BRIDGE
+   v6/v9 shipped highly specific dark-only !important selectors. Match their
+   specificity so the same continuous-surfaces design truly works in both
+   themes, instead of dark mode silently reverting to opaque green cards. */
+html body.dark-mode:has(#landingSection:not(.hidden)) .motivo-finder {
+  background: transparent !important;
+  background-image: none !important;
+  border-color: var(--motivo-v12-rule) !important;
+  box-shadow: none !important;
+}
+html body.dark-mode:has(#landingSection:not(.hidden)) .motivo-finder-controls {
+  background: var(--motivo-v12-wash) !important;
+  background-image: none !important;
+  border-color: var(--motivo-v12-rule) !important;
+  box-shadow: none !important;
+}
+html body.dark-mode.motivo-public-page :is(.overview-features, .contact-detail, .feature-card, .card),
+html body.dark-mode.motivo-public-page .contact-page > .card {
+  background: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  border-color: var(--motivo-v12-rule) !important;
+}
+html body.dark-mode.motivo-public-page .contact-form {
+  background: var(--motivo-v12-wash) !important;
+  background-image: none !important;
+  border-color: var(--motivo-v12-rule) !important;
+  box-shadow: none !important;
+}
+html body.dark-mode.motivo-universal-page > main :is(.bg-slate-900, .bg-slate-800, .bg-slate-950):not(button):not(a):not(input):not(select):not(textarea),
+html body.dark-mode.motivo-universal-page > main form.bg-slate-900 {
+  background: var(--motivo-v12-wash) !important;
+  background-image: none !important;
+  border-color: var(--motivo-v12-rule) !important;
+  box-shadow: none !important;
+}
+html body.dark-mode:has(#customerDashboard:not(.hidden)) :is(.customer-home-card, .customer-home-shop-card),
+html body.dark-mode:has(#employeeDashboard:not(.hidden)) :is(.motivo-ops-card, .motivo-ops-stat),
+html body.dark-mode:has(#employeeDashboard:not(.hidden)) #motivoSchedPanel .motivo-sched-card,
+html body.dark-mode:has(#employeeDashboard:not(.hidden)) #staffWorkflowSection .motivo-summary-card {
+  background: var(--motivo-v12-wash) !important;
+  background-image: none !important;
+  border-color: var(--motivo-v12-rule) !important;
+  box-shadow: none !important;
+}
+html body.dark-mode:has(#employeeDashboard:not(.hidden)) #employeeDashboard .motivo-ops-home {
+  background: transparent !important;
+  background-image: none !important;
+  border-color: var(--motivo-v12-rule) !important;
+  box-shadow: none !important;
+}
+
+/* CUSTOMER / STAFF HERO CONTRAST
+   Their original dark solid headers used white lettering. Since v12 removes
+   those banners, explicitly remap the lettering and actions by theme. */
+html body:has(#customerDashboard:not(.hidden)) #customerDashboard :is(.customer-portal-header, .customer-home-hero),
+html body:has(#employeeDashboard:not(.hidden)) #employeeDashboard .staff-portal-hero {
+  color: var(--motivo-v12-ink) !important;
+  border-color: var(--motivo-v12-rule) !important;
+  box-shadow: none !important;
+}
+html body:has(#customerDashboard:not(.hidden)) #customerDashboard :is(.customer-portal-header h2, .customer-home-hero h1, #clientWelcomeName),
+html body:has(#employeeDashboard:not(.hidden)) #employeeDashboard .staff-portal-hero h2 {
+  color: var(--motivo-v12-ink) !important;
+  text-shadow: none !important;
+}
+html body:has(#customerDashboard:not(.hidden)) #customerDashboard :is(.customer-portal-header .shop-title-text, .customer-home-hero .customer-home-kicker, .customer-home-hero p),
+html body:has(#employeeDashboard:not(.hidden)) #employeeDashboard :is(.staff-shop-name, .staff-user-label) {
+  color: var(--motivo-v12-muted) !important;
+}
+html body:has(#customerDashboard:not(.hidden)) #customerDashboard .customer-portal-header .btn-secondary {
+  color: var(--motivo-v12-ink) !important;
+  border-color: var(--motivo-v12-rule) !important;
+  background: var(--motivo-v12-wash) !important;
+}
+html body:has(#customerDashboard:not(.hidden)) #customerDashboard .customer-home-hero .btn-primary {
+  background: var(--motivo-v12-action) !important;
+  color: var(--motivo-v12-action-text) !important;
+  border-color: var(--motivo-v12-rule) !important;
+  box-shadow: none !important;
+}
+html body:has(#employeeDashboard:not(.hidden)) #employeeDashboard .staff-user-panel {
+  background: var(--motivo-v12-wash) !important;
+  color: var(--motivo-v12-ink) !important;
+  border-color: var(--motivo-v12-rule) !important;
+  box-shadow: none !important;
+}
+
+
+/* ===== PRESERVED CASCADE: motivo-auth-v13.css ===== */
+/* Motivo v13 — seamless authentication + functional mobile navigation.
+ * Deliberately keeps the static v9 aurora, v12 public/portal surfaces, and
+ * existing authentication / language behavior unchanged.
+ * No backdrop blur, animated gradients, or scroll-driven rendering. */
+
+/* The SPA registration and sign-in screens still inherited the old opaque
+ * charcoal split-screen treatment. Let the same aurora show through instead. */
+html body:has(#registerSection:not(.hidden)) #registerSection.auth-screen,
+html body:has(#loginSection:not(.hidden)) #loginSection.auth-screen {
+  background: transparent !important;
+  background-image: none !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  overflow: visible !important;
+  min-height: 0;
+}
+html body:has(#registerSection:not(.hidden)) #registerSection .auth-split,
+html body:has(#loginSection:not(.hidden)) #loginSection .auth-split {
+  box-sizing: border-box;
+  display: grid;
+  width: min(100%, 1250px);
+  min-height: max(630px, calc(100svh - 94px));
+  grid-template-columns: minmax(0, 1.06fr) minmax(0, .94fr);
+  gap: clamp(18px, 4vw, 74px);
+  margin: 0 auto;
+  padding: clamp(22px, 4vw, 54px) clamp(20px, 5vw, 72px) clamp(38px, 6vw, 72px);
+  align-items: center;
+  background: transparent !important;
+  background-image: none !important;
+}
+html body:has(#registerSection:not(.hidden)) #registerSection .auth-form-panel,
+html body:has(#loginSection:not(.hidden)) #loginSection .auth-form-panel {
+  box-sizing: border-box;
+  min-width: 0;
+  min-height: 0;
+  width: 100%;
+  padding: 10px 0;
+  background: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  border: 0 !important;
+}
+html body:has(#registerSection:not(.hidden)) #registerSection .auth-form-wrap,
+html body:has(#loginSection:not(.hidden)) #loginSection .auth-form-wrap {
+  max-width: 535px;
+  width: 100%;
+  margin: 0 auto;
+  color: var(--motivo-v12-ink) !important;
+}
+html body:has(#registerSection:not(.hidden)) #registerSection .auth-kicker,
+html body:has(#loginSection:not(.hidden)) #loginSection .auth-kicker {
+  color: var(--motivo-v12-accent) !important;
+  letter-spacing: .14em;
+  font-weight: 800;
+}
+html body:has(#registerSection:not(.hidden)) #registerSection .auth-form-wrap h1,
+html body:has(#loginSection:not(.hidden)) #loginSection .auth-form-wrap h1 {
+  color: var(--motivo-v12-ink) !important;
+  font-size: clamp(2.45rem, 4.3vw, 4.4rem);
+  letter-spacing: -.065em;
+  line-height: 1.04;
+  text-wrap: balance;
+}
+html body:has(#registerSection:not(.hidden)) #registerSection .auth-subtitle,
+html body:has(#loginSection:not(.hidden)) #loginSection .auth-subtitle {
+  color: var(--motivo-v12-muted) !important;
+  font-size: .98rem;
+  line-height: 1.7;
+  max-width: 410px;
+}
+/* Inputs are deliberately more opaque than decorative sections: typed text,
+ * focus, native validation and browser autofill must stay readable. */
+html body:has(#registerSection:not(.hidden)) #registerSection .auth-form :is(input:not([type="checkbox"]), select),
+html body:has(#loginSection:not(.hidden)) #loginSection .auth-form :is(input:not([type="checkbox"]), select) {
+  box-sizing: border-box;
+  min-width: 0;
+  min-height: 48px;
+  width: 100%;
+  background: var(--motivo-v12-field) !important;
+  border: 1px solid var(--motivo-v12-rule) !important;
+  border-radius: 12px !important;
+  box-shadow: none !important;
+  color: var(--motivo-v12-ink) !important;
+  font-size: 16px;
+}
+html body:has(#registerSection:not(.hidden)) #registerSection .auth-form :is(input, select):focus-visible,
+html body:has(#loginSection:not(.hidden)) #loginSection .auth-form :is(input, select):focus-visible {
+  outline: 2px solid var(--motivo-v12-accent) !important;
+  outline-offset: 2px;
+}
+html body:has(#registerSection:not(.hidden)) #registerSection .auth-field :is(label, .auth-label-note),
+html body:has(#loginSection:not(.hidden)) #loginSection .auth-field :is(label, .auth-label-note) {
+  color: var(--motivo-v12-muted) !important;
+  font-weight: 700;
+}
+html body:has(#registerSection:not(.hidden)) #registerSection .auth-check-row,
+html body:has(#loginSection:not(.hidden)) #loginSection .auth-check-row,
+html body:has(#registerSection:not(.hidden)) #registerSection .auth-switch-copy,
+html body:has(#loginSection:not(.hidden)) #loginSection .auth-switch-copy {
+  color: var(--motivo-v12-muted) !important;
+  font-size: .82rem;
+  line-height: 1.55;
+}
+html body:has(#registerSection:not(.hidden)) #registerSection .auth-check-row input[type="checkbox"] {
+  flex: 0 0 18px;
+  width: 18px;
+  height: 18px;
+  accent-color: #238b50;
+}
+html body:has(#registerSection:not(.hidden)) #registerSection :is(.auth-text-link, .auth-check-row a),
+html body:has(#loginSection:not(.hidden)) #loginSection :is(.auth-text-link, .auth-check-row a) {
+  color: var(--motivo-v12-accent) !important;
+  border-bottom-color: var(--motivo-v12-rule) !important;
+}
+html body:has(#registerSection:not(.hidden)) #registerSection .auth-submit-btn,
+html body:has(#loginSection:not(.hidden)) #loginSection .auth-submit-btn {
+  min-height: 50px;
+  border-radius: 12px !important;
+  background: var(--motivo-v12-action) !important;
+  border: 1px solid transparent !important;
+  color: var(--motivo-v12-action-text) !important;
+  box-shadow: none !important;
+  font-size: .92rem;
+}
+html body:has(#registerSection:not(.hidden)) #registerSection .auth-submit-btn:hover,
+html body:has(#loginSection:not(.hidden)) #loginSection .auth-submit-btn:hover {
+  filter: brightness(.94);
+}
+html body:has(#registerSection:not(.hidden)) #registerSection .auth-login-note,
+html body:has(#loginSection:not(.hidden)) #loginSection .auth-login-note {
+  background: var(--motivo-v12-wash) !important;
+  border: 1px solid var(--motivo-v12-rule) !important;
+  color: var(--motivo-v12-muted) !important;
+  border-radius: 12px !important;
+}
+html body:has(#registerSection:not(.hidden)) #registerSection .auth-login-note strong,
+html body:has(#loginSection:not(.hidden)) #loginSection .auth-login-note strong {
+  color: var(--motivo-v12-ink) !important;
+}
+html body:has(#registerSection:not(.hidden)) #registerSection .auth-field input:-webkit-autofill,
+html body:has(#loginSection:not(.hidden)) #loginSection .auth-field input:-webkit-autofill {
+  -webkit-text-fill-color: var(--motivo-v12-ink) !important;
+  box-shadow: 0 0 0 1000px var(--motivo-v12-modal) inset !important;
+}
+/* The decorative illustration is now an editorial column on the same page,
+ * not a giant opaque background or a separate image slab. */
+html body:has(#registerSection:not(.hidden)) #registerSection .auth-visual-panel,
+html body:has(#loginSection:not(.hidden)) #loginSection .auth-visual-panel {
+  box-sizing: border-box;
+  align-self: center;
+  align-items: center;
+  min-width: 0;
+  min-height: clamp(350px, 44vw, 620px);
+  padding: clamp(16px, 2vw, 28px) 0;
+  background: transparent !important;
+  background-image: none !important;
+  border: 0 !important;
+  border-left: 1px solid var(--motivo-v12-rule) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  overflow: visible;
+}
+html body:has(#registerSection:not(.hidden)) #registerSection .auth-visual-overlay,
+html body:has(#loginSection:not(.hidden)) #loginSection .auth-visual-overlay {
+  display: none !important;
+}
+html body:has(#registerSection:not(.hidden)) #registerSection .auth-visual-copy,
+html body:has(#loginSection:not(.hidden)) #loginSection .auth-visual-copy {
+  padding: 22px clamp(20px, 4vw, 64px);
+  max-width: 650px;
+}
+html body:has(#registerSection:not(.hidden)) #registerSection .auth-visual-copy span,
+html body:has(#loginSection:not(.hidden)) #loginSection .auth-visual-copy span {
+  color: var(--motivo-v12-accent) !important;
+  letter-spacing: .12em;
+}
+html body:has(#registerSection:not(.hidden)) #registerSection .auth-visual-copy h2,
+html body:has(#loginSection:not(.hidden)) #loginSection .auth-visual-copy h2 {
+  color: var(--motivo-v12-ink) !important;
+  font-size: clamp(2.2rem, 3.7vw, 4.35rem);
+  line-height: 1.07;
+  text-shadow: none !important;
+}
+html body:has(#registerSection:not(.hidden)) #registerSection .auth-visual-copy p,
+html body:has(#loginSection:not(.hidden)) #loginSection .auth-visual-copy p {
+  color: var(--motivo-v12-muted) !important;
+  font-size: .98rem;
+  line-height: 1.75;
+  text-shadow: none !important;
+}
+/* Older direct /client-signup page: match the same palette without replacing
+ * its tab switcher, form semantics, or staff-login destination. */
+html body.motivo-universal-page:has(#registerForm) > main :is(#registerForm, #loginForm) {
+  background: var(--motivo-v12-wash-strong) !important;
+  background-image: none !important;
+  border: 1px solid var(--motivo-v12-rule) !important;
+  box-shadow: none !important;
+  border-radius: 18px !important;
+}
+html body.motivo-universal-page:has(#registerForm) > main h1,
+html body.motivo-universal-page:has(#registerForm) > main :is(#registerForm,#loginForm) :is(label,h2) {
+  color: var(--motivo-v12-ink) !important;
+}
+html body.motivo-universal-page:has(#registerForm) > main .text-slate-400,
+html body.motivo-universal-page:has(#registerForm) > main .text-slate-500 {
+  color: var(--motivo-v12-muted) !important;
+}
+html body.motivo-universal-page:has(#registerForm) > main :is(#tab-btn-register,#tab-btn-login) {
+  border-color: var(--motivo-v12-rule) !important;
+  border-radius: 0;
+}
+html body.motivo-universal-page:has(#registerForm) > main :is(#tab-btn-register,#tab-btn-login)[class*="text-orange"] {
+  color: var(--motivo-v12-accent) !important;
+}
+
+/* Mobile drawer: a single usable sheet, not links behind a huge top padding.
+ * Desktop side menus and developer console are deliberately unchanged. */
+@media (max-width: 760px) {
+  html body:has(#registerSection:not(.hidden)) #registerSection .auth-split,
+  html body:has(#loginSection:not(.hidden)) #loginSection .auth-split {
+    grid-template-columns: minmax(0, 1fr) !important;
+    min-height: 0 !important;
+    gap: 20px !important;
+    padding: 16px clamp(18px, 5vw, 30px) 55px !important;
+  }
+  html body:has(#registerSection:not(.hidden)) #registerSection .auth-form-panel,
+  html body:has(#loginSection:not(.hidden)) #loginSection .auth-form-panel {
+    order: 0 !important;
+    padding: 10px 0 20px !important;
+  }
+  html body:has(#registerSection:not(.hidden)) #registerSection .auth-form-wrap h1,
+  html body:has(#loginSection:not(.hidden)) #loginSection .auth-form-wrap h1 {
+    font-size: clamp(2.2rem, 9vw, 3.3rem) !important;
+  }
+  html body:has(#registerSection:not(.hidden)) #registerSection .auth-visual-panel,
+  html body:has(#loginSection:not(.hidden)) #loginSection .auth-visual-panel {
+    order: 1 !important;
+    min-height: 0 !important;
+    width: 100%;
+    padding: 16px 0 !important;
+    border-left: 0 !important;
+    border-top: 1px solid var(--motivo-v12-rule) !important;
+  }
+  html body:has(#registerSection:not(.hidden)) #registerSection .auth-visual-copy,
+  html body:has(#loginSection:not(.hidden)) #loginSection .auth-visual-copy {
+    padding: 22px 0 !important;
+  }
+  html body:has(#registerSection:not(.hidden)) #registerSection .auth-visual-copy h2,
+  html body:has(#loginSection:not(.hidden)) #loginSection .auth-visual-copy h2 {
+    font-size: clamp(2rem, 8vw, 3rem) !important;
+  }
+
+}
+
+
+/* ===== PRESERVED CASCADE: motivo-experience-v14.css ===== */
+/* MOTIVO v14 | One experience across marketing, customer, booking and manager UI.
+   Additive design layer. Does NOT replace forms, handlers, API routes, permissions,
+   availability calculations or existing responsive table scroll containers.
+   The single v9 static WebP aurora remains the only decorative page image.
+   Deliberately NO backdrop-filter, scrolling gradients or animation loops. */
+
+html body {
+  /* Default/light theme: dark ink against the pale mint aurora. */
+  --m14-text: #163b29;
+  --m14-muted: #4e6f5b;
+  --m14-soft: #176f40;
+  --m14-rule: rgba(40, 101, 59, .23);
+  --m14-surface: rgba(244, 255, 245, .19);
+  --m14-surface-hi: rgba(246, 254, 248, .47);
+  --m14-field: rgba(251, 255, 251, .95);
+  --m14-field-text: #123722;
+  --m14-cta: #176c40;
+  --m14-cta-text: #fff;
+  --m14-radius: 18px;
+}
+html body.dark-mode {
+  --m14-text: #f4fff6;
+  --m14-muted: #c1ddca;
+  --m14-soft: #94d6ae;
+  --m14-rule: rgba(172, 240, 190, .24);
+  --m14-surface: rgba(5, 30, 17, .29);
+  --m14-surface-hi: rgba(4, 26, 15, .46);
+  --m14-field: rgba(2, 22, 13, .94);
+  --m14-field-text: #f1fff5;
+  --m14-cta: #a0e8b5;
+  --m14-cta-text: #07301b;
+}
+
+/* Main landing: clearer supporting text and a coherent search action. */
+html body:has(#landingSection:not(.hidden)) .motivo-hero-copy .motivo-eyebrow,
+html body:has(#landingSection:not(.hidden)) .motivo-finder .motivo-eyebrow {
+  color: var(--m14-soft) !important;
+  opacity: 1 !important;
+}
+html body:has(#landingSection:not(.hidden)) .motivo-hero-subtitle {
+  max-width: 580px;
+  color: var(--m14-text) !important;
+  line-height: 1.65 !important;
+}
+html body:has(#landingSection:not(.hidden)) .motivo-hero-art {
+  isolation: isolate;
+  border: 1px solid rgba(183, 239, 194, .27) !important;
+  border-radius: 20px !important;
+  overflow: hidden !important;
+  background: rgba(4, 26, 16, .35) !important;
+  box-shadow: 0 16px 52px rgba(3, 24, 14, .13) !important;
+}
+html body:has(#landingSection:not(.hidden)) .motivo-hero-slides,
+html body:has(#landingSection:not(.hidden)) .hero-slide,
+html body:has(#landingSection:not(.hidden)) .motivo-hero-art img {
+  border-radius: inherit;
+}
+html body:has(#landingSection:not(.hidden)) .motivo-art-note {
+  background: rgba(3, 32, 18, .72) !important;
+  border: 1px solid rgba(205, 249, 216, .14) !important;
+  border-radius: 12px !important;
+  color: #f2fff3 !important;
+}
+html body:has(#landingSection:not(.hidden)) .motivo-finder {
+  gap: clamp(20px, 3vw, 45px) !important;
+}
+html body:has(#landingSection:not(.hidden)) .motivo-finder h2,
+html body:has(#landingSection:not(.hidden)) .motivo-finder p:not(.motivo-eyebrow) {
+  color: var(--m14-text) !important;
+}
+html body:has(#landingSection:not(.hidden)) .motivo-finder p:not(.motivo-eyebrow) {
+  color: var(--m14-muted) !important;
+}
+html body:has(#landingSection:not(.hidden)) .motivo-finder-controls {
+  display: grid;
+  grid-template-columns: minmax(0, 1.12fr) minmax(0, 1fr) auto;
+  align-items: center;
+  padding: 12px !important;
+  border-radius: 16px !important;
+  background: var(--m14-surface-hi) !important;
+  border: 1px solid var(--m14-rule) !important;
+  gap: 9px !important;
+}
+html body:has(#landingSection:not(.hidden)) .motivo-finder-controls :is(input,select) {
+  min-width: 0;
+  width: 100%;
+  min-height: 49px;
+  box-sizing: border-box;
+  background: var(--m14-field) !important;
+  color: var(--m14-field-text) !important;
+  border: 1px solid var(--m14-rule) !important;
+  border-radius: 10px !important;
+  font-size: 14px;
+}
+html body:has(#landingSection:not(.hidden)) .motivo-finder-controls input::placeholder {
+  color: #637b69 !important;
+  opacity: .93 !important;
+}
+html body:has(#landingSection:not(.hidden)) .motivo-finder-controls .motivo-button-dark {
+  min-height: 49px;
+  border-radius: 10px !important;
+  background: var(--m14-cta) !important;
+  color: var(--m14-cta-text) !important;
+  font-weight: 800 !important;
+}
+html body:has(#landingSection:not(.hidden)) .motivo-finder-returning {
+  grid-column: 1 / -1;
+  color: var(--m14-muted) !important;
+  display: flex !important;
+  justify-content: flex-start !important;
+  gap: 10px !important;
+  align-items: baseline;
+  padding: 4px 3px 0;
+}
+html body:has(#landingSection:not(.hidden)) .motivo-finder-returning :is(span,button) {
+  color: var(--m14-muted) !important;
+}
+html body:has(#landingSection:not(.hidden)) .motivo-finder-returning button {
+  font-weight: 800 !important;
+  text-underline-offset: 4px;
+}
+
+/* Customer portal: don't frame the entire app in old opaque rectangles. */
+html body:has(#customerDashboard:not(.hidden)) #customerDashboard.card {
+  background: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  border: 0 !important;
+  color: var(--m14-text) !important;
+}
+html body:has(#customerDashboard:not(.hidden)) #customerDashboard .customer-portal-header {
+  min-height: 0;
+  padding: clamp(20px, 2.6vw, 32px) clamp(4px, 1.5vw, 22px) !important;
+  background: transparent !important;
+  background-image: none !important;
+  border: 0 !important;
+  border-bottom: 1px solid var(--m14-rule) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  color: var(--m14-text) !important;
+}
+html body:has(#customerDashboard:not(.hidden)) #customerDashboard .customer-portal-header :is(h2, strong, #clientWelcomeName),
+html body:has(#customerDashboard:not(.hidden)) #customerDashboard .customer-home-hero :is(h1, h2, strong),
+html body:has(#customerDashboard:not(.hidden)) #customerDashboard .customer-home-shop-card :is(h3, strong) {
+  color: var(--m14-text) !important;
+}
+html body:has(#customerDashboard:not(.hidden)) #customerDashboard .customer-portal-header :is(small, .shop-title-text),
+html body:has(#customerDashboard:not(.hidden)) #customerDashboard .customer-home-hero p,
+html body:has(#customerDashboard:not(.hidden)) #customerDashboard .customer-home-shop-card p {
+  color: var(--m14-muted) !important;
+}
+html body:has(#customerDashboard:not(.hidden)) #customerDashboard .customer-home-hero {
+  min-height: 0 !important;
+  padding: clamp(22px, 3vw, 43px) clamp(20px, 3vw, 40px) !important;
+  background: var(--m14-surface) !important;
+  background-image: none !important;
+  border: 1px solid var(--m14-rule) !important;
+  border-radius: var(--m14-radius) !important;
+  box-shadow: none !important;
+}
+html body:has(#customerDashboard:not(.hidden)) #customerDashboard :is(.customer-home-card,.customer-home-shop-card) {
+  min-width: 0;
+  background: var(--m14-surface) !important;
+  background-image: none !important;
+  border: 1px solid var(--m14-rule) !important;
+  border-radius: 16px !important;
+  box-shadow: none !important;
+}
+html body:has(#customerDashboard:not(.hidden)) #customerDashboard .customer-home-card {
+  min-height: 145px;
+  padding: clamp(17px, 2vw, 24px) !important;
+}
+html body:has(#customerDashboard:not(.hidden)) #customerDashboard .customer-home-card strong {
+  color: var(--m14-text) !important;
+  font-size: clamp(1rem, 1.4vw, 1.16rem);
+  overflow-wrap: anywhere;
+}
+html body:has(#customerDashboard:not(.hidden)) #customerDashboard .customer-home-label,
+html body:has(#customerDashboard:not(.hidden)) #customerDashboard .customer-home-kicker,
+html body:has(#customerDashboard:not(.hidden)) #customerDashboard .customer-home-link {
+  color: var(--m14-soft) !important;
+}
+html body:has(#customerDashboard:not(.hidden)) #customerDashboard .customer-home-link {
+  min-height: 36px;
+  text-align: left;
+  font-weight: 700;
+}
+html body:has(#customerDashboard:not(.hidden)) #customerDashboard .customer-home-grid {
+  gap: 13px !important;
+}
+html body:has(#customerDashboard:not(.hidden)) #customerDashboard :is(.customer-home-hero,.customer-home-shop-card) .btn-primary,
+html body:has(#customerDashboard:not(.hidden)) #customerDashboard .customer-home-shop-card .btn-secondary,
+html body:has(#customerDashboard:not(.hidden)) #customerDashboard #customerTab-create-request button[type="submit"] {
+  min-height: 46px;
+  padding: 11px 18px !important;
+  border: 1px solid transparent !important;
+  background: var(--m14-cta) !important;
+  color: var(--m14-cta-text) !important;
+  border-radius: 11px !important;
+  box-shadow: none !important;
+  font-weight: 800 !important;
+}
+html body:has(#customerDashboard:not(.hidden)) #customerDashboard .customer-home-shop-card .btn-secondary {
+  background: var(--m14-surface-hi) !important;
+  color: var(--m14-text) !important;
+  border: 1px solid var(--m14-rule) !important;
+}
+
+/* Customer request details: the old navy slab is the most obvious mismatch. */
+html body:has(#customerDashboard:not(.hidden)) #customerDashboard #customerTab-create-request.invoice-box,
+html body:has(#customerDashboard:not(.hidden)) #customerDashboard #customerTab-view-requests .invoice-box,
+html body:has(#customerDashboard:not(.hidden)) #customerDashboard #customerTab-contact-us.invoice-box,
+html body:has(#customerDashboard:not(.hidden)) #customerDashboard #customerTab-settings.invoice-box {
+  background: transparent !important;
+  background-image: none !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  color: var(--m14-text) !important;
+  padding: clamp(10px, 2vw, 26px) 0 !important;
+}
+html body:has(#customerDashboard:not(.hidden)) #customerDashboard #customerTab-create-request > h3,
+html body:has(#customerDashboard:not(.hidden)) #customerDashboard :is(#customerTab-view-requests,#customerTab-contact-us,#customerTab-settings) h3 {
+  color: var(--m14-text) !important;
+  font-size: clamp(1.5rem, 2.4vw, 2.15rem);
+  letter-spacing: -.035em;
+  line-height: 1.2;
+}
+html body:has(#customerDashboard:not(.hidden)) #customerDashboard #customerTab-create-request > form,
+html body:has(#customerDashboard:not(.hidden)) #customerDashboard #customerTab-view-requests > form {
+  padding: clamp(18px, 2.4vw, 30px) !important;
+  background: var(--m14-surface) !important;
+  border: 1px solid var(--m14-rule) !important;
+  border-radius: var(--m14-radius) !important;
+  color: var(--m14-text) !important;
+}
+html body:has(#customerDashboard:not(.hidden)) #customerDashboard #customerTab-create-request .grid,
+html body:has(#customerDashboard:not(.hidden)) #customerDashboard #customerTab-view-requests form .grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 17px 19px !important;
+}
+html body:has(#customerDashboard:not(.hidden)) #customerDashboard #customerTab-create-request .grid > div,
+html body:has(#customerDashboard:not(.hidden)) #customerDashboard #customerTab-view-requests .grid > div {
+  min-width: 0 !important;
+}
+html body:has(#customerDashboard:not(.hidden)) #customerDashboard :is(#customerTab-create-request,#customerTab-view-requests) label,
+html body:has(#customerDashboard:not(.hidden)) #customerDashboard :is(#customerTab-create-request,#customerTab-view-requests) legend {
+  display: block;
+  color: var(--m14-muted) !important;
+  font-size: 13px;
+  font-weight: 740;
+  margin-bottom: 8px;
+}
+html body:has(#customerDashboard:not(.hidden)) #customerDashboard :is(#customerTab-create-request,#customerTab-view-requests) :is(input:not([type="checkbox"]),select,textarea),
+html body:has(#customerDashboard:not(.hidden)) #customerDashboard #customerTab-settings :is(input,select) {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  min-height: 47px;
+  padding: 11px 13px;
+  background: var(--m14-field) !important;
+  border: 1px solid var(--m14-rule) !important;
+  border-radius: 11px !important;
+  color: var(--m14-field-text) !important;
+  font-size: 15px;
+  box-shadow: none !important;
+}
+html body:has(#customerDashboard:not(.hidden)) #customerDashboard :is(#customerTab-create-request,#customerTab-view-requests) input::placeholder,
+html body:has(#customerDashboard:not(.hidden)) #customerDashboard :is(#customerTab-create-request,#customerTab-view-requests) textarea::placeholder {
+  color: #637b69 !important;
+}
+html body:has(#customerDashboard:not(.hidden)) #customerDashboard :is(#customerTab-create-request,#customerTab-view-requests) :is(input,select,textarea):focus-visible {
+  outline: 2px solid #a0e8b5 !important;
+  outline-offset: 2px;
+}
+html body:has(#customerDashboard:not(.hidden)) #customerDashboard #customerTab-create-request .grid .btn-secondary,
+html body:has(#customerDashboard:not(.hidden)) #customerDashboard #customerTab-view-requests .grid .btn-secondary {
+  width: auto !important;
+  min-height: 37px;
+  padding: 8px 11px !important;
+  background: var(--m14-surface-hi) !important;
+  border: 1px solid var(--m14-rule) !important;
+  color: var(--m14-text) !important;
+  border-radius: 9px !important;
+}
+html body:has(#customerDashboard:not(.hidden)) #customerDashboard #customerTab-create-request textarea {
+  display: block;
+  min-height: 106px;
+  margin-bottom: 16px;
+}
+
+/* Appointment step: keep calendar contained with a manageable time grid. */
+html body:has(#customerDashboard:not(.hidden)) #customerDashboard #mot028CustomerCalendar.mot028-calendar-panel {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 930px;
+  margin: 24px auto !important;
+  padding: clamp(17px, 2.6vw, 28px) !important;
+  background: var(--m14-surface-hi) !important;
+  background-image: none !important;
+  border: 1px solid var(--m14-rule) !important;
+  border-radius: 16px !important;
+  box-shadow: none !important;
+  color: var(--m14-text) !important;
+}
+html body:has(#customerDashboard:not(.hidden)) #customerDashboard #mot028CustomerCalendar :is(h3,h4,.mot028-slot-title,strong),
+html body:has(#customerDashboard:not(.hidden)) #customerDashboard #mot028CustomerCalendar .mot028-calendar-nav strong {
+  color: var(--m14-text) !important;
+}
+html body:has(#customerDashboard:not(.hidden)) #customerDashboard #mot028CustomerCalendar :is(.mot028-muted,.mot028-slot-title span) {
+  color: var(--m14-muted) !important;
+  max-width: 66ch;
+}
+html body:has(#customerDashboard:not(.hidden)) #customerDashboard #mot028CustomerCalendar .mot028-eyebrow {
+  color: var(--m14-soft) !important;
+}
+html body:has(#customerDashboard:not(.hidden)) #customerDashboard #mot028CustomerCalendar .mot028-calendar-days {
+  max-width: 540px;
+  background: var(--m14-surface-hi) !important;
+  border: 1px solid var(--m14-rule) !important;
+  border-radius: 13px !important;
+  box-shadow: none !important;
+}
+html body:has(#customerDashboard:not(.hidden)) #customerDashboard #mot028CustomerCalendar .mot028-weekday {
+  color: var(--m14-muted) !important;
+}
+html body:has(#customerDashboard:not(.hidden)) #customerDashboard #mot028CustomerCalendar .mot028-calendar-days .mot028-day {
+  min-width: 0;
+  background: rgba(105, 185, 120, .10) !important;
+  color: var(--m14-text) !important;
+  border: 1px solid transparent !important;
+}
+html body:has(#customerDashboard:not(.hidden)) #customerDashboard #mot028CustomerCalendar .mot028-calendar-days .mot028-day:hover:not(:disabled) {
+  background: rgba(172, 243, 192, .23) !important;
+  border-color: var(--m14-rule) !important;
+}
+html body:has(#customerDashboard:not(.hidden)) #customerDashboard #mot028CustomerCalendar .mot028-calendar-days .mot028-day.is-selected {
+  background: var(--m14-cta) !important;
+  color: var(--m14-cta-text) !important;
+  border-color: transparent !important;
+}
+html body:has(#customerDashboard:not(.hidden)) #customerDashboard #mot028CustomerCalendar .mot028-calendar-days .mot028-day:disabled {
+  background: rgba(91, 125, 100, .09) !important;
+  color: var(--m14-muted) !important;
+  opacity: .65 !important;
+}
+html body:has(#customerDashboard:not(.hidden)) #customerDashboard #mot028CustomerCalendar .mot028-calendar-nav button {
+  background: var(--m14-surface-hi) !important;
+  color: var(--m14-text) !important;
+  border: 1px solid var(--m14-rule) !important;
+}
+html body:has(#customerDashboard:not(.hidden)) #customerDashboard #mot028CustomerCalendar .mot028-slot-grid {
+  display: grid !important;
+  grid-template-columns: repeat(5, minmax(0,1fr)) !important;
+  gap: 8px;
+}
+html body:has(#customerDashboard:not(.hidden)) #customerDashboard #mot028CustomerCalendar .mot028-slot-grid .mot028-slot {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 59px;
+  background: rgba(105, 185, 120, .10) !important;
+  border: 1px solid var(--m14-rule) !important;
+  border-radius: 10px !important;
+  color: var(--m14-text) !important;
+  box-shadow: none !important;
+}
+html body:has(#customerDashboard:not(.hidden)) #customerDashboard #mot028CustomerCalendar .mot028-slot-grid .mot028-slot small {
+  color: var(--m14-muted) !important;
+}
+html body:has(#customerDashboard:not(.hidden)) #customerDashboard #mot028CustomerCalendar .mot028-slot-grid .mot028-slot.is-selected {
+  background: var(--m14-cta) !important;
+  color: var(--m14-cta-text) !important;
+}
+html body:has(#customerDashboard:not(.hidden)) #customerDashboard #mot028CustomerCalendar .mot028-slot-grid .mot028-slot.is-selected small {
+  color: var(--m14-cta-text) !important;
+}
+html body:has(#customerDashboard:not(.hidden)) #customerDashboard #mot028CustomerCalendar .mot028-slot-grid .mot028-slot:disabled {
+  opacity: .53 !important;
+}
+html body:has(#customerDashboard:not(.hidden)) #customerDashboard #mot028CustomerCalendar .mot028-selection {
+  background: rgba(154, 232, 178, .14) !important;
+  color: var(--m14-text) !important;
+  border: 1px solid var(--m14-rule) !important;
+}
+
+/* Employee shell and sidebar: keep clear workspace hierarchy over the aurora. */
+html body #employeeDashboard.motivo-ops-shell {
+  background: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  border: 0 !important;
+  color: var(--m14-text) !important;
+}
+html body #employeeDashboard .motivo-ops-side {
+  background: rgba(5, 48, 26, .79) !important;
+  background-image: none !important;
+  border: 1px solid var(--m14-rule) !important;
+  box-shadow: none !important;
+  border-radius: var(--m14-radius) !important;
+}
+html body #employeeDashboard .motivo-ops-side :is(button,span) {
+  color: #effff3 !important;
+}
+html body #employeeDashboard .motivo-ops-side button.is-active,
+html body #employeeDashboard .motivo-ops-side button:hover {
+  background: rgba(165, 239, 185, .15) !important;
+}
+html body #employeeDashboard .staff-portal-hero {
+  background: transparent !important;
+  border: 0 !important;
+  border-bottom: 1px solid var(--m14-rule) !important;
+  border-radius: 0 !important;
+  padding: 12px 8px 25px !important;
+  box-shadow: none !important;
+  color: var(--m14-text) !important;
+}
+html body #employeeDashboard .staff-portal-hero :is(h2,strong),
+html body #employeeDashboard .staff-portal-hero .staff-shop-name {
+  color: var(--m14-text) !important;
+}
+
+/* Manager Team Access: remove main giant opaque white card, use transparent
+   editorial sections, with stable readable table cells and PIN controls. */
+html body #employeeDashboard #managerControlPanel,
+html body.dark-mode #employeeDashboard #managerControlPanel {
+  --ta-bg: transparent !important;
+  --ta-card: var(--m14-surface) !important;
+  --ta-soft: rgba(181, 238, 195, .11) !important;
+  --ta-field: var(--m14-field) !important;
+  --ta-ink: var(--m14-text) !important;
+  --ta-text: var(--m14-text) !important;
+  --ta-muted: var(--m14-muted) !important;
+  --ta-border: var(--m14-rule) !important;
+  --ta-line: var(--m14-rule) !important;
+  --ta-primary: #a0e8b5 !important;
+  --ta-accent: #b4eec5 !important;
+  background: transparent !important;
+  background-image: none !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  padding: 8px 0 18px !important;
+  color: var(--m14-text) !important;
+}
+html body #employeeDashboard #managerControlPanel .staff-section-heading,
+html body.dark-mode #employeeDashboard #managerControlPanel .staff-section-heading {
+  background: transparent !important;
+  padding-bottom: 23px;
+  border-bottom: 1px solid var(--m14-rule) !important;
+}
+html body #employeeDashboard #managerControlPanel :is(.staff-section-heading h3,.staff-card-heading h4,.rp-toolbar h4,.rp-matrix-header h5,.mep-title h4),
+html body.dark-mode #employeeDashboard #managerControlPanel :is(.staff-section-heading h3,.staff-card-heading h4,.rp-toolbar h4,.rp-matrix-header h5,.mep-title h4) {
+  color: var(--m14-text) !important;
+}
+html body #employeeDashboard #managerControlPanel :is(.staff-section-heading p,.staff-card-heading p,.rp-foot,.mep-item small),
+html body.dark-mode #employeeDashboard #managerControlPanel :is(.staff-section-heading p,.staff-card-heading p,.rp-foot,.mep-item small) {
+  color: var(--m14-muted) !important;
+}
+html body #employeeDashboard #managerControlPanel :is(.staff-section-kicker,.staff-card-number,.rp-kicker),
+html body.dark-mode #employeeDashboard #managerControlPanel :is(.staff-section-kicker,.staff-card-number,.rp-kicker) {
+  color: var(--m14-soft) !important;
+}
+html body #employeeDashboard #managerControlPanel :is(.staff-create-card,.staff-roster-card,#motivoRolePermissions,#motivoEmployeePermissions),
+html body.dark-mode #employeeDashboard #managerControlPanel :is(.staff-create-card,.staff-roster-card,#motivoRolePermissions,#motivoEmployeePermissions) {
+  background: var(--m14-surface) !important;
+  background-image: none !important;
+  border: 1px solid var(--m14-rule) !important;
+  border-radius: 16px !important;
+  box-shadow: none !important;
+}
+html body #employeeDashboard #managerControlPanel :is(.staff-manager-chip,.staff-card-number,.rp-stat,.mep-item,.rp-note),
+html body.dark-mode #employeeDashboard #managerControlPanel :is(.staff-manager-chip,.staff-card-number,.rp-stat,.mep-item,.rp-note) {
+  background: rgba(164, 235, 182, .10) !important;
+  border-color: var(--m14-rule) !important;
+  color: var(--m14-text) !important;
+}
+html body #employeeDashboard #managerControlPanel :is(input:not([type="checkbox"]),select,textarea),
+html body.dark-mode #employeeDashboard #managerControlPanel :is(input:not([type="checkbox"]),select,textarea) {
+  background: var(--m14-field) !important;
+  border: 1px solid var(--m14-rule) !important;
+  color: var(--m14-field-text) !important;
+  border-radius: 10px !important;
+  min-width: 0 !important;
+}
+html body #employeeDashboard #managerControlPanel :is(input,select,textarea)::placeholder {
+  color: #637b69 !important;
+}
+html body #employeeDashboard #managerControlPanel :is(.staff-table-shell,.rp-table-scroll),
+html body.dark-mode #employeeDashboard #managerControlPanel :is(.staff-table-shell,.rp-table-scroll) {
+  background: var(--m14-surface-hi) !important;
+  border-color: var(--m14-rule) !important;
+  max-width: 100%;
+  overflow-x: auto !important;
+}
+/* The sticky first column requires a real background rather than transparent,
+   or row text will show through when managers scroll the permissions matrix. */
+html body #employeeDashboard #managerControlPanel :is(.staff-table thead th,.rp-table-scroll thead th,.rp-table-scroll tbody th),
+html body.dark-mode #employeeDashboard #managerControlPanel :is(.staff-table thead th,.rp-table-scroll thead th,.rp-table-scroll tbody th) {
+  background: #e3f4e6 !important;
+  color: var(--m14-text) !important;
+}
+html body #employeeDashboard #managerControlPanel :is(.staff-table td,.rp-table-scroll td,.rp-table-scroll tbody th),
+html body.dark-mode #employeeDashboard #managerControlPanel :is(.staff-table td,.rp-table-scroll td,.rp-table-scroll tbody th) {
+  color: var(--m14-text) !important;
+  border-color: var(--m14-rule) !important;
+}
+html body #employeeDashboard #managerControlPanel :is(.staff-create-btn,.staff-table button,#motivoEmployeePermissions button),
+html body.dark-mode #employeeDashboard #managerControlPanel :is(.staff-create-btn,.staff-table button,#motivoEmployeePermissions button) {
+  background: var(--m14-cta) !important;
+  border-color: transparent !important;
+  color: var(--m14-cta-text) !important;
+}
+html body #employeeDashboard #managerControlPanel #motivoRolePermissions #rp-refresh {
+  background: var(--m14-surface-hi) !important;
+  color: var(--m14-text) !important;
+  border-color: var(--m14-rule) !important;
+}
+html body #employeeDashboard #managerControlPanel #motivoEmployeePermissions #mepReset {
+  background: var(--m14-surface-hi) !important;
+  color: var(--m14-text) !important;
+  border-color: var(--m14-rule) !important;
+}
+
+/* Scheduling & Availability: transparent workspace and soft sections, not a
+   white rectangle containing more white rectangles. */
+html body #employeeDashboard #motivoSchedPanel,
+html body.dark-mode #employeeDashboard #motivoSchedPanel {
+  background: transparent !important;
+  background-image: none !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  color: var(--m14-text) !important;
+  padding: 8px 0 18px !important;
+}
+html body #employeeDashboard #motivoSchedPanel .motivo-sched-card,
+html body.dark-mode #employeeDashboard #motivoSchedPanel .motivo-sched-card,
+html body #employeeDashboard #motivoSchedPanel #mot028Desk,
+html body.dark-mode #employeeDashboard #motivoSchedPanel #mot028Desk {
+  background: var(--m14-surface) !important;
+  background-image: none !important;
+  border: 1px solid var(--m14-rule) !important;
+  border-radius: 16px !important;
+  box-shadow: none !important;
+}
+html body #employeeDashboard #motivoSchedPanel :is(.motivo-sched-heading h3,.motivo-sched-card h4,.motivo-sched-exception-col h5,.motivo-sched-list-row strong),
+html body.dark-mode #employeeDashboard #motivoSchedPanel :is(.motivo-sched-heading h3,.motivo-sched-card h4,.motivo-sched-exception-col h5,.motivo-sched-list-row strong) {
+  color: var(--m14-text) !important;
+}
+html body #employeeDashboard #motivoSchedPanel :is(.motivo-sched-heading p,.motivo-sched-card p,.motivo-sched-section-lead p,.motivo-sched-footnote,.motivo-sched-list-row small,.motivo-sched-status),
+html body.dark-mode #employeeDashboard #motivoSchedPanel :is(.motivo-sched-heading p,.motivo-sched-card p,.motivo-sched-section-lead p,.motivo-sched-footnote,.motivo-sched-list-row small) {
+  color: var(--m14-muted) !important;
+}
+html body #employeeDashboard #motivoSchedPanel :is(.motivo-sched-heading span,.motivo-sched-section-icon),
+html body.dark-mode #employeeDashboard #motivoSchedPanel :is(.motivo-sched-heading span,.motivo-sched-section-icon) {
+  color: var(--m14-soft) !important;
+}
+html body #employeeDashboard #motivoSchedPanel :is(.motivo-sched-days,.motivo-sched-list > div,.motivo-sched-list-row),
+html body.dark-mode #employeeDashboard #motivoSchedPanel :is(.motivo-sched-days,.motivo-sched-list > div,.motivo-sched-list-row) {
+  background: rgba(165, 235, 185, .08) !important;
+  border-color: var(--m14-rule) !important;
+  color: var(--m14-text) !important;
+}
+html body #employeeDashboard #motivoSchedPanel .motivo-sched-day,
+html body #employeeDashboard #motivoSchedPanel .motivo-sched-day:nth-child(even),
+html body.dark-mode #employeeDashboard #motivoSchedPanel .motivo-sched-day,
+html body.dark-mode #employeeDashboard #motivoSchedPanel .motivo-sched-day:nth-child(even),
+html body.dark-mode #employeeDashboard #motivoSchedPanel .motivo-sched-day:has(.sched-open:not(:checked)) {
+  background: transparent !important;
+  border-color: var(--m14-rule) !important;
+}
+html body #employeeDashboard #motivoSchedPanel :is(.motivo-sched-day .motivo-sched-check,.motivo-sched-card label),
+html body.dark-mode #employeeDashboard #motivoSchedPanel :is(.motivo-sched-day .motivo-sched-check,.motivo-sched-card label) {
+  color: var(--m14-text) !important;
+}
+html body #employeeDashboard #motivoSchedPanel :is(input:not([type="checkbox"]),select,textarea),
+html body.dark-mode #employeeDashboard #motivoSchedPanel :is(input:not([type="checkbox"]),select,textarea) {
+  background: var(--m14-field) !important;
+  border: 1px solid var(--m14-rule) !important;
+  color: var(--m14-field-text) !important;
+}
+html body #employeeDashboard #motivoSchedPanel :is(.motivo-sched-list-row button,.motivo-sched-list > div button),
+html body.dark-mode #employeeDashboard #motivoSchedPanel :is(.motivo-sched-list-row button,.motivo-sched-list > div button) {
+  color: var(--m14-text) !important;
+  background: var(--m14-surface-hi) !important;
+  border-color: var(--m14-rule) !important;
+}
+html body #employeeDashboard #motivoSchedPanel :is(.motivo-sched-primary,.motivo-sched-actions button),
+html body.dark-mode #employeeDashboard #motivoSchedPanel :is(.motivo-sched-primary,.motivo-sched-actions button) {
+  background: var(--m14-cta) !important;
+  border-color: transparent !important;
+  color: var(--m14-cta-text) !important;
+}
+/* Keep important disruption warnings / destructive actions visibly distinct. */
+html body #employeeDashboard #motivoSchedPanel .motivo-sched-warning,
+html body.dark-mode #employeeDashboard #motivoSchedPanel .motivo-sched-warning {
+  background: rgba(255, 235, 210, .70) !important;
+  border-color: rgba(168, 99, 48, .42) !important;
+  color: #69401e !important;
+}
+html body #employeeDashboard #motivoSchedPanel .motivo-sched-danger,
+html body.dark-mode #employeeDashboard #motivoSchedPanel .motivo-sched-danger {
+  background: #a43c35 !important;
+  border-color: #a43c35 !important;
+  color: #fff !important;
+}
+html body #employeeDashboard #motivoSchedPanel .motivo-sched-preview,
+html body.dark-mode #employeeDashboard #motivoSchedPanel .motivo-sched-preview {
+  background: rgba(120, 210, 147, .18) !important;
+  border-color: var(--m14-rule) !important;
+  color: var(--m14-text) !important;
+}
+html body #employeeDashboard #motivoSchedPanel .motivo-sched-exception-col + .motivo-sched-exception-col {
+  border-left-color: var(--m14-rule) !important;
+}
+
+/* Unified focus and mobile density, without disturbing semantic controls. */
+html body #employeeDashboard :is(#managerControlPanel,#motivoSchedPanel) :is(button,input,select,textarea):focus-visible {
+  outline: 2px solid var(--m14-cta) !important;
+  outline-offset: 2px !important;
+}
+@media (max-width: 1090px) {
+  html body:has(#customerDashboard:not(.hidden)) #customerDashboard .customer-home-grid {
+    grid-template-columns: repeat(2, minmax(0,1fr)) !important;
+  }
+  html body #employeeDashboard #motivoSchedPanel .motivo-sched-resources {
+    grid-template-columns: 1fr !important;
+  }
+}
+@media (max-width: 760px) {
+  html body:has(#landingSection:not(.hidden)) .motivo-hero {
+    gap: 27px !important;
+    padding-top: 37px !important;
+  }
+  html body:has(#landingSection:not(.hidden)) .motivo-hero h1 {
+    font-size: clamp(2.9rem, 12.6vw, 5.2rem) !important;
+    line-height: 1.01 !important;
+  }
+  html body:has(#landingSection:not(.hidden)) .motivo-hero-art {
+    min-height: 245px !important;
+  }
+  html body:has(#landingSection:not(.hidden)) .motivo-hero-art :is(img,.motivo-hero-slides) {
+    min-height: 245px !important;
+  }
+  html body:has(#landingSection:not(.hidden)) .motivo-finder-controls {
+    grid-template-columns: minmax(0,1fr) !important;
+    padding: 14px !important;
+  }
+  html body:has(#landingSection:not(.hidden)) .motivo-finder-controls > :is(input,select,button.motivo-button-dark) {
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+  html body:has(#landingSection:not(.hidden)) .motivo-finder-returning {
+    grid-column: 1 / -1;
+    justify-content: center !important;
+    flex-wrap: wrap;
+  }
+  html body:has(#customerDashboard:not(.hidden)) #customerDashboard .customer-portal-header {
+    padding: 16px 0 24px !important;
+    gap: 13px !important;
+  }
+  html body:has(#customerDashboard:not(.hidden)) #customerDashboard .customer-home-grid {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+  html body:has(#customerDashboard:not(.hidden)) #customerDashboard .customer-home-hero {
+    padding: 25px 21px !important;
+  }
+  html body:has(#customerDashboard:not(.hidden)) #customerDashboard .customer-home-hero h1 {
+    font-size: clamp(1.9rem, 8vw, 3rem) !important;
+    overflow-wrap: anywhere;
+  }
+  html body:has(#customerDashboard:not(.hidden)) #customerDashboard .customer-home-card {
+    min-height: 112px !important;
+    padding: 19px !important;
+  }
+  html body:has(#customerDashboard:not(.hidden)) #customerDashboard #customerTab-create-request .grid,
+  html body:has(#customerDashboard:not(.hidden)) #customerDashboard #customerTab-view-requests form .grid {
+    grid-template-columns: 1fr !important;
+    gap: 11px !important;
+  }
+  html body:has(#customerDashboard:not(.hidden)) #customerDashboard #mot028CustomerCalendar .mot028-slot-grid {
+    grid-template-columns: repeat(3, minmax(0,1fr)) !important;
+  }
+  html body:has(#customerDashboard:not(.hidden)) #customerDashboard #mot028CustomerCalendar .mot028-calendar-days {
+    padding: 9px 6px !important;
+    gap: 3px !important;
+  }
+  html body:has(#customerDashboard:not(.hidden)) #customerDashboard #mot028CustomerCalendar .mot028-calendar-days .mot028-day {
+    min-height: 38px !important;
+    padding: 3px !important;
+    border-radius: 7px !important;
+    font-size: 12px !important;
+  }
+  html body #employeeDashboard #managerControlPanel {
+    padding: 0 0 20px !important;
+  }
+  html body #employeeDashboard #managerControlPanel :is(.staff-create-card,.staff-roster-card,#motivoRolePermissions,#motivoEmployeePermissions) {
+    padding: 18px !important;
+  }
+  html body #employeeDashboard #managerControlPanel .staff-field-grid {
+    grid-template-columns: minmax(0,1fr) !important;
+  }
+  html body #employeeDashboard #motivoSchedPanel {
+    gap: 15px !important;
+  }
+  html body #employeeDashboard #motivoSchedPanel .motivo-sched-card {
+    padding: 18px !important;
+  }
+  html body #employeeDashboard #motivoSchedPanel .motivo-sched-resources,
+  html body #employeeDashboard #motivoSchedPanel .motivo-sched-exception-grid {
+    grid-template-columns: minmax(0,1fr) !important;
+  }
+  html body #employeeDashboard #motivoSchedPanel .motivo-sched-exception-col + .motivo-sched-exception-col {
+    border-left: 0 !important;
+    padding-left: 0 !important;
+    border-top: 1px solid var(--m14-rule);
+    padding-top: 19px !important;
+  }
+}
+@media (max-width: 430px) {
+  html body:has(#customerDashboard:not(.hidden)) #customerDashboard #mot028CustomerCalendar .mot028-slot-grid {
+    grid-template-columns: repeat(2,minmax(0,1fr)) !important;
+  }
+  html body:has(#customerDashboard:not(.hidden)) #customerDashboard #mot028CustomerCalendar.mot028-calendar-panel {
+    padding: 14px !important;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  html body #employeeDashboard :is(#managerControlPanel,#motivoSchedPanel) *,
+  html body:has(#customerDashboard:not(.hidden)) #customerDashboard .mot028-slot,
+  html body:has(#customerDashboard:not(.hidden)) #customerDashboard .mot028-day {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+/* Explicit theme bridges for elements that require opaque/contrasting ink. */
+html body.dark-mode #employeeDashboard #managerControlPanel :is(.staff-table thead th,.rp-table-scroll thead th,.rp-table-scroll tbody th) {
+  background: #123d29 !important;
+  color: #f2fff3 !important;
+}
+html body.dark-mode:has(#landingSection:not(.hidden)) .motivo-finder-controls input::placeholder,
+html body.dark-mode:has(#customerDashboard:not(.hidden)) #customerDashboard :is(#customerTab-create-request,#customerTab-view-requests) :is(input,textarea)::placeholder,
+html body.dark-mode #employeeDashboard #managerControlPanel :is(input,textarea)::placeholder {
+  color: #accbb7 !important;
+}
+html body.dark-mode #employeeDashboard #motivoSchedPanel .motivo-sched-warning {
+  background: rgba(118,66,29,.32) !important;
+  border-color: rgba(255,189,133,.52) !important;
+  color: #ffe7d1 !important;
+}
+
+/* Long role-matrix tables must scroll INSIDE their panel, not widen the SPA. */
+html body #employeeDashboard #managerControlPanel,
+html body #employeeDashboard #managerControlPanel :is(.staff-manager-grid,.staff-create-card,.staff-roster-card,#motivoRolePermissions,#motivoEmployeePermissions,.staff-table-shell,.rp-table-scroll),
+html body #employeeDashboard #motivoSchedPanel,
+html body #employeeDashboard #motivoSchedPanel :is(.motivo-sched-card,.motivo-sched-row,.motivo-sched-two,.motivo-sched-days) {
+  min-width: 0 !important;
+  max-width: 100% !important;
+}
+@media (max-width: 760px) {
+  html body #employeeDashboard.motivo-ops-shell {
+    grid-template-columns: minmax(0, 1fr) !important;
+    max-width: 100% !important;
+  }
+  html body #employeeDashboard.motivo-ops-shell > :is(#managerControlPanel,#motivoSchedPanel) {
+    grid-column: 1 !important;
+    width: 100% !important;
+  }
+  html body #employeeDashboard #managerControlPanel .staff-table-shell,
+  html body #employeeDashboard #managerControlPanel .rp-table-scroll {
+    display: block;
+    max-width: 100% !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+  }
+}
+@media (max-width: 760px) {
+  html body #employeeDashboard #motivoSchedPanel :is(.motivo-sched-row,.motivo-sched-two),
+  html body #employeeDashboard #motivoSchedPanel .motivo-sched-resources .motivo-sched-stack > .motivo-sched-row {
+    grid-template-columns: minmax(0,1fr) !important;
+    gap: 12px !important;
+  }
+}
+
+
+/* ===== PRESERVED CASCADE: motivo-signup-v16.css ===== */
+/* MOTIVO v16 | An inviting, compact signup experience.
+   Customer registration remains a single native HTML form; no inputs, required
+   fields, authentication handlers, routes, or acknowledgments are removed.
+   Scoped exclusively to SPA #registerSection; sign-in screens are untouched. */
+
+/* Reduce decorative weight while leaving the desktop editorial split intact. */
+html body:has(#registerSection:not(.hidden)) #registerSection .auth-form-wrap h1 {
+  letter-spacing: -.055em;
+}
+html body:has(#registerSection:not(.hidden)) #registerSection .auth-form :is(input, select) {
+  accent-color: #91e4ab;
+}
+html body:has(#registerSection:not(.hidden)) #registerSection .auth-check-row {
+  align-items: flex-start;
+}
+
+/* Phones get ONE compact form. The former oversized second pitch at the end
+   duplicated the homepage and made a simple account signup feel interminable. */
+@media screen and (max-width: 760px) {
+  /* A full-document surface avoids the viewport-height fixed aurora ending
+     midway through iOS Safari's tall page / full-page screenshot capture. */
+  html:has(body:has(#registerSection:not(.hidden))) {
+    background: #0b3f29 !important;
+  }
+  html body:has(#registerSection:not(.hidden)) {
+    background-color: #0b4b2e !important;
+    background-image:
+      radial-gradient(ellipse 95% 46% at 58% 35%, rgba(35, 157, 91, .34), transparent 85%),
+      linear-gradient(180deg, #0b3022 0%, #136d40 43%, #0b4d30 100%) !important;
+    background-size: 100% 100%, 100% 100% !important;
+    background-repeat: no-repeat !important;
+    background-attachment: scroll !important;
+  }
+  html body:has(#registerSection:not(.hidden))::before {
+    display: none !important;
+    content: none !important;
+  }
+  html body:has(#registerSection:not(.hidden)) .container,
+  html body:has(#registerSection:not(.hidden)) .container > #registerSection,
+  html body:has(#registerSection:not(.hidden)) #registerSection.auth-screen,
+  html body:has(#registerSection:not(.hidden)) #registerSection .auth-split,
+  html body:has(#registerSection:not(.hidden)) #registerSection .auth-form-panel,
+  html body:has(#registerSection:not(.hidden)) #registerSection .auth-form-wrap {
+    background: transparent !important;
+    background-image: none !important;
+    box-shadow: none !important;
+  }
+  html body:has(#registerSection:not(.hidden)) .container {
+    min-height: 0 !important;
+    border: 0 !important;
+  }
+  html body:has(#registerSection:not(.hidden)) #registerSection.auth-screen {
+    min-height: 0 !important;
+    overflow: visible !important;
+  }
+  html body:has(#registerSection:not(.hidden)) #registerSection .auth-register-layout {
+    box-sizing: border-box;
+    display: block !important;
+    width: min(100%, 565px) !important;
+    max-width: 100% !important;
+    min-height: 0 !important;
+    padding: 12px clamp(18px, 5vw, 26px) 18px !important;
+    margin-inline: auto !important;
+    gap: 0 !important;
+  }
+  html body:has(#registerSection:not(.hidden)) #registerSection .auth-form-panel {
+    width: 100% !important;
+    min-height: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    align-items: start !important;
+  }
+  html body:has(#registerSection:not(.hidden)) #registerSection .auth-form-wrap {
+    max-width: 100% !important;
+    width: 100% !important;
+    margin: 0 !important;
+  }
+  html body:has(#registerSection:not(.hidden)) #registerSection .auth-kicker {
+    margin: 2px 0 8px !important;
+    color: #a7ecc0 !important;
+    font-size: 11px !important;
+    font-weight: 750 !important;
+    letter-spacing: .13em !important;
+  }
+  html body:has(#registerSection:not(.hidden)) #registerSection .auth-form-wrap h1 {
+    font-size: clamp(30px, 8vw, 38px) !important;
+    line-height: 1.09 !important;
+    letter-spacing: -.055em !important;
+    margin: 0 0 7px !important;
+    text-wrap: balance;
+    color: #f4fff5 !important;
+  }
+  html body:has(#registerSection:not(.hidden)) #registerSection .auth-subtitle {
+    color: #cae7d2 !important;
+    font-size: 14px !important;
+    line-height: 1.48 !important;
+    margin: 0 0 20px !important;
+    max-width: none !important;
+  }
+  html body:has(#registerSection:not(.hidden)) #registerSection .auth-form {
+    gap: 13px !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    width: 100%;
+  }
+  html body:has(#registerSection:not(.hidden)) #registerSection .auth-field {
+    min-width: 0 !important;
+    gap: 5px !important;
+  }
+  html body:has(#registerSection:not(.hidden)) #registerSection .auth-form > .auth-grid-two:nth-child(2) {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 11px !important;
+  }
+  /* Email requires the full width to avoid truncating long addresses. */
+  html body:has(#registerSection:not(.hidden)) #registerSection .auth-form > .auth-grid-two:nth-child(4) {
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 13px !important;
+  }
+  html body:has(#registerSection:not(.hidden)) #registerSection .auth-field label {
+    color: #d8eee0 !important;
+    font-size: 12px !important;
+    font-weight: 720 !important;
+    line-height: 1.25 !important;
+  }
+  html body:has(#registerSection:not(.hidden)) #registerSection .auth-field :is(input:not([type="checkbox"]), select) {
+    box-sizing: border-box;
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 47px !important;
+    height: 47px !important;
+    padding: 9px 12px !important;
+    border: 1px solid rgba(187, 235, 202, .33) !important;
+    border-radius: 11px !important;
+    background: rgba(5, 42, 26, .69) !important;
+    color: #f6fff6 !important;
+    font-size: 16px !important;
+    box-shadow: none !important;
+  }
+  html body:has(#registerSection:not(.hidden)) #registerSection .auth-field input::placeholder {
+    color: #aec8b7 !important;
+    opacity: 1 !important;
+  }
+  html body:has(#registerSection:not(.hidden)) #registerSection .auth-field :is(input, select):focus-visible {
+    outline: 2px solid #b6f6c3 !important;
+    outline-offset: 2px !important;
+    border-color: #b6f6c3 !important;
+  }
+  html body:has(#registerSection:not(.hidden)) #registerSection .auth-check-row {
+    margin: 2px 0 0 !important;
+    padding: 0 !important;
+    gap: 10px !important;
+    color: #d4e8db !important;
+    font-size: 12px !important;
+    line-height: 1.52 !important;
+  }
+  html body:has(#registerSection:not(.hidden)) #registerSection .auth-check-row input[type="checkbox"] {
+    width: 21px !important;
+    height: 21px !important;
+    flex: 0 0 21px !important;
+    margin: 1px 0 0 !important;
+    accent-color: #91e4ab !important;
+  }
+  html body:has(#registerSection:not(.hidden)) #registerSection .auth-check-row a,
+  html body:has(#registerSection:not(.hidden)) #registerSection .auth-text-link {
+    color: #aeefc4 !important;
+    text-decoration-color: #aeefc4 !important;
+  }
+  html body:has(#registerSection:not(.hidden)) #registerSection .auth-submit-btn {
+    min-height: 49px !important;
+    margin: 2px 0 0 !important;
+    border: 1px solid #a7ebbb !important;
+    border-radius: 12px !important;
+    color: #082d1c !important;
+    background: #a2e7b5 !important;
+    font-size: 15px !important;
+    font-weight: 800 !important;
+    box-shadow: none !important;
+  }
+  html body:has(#registerSection:not(.hidden)) #registerSection .auth-submit-btn:hover {
+    background: #b8f2c8 !important;
+  }
+  html body:has(#registerSection:not(.hidden)) #registerSection .auth-switch-copy {
+    margin: 2px 0 0 !important;
+    color: #cbe4d4 !important;
+    font-size: 13px !important;
+    line-height: 1.5 !important;
+  }
+  /* No redundant 300px+ marketing pitch below the form on a phone. */
+  html body:has(#registerSection:not(.hidden)) #registerSection .auth-register-visual {
+    display: none !important;
+  }
+  html body:has(#registerSection:not(.hidden)) .legal-footer {
+    background: transparent !important;
+    margin: 0 auto 0 !important;
+    padding: 18px 12px 22px !important;
+    border: 0 !important;
+  }
+  html body:has(#registerSection:not(.hidden)) .legal-footer a {
+    color: #d0e8d9 !important;
+  }
+}
+
+/* The light appearance gets the SAME compact layout with readable dark ink. */
+@media screen and (max-width: 760px) {
+  html:has(body:not(.dark-mode):has(#registerSection:not(.hidden))) {
+    background: #e2f1e6 !important;
+  }
+  html body:not(.dark-mode):has(#registerSection:not(.hidden)) {
+    background-color: #e4f3e7 !important;
+    background-image:
+      radial-gradient(ellipse 97% 46% at 50% 33%, rgba(99, 184, 119, .24), transparent 82%),
+      linear-gradient(180deg, #deede0 0%, #eef8ed 49%, #c7e9d1 100%) !important;
+    background-size: 100% 100%, 100% 100% !important;
+  }
+  html body:not(.dark-mode):has(#registerSection:not(.hidden)) #registerSection :is(.auth-form-wrap h1, .auth-field label) {
+    color: #153e2b !important;
+  }
+  html body:not(.dark-mode):has(#registerSection:not(.hidden)) #registerSection .auth-kicker {
+    color: #287c46 !important;
+  }
+  html body:not(.dark-mode):has(#registerSection:not(.hidden)) #registerSection :is(.auth-subtitle, .auth-check-row, .auth-switch-copy) {
+    color: #4e6b58 !important;
+  }
+  html body:not(.dark-mode):has(#registerSection:not(.hidden)) #registerSection .auth-field :is(input:not([type="checkbox"]), select) {
+    background: rgba(252, 255, 251, .87) !important;
+    color: #133b2a !important;
+    border-color: rgba(65, 122, 81, .32) !important;
+  }
+  html body:not(.dark-mode):has(#registerSection:not(.hidden)) #registerSection .auth-field input::placeholder {
+    color: #667d6e !important;
+  }
+  html body:not(.dark-mode):has(#registerSection:not(.hidden)) #registerSection .auth-check-row a,
+  html body:not(.dark-mode):has(#registerSection:not(.hidden)) #registerSection .auth-text-link {
+    color: #176d3e !important;
+  }
+  html body:not(.dark-mode):has(#registerSection:not(.hidden)) #registerSection .auth-submit-btn {
+    background: #176c40 !important;
+    border-color: #176c40 !important;
+    color: #fff !important;
+  }
+  html body:not(.dark-mode):has(#registerSection:not(.hidden)) .legal-footer a {
+    color: #2e7150 !important;
+  }
+}
+
+@media screen and (max-width: 350px) {
+  html body:has(#registerSection:not(.hidden)) #registerSection .auth-form > .auth-grid-two:nth-child(2) {
+    grid-template-columns: minmax(0,1fr) !important;
+  }
+}
+
+
+/* =====================================================================
+   MOTIVO / Product Design System 2026.10 (v20)
+   One source of truth for visual tokens and final product-level refinements.
+   Appearance-only: no event handlers, API requests, or markup dependencies added.
+   ===================================================================== */
+:root {
+  --motivo-space-1: 4px;
+  --motivo-space-2: 8px;
+  --motivo-space-3: 12px;
+  --motivo-space-4: 16px;
+  --motivo-space-5: 24px;
+  --motivo-space-6: 32px;
+  --motivo-space-7: 48px;
+  --motivo-radius-control: 10px;
+  --motivo-radius-panel: 16px;
+  --motivo-radius-large: 22px;
+  --motivo-product-max: 1260px;
+  --motivo-focus: #91dda8;
+  --motivo-product-rule: rgba(176, 221, 183, .19);
+  --motivo-product-muted: #c2d2c7;
+  --motivo-product-ink: #f0f7f1;
+  --motivo-product-surface: rgba(6, 34, 22, .62);
+  --motivo-product-surface-strong: #092b1c;
+  --motivo-product-field: #0b3020;
+  --motivo-product-warm: #b57948;
+}
+html body:not(.dark-mode) {
+  --motivo-focus: #23784b;
+  --motivo-product-rule: rgba(30, 92, 55, .19);
+  --motivo-product-muted: #526c59;
+  --motivo-product-ink: #183b29;
+  --motivo-product-surface: rgba(241, 248, 241, .82);
+  --motivo-product-surface-strong: #e7f0e7;
+  --motivo-product-field: #f7fbf6;
+}
+html body.dark-mode {
+  --motivo-product-rule: rgba(176, 221, 183, .19);
+  --motivo-product-muted: #c2d2c7;
+  --motivo-product-ink: #f0f7f1;
+  --motivo-product-surface: rgba(6, 34, 22, .62);
+  --motivo-product-surface-strong: #092b1c;
+  --motivo-product-field: #0b3020;
+}
+
+/* Deliberate typography hierarchy; remove the inflated letterspacing that
+   originally made dashboard text look like a marketing website. */
+html body:not(:has(> .topbar)) {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-feature-settings: "tnum" 1;
+}
+html body:not(:has(> .topbar)) :is(h1,h2,h3,h4) { letter-spacing: -.035em; }
+html body:not(:has(> .topbar)) :is(button,input,select,textarea) { font-family: inherit; }
+html body:not(:has(> .topbar)) :is(button,a,input,select,textarea):focus-visible {
+  outline: 2px solid var(--motivo-focus) !important;
+  outline-offset: 3px;
+}
+
+/* PUBLIC HOME: visual hierarchy, not gradient text and repeated boxed cards. */
+html body:has(#landingSection:not(.hidden)) #landingSection .motivo-hero-copy h1 span,
+html body:has(#landingSection:not(.hidden)) #landingSection #heroTitle span {
+  background: none !important;
+  background-image: none !important;
+  -webkit-background-clip: initial !important;
+  background-clip: border-box !important;
+  -webkit-text-fill-color: currentColor !important;
+  color: #97e2b3 !important;
+  text-shadow: none !important;
+}
+html body:not(.dark-mode):has(#landingSection:not(.hidden)) #landingSection #heroTitle span { color: #277a4e !important; }
+html body:has(#landingSection:not(.hidden)) .motivo-eyebrow {
+  font-size: .72rem !important;
+  font-weight: 750 !important;
+  letter-spacing: .095em !important;
+}
+html body:has(#landingSection:not(.hidden)) .motivo-hero-subtitle {
+  font-size: clamp(.98rem,1.5vw,1.12rem) !important;
+  line-height: 1.65 !important;
+}
+html body:has(#landingSection:not(.hidden)) .motivo-art-note {
+  padding: 14px 17px !important;
+  box-shadow: none !important;
+}
+html body:has(#landingSection:not(.hidden)) .motivo-benefit-grid article,
+html body:has(#landingSection:not(.hidden)) .motivo-feature-list article {
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  background-image: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: 0 !important;
+  border-top: 1px solid var(--motivo-product-rule) !important;
+  padding: 23px clamp(6px,2vw,24px) 22px !important;
+}
+html body:has(#landingSection:not(.hidden)) .motivo-benefit-grid .motivo-step,
+html body:has(#landingSection:not(.hidden)) .motivo-feature-list article > span {
+  color: var(--motivo-product-warm) !important;
+  letter-spacing: .06em !important;
+  font-size: .72rem !important;
+  font-weight: 800 !important;
+}
+html body:has(#landingSection:not(.hidden)) .motivo-benefit-grid article :is(h3,p),
+html body:has(#landingSection:not(.hidden)) .motivo-feature-list article :is(h3,p) {
+  max-width: 36ch;
+}
+
+/* PRODUCT AREA: let surfaces distinguish function (overview, appointment,
+   service request, table) rather than making every section an identical card. */
+html body:has(#customerDashboard:not(.hidden)) #customerDashboard,
+html body:has(#employeeDashboard:not(.hidden)) #employeeDashboard {
+  color: var(--motivo-product-ink) !important;
+}
+html body:has(#customerDashboard:not(.hidden)) #customerDashboard .customer-home-hero {
+  border-radius: var(--motivo-radius-large) !important;
+  padding: clamp(22px,3vw,44px) !important;
+  border: 1px solid var(--motivo-product-rule) !important;
+  background: var(--motivo-product-surface) !important;
+  background-image: none !important;
+  backdrop-filter: none !important;
+  box-shadow: none !important;
+}
+html body:has(#customerDashboard:not(.hidden)) #customerDashboard .customer-home-hero h1 {
+  max-width: 24ch;
+  font-size: clamp(1.75rem,3vw,3.1rem) !important;
+  line-height: 1.1 !important;
+}
+html body:has(#customerDashboard:not(.hidden)) #customerDashboard .customer-home-grid {
+  gap: 1px !important;
+  border: 1px solid var(--motivo-product-rule) !important;
+  border-radius: var(--motivo-radius-panel) !important;
+  background: var(--motivo-product-rule) !important;
+  overflow: hidden;
+}
+html body:has(#customerDashboard:not(.hidden)) #customerDashboard .customer-home-card {
+  min-height: 138px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: var(--motivo-product-surface-strong) !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  padding: 20px clamp(16px,2vw,26px) !important;
+  gap: 8px !important;
+}
+html body:has(#customerDashboard:not(.hidden)) #customerDashboard .customer-home-card .customer-home-label {
+  font-size: .7rem !important;
+  letter-spacing: .08em !important;
+  color: var(--motivo-product-muted) !important;
+}
+html body:has(#customerDashboard:not(.hidden)) #customerDashboard .customer-home-card strong {
+  color: var(--motivo-product-ink) !important;
+  font-size: clamp(1rem,1.4vw,1.28rem) !important;
+  line-height: 1.25 !important;
+  overflow-wrap: anywhere;
+}
+html body:has(#customerDashboard:not(.hidden)) #customerDashboard .customer-home-shop-card {
+  background: transparent !important;
+  border: 0 !important;
+  border-top: 1px solid var(--motivo-product-rule) !important;
+  box-shadow: none !important;
+  padding: 20px clamp(6px,2vw,24px) !important;
+}
+
+/* BOOKING: compact calendar + separated chosen time; no giant feature slab. */
+html body :is(#customerTab-create-request,#mot028MyAppointments) .mot028-calendar-panel {
+  width: 100%;
+  max-width: 860px;
+  margin-inline: auto;
+  padding: clamp(15px,2vw,25px) !important;
+  border-radius: var(--motivo-radius-large) !important;
+  background: var(--motivo-product-surface) !important;
+  background-image: none !important;
+  backdrop-filter: none !important;
+  box-shadow: none !important;
+  border: 1px solid var(--motivo-product-rule) !important;
+}
+html body .mot028-calendar-days { gap: 5px !important; }
+html body .mot028-calendar-days .mot028-day { min-height: 40px !important; border-radius: 8px !important; }
+html body .mot028-slot-grid { grid-template-columns: repeat(4,minmax(0,1fr)) !important; gap: 8px !important; }
+html body .mot028-card .mot028-slot { min-height: 45px !important; border-radius: 9px !important; }
+html body .mot028-card .mot028-slot.is-selected,
+html body .mot028-calendar-days .mot028-day.is-selected { outline: 2px solid var(--motivo-focus) !important; outline-offset: 1px; }
+html body #customerTab-create-request :is(input,textarea,select),
+html body #managerControlPanel :is(input,textarea,select),
+html body #motivoSchedPanel :is(input,textarea,select) {
+  border-radius: var(--motivo-radius-control) !important;
+}
+
+/* STAFF WORKSPACE: coherent panels and denser metrics. */
+html body:has(#employeeDashboard:not(.hidden)) #employeeDashboard .motivo-ops-home {
+  max-width: var(--motivo-product-max);
+  padding: 0 !important;
+}
+html body:has(#employeeDashboard:not(.hidden)) #employeeDashboard .motivo-ops-stats {
+  gap: 10px !important;
+}
+html body:has(#employeeDashboard:not(.hidden)) #employeeDashboard .motivo-ops-stat,
+html body:has(#employeeDashboard:not(.hidden)) #employeeDashboard .motivo-ops-card {
+  background: var(--motivo-product-surface-strong) !important;
+  background-image: none !important;
+  border: 1px solid var(--motivo-product-rule) !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  border-radius: var(--motivo-radius-panel) !important;
+}
+html body:has(#employeeDashboard:not(.hidden)) #employeeDashboard .motivo-ops-stat {
+  padding: 18px !important;
+  min-height: 100px !important;
+}
+html body:has(#employeeDashboard:not(.hidden)) #employeeDashboard .motivo-ops-stat strong {
+  font-size: clamp(1.4rem,2.3vw,2.2rem) !important;
+  line-height: 1.1 !important;
+}
+html body:has(#employeeDashboard:not(.hidden)) #employeeDashboard .motivo-ops-heading h3 {
+  font-size: clamp(1.55rem,2.5vw,2.5rem) !important;
+}
+html body:has(#employeeDashboard:not(.hidden)) #employeeDashboard :is(#managerControlPanel,#motivoSchedPanel,#mot028AssignmentCard) {
+  max-width: var(--motivo-product-max) !important;
+  box-shadow: none !important;
+}
+html body:has(#employeeDashboard:not(.hidden)) #employeeDashboard :is(#managerControlPanel,#motivoSchedPanel) :is(table,thead,tbody) {
+  font-variant-numeric: tabular-nums;
+}
+html body:has(#employeeDashboard:not(.hidden)) #employeeDashboard :is(#managerControlPanel,#motivoSchedPanel) th {
+  font-size: .7rem !important;
+  font-weight: 800 !important;
+  text-transform: uppercase;
+  letter-spacing: .055em !important;
+}
+html body:has(#employeeDashboard:not(.hidden)) #employeeDashboard :is(#managerControlPanel,#motivoSchedPanel) td {
+  vertical-align: middle;
+  line-height: 1.45 !important;
+}
+
+/* Don't lose affordances just because the visual design is flatter. */
+html body :is(.motivo-button,.auth-submit-btn,.mot028-actions button,.customer-home-hero button):not(:disabled) {
+  transition: background-color 150ms ease, border-color 150ms ease !important;
+}
+html body :is(.motivo-button,.auth-submit-btn,.mot028-actions button,.customer-home-hero button):disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}
+
+@media (max-width: 760px) {
+  html body:has(#landingSection:not(.hidden)) .motivo-benefit-grid article,
+  html body:has(#landingSection:not(.hidden)) .motivo-feature-list article {
+    padding: 18px 4px !important;
+  }
+  html body:has(#customerDashboard:not(.hidden)) #customerDashboard .customer-home-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2,minmax(0,1fr)) !important;
+  }
+  html body:has(#customerDashboard:not(.hidden)) #customerDashboard .customer-home-card {
+    min-height: 125px !important;
+    padding: 16px 13px !important;
+  }
+  html body .mot028-slot-grid { grid-template-columns: repeat(2,minmax(0,1fr)) !important; }
+}
+@media (max-width: 400px) {
+  html body:has(#customerDashboard:not(.hidden)) #customerDashboard .customer-home-grid {
+    grid-template-columns: minmax(0,1fr) !important;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  html body :is(.motivo-button,.auth-submit-btn,.mot028-actions button,.customer-home-hero button) { transition: none !important; }
+}
