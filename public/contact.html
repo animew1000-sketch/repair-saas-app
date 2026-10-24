@@ -4,187 +4,64 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Contact | Motivo</title>
-  <link rel="stylesheet" href="/styles-reworked.css?v=motivo-portal-1">
+  <link rel="stylesheet" href="/styles-reworked.css?v=motivo-legal22">
 </head>
 <body class="motivo-public-page">
-
-<div class="header">
-  <div
-    class="brand"
-    onclick="window.location.href='/?screen=landingSection'"
-  >
-    <img class="brand-logo" src="/images/Motivo-white-word-transparent.png" alt="Motivo">
-  </div>
-
-  <button class="motivo-menu-toggle" type="button" aria-expanded="false" aria-controls="motivo-side-menu" aria-label="Open navigation menu" onclick="toggleMotivoMenu(this)">
-    <span></span><span></span><span></span>
-  </button>
-
-  <div class="header-nav" id="motivo-side-menu">
-    <div class="motivo-drawer-heading"><img src="/images/Motivo-white-word-transparent.png" alt="Motivo"><span>Navigation</span></div>
-
-    <div class="header-links">
-      <a class="header-link" href="/?screen=landingSection">
-        Home
-      </a>
-
-      <a class="header-link" href="/overview.html">
-        How It Works
-      </a>
-
-      <a class="header-link" href="/contact.html">
-        Contact
-      </a>
+  <div class="header">
+    <div class="brand" onclick="window.location.href='/?screen=landingSection'">
+      <img class="brand-logo" src="/images/Motivo-white-word-transparent.png" alt="Motivo">
     </div>
-
-  <div class="header-actions">
-  <a
-    class="header-link header-action-link header-signup"
-    href="/?screen=registerSection"
-  >
-    Sign Up
-  </a>
-
-  <a
-    class="header-link header-action-link header-login"
-    href="/?screen=loginSection"
-  >
-    Portal Login
-  </a>
-</div>
-    <button class="motivo-menu-theme" type="button" onclick="toggleTheme()" aria-label="Switch to dark mode"><span aria-hidden="true">◐</span><span class="motivo-menu-theme-label">Switch to dark mode</span></button>
+    <button class="motivo-menu-toggle" type="button" aria-expanded="false" aria-controls="motivo-side-menu" aria-label="Open navigation menu" onclick="toggleMotivoMenu(this)">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="header-nav" id="motivo-side-menu">
+      <div class="motivo-drawer-heading"><img src="/images/Motivo-white-word-transparent.png" alt="Motivo"><span>Navigation</span></div>
+      <div class="header-links">
+        <a class="header-link" href="/?screen=landingSection">Home</a>
+        <a class="header-link" href="/overview.html">How It Works</a>
+        <a class="header-link" href="/contact.html" aria-current="page">Contact</a>
+      </div>
+      <div class="header-actions">
+        <a class="header-link header-action-link header-signup" href="/?screen=registerSection">Sign Up</a>
+        <a class="header-link header-action-link header-login" href="/?screen=loginSection">Portal Login</a>
+      </div>
+      <button class="motivo-menu-theme" type="button" onclick="toggleTheme()" aria-label="Switch to dark mode"><span aria-hidden="true">◐</span><span class="motivo-menu-theme-label">Switch to dark mode</span></button>
+    </div>
   </div>
-</div>
   <div class="container">
-
     <main class="contact-page">
-
       <div class="contact-intro">
         <div class="marketing-pill">Contact</div>
-
         <h1>Get in Touch</h1>
-
-        <p>
-          Questions about the platform, repair shop onboarding,
-          or the project architecture? Use the contact information
-          below or send a message through the form.
-        </p>
+        <p>Motivo is currently a development and demonstration platform. Direct support and repair-shop onboarding contact options are not yet available through this page.</p>
       </div>
-
       <div class="contact-layout">
-
-        <section class="contact-details">
-
+        <section class="contact-details" aria-labelledby="contact-status-heading">
           <div class="contact-detail">
-            <span class="contact-icon">✉</span>
             <div>
-              <strong>Email</strong>
-              <a href="mailto:support@apexautosaaS.com">
-                support@apexautosaaS.com
-              </a>
+              <h2 id="contact-status-heading">Contact is not configured yet</h2>
+              <p>The previous demonstration form and placeholder contact details have been removed because they did not deliver messages.</p>
+              <p>For an existing repair appointment, invoice, or vehicle issue, contact your repair shop directly using its verified contact details.</p>
+              <p>For information about the demonstration, please read the <a href="/notice.html">Privacy, Terms &amp; California Notice</a>.</p>
             </div>
           </div>
-
-          <div class="contact-detail">
-            <span class="contact-icon">☎</span>
-            <div>
-              <strong>Phone</strong>
-              <span>(555) 019-2834</span>
-            </div>
-          </div>
-
-          <div class="contact-detail">
-            <span class="contact-icon">⌖</span>
-            <div>
-              <strong>Service Location</strong>
-              <span>100 Industrial Parkway, Mechanics Hub</span>
-            </div>
-          </div>
-
           <figure class="overview-feature-image">
-            <img
-              src="/images/Disk-Break.jpg"
-              alt="Automotive brake service"
-            >
-            <figcaption>
-              Built around real automotive service workflows.
-            </figcaption>
+            <img src="/images/Disk-Break.jpg" alt="Automotive brake service">
+            <figcaption>Built around real automotive service workflows.</figcaption>
           </figure>
-
         </section>
-
-        <section class="contact-form">
-          <h2>Send a Message</h2>
-
-          <form onsubmit="handleContactSubmit(event)">
-
-            <div class="contact-form-grid">
-              <div>
-                <label for="contact_name">Name</label>
-                <input
-                  type="text"
-                  id="contact_name"
-                  required
-                >
-              </div>
-
-              <div>
-                <label for="contact_email">Email</label>
-                <input
-                  type="email"
-                  id="contact_email"
-                  required
-                >
-              </div>
-            </div>
-
-            <div>
-              <label for="contact_subject">Subject</label>
-              <input
-                type="text"
-                id="contact_subject"
-                required
-              >
-            </div>
-
-            <div>
-              <label for="contact_message">Message</label>
-              <textarea
-                id="contact_message"
-                required
-              ></textarea>
-            </div>
-
-            <button class="btn-primary" type="submit">
-  Send Message
-</button>
-
-            <p id="contactStatus" class="form-status"></p>
-
-          </form>
-        </section>
-
       </div>
-
     </main>
-
+    <footer class="legal-footer" style="text-align:center;margin:28px 0 14px;">
+      <a href="/">Home</a> &nbsp;|&nbsp; <a href="/notice.html">Privacy, Terms &amp; California Notice</a>
+    </footer>
   </div>
-
   <script>
-    function handleContactSubmit(event) {
-      event.preventDefault();
-
-      document.getElementById('contactStatus').textContent =
-        'Message form is currently for project demonstration purposes.';
-
-      event.target.reset();
-    }
-
     if (localStorage.getItem('token')) {
       document.querySelector('.header-signup')?.classList.add('hidden');
       document.querySelector('.header-login')?.classList.add('hidden');
     }
   </script>
-<script src="/theme.js?v=motivo-5"></script>
+  <script src="/theme.js?v=motivo-22"></script>
 </body>
 </html>

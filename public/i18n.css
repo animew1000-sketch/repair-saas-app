@@ -722,3 +722,10 @@ html body.motivo-universal-page .motivo-universal-menu .motivo-drawer-heading sp
     background-repeat: no-repeat !important;
   }
 }
+
+/* v22 signup accessibility. Existing page styles remain unchanged. */
+#registerSection .motivo-signup-policy-hint {
+  color: var(--motivo-v12-muted, #9ab2a4);
+  font: 500 .78rem/1.45 ui-sans-serif, system-ui, sans-serif;
+  margin: 5px 0 0;
+}

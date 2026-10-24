@@ -169,7 +169,7 @@ document.addEventListener('click', (event) => {
 
   const stylesheet = document.createElement('link');
   stylesheet.rel = 'stylesheet';
-  stylesheet.href = '/i18n.css?v=19';
+  stylesheet.href = '/i18n.css?v=22';
   document.head.appendChild(stylesheet);
 
   const dictionary = document.createElement('script');
@@ -242,4 +242,13 @@ document.addEventListener('click', (event) => {
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', apply, {once: true});
   else apply();
+})();
+
+/* v22: load the signup-only compliance interface; server-side validation is
+   enforced independently before the existing registration controller. */
+(function () {
+  const s = document.createElement('script');
+  s.src = '/motivo-signup-compliance-v22.js?v=22';
+  s.defer = true;
+  document.head.appendChild(s);
 })();
