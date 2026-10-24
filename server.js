@@ -22,6 +22,9 @@ app.use(helmet({
   crossOriginEmbedderPolicy: false
 }));
 
+// Phase 1A: report potential CSP violations without blocking legacy pages.
+app.use(require('./middleware/csp-report-only'));
+
 app.use(express.json({ limit: '100kb' }));
 
 const apiLimiter = rateLimit({
