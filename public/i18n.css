@@ -1,6 +1,6 @@
 /* Motivo shared preferences and navigation. Product design system imports first. */
 @import url('/motivo-design-system.css?v=21');
-
+@import url('/motivo-glass-v25.css?v=25');
 
 /* Lightweight universal language selector, independent of each page's CSS framework. */
 .motivo-language-control {
