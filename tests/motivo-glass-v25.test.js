@@ -1,0 +1,10 @@
+'use strict';
+const {test} = require('node:test');
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
+const css = fs.readFileSync(path.join(__dirname,'../public/motivo-glass-v25.css'),'utf8');
+const shared = fs.readFileSync(path.join(__dirname,'../public/i18n.css'),'utf8');
+test('glass styles are loaded via shared stylesheet',()=>{assert.match(shared,/motivo-glass-v25\.css/);});
+test('glass styles are limited to customer and staff surfaces',()=>{assert.match(css,/#employeeDashboard/);assert.match(css,/#customerDashboard/);assert.doesNotMatch(css,/\b(?:html|body)\s*\{\s*background:/);});
+test('glass respects reduced motion',()=>{assert.match(css,/@media \(prefers-reduced-motion: reduce\)/);});

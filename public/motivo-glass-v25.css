@@ -1,0 +1,51 @@
+/* Motivo glass v25: presentation-only; preserve workflow/UI semantics. */
+/* Import this AFTER motivo-design-system.css, via public/i18n.css. */
+@supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  body:has(#employeeDashboard:not(.hidden)),
+  body:has(#customerDashboard:not(.hidden)),
+  body:has(.platform-shell) {
+    --glass-tint: rgba(246, 250, 245, .79);
+    --glass-border: rgba(69, 109, 79, .25);
+    --glass-ink: #183f30;
+    --glass-shadow: 0 10px 38px rgba(24, 58, 42, .10), inset 0 1px rgba(255,255,255,.65);
+  }
+  body.dark-mode:has(#employeeDashboard:not(.hidden)),
+  body.dark-mode:has(#customerDashboard:not(.hidden)),
+  body.dark-mode:has(.platform-shell) {
+    --glass-tint: rgba(19, 49, 40, .82);
+    --glass-border: rgba(170, 220, 189, .20);
+    --glass-ink: #f2f7f2;
+    --glass-shadow: 0 13px 38px rgba(0, 0, 0, .27), inset 0 1px rgba(236,255,238,.08);
+  }
+  /* Customer and staff: cards/panels only; never modify inputs, status colors or table rows. */
+  html body #customerDashboard :is(.customer-home-card, .customer-home-shop-card, .card),
+  html body #employeeDashboard :is(.motivo-ops-card, .staff-create-card, .staff-roster-card, .staff-manager-panel, .workflow-progress-card, .staff-table-shell) {
+    background: var(--glass-tint) !important;
+    border: 1px solid var(--glass-border) !important;
+    box-shadow: var(--glass-shadow) !important;
+    -webkit-backdrop-filter: blur(13px) saturate(120%);
+    backdrop-filter: blur(13px) saturate(120%);
+    background-clip: padding-box;
+    border-radius: 18px;
+  }
+  html body #customerDashboard :is(.customer-home-card, .customer-home-shop-card),
+  html body #employeeDashboard :is(.motivo-ops-card, .staff-create-card, .staff-roster-card) {
+    transition: border-color .18s ease, box-shadow .18s ease;
+  }
+  html body #customerDashboard :is(.customer-home-card, .customer-home-shop-card):hover,
+  html body #employeeDashboard :is(.motivo-ops-card, .staff-create-card, .staff-roster-card):hover {
+    border-color: rgba(230, 115, 67, .38) !important;
+    box-shadow: 0 16px 42px rgba(19, 59, 41, .14), inset 0 1px rgba(255,255,255,.7) !important;
+  }
+}
+/* Text and tabular content remain opaque/high-contrast for operational readability. */
+html body #employeeDashboard :is(.motivo-ops-stats, .staff-table-shell),
+html body #customerDashboard .customer-home-grid { isolation: isolate; }
+@media (prefers-reduced-motion: reduce) {
+  html body #customerDashboard :is(.customer-home-card,.customer-home-shop-card),
+  html body #employeeDashboard :is(.motivo-ops-card,.staff-create-card,.staff-roster-card) {transition:none !important;}
+}
+@media (max-width: 640px) {
+  html body #customerDashboard :is(.customer-home-card,.customer-home-shop-card),
+  html body #employeeDashboard :is(.motivo-ops-card,.staff-create-card,.staff-roster-card,.staff-manager-panel) {border-radius:13px;}
+}
