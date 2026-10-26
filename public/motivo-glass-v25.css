@@ -1,10 +1,10 @@
-/* MOTIVO GLASS v29 | canonical, single-file presentation layer.
+/* MOTIVO GLASS v30 | canonical, single-file presentation layer.
    Replace public/motivo-glass-v25.css in place. The existing i18n.css import
    already loads this path. No new stylesheets, scripts or inline styles.
 
    Design rule: dark emerald workspace + gently illuminated, DARK glass cards.
-   Restrained petrol/sage/olive/champagne tints identify workflows; orange stays
-   an ACTION accent. Data tables, statuses, interactive form fields and charts
+   The scheduling cards use ONE evergreen glass surface, with muted teal or
+   olive details to distinguish workflows; orange stays an ACTION accent. Data tables, statuses, interactive form fields and charts
    retain legible, functional contrasts instead of translucent text or rows. */
 
 /* 01 / One card engine, with category-specific tokens defined below. */
@@ -69,44 +69,40 @@ html body.motivo-universal-page :is(.feature-card, .card) {
 /* 02 / Dark glass color families: readable, not neon. */
 /* Dashboard summary: recognizable Motivo emerald. */
 html body #employeeDashboard :is(.motivo-ops-stat, .motivo-ops-card) {
-  --mv-glass-top: rgba(49, 108, 77, .95);
-  --mv-glass-bottom: rgba(24, 66, 47, .96);
-  --mv-glass-edge: rgba(126, 190, 149, .62);
+  --mv-glass-top: rgba(55, 115, 83, .96);
+  --mv-glass-bottom: rgba(30, 75, 53, .97);
+  --mv-glass-edge: rgba(152, 205, 161, .70);
 }
-/* Technician assignment: petrol teal, intentionally NOT pale turquoise. */
-html body #employeeDashboard #mot028AssignmentCard {
-  --mv-glass-top: rgba(39, 91, 91, .97);
-  --mv-glass-bottom: rgba(17, 58, 58, .98);
-  --mv-glass-edge: rgba(115, 185, 181, .65);
-  --mv-glass-sheen: rgba(205, 249, 239, .14);
+/* Scheduling workspace: ONE card family for approvals, technician assignments,
+   business hours, bays, shifts and closures. Teal is an accent, not a new theme. */
+html body #employeeDashboard #motivoSchedPanel :is(
+  #mot028Desk, #mot028AssignmentCard, .motivo-sched-card
+) {
+  --mv-glass-top: rgba(42, 89, 67, .96);
+  --mv-glass-bottom: rgba(23, 62, 47, .98);
+  --mv-glass-edge: rgba(135, 182, 148, .58);
+  --mv-glass-sheen: rgba(224, 255, 232, .12);
 }
-/* Service desk appointment approval: evergreen. */
-html body #employeeDashboard #mot028Desk {
-  --mv-glass-top: rgba(42, 88, 68, .95);
-  --mv-glass-bottom: rgba(18, 53, 39, .97);
-  --mv-glass-edge: rgba(111, 164, 132, .54);
+/* A quiet blue-green edge differentiates assignments without washing them out. */
+html body #employeeDashboard #motivoSchedPanel #mot028AssignmentCard {
+  --mv-glass-edge: rgba(122, 181, 173, .64);
 }
-/* Scheduling, bay capacity and shifts: subdued blue-green. */
-html body #employeeDashboard .motivo-sched-card {
-  --mv-glass-top: rgba(44, 84, 89, .96);
-  --mv-glass-bottom: rgba(21, 55, 63, .97);
-  --mv-glass-edge: rgba(122, 172, 187, .56);
-}
+/* Closure notices keep their existing warning semantics. */
 /* Repair order, inspection and workflow: quiet sage. */
 html body #employeeDashboard :is(.motivo-job-hero, .motivo-job-summary, .workflow-progress-card) {
   --mv-glass-top: rgba(55, 96, 69, .95);
   --mv-glass-bottom: rgba(27, 66, 48, .97);
   --mv-glass-edge: rgba(155, 190, 140, .55);
 }
-/* Team Access and role-management cards: olive accents, not yellow panels. */
+/* Team Access: matched evergreen glass with a restrained olive-green edge. */
 html body #employeeDashboard :is(
   .staff-manager-panel, .staff-create-card, .staff-roster-card,
   #motivoRolePermissions, #motivoEmployeePermissions
 ) {
-  --mv-glass-top: rgba(61, 82, 59, .96);
-  --mv-glass-bottom: rgba(27, 57, 43, .98);
-  --mv-glass-edge: rgba(151, 173, 124, .54);
-  --mv-glass-sheen: rgba(242, 249, 200, .09);
+  --mv-glass-top: rgba(43, 87, 65, .96);
+  --mv-glass-bottom: rgba(23, 60, 45, .98);
+  --mv-glass-edge: rgba(144, 176, 131, .58);
+  --mv-glass-sheen: rgba(230, 250, 215, .10);
 }
 /* Estimate / parts editor: reserved earthy bronze. */
 html body #employeeDashboard :is(.motivo-parts-editor, .motivo-parts-research) {
@@ -179,6 +175,25 @@ html body #employeeDashboard .staff-portal-hero .staff-user-panel {
   border-radius: 15px !important;
   box-shadow: 0 12px 32px rgba(0,0,0,.17), inset 0 1px rgba(245,255,248,.13) !important;
 }
+/* Role label: the original .staff-user-badge was a light-gray rectangle.
+   This is a proper badge, not selected text, and works in both appearance modes. */
+html body #employeeDashboard .staff-user-panel #userRoleBadge.staff-user-badge {
+  display: inline-flex !important;
+  align-items: center;
+  width: fit-content;
+  max-width: 100%;
+  padding: 6px 11px !important;
+  margin-bottom: 12px;
+  border: 1px solid #83af91 !important;
+  border-radius: 999px !important;
+  background: #255a42 !important;
+  color: #f2fbf4 !important;
+  box-shadow: inset 0 1px rgba(250,255,251,.15) !important;
+  font-size: 12px;
+  font-weight: 750;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
 /* The outer overview remains visually behind the actual glass KPI/chart cards. */
 html body #employeeDashboard .motivo-ops-home {
   background: transparent !important;
@@ -202,6 +217,22 @@ html body #employeeDashboard .motivo-ops-recent-row { color: #f4fbf5 !important;
 html body #employeeDashboard .motivo-ops-recent-row { border-top-color: rgba(158, 204, 173, .24) !important; }
 html body #employeeDashboard .motivo-ops-recent-row:hover { background: rgba(177, 229, 191, .09) !important; }
 
+/* Dashboard: visible depth between the deep-green background and cards. */
+html body #employeeDashboard .motivo-ops-home {
+  --mv-glass-shadow: 0 16px 38px rgba(2,22,12,.28), inset 0 1px rgba(246,255,248,.16);
+}
+html body #employeeDashboard .motivo-ops-stat {
+  min-height: 96px;
+  border-color: #88ba95 !important;
+  box-shadow: 0 13px 32px rgba(0,16,10,.25), inset 0 1px rgba(249,255,249,.19) !important;
+}
+html body #employeeDashboard .motivo-ops-card {
+  border-color: #74a786 !important;
+}
+html body #employeeDashboard .motivo-ops-card > p,
+html body #employeeDashboard .motivo-ops-legend li {
+  color: #d6e9dc !important;
+}
 /* 04 / Job Queue: replace the mismatched charcoal slab with forest-glass. */
 html body #employeeDashboard #staffJobsSection.staff-jobs-section {
   background: linear-gradient(150deg, rgba(24, 66, 50, .97), rgba(14, 48, 37, .98)) !important;
@@ -299,100 +330,368 @@ html body #employeeDashboard #mot028AssignmentCard input::placeholder {
   color: #b9d5cb !important;
 }
 
-/* 06 / Service Desk and scheduling: fix gray-on-green body copy. */
-html body #employeeDashboard :is(#mot028Desk, #motivoSchedPanel) :is(
-  h3, h4, label, .mot028-muted, .mot028-assignment-count
-) { color: #f2faf5 !important; }
-html body #employeeDashboard #mot028Desk :is(p, .mot028-muted),
-html body #employeeDashboard #motivoSchedPanel .motivo-sched-card :is(p, .motivo-sched-section-lead p) {
-  color: #c7ded2 !important;
+/* 06 / Scheduling workspace: one palette, one spacing scale, legible inputs.
+   #motivoSchedPanel holds the dynamic Service Desk and Assignments components
+   plus static business hours, service bays, shifts and closure forms. */
+html body #employeeDashboard #motivoSchedPanel {
+  --mv-workspace: #0f3428;
+  --mv-inset: #153d2f;
+  --mv-inset-alt: #1c4937;
+  --mv-rule: #527e61;
+  --mv-primary-text: #f3fbf5;
+  --mv-secondary-text: #cee4d4;
+  display: grid;
+  gap: 20px !important;
+  padding: clamp(12px,2vw,24px) !important;
+  color: var(--mv-primary-text) !important;
+  background: linear-gradient(165deg, rgba(12,48,33,.72), rgba(10,39,28,.65)) !important;
+  border: 1px solid rgba(108,155,121,.24);
+  border-radius: 20px !important;
 }
-html body #employeeDashboard #mot028Desk .mot028-request {
-  background: #214939 !important;
-  border-color: #5c876c !important;
-  color: #f3fbf5 !important;
+html body #employeeDashboard #motivoSchedPanel :is(
+  #mot028Desk, #mot028AssignmentCard, .motivo-sched-card
+) {
+  margin: 0 !important;
+  min-width: 0;
+  padding: clamp(18px,2.1vw,27px) !important;
+  color: var(--mv-primary-text) !important;
+  border-radius: 17px !important;
 }
-html body #employeeDashboard #mot028Desk .mot028-request :is(p,span) {
-  color: #cbe0d3 !important;
+html body #employeeDashboard #motivoSchedPanel .motivo-sched-heading {
+  margin: 3px 0 2px;
+  padding: 5px 3px 10px;
 }
-html body #employeeDashboard #mot028Desk .mot028-request.is-selected {
-  background: #315843 !important;
-  border-color: #e86642 !important;
+html body #employeeDashboard #motivoSchedPanel :is(
+  .motivo-sched-heading h3, .motivo-sched-section-lead h4,
+  .motivo-sched-card h4, .mot028-card h3, .mot028-card h4,
+  .mot028-assignment-toolbar label, .motivo-sched-card label,
+  .motivo-sched-exception-col h5, .mot028-head h3
+) { color: var(--mv-primary-text) !important; }
+html body #employeeDashboard #motivoSchedPanel :is(
+  .motivo-sched-heading p, .motivo-sched-section-lead p,
+  .motivo-sched-card p, .mot028-muted, .mot028-assignment-count,
+  .mot028-assignment-heading p, .motivo-sched-footnote,
+  .mot028-jobs-pagination, .motivo-sched-list-row small
+) { color: var(--mv-secondary-text) !important; }
+html body #employeeDashboard #motivoSchedPanel .motivo-sched-section-lead {
+  gap: 14px;
+  margin-bottom: 21px;
 }
-/* Keep service approval date/time form controls solid and understandable. */
-html body #employeeDashboard #mot028Desk :is(input,select) {
-  background: #0e3228 !important;
-  border-color: #5c816b !important;
-  color: #f3fbf5 !important;
+html body #employeeDashboard #motivoSchedPanel .motivo-sched-section-icon {
+  background: #244f3c !important;
+  color: #ffd1ba !important;
+  border: 1px solid #658d72;
 }
-html body #employeeDashboard #motivoSchedPanel .motivo-sched-card :is(h4,label) {
-  color: #f3fbf7 !important;
+/* The approval form should look like an inset panel, not an unrelated gray card. */
+html body #employeeDashboard #motivoSchedPanel #mot028Form {
+  padding: clamp(16px,2vw,23px) !important;
+  background: #173e31 !important;
+  border: 1px solid #669073 !important;
+  border-radius: 13px !important;
+}
+html body #employeeDashboard #motivoSchedPanel :is(
+  #mot028Selected, #mot028DeskStatus
+) { color: #d9ecdf !important; }
+html body #employeeDashboard #motivoSchedPanel #mot028Desk .mot028-request {
+  background: #1b4535 !important;
+  color: var(--mv-primary-text) !important;
+  border-color: #62896c !important;
+}
+html body #employeeDashboard #motivoSchedPanel #mot028Desk .mot028-request :is(p,span) {
+  color: #d0e4d6 !important;
+}
+html body #employeeDashboard #motivoSchedPanel #mot028Desk .mot028-request.is-selected {
+  background: #285541 !important;
+  border-color: #ef956d !important;
+}
+/* Approval actions and scheduling feedback remain readable on dark cards. */
+html body #employeeDashboard #motivoSchedPanel #mot028Desk .mot028-secondary {
+  background: #2c5845 !important;
+  color: #f2fbf5 !important;
+  border: 1px solid #8eae98 !important;
+}
+html body #employeeDashboard #motivoSchedPanel .motivo-sched-status {
+  color: #baf0cc !important;
+}
+html body #employeeDashboard #motivoSchedPanel .motivo-sched-status.error {
+  color: #ffb8a1 !important;
+}
+/* Inputs across approvals, technician assignments and scheduling use one finish.
+   Keep ordinary input text opaque and do not disturb checkboxes/status badges. */
+html body #employeeDashboard #motivoSchedPanel :is(input:not([type=checkbox]),select,textarea) {
+  background: #0d3026 !important;
+  color: #f5fcf6 !important;
+  border: 1px solid #739683 !important;
+  border-radius: 9px;
+  color-scheme: dark;
+}
+html body #employeeDashboard #motivoSchedPanel input::placeholder {
+  color: #bbd2c3 !important;
+  opacity: 1;
+}
+html body #employeeDashboard #motivoSchedPanel :is(input,select,textarea,button):focus-visible {
+  outline: 2px solid #ffa16f !important;
+  outline-offset: 2px;
+}
+/* Hours and appointment capacity lists should not turn white inside dark cards. */
+html body #employeeDashboard #motivoSchedPanel :is(
+  .motivo-sched-days, .motivo-sched-list>div, .motivo-sched-list>p,
+  .motivo-sched-preview
+) {
+  background: var(--mv-inset) !important;
+  border-color: var(--mv-rule) !important;
+  color: var(--mv-primary-text) !important;
+}
+html body #employeeDashboard #motivoSchedPanel .motivo-sched-day {
+  background: var(--mv-inset) !important;
+  border-top-color: #456b56 !important;
+}
+html body #employeeDashboard #motivoSchedPanel .motivo-sched-day:nth-child(even),
+html body #employeeDashboard #motivoSchedPanel .motivo-sched-list-row:nth-child(even) {
+  background: var(--mv-inset-alt) !important;
+}
+html body #employeeDashboard #motivoSchedPanel .motivo-sched-day:has(.sched-open:not(:checked)) {
+  background: #244739 !important;
+}
+html body #employeeDashboard #motivoSchedPanel :is(
+  .motivo-sched-day .motivo-sched-check, .motivo-sched-day>span,
+  .motivo-sched-list-row strong, .motivo-sched-list-row small,
+  .motivo-sched-exception-col h5
+) { color: #e3f2e7 !important; }
+html body #employeeDashboard #motivoSchedPanel .motivo-sched-exception-col + .motivo-sched-exception-col {
+  border-left-color: #638871 !important;
+}
+/* Resource lists are details inside a card; preserve badges and danger states. */
+html body #employeeDashboard #motivoSchedPanel .motivo-sched-list-row > button {
+  background: #24533e !important;
+  border: 1px solid #87ad94 !important;
+  color: #f1fbf4 !important;
+}
+html body #employeeDashboard #motivoSchedPanel .motivo-sched-list-row > button:hover:not(:disabled) {
+  background: #316b50 !important;
+}
+html body #employeeDashboard #motivoSchedPanel .motivo-sched-list-row .motivo-sched-pill.is-on {
+  background: #245b44 !important;
+  color: #d9f7e4 !important;
+}
+/* Assignment table: forest glass with a faint teal edge (not a cyan fill). */
+html body #employeeDashboard #mot028AssignmentCard .mot028-jobs-scroll {
+  background: #123a2f !important;
+  border: 1px solid #649587 !important;
+}
+html body #employeeDashboard #mot028AssignmentCard .mot028-jobs-table {
+  background: #123a2f !important;
+  color: #f0faf4 !important;
+}
+html body #employeeDashboard #mot028AssignmentCard .mot028-jobs-table th {
+  background: #235443 !important;
+  color: #e5f4ea !important;
+  border-color: #547d66 !important;
+}
+html body #employeeDashboard #mot028AssignmentCard .mot028-jobs-table tbody tr {
+  background: #1c4737 !important;
+}
+html body #employeeDashboard #mot028AssignmentCard .mot028-jobs-table tbody tr:nth-child(even) {
+  background: #173e30 !important;
+}
+html body #employeeDashboard #mot028AssignmentCard .mot028-jobs-table tbody tr:hover {
+  background: #2b5c46 !important;
+}
+html body #employeeDashboard #mot028AssignmentCard .mot028-jobs-table td {
+  border-color: #446f58 !important;
+  color: #f0faf4 !important;
+}
+html body #employeeDashboard #mot028AssignmentCard .mot028-jobs-table td strong,
+html body #employeeDashboard #mot028AssignmentCard :is(.mot028-job-status,.mot028-job-number) {
+  color: #f6fcf7 !important;
+}
+html body #employeeDashboard #mot028AssignmentCard :is(.mot028-job-id,.mot028-job-vehicle) {
+  color: #cbdfd2 !important;
+}
+/* Keep the orange meaning of selected/attention, not every surface. */
+html body #employeeDashboard #motivoSchedPanel :is(.mot028-eyebrow,.motivo-sched-heading>span) {
+  color: #ffae83 !important;
 }
 
-/* 07 / Team Access: cards within cards must actually separate visually. */
+/* 07 / Team Access: consistent card rhythm, spacing, and legible controls.
+   Existing employee-permissions.css and role-permissions.css own form layout;
+   this block changes only surface, spacing and ink, not role behavior. */
 html body #employeeDashboard #managerControlPanel {
-  --ta-bg: #11382a;
-  --ta-card: #234536;
-  --ta-soft: #294c3b;
-  --ta-field: #103328;
-  --ta-ink: #f3fbf5;
-  --ta-text: #f3fbf5;
-  --ta-muted: #c0d9c8;
-  --ta-border: #5a8065;
-  --ta-line: #567b63;
-  --ta-primary: #225944;
-  --ta-accent: #e86642;
-  background: linear-gradient(147deg, rgba(17, 58, 42, .97), rgba(10, 45, 32, .98)) !important;
-  border: 1px solid #4b7959 !important;
-  color: #f3fbf5 !important;
+  --ta-bg: #103629;
+  --ta-card: #28533e;
+  --ta-soft: #2e5a44;
+  --ta-field: #10362a;
+  --ta-ink: #f3fbf4;
+  --ta-text: #f3fbf4;
+  --ta-muted: #d0e4d4;
+  --ta-border: #668d70;
+  --ta-line: #597e64;
+  --ta-primary: #276249;
+  --ta-accent: #f38c61;
+  padding: clamp(18px,2.7vw,32px) !important;
+  background: linear-gradient(149deg, #123d2d, #0b3024) !important;
+  border: 1px solid #5b8667 !important;
+  border-radius: 20px !important;
+  color: var(--ta-ink) !important;
+}
+html body #employeeDashboard #managerControlPanel .staff-section-heading {
+  margin: 0 0 22px !important;
+  padding: 0 0 22px !important;
+  gap: 14px 22px !important;
+  border-color: #5b8066 !important;
 }
 html body #employeeDashboard #managerControlPanel .staff-section-heading :is(h3,p),
-html body #employeeDashboard #managerControlPanel :is(.staff-create-card,.staff-roster-card) :is(h4,p,label) {
-  color: #f2fcf4 !important;
+html body #employeeDashboard #managerControlPanel :is(
+  .staff-card-heading h4, .staff-create-form label,
+  .staff-roster-card .staff-card-heading h4
+) { color: #f4fcf6 !important; }
+html body #employeeDashboard #managerControlPanel :is(
+  .staff-section-heading p, .staff-card-heading p,
+  .mep-title h4::after, .mep-item small
+) { color: #d1e4d6 !important; }
+html body #employeeDashboard #managerControlPanel .staff-manager-chip {
+  background: #214c39 !important;
+  color: #edf9f0 !important;
+  border-color: #789a7c !important;
 }
-html body #employeeDashboard #managerControlPanel .staff-section-heading p,
-html body #employeeDashboard #managerControlPanel .staff-card-heading p {
-  color: #c7daca !important;
+html body #employeeDashboard #managerControlPanel .staff-manager-grid {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) !important;
+  gap: 20px !important;
+  align-items: stretch;
+  margin: 0 0 20px !important;
+}
+/* Sections are siblings, not floating cards with arbitrary extra top margins. */
+html body #employeeDashboard #managerControlPanel :is(
+  .staff-create-card, .staff-roster-card,
+  #motivoRolePermissions, #motivoEmployeePermissions
+) {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  margin: 0 0 20px !important;
+  padding: clamp(18px,2.2vw,27px) !important;
+  border-radius: 16px !important;
+  color: #f2fbf4 !important;
+}
+html body #employeeDashboard #managerControlPanel .staff-manager-grid > :is(
+  .staff-create-card,.staff-roster-card
+) { margin-bottom: 0 !important; }
+html body #employeeDashboard #managerControlPanel .staff-create-card {
+  background: linear-gradient(145deg, rgba(51,103,75,.96), rgba(29,68,51,.98)) !important;
+}
+html body #employeeDashboard #managerControlPanel .staff-card-heading {
+  align-items: flex-start;
+  gap: 15px;
+  margin: 0 0 22px !important;
+}
+html body #employeeDashboard #managerControlPanel .staff-card-number {
+  background: #27553f !important;
+  border: 1px solid #77957e !important;
+  color: #ffe1d1 !important;
+}
+html body #employeeDashboard #managerControlPanel .staff-field-grid {
+  gap: 18px 22px !important;
+}
+html body #employeeDashboard #managerControlPanel .staff-create-btn {
+  margin-top: 23px !important;
+}
+/* Opaque dark fields; avoid white-on-white or illegible placeholder text. */
+html body #employeeDashboard #managerControlPanel :is(input,select,textarea) {
+  background: #103428 !important;
+  border-color: #759684 !important;
+  color: #f2fbf4 !important;
+  color-scheme: dark;
+}
+html body #employeeDashboard #managerControlPanel input::placeholder {
+  color: #bdd3c4 !important;
+  opacity: 1;
+}
+html body #employeeDashboard #managerControlPanel :is(input,select,button):focus-visible {
+  outline: 2px solid #ffa273 !important;
+  outline-offset: 2px;
+}
+html body #employeeDashboard #managerControlPanel .staff-table-shell {
+  overflow-x: auto;
+  background: #12382a !important;
+  border: 1px solid #6a8e74 !important;
+  border-radius: 13px !important;
+}
+html body #employeeDashboard #managerControlPanel .staff-table :is(th,td) {
+  color: #f0f9f2 !important;
+  border-color: #54755e !important;
+}
+html body #employeeDashboard #managerControlPanel .staff-table thead th {
+  background: #285640 !important;
+  color: #edf8ef !important;
+}
+html body #employeeDashboard #managerControlPanel .staff-table tbody tr:nth-child(even) {
+  background: #1e4735 !important;
+}
+/* Access Overview summary and matrix share the same surface hierarchy. */
+html body #employeeDashboard #motivoRolePermissions .rp-toolbar { margin-bottom: 20px; }
+html body #employeeDashboard #motivoRolePermissions .rp-stats {
+  gap: 12px !important;
+  margin-bottom: 23px !important;
 }
 html body #employeeDashboard #motivoRolePermissions .rp-stat {
-  background: linear-gradient(145deg, #315b44, #254b39) !important;
-  border: 1px solid #688e71 !important;
-  color: #eff9f2 !important;
+  background: linear-gradient(145deg, #34684d, #26523d) !important;
+  border: 1px solid #83a68b !important;
+  padding: 17px 18px !important;
+  border-radius: 12px !important;
+  min-height: 102px;
 }
-html body #employeeDashboard #motivoRolePermissions .rp-stat :is(span,strong),
-html body #employeeDashboard #motivoRolePermissions :is(.rp-toolbar h4,.rp-matrix-header h5,.rp-role-name) {
-  color: #f2fcf5 !important;
+html body #employeeDashboard #motivoRolePermissions .rp-stat span {
+  color: #d5e8db !important;
 }
-html body #employeeDashboard #motivoRolePermissions :is(.rp-legend,.rp-role-count) {
-  color: #c5dacb !important;
+html body #employeeDashboard #motivoRolePermissions .rp-stat strong,
+html body #employeeDashboard #motivoRolePermissions :is(
+  .rp-toolbar h4,.rp-matrix-header h5,.rp-role-name
+) { color: #f5fcf6 !important; }
+html body #employeeDashboard #motivoRolePermissions :is(
+  .rp-legend,.rp-role-count
+) { color: #d0e4d5 !important; }
+html body #employeeDashboard #motivoRolePermissions .rp-matrix-header {
+  margin-bottom: 15px !important;
 }
 html body #employeeDashboard #motivoRolePermissions .rp-table-scroll {
-  background: #103528 !important;
-  border-color: #537960 !important;
+  background: #12392b !important;
+  border-color: #698d73 !important;
+  overflow-x: auto !important;
 }
 html body #employeeDashboard #motivoRolePermissions thead th {
-  background: #28503b !important;
-  color: #f0faf3 !important;
+  background: #2a593f !important;
+  color: #edf9f0 !important;
 }
 html body #employeeDashboard #motivoRolePermissions tbody :is(th,td) {
-  background: #123829 !important;
-  color: #eaf6ee !important;
-  border-color: #406750 !important;
+  background: #153e2e !important;
+  color: #edf8f0 !important;
+  border-color: #51745d !important;
 }
 html body #employeeDashboard #motivoRolePermissions tbody tr:nth-child(even) :is(th,td) {
-  background: #173f2f !important;
+  background: #1b4735 !important;
 }
 html body #employeeDashboard #motivoRolePermissions tbody tr:hover :is(th,td) {
-  background: #26543f !important;
+  background: #2c5a42 !important;
 }
-html body #employeeDashboard #motivoRolePermissions .rp-no { color: #c6dbce !important; }
-html body #employeeDashboard #motivoRolePermissions .rp-yes { color: #91e1b7 !important; }
+html body #employeeDashboard #motivoRolePermissions .rp-no { color: #d1e4d5 !important; }
+html body #employeeDashboard #motivoRolePermissions .rp-yes { color: #a9ebc3 !important; }
+/* Employee permission toggles are soft raised rows, with clear spacing. */
+html body #employeeDashboard #motivoEmployeePermissions #mepSettings {
+  gap: 14px !important;
+}
 html body #employeeDashboard #motivoEmployeePermissions .mep-item {
-  background: #254b3a !important;
-  border-color: #638568 !important;
+  min-height: 82px;
+  padding: 17px !important;
+  background: #28553e !important;
+  border: 1px solid #7a9a81 !important;
+  border-radius: 12px !important;
 }
-html body #employeeDashboard #motivoEmployeePermissions .mep-item :is(strong,small) {
-  color: #f1fbf4 !important;
+html body #employeeDashboard #motivoEmployeePermissions .mep-item strong {
+  color: #f3fcf5 !important;
+}
+html body #employeeDashboard #motivoEmployeePermissions .mep-item small {
+  color: #d0e4d5 !important;
 }
 
 /* 08 / Modest glass details; accessibility and responsiveness. */
@@ -452,7 +751,26 @@ html body #customerDashboard :is(input,select,textarea,.badge,.mot028-slot) {
   html body #employeeDashboard { --mv-glass-top: #28583f; --mv-glass-bottom: #173d2e; }
   html body:not(.dark-mode) #customerDashboard { --mv-glass-top: #f7fbf2; --mv-glass-bottom: #e4eee2; }
 }
+@media (max-width: 830px) {
+  html body #employeeDashboard #mot028AssignmentCard .mot028-jobs-table tbody tr {
+    background: #1c4737 !important;
+    border: 1px solid #5c8c70 !important;
+    border-radius: 12px;
+  }
+  html body #employeeDashboard #mot028AssignmentCard .mot028-jobs-table td::before {
+    color: #d4e9dc !important;
+  }
+}
 @media (max-width: 720px) {
+  html body #employeeDashboard #motivoSchedPanel { padding: 10px !important; gap: 14px !important; }
+  html body #employeeDashboard #motivoSchedPanel :is(#mot028Desk,#mot028AssignmentCard,.motivo-sched-card) {
+    padding: 16px !important;
+  }
+  html body #employeeDashboard #managerControlPanel { padding: 15px !important; }
+  html body #employeeDashboard #managerControlPanel :is(.staff-create-card,.staff-roster-card,#motivoRolePermissions,#motivoEmployeePermissions) {
+    padding: 16px !important;
+  }
+
   html body { --mv-glass-radius: 14px; --mv-glass-blur: blur(10px) saturate(115%); }
   html body #employeeDashboard .motivo-ops-heading .motivo-ops-primary {
     width: 100% !important;
