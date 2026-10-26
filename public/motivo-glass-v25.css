@@ -1,4 +1,4 @@
-/* MOTIVO GLASS v30 | canonical, single-file presentation layer.
+/* MOTIVO GLASS v31 | canonical, single-file presentation layer.
    Replace public/motivo-glass-v25.css in place. The existing i18n.css import
    already loads this path. No new stylesheets, scripts or inline styles.
 
@@ -793,5 +793,316 @@ html body #customerDashboard :is(input,select,textarea,.badge,.mot028-slot) {
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
     border: 1px solid CanvasText !important;
+  }
+}
+
+
+/* 09 / Motivo public pages: Contact + Platform Overview.
+   Existing shared glass stylesheet only: styles-reworked.css remains intact.
+   The standalone pages use .motivo-public-page and .contact-page; scope the
+   styling to these pages so staff/customer/workflow themes remain untouched.
+   Keep honest development-only contact language and accordion functionality. */
+html body.motivo-public-page:has(.contact-page) {
+  --mv-public-ink: #183b2d;
+  --mv-public-muted: #496558;
+  --mv-public-edge: rgba(82, 134, 97, .48);
+  --mv-public-card: linear-gradient(145deg, rgba(251,255,249,.96), rgba(224,240,227,.93));
+  --mv-public-inner: rgba(229,243,230,.92);
+  --mv-public-glow: 0 16px 40px rgba(16,60,38,.13), inset 0 1px 0 rgba(255,255,255,.72);
+  background: #e6eee5 !important;
+  color: var(--mv-public-ink) !important;
+}
+html body.motivo-public-page.dark-mode:has(.contact-page) {
+  --mv-public-ink: #f1fbf3;
+  --mv-public-muted: #c6ddcd;
+  --mv-public-edge: rgba(119, 177, 136, .52);
+  --mv-public-card: linear-gradient(145deg, rgba(43,87,63,.97), rgba(21,59,43,.98));
+  --mv-public-inner: rgba(17,53,39,.91);
+  --mv-public-glow: 0 17px 41px rgba(0,17,10,.28), inset 0 1px 0 rgba(235,255,239,.14);
+  background: #0b291d !important;
+}
+/* Unify the page canvas with Motivo's green-to-cream language. */
+html body.motivo-public-page:has(.contact-page) > .header + .container {
+  box-sizing: border-box;
+  max-width: 1280px;
+  min-height: 65vh;
+  margin: 0 auto !important;
+  padding: 0 clamp(18px,4vw,46px) 26px !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+html body.motivo-public-page .contact-page {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 1160px;
+  padding: clamp(35px,5vw,72px) 0 22px !important;
+  margin: 0 auto !important;
+  background: transparent !important;
+  color: var(--mv-public-ink) !important;
+}
+html body.motivo-public-page .contact-intro {
+  max-width: 820px !important;
+  margin: 0 auto clamp(26px,4vw,42px) !important;
+  text-align: center;
+}
+html body.motivo-public-page .contact-intro .marketing-pill {
+  color: #286247 !important;
+  background: rgba(66,133,91,.14) !important;
+  border: 1px solid rgba(66,133,91,.36) !important;
+  padding: 8px 15px;
+  border-radius: 999px;
+  letter-spacing: .105em;
+}
+html body.motivo-public-page.dark-mode .contact-intro .marketing-pill {
+  color: #c5e9cd !important;
+  background: rgba(121,189,140,.13) !important;
+  border-color: rgba(149,206,160,.43) !important;
+}
+html body.motivo-public-page .contact-intro h1 {
+  max-width: 860px;
+  color: var(--mv-public-ink) !important;
+  font-size: clamp(2.25rem,4.5vw,3.8rem) !important;
+  line-height: 1.09 !important;
+  letter-spacing: -.045em;
+  text-wrap: balance;
+}
+html body.motivo-public-page .contact-intro p {
+  margin-inline: auto;
+  max-width: 72ch;
+  color: var(--mv-public-muted) !important;
+  font-size: clamp(.99rem,1.4vw,1.11rem) !important;
+  line-height: 1.68 !important;
+}
+/* Contact previously used a two-column grid with only ONE child, narrowing
+   its content. Make its information card and photo siblings in an inner grid. */
+html body.motivo-public-page .contact-layout {
+  display: block !important;
+  max-width: 1110px !important;
+  margin: 0 auto 24px !important;
+}
+html body.motivo-public-page .contact-layout .contact-details {
+  display: grid !important;
+  grid-template-columns: minmax(0,1.1fr) minmax(0,.9fr) !important;
+  align-items: stretch !important;
+  gap: clamp(15px,2vw,24px) !important;
+}
+/* Matching frosted cards across Contact and Overview, NOT a second theme. */
+html body.motivo-public-page .contact-page :is(
+  .contact-detail, .overview-features, .overview-feature-image, .feature-card
+) {
+  min-width: 0;
+  border: 1px solid var(--mv-public-edge) !important;
+  border-radius: 18px !important;
+  box-shadow: var(--mv-public-glow) !important;
+}
+html body.motivo-public-page .contact-page :is(.contact-detail,.overview-features,.feature-card) {
+  color: var(--mv-public-ink) !important;
+  background: var(--mv-public-card) !important;
+  -webkit-backdrop-filter: blur(14px) saturate(115%);
+  backdrop-filter: blur(14px) saturate(115%);
+}
+html body.motivo-public-page .contact-detail {
+  align-items: start !important;
+  padding: clamp(22px,3vw,34px) !important;
+  line-height: 1.65;
+}
+html body.motivo-public-page .contact-detail h2 {
+  margin: 0 0 16px;
+  color: var(--mv-public-ink) !important;
+  font-size: clamp(1.28rem,2vw,1.75rem);
+  line-height: 1.25;
+}
+html body.motivo-public-page .contact-detail p,
+html body.motivo-public-page .contact-detail span:not(.contact-icon) {
+  color: var(--mv-public-muted) !important;
+  font-size: .96rem !important;
+  line-height: 1.7 !important;
+}
+html body.motivo-public-page .contact-detail p + p {margin-top: 13px;}
+html body.motivo-public-page .contact-detail a,
+html body.motivo-public-page .legal-footer a {
+  display: inline;
+  color: #206b50 !important;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+html body.motivo-public-page.dark-mode .contact-detail a,
+html body.motivo-public-page.dark-mode .legal-footer a { color: #b0e4c2 !important; }
+html body.motivo-public-page .contact-page .overview-feature-image {
+  position: relative;
+  min-height: 320px !important;
+  height: 100% !important;
+  margin: 0 !important;
+  overflow: hidden;
+  background: #133d2c;
+}
+html body.motivo-public-page .contact-page .overview-feature-image img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  opacity: .9;
+}
+html body.motivo-public-page .contact-page .overview-feature-image figcaption {
+  color: #f2fbf3 !important;
+  background: linear-gradient(transparent,rgba(6,33,21,.94)) !important;
+  font-size: .88rem;
+}
+/* Overview accordion and image use a shared height, no cropped headings. */
+html body.motivo-public-page .contact-page .overview-feature-row {
+  display: grid !important;
+  grid-template-columns: minmax(0,1.12fr) minmax(0,.88fr) !important;
+  gap: clamp(15px,2vw,24px) !important;
+  align-items: stretch !important;
+  margin-bottom: clamp(18px,2vw,25px) !important;
+}
+html body.motivo-public-page .contact-page .overview-features {
+  height: auto !important;
+  min-height: 405px;
+  padding: clamp(19px,2.4vw,29px) !important;
+  overflow: visible !important;
+}
+html body.motivo-public-page .overview-features h2,
+html body.motivo-public-page .feature-card h3 {
+  color: var(--mv-public-ink) !important;
+}
+html body.motivo-public-page .overview-features h2 {
+  margin-bottom: 17px !important;
+  font-size: clamp(1.28rem,2vw,1.7rem) !important;
+  line-height: 1.25;
+}
+html body.motivo-public-page .feature-list { min-width: 0; }
+html body.motivo-public-page .feature-item {
+  overflow: hidden;
+  margin-bottom: 8px;
+  border: 1px solid var(--mv-public-edge) !important;
+  border-radius: 12px !important;
+  background: var(--mv-public-inner) !important;
+}
+html body.motivo-public-page .feature-summary {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 53px;
+  padding: 13px 15px !important;
+  color: var(--mv-public-ink) !important;
+  background: transparent !important;
+  border: 0 !important;
+  text-align: left;
+  font-size: .94rem;
+  font-weight: 700;
+}
+html body.motivo-public-page .feature-summary:is(:hover,:focus-visible),
+html body.motivo-public-page .feature-item.active .feature-summary {
+  background: rgba(80,147,104,.12) !important;
+}
+html body.motivo-public-page .feature-summary:focus-visible,
+html body.motivo-public-page .contact-page a:focus-visible {
+  outline: 3px solid #e86642 !important;
+  outline-offset: 2px;
+}
+html body.motivo-public-page .feature-number {color: #2b8055 !important;}
+html body.motivo-public-page.dark-mode .feature-number {color: #91dcaa !important;}
+html body.motivo-public-page .feature-content-inner {
+  padding: 0 17px 16px;
+  color: var(--mv-public-muted) !important;
+  line-height: 1.62;
+  font-size: .91rem;
+}
+html body.motivo-public-page .contact-page > .grid {
+  display: grid !important;
+  grid-template-columns: repeat(2,minmax(0,1fr)) !important;
+  gap: clamp(14px,2vw,21px) !important;
+  margin-top: 10px;
+}
+html body.motivo-public-page .feature-card {
+  padding: clamp(19px,2vw,26px) !important;
+}
+html body.motivo-public-page .feature-card p {
+  color: var(--mv-public-muted) !important;
+  line-height: 1.62 !important;
+  font-size: .9rem;
+}
+html body.motivo-public-page .legal-footer {
+  border-top: 1px solid var(--mv-public-edge);
+  color: var(--mv-public-muted) !important;
+  padding: 19px 0 10px;
+  margin: 25px auto 14px !important;
+  max-width: 1110px;
+  text-align: center;
+}
+/* Responsive cards: avoid a narrow contact area and column overflow. */
+@media (max-width: 820px) {
+  html body.motivo-public-page .contact-layout .contact-details,
+  html body.motivo-public-page .contact-page .overview-feature-row {
+    grid-template-columns: minmax(0,1fr) !important;
+  }
+  html body.motivo-public-page .contact-page .overview-feature-image {
+    min-height: 250px !important;
+    height: 290px !important;
+  }
+  html body.motivo-public-page .contact-page .overview-features {min-height: 0;}
+}
+@media (max-width: 520px) {
+  html body.motivo-public-page .contact-page > .grid {
+    grid-template-columns: minmax(0,1fr) !important;
+  }
+  html body.motivo-public-page .contact-page .overview-feature-image {height: 240px !important;}
+  html body.motivo-public-page .contact-detail {padding: 21px !important;}
+}
+
+/* 10 / Navigation: fix underlying text bleeding through translucent sidebars.
+   This replaces the older 54%-opacity/blur:none presentation from i18n.css.
+   It uses the EXISTING drawer and scrim (no new HTML/JS, no extra stylesheets).
+   :has raises specificity over later legacy rules in the shared stylesheet. */
+html body:has(#motivo-side-menu) #motivo-side-menu.header-nav {
+  background: rgba(235, 247, 235, .975) !important;
+  background-image: none !important;
+  color: #153b2b !important;
+  border-right: 1px solid rgba(66,122,78,.42) !important;
+  box-shadow: 12px 0 42px rgba(3,33,18,.24) !important;
+  -webkit-backdrop-filter: blur(18px) saturate(115%) !important;
+  backdrop-filter: blur(18px) saturate(115%) !important;
+  isolation: isolate;
+}
+html body.dark-mode:has(#motivo-side-menu) #motivo-side-menu.header-nav {
+  background: rgba(9, 40, 26, .978) !important;
+  color: #f0f9f2 !important;
+  border-right-color: rgba(144,195,157,.38) !important;
+}
+html body.motivo-universal-page:has(.motivo-universal-menu) .motivo-universal-menu {
+  background: rgba(235,247,235,.977) !important;
+  background-image: none !important;
+  color: #153b2b !important;
+  border-right: 1px solid rgba(66,122,78,.42) !important;
+  box-shadow: 12px 0 42px rgba(3,33,18,.24) !important;
+  -webkit-backdrop-filter: blur(18px) saturate(115%) !important;
+  backdrop-filter: blur(18px) saturate(115%) !important;
+  isolation: isolate;
+}
+html body.dark-mode.motivo-universal-page:has(.motivo-universal-menu) .motivo-universal-menu {
+  background: rgba(9,40,26,.978) !important;
+  color: #f0f9f2 !important;
+  border-right-color: rgba(144,195,157,.38) !important;
+}
+/* The shared drawer rules define the corresponding ink tokens; keep those.
+   Never hide the drawer's own content or disable its focus/close behaviors. */
+@media (max-width: 760px) {
+  html body:has(#motivo-side-menu) #motivo-side-menu.header-nav,
+  html body.motivo-universal-page:has(.motivo-universal-menu) .motivo-universal-menu {
+    z-index: 102 !important;
+    width: min(86vw,342px) !important;
+    max-width: 342px !important;
+  }
+  html body.motivo-menu-open .motivo-mobile-scrim {
+    background: rgba(2,17,10,.50) !important;
+  }
+}
+@media (forced-colors: active) {
+  html body:has(#motivo-side-menu) #motivo-side-menu.header-nav,
+  html body.motivo-universal-page:has(.motivo-universal-menu) .motivo-universal-menu {
+    border-right: 2px solid CanvasText !important;
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
   }
 }
