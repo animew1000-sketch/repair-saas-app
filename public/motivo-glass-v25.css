@@ -1,46 +1,49 @@
-/* Motivo Glass v28 - SINGLE canonical glass stylesheet.
-   Replaces public/motivo-glass-v25.css IN PLACE; i18n.css already imports it.
-   No new CSS imports, duplicate theme layers, JavaScript, or backend changes.
-   Scoped to actual card surfaces; controls, tables, status badges and charts keep
-   their established functional colors and behavior. */
+/* MOTIVO GLASS v29 | canonical, single-file presentation layer.
+   Replace public/motivo-glass-v25.css in place. The existing i18n.css import
+   already loads this path. No new stylesheets, scripts or inline styles.
 
-/* 1. One shared surface system. Category rules below only set color tokens. */
+   Design rule: dark emerald workspace + gently illuminated, DARK glass cards.
+   Restrained petrol/sage/olive/champagne tints identify workflows; orange stays
+   an ACTION accent. Data tables, statuses, interactive form fields and charts
+   retain legible, functional contrasts instead of translucent text or rows. */
+
+/* 01 / One card engine, with category-specific tokens defined below. */
 html body {
-  --mv-glass-top: rgba(250, 255, 249, .88);
-  --mv-glass-bottom: rgba(217, 239, 224, .76);
-  --mv-glass-sheen: rgba(255, 255, 255, .68);
-  --mv-glass-edge: rgba(75, 121, 88, .35);
-  --mv-glass-ink: #183d30;
-  --mv-glass-shadow: 0 14px 38px rgba(18, 65, 41, .14), inset 0 1px 0 rgba(255, 255, 255, .75);
-  --mv-glass-blur: blur(18px) saturate(145%);
-  --mv-glass-radius: 18px;
+  --mv-glass-top: rgba(251, 255, 248, .94);
+  --mv-glass-bottom: rgba(224, 239, 226, .90);
+  --mv-glass-edge: rgba(98, 141, 105, .48);
+  --mv-glass-sheen: rgba(255, 255, 255, .52);
+  --mv-glass-ink: #183e2e;
+  --mv-glass-muted: #476456;
+  --mv-glass-shadow: 0 16px 38px rgba(13, 52, 32, .15), inset 0 1px 0 rgba(255,255,255,.72);
+  --mv-glass-blur: blur(15px) saturate(128%);
+  --mv-glass-radius: 17px;
 }
 html body.dark-mode {
-  --mv-glass-top: rgba(68, 124, 95, .76);
-  --mv-glass-bottom: rgba(20, 65, 47, .83);
-  --mv-glass-sheen: rgba(222, 255, 234, .24);
-  --mv-glass-edge: rgba(171, 230, 191, .42);
-  --mv-glass-ink: #f2fff6;
-  --mv-glass-shadow: 0 16px 44px rgba(0, 0, 0, .26), inset 0 1px 0 rgba(246, 255, 248, .27);
+  --mv-glass-top: rgba(42, 83, 62, .96);
+  --mv-glass-bottom: rgba(22, 58, 43, .95);
+  --mv-glass-edge: rgba(116, 166, 132, .51);
+  --mv-glass-sheen: rgba(207, 255, 226, .11);
+  --mv-glass-ink: #f3faf5;
+  --mv-glass-muted: #c4dacf;
+  --mv-glass-shadow: 0 19px 44px rgba(0,0,0,.24), inset 0 1px 0 rgba(232,255,239,.18);
 }
-
-/* The staff workspace always uses dark emerald surfaces, even with light mode.
-   This matches the dark operations portal while keeping its white labels legible. */
+/* Staff is a dark workspace regardless of user's saved appearance setting. */
 html body #employeeDashboard {
-  --mv-glass-top: rgba(87, 153, 117, .80);
-  --mv-glass-bottom: rgba(28, 91, 66, .86);
-  --mv-glass-sheen: rgba(222, 255, 231, .34);
-  --mv-glass-edge: rgba(196, 244, 207, .49);
-  --mv-glass-ink: #f7fff9;
-  --mv-glass-shadow: 0 17px 44px rgba(0, 0, 0, .24), inset 0 1px 0 rgba(248, 255, 250, .35);
+  --mv-glass-top: rgba(45, 94, 70, .95);
+  --mv-glass-bottom: rgba(23, 62, 46, .96);
+  --mv-glass-edge: rgba(121, 174, 138, .57);
+  --mv-glass-sheen: rgba(225, 255, 235, .14);
+  --mv-glass-ink: #f5fcf7;
+  --mv-glass-muted: #c4dbcc;
+  --mv-glass-shadow: 0 17px 42px rgba(0, 18, 12, .26), inset 0 1px 0 rgba(235,255,241,.20);
 }
 
-/* 2. Apply the effect ONCE to real cards, not to every div or nested row. */
+/* Selected surface elements only; no generic div/table/row styling. */
 html body #employeeDashboard :is(
   .motivo-ops-stat, .motivo-ops-card, .staff-create-card, .staff-roster-card,
-  .staff-manager-panel, .staff-table-shell, .workflow-progress-card,
-  .motivo-job-hero, .motivo-job-summary,
-  .motivo-parts-editor, .motivo-parts-research,
+  .staff-manager-panel, .workflow-progress-card, .motivo-job-hero,
+  .motivo-job-summary, .motivo-parts-editor, .motivo-parts-research,
   .mot028-card, #mot028AssignmentCard, .motivo-sched-card,
   #motivoRolePermissions, #motivoEmployeePermissions
 ),
@@ -52,194 +55,375 @@ html body :is(#landingSection, #registerSection, #loginSection) .feature-card,
 html body.motivo-public-page :is(.feature-card, .card),
 html body.motivo-universal-page :is(.feature-card, .card) {
   background:
-    radial-gradient(130% 110% at 4% 0%, var(--mv-glass-sheen), transparent 58%),
-    linear-gradient(144deg, var(--mv-glass-top), var(--mv-glass-bottom)) !important;
+    radial-gradient(ellipse 115% 85% at 0% 0%, var(--mv-glass-sheen), transparent 64%),
+    linear-gradient(146deg, var(--mv-glass-top), var(--mv-glass-bottom)) !important;
+  color: var(--mv-glass-ink);
   border: 1px solid var(--mv-glass-edge) !important;
   border-radius: var(--mv-glass-radius) !important;
   box-shadow: var(--mv-glass-shadow) !important;
-  color: var(--mv-glass-ink);
-  background-clip: padding-box !important;
+  background-clip: padding-box;
   -webkit-backdrop-filter: var(--mv-glass-blur);
   backdrop-filter: var(--mv-glass-blur);
 }
 
-/* 3. Semantic tints. The same glass renderer is used for every category. */
-
-/* Operations / KPI / activity - Motivo emerald (default staff palette). */
+/* 02 / Dark glass color families: readable, not neon. */
+/* Dashboard summary: recognizable Motivo emerald. */
 html body #employeeDashboard :is(.motivo-ops-stat, .motivo-ops-card) {
-  --mv-glass-top: rgba(99, 164, 121, .83);
-  --mv-glass-bottom: rgba(35, 93, 68, .85);
+  --mv-glass-top: rgba(49, 108, 77, .95);
+  --mv-glass-bottom: rgba(24, 66, 47, .96);
+  --mv-glass-edge: rgba(126, 190, 149, .62);
 }
-
-/* Technician assignments - cooler petrol teal, not identical to KPIs. */
-html body #employeeDashboard :is(#mot028AssignmentCard, .mot028-card) {
-  --mv-glass-top: rgba(83, 155, 158, .85);
-  --mv-glass-bottom: rgba(25, 89, 95, .88);
-  --mv-glass-edge: rgba(178, 240, 236, .58);
-  --mv-glass-sheen: rgba(221, 255, 253, .30);
+/* Technician assignment: petrol teal, intentionally NOT pale turquoise. */
+html body #employeeDashboard #mot028AssignmentCard {
+  --mv-glass-top: rgba(39, 91, 91, .97);
+  --mv-glass-bottom: rgba(17, 58, 58, .98);
+  --mv-glass-edge: rgba(115, 185, 181, .65);
+  --mv-glass-sheen: rgba(205, 249, 239, .14);
 }
-
-/* Shop schedule, bays, shifts - desaturated blue-green. */
+/* Service desk appointment approval: evergreen. */
+html body #employeeDashboard #mot028Desk {
+  --mv-glass-top: rgba(42, 88, 68, .95);
+  --mv-glass-bottom: rgba(18, 53, 39, .97);
+  --mv-glass-edge: rgba(111, 164, 132, .54);
+}
+/* Scheduling, bay capacity and shifts: subdued blue-green. */
 html body #employeeDashboard .motivo-sched-card {
-  --mv-glass-top: rgba(85, 143, 151, .82);
-  --mv-glass-bottom: rgba(33, 88, 100, .87);
-  --mv-glass-edge: rgba(185, 223, 234, .47);
+  --mv-glass-top: rgba(44, 84, 89, .96);
+  --mv-glass-bottom: rgba(21, 55, 63, .97);
+  --mv-glass-edge: rgba(122, 172, 187, .56);
 }
-
-/* Work orders, inspection, repair stages - calmer sage. */
-html body #employeeDashboard :is(
-  .motivo-job-hero, .motivo-job-summary, .workflow-progress-card
-) {
-  --mv-glass-top: rgba(113, 154, 114, .82);
-  --mv-glass-bottom: rgba(48, 100, 72, .87);
-  --mv-glass-edge: rgba(209, 239, 194, .45);
+/* Repair order, inspection and workflow: quiet sage. */
+html body #employeeDashboard :is(.motivo-job-hero, .motivo-job-summary, .workflow-progress-card) {
+  --mv-glass-top: rgba(55, 96, 69, .95);
+  --mv-glass-bottom: rgba(27, 66, 48, .97);
+  --mv-glass-edge: rgba(155, 190, 140, .55);
 }
-
-/* Team access, roster, roles - restrained amber/olive glass. */
+/* Team Access and role-management cards: olive accents, not yellow panels. */
 html body #employeeDashboard :is(
   .staff-manager-panel, .staff-create-card, .staff-roster-card,
   #motivoRolePermissions, #motivoEmployeePermissions
 ) {
-  --mv-glass-top: rgba(143, 143, 91, .85);
-  --mv-glass-bottom: rgba(85, 101, 64, .90);
-  --mv-glass-edge: rgba(239, 222, 164, .48);
-  --mv-glass-sheen: rgba(255, 242, 203, .23);
+  --mv-glass-top: rgba(61, 82, 59, .96);
+  --mv-glass-bottom: rgba(27, 57, 43, .98);
+  --mv-glass-edge: rgba(151, 173, 124, .54);
+  --mv-glass-sheen: rgba(242, 249, 200, .09);
 }
-
-/* Estimates / parts and labor - gentle warm champagne tone. */
+/* Estimate / parts editor: reserved earthy bronze. */
 html body #employeeDashboard :is(.motivo-parts-editor, .motivo-parts-research) {
-  --mv-glass-top: rgba(157, 132, 91, .85);
-  --mv-glass-bottom: rgba(101, 88, 59, .90);
-  --mv-glass-edge: rgba(250, 222, 169, .47);
-  --mv-glass-sheen: rgba(255, 241, 208, .24);
+  --mv-glass-top: rgba(86, 76, 55, .97);
+  --mv-glass-bottom: rgba(52, 54, 40, .98);
+  --mv-glass-edge: rgba(191, 167, 112, .57);
+  --mv-glass-sheen: rgba(255, 230, 177, .09);
 }
-
-/* Customer details and vehicles - light, clean ivory. */
+/* Customer info: calm ivory by default. */
 html body #customerDashboard :is(
   .customer-home-card, .customer-home-shop-card, .customer-home-hero, .card, .feature-card
 ) {
-  --mv-glass-top: rgba(255, 255, 246, .91);
-  --mv-glass-bottom: rgba(224, 240, 220, .82);
-  --mv-glass-edge: rgba(123, 160, 123, .43);
-  --mv-glass-ink: #183d30;
+  --mv-glass-top: rgba(252, 254, 245, .96);
+  --mv-glass-bottom: rgba(223, 238, 222, .91);
+  --mv-glass-edge: rgba(121, 158, 124, .48);
+  --mv-glass-ink: #193e30;
+  --mv-glass-muted: #4b6b5a;
 }
-
-/* Appointment cards - misty sea glass; do not recolor date/slot buttons. */
+/* Customer appointments: pastel sea glass, with dark text. */
 html body #customerDashboard .mot028-card {
-  --mv-glass-top: rgba(230, 253, 248, .93);
-  --mv-glass-bottom: rgba(178, 222, 216, .82);
-  --mv-glass-edge: rgba(63, 139, 143, .42);
-  --mv-glass-ink: #17433e;
+  --mv-glass-top: rgba(236, 251, 245, .97);
+  --mv-glass-bottom: rgba(201, 230, 223, .94);
+  --mv-glass-edge: rgba(91, 154, 145, .52);
+  --mv-glass-ink: #183f38;
 }
-
-/* Invoice cards - soft champagne, still Motivo's muted natural palette. */
+/* Invoices: warm ivory, Motivo orange reserved for buttons/actions. */
 html body #customerDashboard .invoice-box {
-  --mv-glass-top: rgba(255, 251, 237, .94);
-  --mv-glass-bottom: rgba(236, 220, 186, .84);
-  --mv-glass-edge: rgba(159, 134, 87, .42);
-  --mv-glass-ink: #493d2c;
+  --mv-glass-top: rgba(255, 251, 239, .98);
+  --mv-glass-bottom: rgba(241, 229, 201, .94);
+  --mv-glass-edge: rgba(163, 139, 94, .51);
+  --mv-glass-ink: #493e2d;
 }
-
-/* In dark mode, customer cards use deep versions of the same categories. */
 html body.dark-mode #customerDashboard :is(
   .customer-home-card, .customer-home-shop-card, .customer-home-hero, .card, .feature-card
 ) {
-  --mv-glass-top: rgba(70, 122, 89, .82);
-  --mv-glass-bottom: rgba(24, 67, 47, .89);
-  --mv-glass-edge: rgba(174, 225, 185, .40);
-  --mv-glass-ink: #f2fff5;
+  --mv-glass-top: rgba(53, 94, 68, .96);
+  --mv-glass-bottom: rgba(23, 59, 40, .97);
+  --mv-glass-ink: #f4fcf4;
+  --mv-glass-muted: #c5dacc;
 }
 html body.dark-mode #customerDashboard .mot028-card {
-  --mv-glass-top: rgba(53, 121, 119, .84);
-  --mv-glass-bottom: rgba(19, 66, 70, .90);
-  --mv-glass-edge: rgba(152, 221, 218, .46);
-  --mv-glass-ink: #eefdfb;
+  --mv-glass-top: rgba(39, 86, 80, .97);
+  --mv-glass-bottom: rgba(19, 57, 54, .98);
+  --mv-glass-ink: #effbf6;
 }
 html body.dark-mode #customerDashboard .invoice-box {
-  --mv-glass-top: rgba(126, 109, 74, .87);
-  --mv-glass-bottom: rgba(72, 65, 45, .91);
-  --mv-glass-edge: rgba(230, 209, 165, .46);
-  --mv-glass-ink: #fff8e9;
+  --mv-glass-top: rgba(98, 83, 59, .96);
+  --mv-glass-bottom: rgba(54, 49, 38, .98);
+  --mv-glass-ink: #fff9eb;
 }
 
-/* 4. The surrounding light gives the glass something visible to refract. */
+/* 03 / Workspace: give cards a contrasting background, not a glowing wash. */
 html body #employeeDashboard .staff-dashboard {
   background-image:
-    radial-gradient(ellipse 740px 520px at 84% 13%, rgba(116, 214, 164, .20), transparent 75%),
-    radial-gradient(ellipse 520px 460px at 17% 81%, rgba(229, 149, 91, .11), transparent 78%) !important;
+    radial-gradient(ellipse 670px 470px at 80% 10%, rgba(63, 128, 92, .16), transparent 77%),
+    radial-gradient(ellipse 470px 390px at 20% 87%, rgba(140, 108, 71, .07), transparent 78%) !important;
   background-attachment: local !important;
 }
 html body #employeeDashboard #motivoOpsSidebar.motivo-ops-side {
-  background: linear-gradient(149deg, rgba(77, 139, 102, .80), rgba(17, 62, 43, .83)) !important;
-  border: 1px solid rgba(218, 254, 224, .43) !important;
-  border-radius: 20px !important;
-  box-shadow: 0 19px 52px rgba(0, 0, 0, .23), inset 0 1px 0 rgba(248, 255, 249, .28) !important;
-  -webkit-backdrop-filter: blur(22px) saturate(145%);
-  backdrop-filter: blur(22px) saturate(145%);
+  background: linear-gradient(154deg, rgba(19, 67, 47, .97), rgba(9, 47, 33, .98)) !important;
+  border: 1px solid rgba(109, 160, 129, .45) !important;
+  border-radius: 19px !important;
+  box-shadow: 0 18px 43px rgba(0, 0, 0, .20), inset 0 1px rgba(210,255,225,.12) !important;
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
 }
 html body #employeeDashboard .staff-portal-hero .staff-user-panel {
-  background: linear-gradient(145deg, rgba(84, 146, 108, .80), rgba(25, 77, 54, .87)) !important;
-  border: 1px solid rgba(211, 255, 222, .42) !important;
-  border-radius: 16px !important;
-  box-shadow: 0 12px 37px rgba(0, 0, 0, .18), inset 0 1px 0 rgba(245, 255, 247, .28) !important;
-  -webkit-backdrop-filter: blur(17px);
-  backdrop-filter: blur(17px);
+  background: linear-gradient(155deg, rgba(35, 79, 59, .94), rgba(15, 53, 38, .97)) !important;
+  border: 1px solid rgba(125, 174, 146, .51) !important;
+  border-radius: 15px !important;
+  box-shadow: 0 12px 32px rgba(0,0,0,.17), inset 0 1px rgba(245,255,248,.13) !important;
 }
-
-/* Readable ink on glass; never recolor interactive controls or status badges. */
-html body #employeeDashboard :is(.motivo-ops-stat, .motivo-ops-card) :is(span, strong, h3, h4),
-html body #employeeDashboard :is(.staff-create-card, .staff-roster-card, .staff-manager-panel) :is(h3, h4, label),
-html body #employeeDashboard :is(.mot028-card, .motivo-sched-card, .motivo-job-hero) :is(h3, h4, label),
-html body #employeeDashboard .motivo-ops-card > p {
-  color: #f5fff8 !important;
+/* The outer overview remains visually behind the actual glass KPI/chart cards. */
+html body #employeeDashboard .motivo-ops-home {
+  background: transparent !important;
+  color: #eff8f1 !important;
+}
+html body #employeeDashboard .motivo-ops-heading h3 { color: #f5fbf5 !important; }
+html body #employeeDashboard .motivo-ops-heading p { color: #c2d8ca !important; }
+html body #employeeDashboard :is(.motivo-ops-stat, .motivo-ops-card) :is(h3,h4,strong,span) {
+  color: #f4fcf5 !important;
 }
 html body #employeeDashboard .motivo-ops-stat span,
-html body #employeeDashboard .motivo-ops-card > p {
-  color: #e2efe5 !important;
+html body #employeeDashboard .motivo-ops-card > p,
+html body #employeeDashboard .motivo-ops-legend li,
+html body #employeeDashboard .motivo-ops-recent-info small {
+  color: #c8dfd0 !important;
 }
-html body #employeeDashboard .motivo-ops-stat strong {
+html body #employeeDashboard .motivo-ops-pie:before { background: #1c4436 !important; }
+html body #employeeDashboard .motivo-ops-pie-center,
+html body #employeeDashboard .motivo-ops-legend strong,
+html body #employeeDashboard .motivo-ops-recent-row { color: #f4fbf5 !important; }
+html body #employeeDashboard .motivo-ops-recent-row { border-top-color: rgba(158, 204, 173, .24) !important; }
+html body #employeeDashboard .motivo-ops-recent-row:hover { background: rgba(177, 229, 191, .09) !important; }
+
+/* 04 / Job Queue: replace the mismatched charcoal slab with forest-glass. */
+html body #employeeDashboard #staffJobsSection.staff-jobs-section {
+  background: linear-gradient(150deg, rgba(24, 66, 50, .97), rgba(14, 48, 37, .98)) !important;
+  color: #eff9f1 !important;
+  border: 1px solid rgba(106, 158, 122, .53) !important;
+  border-radius: 18px !important;
+  box-shadow: 0 17px 40px rgba(0, 20, 13, .23), inset 0 1px rgba(226,255,233,.11) !important;
+}
+html body #employeeDashboard #staffJobsSection :is(h3, .staff-section-heading h3, label) {
+  color: #f5fcf5 !important;
+}
+html body #employeeDashboard #staffJobsSection .staff-section-heading p {
+  color: #c6dacf !important;
+}
+html body #employeeDashboard #staffJobsSection .staff-table-shell {
+  background: #153b2e !important;
+  border: 1px solid #587d68 !important;
+  border-radius: 13px !important;
+  box-shadow: inset 0 1px rgba(237,255,241,.13) !important;
+}
+html body #employeeDashboard #staffJobsSection .staff-table thead :is(th,td) {
+  background: #1b4837 !important;
+  color: #e1f0e6 !important;
+  border-color: #486e59 !important;
+}
+html body #employeeDashboard #staffJobsSection .staff-table tbody tr {
+  background: #214b3a !important;
+}
+html body #employeeDashboard #staffJobsSection .staff-table tbody tr:nth-child(even) {
+  background: #1c4233 !important;
+}
+html body #employeeDashboard #staffJobsSection .staff-table tbody tr:hover {
+  background: #2a5b45 !important;
+}
+html body #employeeDashboard #staffJobsSection .staff-table tbody td {
+  color: #eff9f1 !important;
+  border-color: #4a745a !important;
+}
+html body #employeeDashboard #staffJobsSection #staffJobSearch {
+  background: #103528 !important;
+  border: 1px solid #628b72 !important;
+  color: #f2fcf5 !important;
+}
+html body #employeeDashboard #staffJobsSection #staffJobSearch::placeholder { color: #b9d0c2 !important; }
+
+/* 05 / Technician assignment: FIX pale-teal contrast and washed-out labels. */
+html body #employeeDashboard #mot028AssignmentCard {
+  color: #f3fbf8 !important;
+}
+html body #employeeDashboard #mot028AssignmentCard :is(
+  h3, h4, .mot028-assignment-heading, .mot028-assignment-toolbar label,
+  .mot028-assignment-count, .mot028-muted
+) {
+  color: #f0faf6 !important;
+}
+html body #employeeDashboard #mot028AssignmentCard :is(
+  .mot028-assignment-heading p, .mot028-job-id, .mot028-job-vehicle
+) { color: #c1ded6 !important; }
+html body #employeeDashboard #mot028AssignmentCard .mot028-jobs-scroll {
+  background: #103a39 !important;
+  border-color: #5e9993 !important;
+}
+html body #employeeDashboard #mot028AssignmentCard .mot028-jobs-table {
+  background: #123b3b !important;
+  color: #edf9f5 !important;
+}
+html body #employeeDashboard #mot028AssignmentCard .mot028-jobs-table th {
+  background: #20534e !important;
+  color: #e0f3ed !important;
+  border-color: #487d76 !important;
+}
+html body #employeeDashboard #mot028AssignmentCard .mot028-jobs-table tbody tr:nth-child(even) {
+  background: #194543 !important;
+}
+html body #employeeDashboard #mot028AssignmentCard .mot028-jobs-table tbody tr:hover {
+  background: #245753 !important;
+}
+html body #employeeDashboard #mot028AssignmentCard .mot028-jobs-table td {
+  color: #effaf7 !important;
+  border-color: #416d65 !important;
+}
+html body #employeeDashboard #mot028AssignmentCard .mot028-jobs-table td strong {
   color: #ffffff !important;
 }
-html body #employeeDashboard .mot028-assignment-count,
-html body #employeeDashboard #motivoSchedPanel .motivo-sched-card > p {
-  color: #e1f2ec !important;
+html body #employeeDashboard #mot028AssignmentCard .mot028-job-status {
+  color: #d4efe4 !important;
+}
+/* Inputs remain solid/high-contrast: the only purpose of this rule is legibility. */
+html body #employeeDashboard #mot028AssignmentCard :is(input,select) {
+  background: #0d302d !important;
+  border-color: #5a8f88 !important;
+  color: #f3fcf8 !important;
+}
+html body #employeeDashboard #mot028AssignmentCard input::placeholder {
+  color: #b9d5cb !important;
 }
 
-/* A thin reflection, but only where it cannot cover controls or table content. */
-html body #employeeDashboard .motivo-ops-stat,
-html body #customerDashboard .customer-home-card {
-  position: relative;
-  overflow: hidden;
+/* 06 / Service Desk and scheduling: fix gray-on-green body copy. */
+html body #employeeDashboard :is(#mot028Desk, #motivoSchedPanel) :is(
+  h3, h4, label, .mot028-muted, .mot028-assignment-count
+) { color: #f2faf5 !important; }
+html body #employeeDashboard #mot028Desk :is(p, .mot028-muted),
+html body #employeeDashboard #motivoSchedPanel .motivo-sched-card :is(p, .motivo-sched-section-lead p) {
+  color: #c7ded2 !important;
 }
+html body #employeeDashboard #mot028Desk .mot028-request {
+  background: #214939 !important;
+  border-color: #5c876c !important;
+  color: #f3fbf5 !important;
+}
+html body #employeeDashboard #mot028Desk .mot028-request :is(p,span) {
+  color: #cbe0d3 !important;
+}
+html body #employeeDashboard #mot028Desk .mot028-request.is-selected {
+  background: #315843 !important;
+  border-color: #e86642 !important;
+}
+/* Keep service approval date/time form controls solid and understandable. */
+html body #employeeDashboard #mot028Desk :is(input,select) {
+  background: #0e3228 !important;
+  border-color: #5c816b !important;
+  color: #f3fbf5 !important;
+}
+html body #employeeDashboard #motivoSchedPanel .motivo-sched-card :is(h4,label) {
+  color: #f3fbf7 !important;
+}
+
+/* 07 / Team Access: cards within cards must actually separate visually. */
+html body #employeeDashboard #managerControlPanel {
+  --ta-bg: #11382a;
+  --ta-card: #234536;
+  --ta-soft: #294c3b;
+  --ta-field: #103328;
+  --ta-ink: #f3fbf5;
+  --ta-text: #f3fbf5;
+  --ta-muted: #c0d9c8;
+  --ta-border: #5a8065;
+  --ta-line: #567b63;
+  --ta-primary: #225944;
+  --ta-accent: #e86642;
+  background: linear-gradient(147deg, rgba(17, 58, 42, .97), rgba(10, 45, 32, .98)) !important;
+  border: 1px solid #4b7959 !important;
+  color: #f3fbf5 !important;
+}
+html body #employeeDashboard #managerControlPanel .staff-section-heading :is(h3,p),
+html body #employeeDashboard #managerControlPanel :is(.staff-create-card,.staff-roster-card) :is(h4,p,label) {
+  color: #f2fcf4 !important;
+}
+html body #employeeDashboard #managerControlPanel .staff-section-heading p,
+html body #employeeDashboard #managerControlPanel .staff-card-heading p {
+  color: #c7daca !important;
+}
+html body #employeeDashboard #motivoRolePermissions .rp-stat {
+  background: linear-gradient(145deg, #315b44, #254b39) !important;
+  border: 1px solid #688e71 !important;
+  color: #eff9f2 !important;
+}
+html body #employeeDashboard #motivoRolePermissions .rp-stat :is(span,strong),
+html body #employeeDashboard #motivoRolePermissions :is(.rp-toolbar h4,.rp-matrix-header h5,.rp-role-name) {
+  color: #f2fcf5 !important;
+}
+html body #employeeDashboard #motivoRolePermissions :is(.rp-legend,.rp-role-count) {
+  color: #c5dacb !important;
+}
+html body #employeeDashboard #motivoRolePermissions .rp-table-scroll {
+  background: #103528 !important;
+  border-color: #537960 !important;
+}
+html body #employeeDashboard #motivoRolePermissions thead th {
+  background: #28503b !important;
+  color: #f0faf3 !important;
+}
+html body #employeeDashboard #motivoRolePermissions tbody :is(th,td) {
+  background: #123829 !important;
+  color: #eaf6ee !important;
+  border-color: #406750 !important;
+}
+html body #employeeDashboard #motivoRolePermissions tbody tr:nth-child(even) :is(th,td) {
+  background: #173f2f !important;
+}
+html body #employeeDashboard #motivoRolePermissions tbody tr:hover :is(th,td) {
+  background: #26543f !important;
+}
+html body #employeeDashboard #motivoRolePermissions .rp-no { color: #c6dbce !important; }
+html body #employeeDashboard #motivoRolePermissions .rp-yes { color: #91e1b7 !important; }
+html body #employeeDashboard #motivoEmployeePermissions .mep-item {
+  background: #254b3a !important;
+  border-color: #638568 !important;
+}
+html body #employeeDashboard #motivoEmployeePermissions .mep-item :is(strong,small) {
+  color: #f1fbf4 !important;
+}
+
+/* 08 / Modest glass details; accessibility and responsiveness. */
+html body #employeeDashboard .motivo-ops-stat,
+html body #customerDashboard .customer-home-card { position: relative; overflow: hidden; }
 html body #employeeDashboard .motivo-ops-stat::before,
 html body #customerDashboard .customer-home-card::before {
   content: '';
   position: absolute;
+  left: 14px;
+  right: 14px;
   top: 0;
-  left: 12px;
-  right: 12px;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .76), transparent);
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.56), transparent);
   pointer-events: none;
 }
-
-/* Highlight on hover, without lifting clickable and non-clickable cards. */
-html body #employeeDashboard :is(.motivo-ops-stat, .motivo-ops-card, .mot028-card, .motivo-sched-card, .staff-create-card, .staff-roster-card),
-html body #customerDashboard :is(.customer-home-card, .customer-home-shop-card, .mot028-card, .invoice-box) {
+html body #employeeDashboard :is(.motivo-ops-stat,.motivo-ops-card,.mot028-card,.motivo-sched-card,.staff-create-card,.staff-roster-card),
+html body #customerDashboard :is(.customer-home-card,.customer-home-shop-card,.mot028-card,.invoice-box) {
   transition: border-color .18s ease, box-shadow .18s ease;
 }
-html body #employeeDashboard :is(.motivo-ops-stat, .motivo-ops-card, .mot028-card, .motivo-sched-card, .staff-create-card, .staff-roster-card):hover,
-html body #customerDashboard :is(.customer-home-card, .customer-home-shop-card, .mot028-card, .invoice-box):hover {
-  border-color: rgba(242, 174, 117, .74) !important;
-  box-shadow: 0 21px 48px rgba(11, 41, 29, .25), inset 0 1px 0 rgba(255, 255, 255, .38) !important;
+html body #employeeDashboard :is(.motivo-ops-stat,.motivo-ops-card,.mot028-card,.motivo-sched-card,.staff-create-card,.staff-roster-card):hover,
+html body #customerDashboard :is(.customer-home-card,.customer-home-shop-card,.mot028-card,.invoice-box):hover {
+  border-color: #a4cdb0 !important;
+  box-shadow: 0 20px 45px rgba(0, 19, 12, .29), inset 0 1px rgba(255,255,255,.22) !important;
 }
-
-/* Repair the awkward heading / wide Browse Jobs button from the screenshot. */
+/* Make 'Shop Overview' and 'Browse Jobs' properly proportioned. */
 html body #employeeDashboard .motivo-ops-heading {
   display: flex !important;
   flex-wrap: wrap !important;
-  align-items: center !important;
   justify-content: space-between !important;
+  align-items: center !important;
   gap: 14px 24px !important;
 }
 html body #employeeDashboard .motivo-ops-heading > div:first-child {
@@ -258,19 +442,18 @@ html body #employeeDashboard .motivo-ops-heading .motivo-ops-primary {
   flex: 0 0 auto !important;
   padding-inline: 22px !important;
 }
-
-/* No glass on input fields, selectable booking slots, dense rows or status UI. */
-html body #employeeDashboard :is(input, select, textarea, .staff-table td, .staff-table th, .motivo-status-pill, .badge),
-html body #customerDashboard :is(input, select, textarea, .badge, .mot028-slot) {
+/* Interactive controls, status pills, chart sectors and dense cells are not glass. */
+html body #employeeDashboard :is(input,select,textarea,.motivo-status-pill,.badge),
+html body #customerDashboard :is(input,select,textarea,.badge,.mot028-slot) {
   -webkit-backdrop-filter: none;
   backdrop-filter: none;
 }
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-  html body #employeeDashboard { --mv-glass-top: #578e6d; --mv-glass-bottom: #285c45; }
-  html body:not(.dark-mode) #customerDashboard { --mv-glass-top: #f4faf0; --mv-glass-bottom: #e4f1e3; }
+  html body #employeeDashboard { --mv-glass-top: #28583f; --mv-glass-bottom: #173d2e; }
+  html body:not(.dark-mode) #customerDashboard { --mv-glass-top: #f7fbf2; --mv-glass-bottom: #e4eee2; }
 }
 @media (max-width: 720px) {
-  html body { --mv-glass-radius: 14px; --mv-glass-blur: blur(11px) saturate(130%); }
+  html body { --mv-glass-radius: 14px; --mv-glass-blur: blur(10px) saturate(115%); }
   html body #employeeDashboard .motivo-ops-heading .motivo-ops-primary {
     width: 100% !important;
     flex: 1 1 100% !important;
@@ -278,11 +461,19 @@ html body #customerDashboard :is(input, select, textarea, .badge, .mot028-slot) 
 }
 @media (prefers-reduced-transparency: reduce) {
   html body { --mv-glass-blur: none; }
-  html body #employeeDashboard { --mv-glass-top: #528663; --mv-glass-bottom: #25523e; }
+  html body #employeeDashboard { --mv-glass-top: #2b6047; --mv-glass-bottom: #1b4132; }
 }
 @media (prefers-reduced-motion: reduce) {
-  html body #employeeDashboard :is(.motivo-ops-stat, .motivo-ops-card, .mot028-card, .motivo-sched-card, .staff-create-card, .staff-roster-card),
-  html body #customerDashboard :is(.customer-home-card, .customer-home-shop-card, .mot028-card, .invoice-box) {
+  html body #employeeDashboard :is(.motivo-ops-stat,.motivo-ops-card,.mot028-card,.motivo-sched-card,.staff-create-card,.staff-roster-card),
+  html body #customerDashboard :is(.customer-home-card,.customer-home-shop-card,.mot028-card,.invoice-box) {
     transition: none !important;
+  }
+}
+@media (forced-colors: active) {
+  html body #employeeDashboard :is(.motivo-ops-stat,.motivo-ops-card,.mot028-card,.motivo-sched-card,.staff-create-card,.staff-roster-card),
+  html body #customerDashboard :is(.customer-home-card,.mot028-card,.invoice-box) {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    border: 1px solid CanvasText !important;
   }
 }
