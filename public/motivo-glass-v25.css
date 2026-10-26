@@ -1,150 +1,118 @@
-/* Motivo Glass v26 — replaces v25 at the SAME path; no new imports needed.
-   Presentation only. Maintains the production green / ivory / orange palette.
-   Scoped to cards and dashboard panels; deliberately avoids form controls,
-   status badges, chart canvases, table cells, dialogs, and business logic. */
-
-/* A shared frosted surface palette. Fallbacks work without backdrop-filter. */
+/* Motivo Glass v27 — brighter frosted emerald, same brand, presentation-only.
+   Replaces the v26 content at the SAME URL so existing i18n.css keeps working.
+   Dark and light surfaces maintain readable content; no logic is changed. */
 html body {
-  --mv-glass-bg: rgba(240, 249, 239, .74);
-  --mv-glass-line: rgba(231, 255, 231, .76);
-  --mv-glass-edge: rgba(51, 104, 73, .34);
-  --mv-glass-glow: 0 13px 40px rgba(17, 62, 40, .13), inset 0 1px 0 rgba(255,255,255,.75);
-  --mv-glass-blur: blur(19px) saturate(145%);
+  --mv-glass-bg: linear-gradient(140deg, rgba(255,255,255,.79),rgba(221,244,229,.70) 52%,rgba(232,246,235,.82));
+  --mv-glass-line: rgba(255,255,255,.86);
+  --mv-glass-edge: rgba(72,130,96,.37);
+  --mv-glass-glow: 0 16px 40px rgba(28,69,48,.17), inset 0 1px 0 rgba(255,255,255,.93), inset 0 -1px 0 rgba(120,159,128,.15);
+  --mv-glass-blur: blur(22px) saturate(155%);
 }
 html body.dark-mode {
-  --mv-glass-bg: rgba(19, 57, 43, .56);
-  --mv-glass-line: rgba(181, 239, 199, .17);
-  --mv-glass-edge: rgba(131, 206, 156, .32);
-  --mv-glass-glow: 0 17px 48px rgba(0, 0, 0, .28), inset 0 1px 0 rgba(232,255,240,.15);
+  --mv-glass-bg: linear-gradient(145deg,rgba(78,139,113,.73) 0%,rgba(45,104,81,.76) 36%,rgba(27,77,60,.80) 100%);
+  --mv-glass-line: rgba(228,255,237,.55);
+  --mv-glass-edge: rgba(177,232,192,.46);
+  --mv-glass-glow: 0 18px 48px rgba(0,0,0,.28), inset 0 1px 0 rgba(247,255,250,.30), inset 1px 0 0 rgba(243,255,245,.11);
 }
-
-/* Employee dashboard — smoked emerald lighting behind translucent panels. */
+/* Ambient lights make glass actually visible against Motivo's solid backgrounds. */
 html body #employeeDashboard .staff-dashboard {
-  background-image:
-    radial-gradient(ellipse 620px 480px at 84% 12%, rgba(91, 164, 119, .18), transparent 75%),
-    radial-gradient(ellipse 490px 440px at 24% 80%, rgba(215, 119, 72, .10), transparent 78%) !important;
+  background-image: radial-gradient(ellipse 710px 500px at 78% 12%,rgba(116,212,163,.23),transparent 75%),
+    radial-gradient(ellipse 580px 490px at 17% 82%,rgba(244,143,87,.12),transparent 79%) !important;
   background-attachment: local !important;
 }
 html body #employeeDashboard #motivoOpsSidebar.motivo-ops-side {
-  background: rgba(12, 52, 34, .64) !important;
-  border: 1px solid rgba(167, 236, 185, .19) !important;
-  box-shadow: 0 18px 50px rgba(0, 0, 0, .20), inset 0 1px rgba(235,255,236,.10) !important;
-  -webkit-backdrop-filter: blur(22px) saturate(130%);
-  backdrop-filter: blur(22px) saturate(130%);
-  border-radius: 20px !important;
+  background: linear-gradient(145deg,rgba(65,123,93,.79),rgba(18,62,45,.74)) !important;
+  border: 1px solid rgba(211,255,223,.43) !important;
+  box-shadow: 0 21px 52px rgba(0,0,0,.23),inset 0 1px 0 rgba(244,255,248,.28) !important;
+  -webkit-backdrop-filter: blur(25px) saturate(145%);
+  backdrop-filter: blur(25px) saturate(145%);
+  border-radius:20px !important;
 }
 html body #employeeDashboard .staff-portal-hero .staff-user-panel {
-  background: rgba(26, 66, 48, .59) !important;
-  border: 1px solid rgba(159, 224, 172, .25) !important;
-  box-shadow: 0 13px 36px rgba(0,0,0,.15), inset 0 1px rgba(245,255,240,.12) !important;
-  -webkit-backdrop-filter: blur(15px);
-  backdrop-filter: blur(15px);
-  border-radius: 16px !important;
+  background: linear-gradient(145deg,rgba(76,134,103,.75),rgba(22,69,50,.77)) !important;
+  border:1px solid rgba(211,255,223,.40) !important;
+  box-shadow:0 14px 37px rgba(0,0,0,.19),inset 0 1px rgba(245,255,247,.30) !important;
+  -webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);
+  border-radius:16px !important;
 }
-
-/* KPI cards, charts, repair panels, and all existing customer dashboard cards. */
-html body #employeeDashboard :is(
-  .motivo-ops-stat, .motivo-ops-card, .staff-create-card, .staff-roster-card,
-  .staff-manager-panel, .workflow-progress-card, .staff-table-shell,
-  .step-card, .staff-job-field, .motivo-job-hero
-),
-html body #customerDashboard :is(
-  .customer-home-card, .customer-home-shop-card, .card,
-  .customer-home-hero, .feature-card
-),
-html body :is(#landingSection, #registerSection, #loginSection) .feature-card,
-html body.motivo-public-page :is(.feature-card, .card) {
-  background: var(--mv-glass-bg) !important;
-  border: 1px solid var(--mv-glass-edge) !important;
-  box-shadow: var(--mv-glass-glow) !important;
-  -webkit-backdrop-filter: var(--mv-glass-blur);
-  backdrop-filter: var(--mv-glass-blur);
-  background-clip: padding-box !important;
-  border-radius: 18px !important;
+/* Shared card language across staff, customer, and marketing pages. */
+html body #employeeDashboard :is(.motivo-ops-stat,.motivo-ops-card,.staff-create-card,.staff-roster-card,
+  .staff-manager-panel,.workflow-progress-card,.staff-table-shell,.step-card,.staff-job-field,.motivo-job-hero),
+html body #customerDashboard :is(.customer-home-card,.customer-home-shop-card,.card,.customer-home-hero,.feature-card),
+html body :is(#landingSection,#registerSection,#loginSection) .feature-card,
+html body.motivo-public-page :is(.feature-card,.card) {
+  background:var(--mv-glass-bg) !important;
+  border:1px solid var(--mv-glass-edge) !important;
+  box-shadow:var(--mv-glass-glow) !important;
+  -webkit-backdrop-filter:var(--mv-glass-blur);
+  backdrop-filter:var(--mv-glass-blur);
+  background-clip:padding-box !important;
+  border-radius:19px !important;
 }
-/* In the staff portal maintain a darker smoked surface in light mode, too. */
+/* The staff portal should look like illuminated emerald glass even when the
+   global appearance is set to light (the portal itself stays dark green). */
 html body:not(.dark-mode) #employeeDashboard {
-  --mv-glass-bg: rgba(222, 244, 225, .74);
+  --mv-glass-bg:linear-gradient(145deg,rgba(92,153,117,.80),rgba(42,105,76,.84));
+  --mv-glass-edge:rgba(201,251,214,.48);
+  --mv-glass-glow:0 17px 43px rgba(0,0,0,.22),inset 0 1px rgba(255,255,255,.34);
 }
 html body.dark-mode #employeeDashboard {
-  --mv-glass-bg: rgba(16, 60, 43, .61);
+  --mv-glass-bg:linear-gradient(145deg,rgba(67,129,101,.79),rgba(25,83,59,.84));
 }
-
-/* Improve visual hierarchy without changing numbers, chart colors, or meaning. */
-html body #employeeDashboard .motivo-ops-stat,
-html body #customerDashboard .customer-home-card {
-  position: relative;
-  overflow: hidden;
-}
+/* Light-on-emerald labels: staff portal content remains readable. */
+html body #employeeDashboard :is(.motivo-ops-stat,.motivo-ops-card,.staff-create-card,.staff-roster-card) :is(h3,h4,strong),
+html body #employeeDashboard .motivo-ops-stat strong {color:#f7fff9 !important;}
+html body #employeeDashboard .motivo-ops-card > p {color:#daeee1 !important;}
+html body #employeeDashboard .motivo-ops-stat {position:relative;overflow:hidden;}
+html body #customerDashboard .customer-home-card {position:relative;overflow:hidden;}
 html body #employeeDashboard .motivo-ops-stat::before,
 html body #customerDashboard .customer-home-card::before {
-  content: '';
-  position: absolute;
-  left: 13px;
-  right: 13px;
-  top: 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(233,255,236,.58), transparent);
-  pointer-events: none;
+  content:'';position:absolute;left:13px;right:13px;top:0;height:2px;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.76),transparent);
+  pointer-events:none;
 }
 html body #employeeDashboard :is(.motivo-ops-stat,.motivo-ops-card,.staff-create-card,.staff-roster-card),
 html body #customerDashboard :is(.customer-home-card,.customer-home-shop-card) {
-  transition: box-shadow .18s ease, border-color .18s ease;
+  transition:box-shadow .18s ease,border-color .18s ease;
 }
 html body #employeeDashboard :is(.motivo-ops-stat,.motivo-ops-card,.staff-create-card,.staff-roster-card):hover,
 html body #customerDashboard :is(.customer-home-card,.customer-home-shop-card):hover {
-  border-color: rgba(235, 130, 81, .54) !important;
-  box-shadow: 0 19px 46px rgba(6, 37, 27, .24), inset 0 1px rgba(245,255,248,.18) !important;
+  border-color:rgba(247,166,115,.80) !important;
+  box-shadow:0 22px 52px rgba(5,32,23,.29),inset 0 1px rgba(255,255,255,.44) !important;
 }
-
-/* Correct the narrow heading / giant button seen in the live staff screenshot. */
+/* Fix staff overview title and action layout without editing HTML or JS. */
 html body #employeeDashboard .motivo-ops-heading {
-  display: flex !important;
-  flex-wrap: wrap !important;
-  align-items: center !important;
-  justify-content: space-between !important;
-  gap: 14px 24px !important;
+  display:flex !important;flex-wrap:wrap !important;align-items:center !important;
+  justify-content:space-between !important;gap:14px 24px !important;
 }
 html body #employeeDashboard .motivo-ops-heading > div:first-child {
-  flex: 1 1 270px !important;
-  min-width: min(100%, 270px) !important;
+  flex:1 1 270px !important;min-width:min(100%,270px) !important;
 }
 html body #employeeDashboard .motivo-ops-heading h3 {
-  max-width: none !important;
-  overflow-wrap: normal !important;
-  line-height: 1.2 !important;
+  max-width:none !important;overflow-wrap:normal !important;line-height:1.2 !important;
 }
 html body #employeeDashboard .motivo-ops-heading .motivo-ops-primary {
-  width: auto !important;
-  min-width: 164px !important;
-  max-width: 100% !important;
-  flex: 0 0 auto !important;
-  padding-inline: 22px !important;
+  width:auto !important;min-width:164px !important;max-width:100% !important;
+  flex:0 0 auto !important;padding-inline:22px !important;
 }
-
-/* Readability: never glassify dense data rows, form inputs, or status indicators. */
-html body #employeeDashboard :is(input, select, textarea, .staff-table td, .staff-table th, .motivo-status-pill, .badge),
-html body #customerDashboard :is(input, select, textarea, .badge) {
-  -webkit-backdrop-filter: none;
-  backdrop-filter: none;
+/* Forms, table cells, charts, badges and status colors do not receive glass. */
+html body #employeeDashboard :is(input,select,textarea,.staff-table td,.staff-table th,.motivo-status-pill,.badge),
+html body #customerDashboard :is(input,select,textarea,.badge) {
+  -webkit-backdrop-filter:none;backdrop-filter:none;
 }
-@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-  html body.dark-mode { --mv-glass-bg: rgba(25, 65, 49, .95); }
-  html body:not(.dark-mode) { --mv-glass-bg: rgba(242, 250, 242, .96); }
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))) {
+  html body.dark-mode {--mv-glass-bg:#32694f;}
+  html body:not(.dark-mode) {--mv-glass-bg:#e5f3e8;}
+  html body:not(.dark-mode) #employeeDashboard {--mv-glass-bg:#427f5f;}
 }
-@media (max-width: 720px) {
+@media (max-width:720px) {
   html body #employeeDashboard .motivo-ops-heading .motivo-ops-primary {
-    width: 100% !important;
-    flex: 1 1 100% !important;
+    width:100% !important;flex:1 1 100% !important;
   }
   html body #employeeDashboard :is(.motivo-ops-card,.motivo-ops-stat,.staff-table-shell),
-  html body #customerDashboard :is(.customer-home-card,.customer-home-shop-card) {
-    border-radius: 14px !important;
-  }
+  html body #customerDashboard :is(.customer-home-card,.customer-home-shop-card) {border-radius:14px !important;}
 }
-@media (prefers-reduced-motion: reduce) {
+@media (prefers-reduced-motion:reduce) {
   html body #employeeDashboard :is(.motivo-ops-stat,.motivo-ops-card,.staff-create-card,.staff-roster-card),
-  html body #customerDashboard :is(.customer-home-card,.customer-home-shop-card) {
-    transition: none !important;
-  }
+  html body #customerDashboard :is(.customer-home-card,.customer-home-shop-card) {transition:none !important;}
 }
