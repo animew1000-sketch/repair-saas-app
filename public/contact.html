@@ -1,84 +1,273 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>Contact | Motivo</title>
+
   <link rel="stylesheet" href="/styles-reworked.css?v=motivo-legal22">
   <link rel="stylesheet" href="/contact-inbox.css?v=1">
 </head>
+
 <body class="motivo-public-page">
+
+  <!-- Navigation -->
   <div class="header">
     <div class="brand" onclick="window.location.href='/?screen=landingSection'">
-      <img class="brand-logo" src="/images/Motivo-white-word-transparent.png" alt="Motivo">
+      <img
+        class="brand-logo"
+        src="/images/Motivo-white-word-transparent.png"
+        alt="Motivo"
+      >
     </div>
-    <button class="motivo-menu-toggle" type="button" aria-expanded="false" aria-controls="motivo-side-menu" aria-label="Open navigation menu" onclick="toggleMotivoMenu(this)">
-      <span></span><span></span><span></span>
+
+    <button
+      class="motivo-menu-toggle"
+      type="button"
+      aria-expanded="false"
+      aria-controls="motivo-side-menu"
+      aria-label="Open navigation menu"
+      onclick="toggleMotivoMenu(this)"
+    >
+      <span></span>
+      <span></span>
+      <span></span>
     </button>
+
     <div class="header-nav" id="motivo-side-menu">
-      <div class="motivo-drawer-heading"><img src="/images/Motivo-white-word-transparent.png" alt="Motivo"><span>Navigation</span></div>
+      <div class="motivo-drawer-heading">
+        <img src="/images/Motivo-white-word-transparent.png" alt="Motivo">
+        <span>Navigation</span>
+      </div>
+
       <div class="header-links">
         <a class="header-link" href="/?screen=landingSection">Home</a>
         <a class="header-link" href="/overview.html">How It Works</a>
         <a class="header-link" href="/contact.html" aria-current="page">Contact</a>
       </div>
+
       <div class="header-actions">
-        <a class="header-link header-action-link header-signup" href="/?screen=registerSection">Sign Up</a>
-        <a class="header-link header-action-link header-login" href="/?screen=loginSection">Portal Login</a>
+        <a
+          class="header-link header-action-link header-signup"
+          href="/?screen=registerSection"
+        >
+          Sign Up
+        </a>
+
+        <a
+          class="header-link header-action-link header-login"
+          href="/?screen=loginSection"
+        >
+          Portal Login
+        </a>
       </div>
-      <button class="motivo-menu-theme" type="button" onclick="toggleTheme()" aria-label="Switch to dark mode"><span aria-hidden="true">◐</span><span class="motivo-menu-theme-label">Switch to dark mode</span></button>
+
+      <button
+        class="motivo-menu-theme"
+        type="button"
+        onclick="toggleTheme()"
+        aria-label="Switch to dark mode"
+      >
+        <span aria-hidden="true">◐</span>
+        <span class="motivo-menu-theme-label">Switch to dark mode</span>
+      </button>
     </div>
   </div>
+
+  <!-- Main Content -->
   <div class="container">
     <main class="contact-page">
+
+      <!-- Introduction -->
       <div class="contact-intro">
         <div class="marketing-pill">Contact</div>
+
         <h1>Get in Touch</h1>
-        <p>Questions about Motivo, repair-shop onboarding, or the development platform? Send a message to the Motivo team. For an active repair or appointment, contact your repair shop directly.</p>
+
+        <p>
+          Have a question about Motivo, need assistance, or want to
+          learn more about our platform? We'd love to hear from you.
+        </p>
       </div>
-      <form id="motivoContactForm" class="motivo-contact-form" aria-labelledby="contactFormTitle">
-        <h2 id="contactFormTitle">Send a message</h2>
-        <p>Messages go to the Motivo platform team. Do not include passwords, payment information, or sensitive vehicle/customer records.</p>
-        <div class="contact-grid"><label>Your name<input name="name" maxlength="120" autocomplete="name" required></label><label>Email address<input name="email" type="email" maxlength="254" autocomplete="email" required></label></div>
-        <label>Topic<select name="category" required><option value="general">General question</option><option value="onboarding">Shop onboarding</option><option value="technical">Technical issue</option><option value="billing">Billing question</option><option value="feedback">Feedback</option><option value="other">Other</option></select></label>
-        <label>Subject<input name="subject" maxlength="160" required></label>
-        <label>Message<textarea name="message" minlength="10" maxlength="5000" required></textarea></label>
-        <label class="contact-hp" aria-hidden="true">Website<input name="website" tabindex="-1" autocomplete="off"></label>
-        <label class="privacy-line"><input name="privacy_ack" type="checkbox" required><span>I understand my message and contact information will be stored so the Motivo team can review it. See the <a href="/notice.html">Privacy, Terms &amp; California Notice</a>.</span></label>
-        <button type="submit">Send message</button><p id="contactFormStatus" class="feedback" role="status" aria-live="polite"></p>
+
+      <!-- Contact Form -->
+      <form
+        id="motivoContactForm"
+        class="motivo-contact-form"
+        aria-labelledby="contactFormTitle"
+      >
+        <h2 id="contactFormTitle">Send a Message</h2>
+
+        <p>
+          Complete the form below and our team will review your inquiry.
+          Please avoid including passwords, payment details, or
+          sensitive personal information.
+        </p>
+
+        <div class="contact-grid">
+          <label>
+            Your Name
+            <input
+              name="name"
+              type="text"
+              maxlength="120"
+              autocomplete="name"
+              required
+            >
+          </label>
+
+          <label>
+            Email Address
+            <input
+              name="email"
+              type="email"
+              maxlength="254"
+              autocomplete="email"
+              required
+            >
+          </label>
+        </div>
+
+        <label>
+          Topic
+          <select name="category" required>
+            <option value="general">General Question</option>
+            <option value="onboarding">Shop Onboarding</option>
+            <option value="technical">Technical Support</option>
+            <option value="billing">Billing Question</option>
+            <option value="feedback">Feedback</option>
+            <option value="other">Other</option>
+          </select>
+        </label>
+
+        <label>
+          Subject
+          <input
+            name="subject"
+            type="text"
+            maxlength="160"
+            required
+          >
+        </label>
+
+        <label>
+          Message
+          <textarea
+            name="message"
+            minlength="10"
+            maxlength="5000"
+            placeholder="How can we help you?"
+            required
+          ></textarea>
+        </label>
+
+        <!-- Spam prevention -->
+        <label class="contact-hp" aria-hidden="true">
+          Website
+          <input
+            name="website"
+            type="text"
+            tabindex="-1"
+            autocomplete="off"
+          >
+        </label>
+
+        <!-- Privacy Consent -->
+        <label class="privacy-line">
+          <input
+            name="privacy_ack"
+            type="checkbox"
+            required
+          >
+
+          <span>
+            I understand that my message and contact information
+            will be stored so the Motivo team can review my inquiry.
+            See our
+            <a href="/notice.html">Privacy, Terms &amp; California Notice</a>.
+          </span>
+        </label>
+
+        <button type="submit">Send Message</button>
+
+        <p
+          id="contactFormStatus"
+          class="feedback"
+          role="status"
+          aria-live="polite"
+        ></p>
       </form>
+
+      <!-- Additional Contact Information -->
       <div class="contact-layout">
-        <section class="contact-details" aria-labelledby="contact-status-heading">
+        <section
+          class="contact-details"
+          aria-labelledby="contact-status-heading"
+        >
           <div class="contact-detail">
             <div>
-<h2 id="contact-status-heading">Contact information</h2>
+              <h2 id="contact-status-heading">
+                We're Here to Help
+              </h2>
 
-<p>Have a question about Motivo, need assistance, or want to learn more about our platform?</p>
+              <p>
+                Whether you're exploring Motivo for your business,
+                have a technical question, or want to share feedback,
+                our team welcomes your inquiry.
+              </p>
 
-<p>Our team is here to help. Submit the contact form above, and we'll review your inquiry.</p>
-
-<p>For questions regarding an existing repair or appointment, please contact your repair shop directly.</p>
-
-<p>For details on how we handle inquiries, please see our <a href="/notice.html">Privacy, Terms &amp; California Notice</a>.</p>
+              <p>
+                For an existing vehicle repair or appointment,
+                please contact your repair shop directly.
+              </p>
+            </div>
           </div>
+
           <figure class="overview-feature-image">
-            <img src="/images/Disk-Break.jpg" alt="Automotive brake service">
-            <figcaption>Built around real automotive service workflows.</figcaption>
+            <img
+              src="/images/Disk-Break.jpg"
+              alt="Automotive brake service"
+              loading="lazy"
+            >
+
+            <figcaption>
+              Built around real automotive service workflows.
+            </figcaption>
           </figure>
         </section>
       </div>
+
     </main>
-    <footer class="legal-footer" style="text-align:center;margin:28px 0 14px;">
-      <a href="/">Home</a> &nbsp;|&nbsp; <a href="/notice.html">Privacy, Terms &amp; California Notice</a>
+
+    <!-- Footer -->
+    <footer
+      class="legal-footer"
+      style="text-align:center;margin:28px 0 14px;"
+    >
+      <a href="/">Home</a>
+      &nbsp;|&nbsp;
+      <a href="/notice.html">
+        Privacy, Terms &amp; California Notice
+      </a>
     </footer>
   </div>
+
+  <!-- Hide account actions for signed-in users -->
   <script>
     if (localStorage.getItem('token')) {
-      document.querySelector('.header-signup')?.classList.add('hidden');
-      document.querySelector('.header-login')?.classList.add('hidden');
+      document.querySelector('.header-signup')
+        ?.classList.add('hidden');
+
+      document.querySelector('.header-login')
+        ?.classList.add('hidden');
     }
   </script>
+
+  <!-- Existing Motivo functionality -->
   <script src="/theme.js?v=motivo-22"></script>
   <script src="/contact-inbox.js?v=1" defer></script>
+
 </body>
 </html>
