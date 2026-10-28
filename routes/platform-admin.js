@@ -71,4 +71,22 @@ router.post('/shops/:id/status',originOnly,async(req,res)=>{
  }catch(e){safeLog('shop status',e);res.status(503).json({error:'Unable to change shop status.'});}
 });
 // No delete endpoint: existing company foreign keys cascade to customer/repair data.
+
+// Contact inbox: routes below the existing authenticated platform administrator middleware.
+router.get('/contact/messages', async(req,res)=>{
+  const allowed=['new','in_progress','resolved','archived'];
+  const status=allowed.includes(req.query.status)?req.query.status:null;
+  const q=typeof req.query.q==='string'?req.query.q.trim().slice(0,120):'';
+  const params=[];const where=[];
+  if(status){where.push('status=?');params.push(status);}
+  if(q){where.push('(name LIKE ? OR email LIKE ? OR subject LIKE ?)');const pattern='%'+q.replace(/[\\%_]/g,'\\$&')+'%';params.push(pattern,pattern,pattern);}
+  try{const [messages]=await pool.query('SELECT id,name,email,category,subject,message,status,internal_note,created_at,updated_at FROM platform_contact_messages '+(where.length?'WHERE '+where.join(' AND '):'')+' ORDER BY created_at DESC,id DESC LIMIT 200',params);return res.json({messages});}
+  catch(e){safeLog('contact inbox',e);return res.status(503).json({error:'Contact inbox unavailable. Has the migration been applied?'});}
+});
+router.patch('/contact/messages/:id',originOnly,async(req,res)=>{
+  const id=validId(req.params.id),status=req.body?.status,note=req.body?.internal_note;
+  if(!id||!['new','in_progress','resolved','archived'].includes(status)||typeof note!=='string'||note.length>5000)return res.status(400).json({error:'Invalid status or note.'});
+  try{const [result]=await pool.query('UPDATE platform_contact_messages SET status=?,internal_note=? WHERE id=?',[status,note,id]);return result.affectedRows?res.json({success:true}):res.status(404).json({error:'Message not found.'});}
+  catch(e){safeLog('update contact message',e);return res.status(503).json({error:'Unable to update message.'});}
+});
 module.exports=router;

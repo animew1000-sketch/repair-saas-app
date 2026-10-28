@@ -53,6 +53,8 @@ const registerLimiter = rateLimit({
 app.use('/api/login', loginLimiter);
 app.use('/api/register', registerLimiter);
 app.use('/api', apiLimiter);
+// Public intake only. Contact messages can only be read through authenticated platform routes.
+app.use('/api/contact', require('./routes/contact-messages'));
 
 // MOT-030: restrict the developer console before serving any static files.
 app.use(require('./routes/platform-host-gate'));
