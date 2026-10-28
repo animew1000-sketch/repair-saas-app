@@ -1,18 +1,18 @@
 
 /* ==========================================
-   MOTIVO — CONTACT FORM & DEVELOPER INBOX
+   MOTIVO CONTACT FORM + DEVELOPER INBOX
+   Version 4
    ========================================== */
 
 /* ------------------------------------------
-   1. Contact page layout
+   Contact page layout
    ------------------------------------------ */
 
 .contact-page {
   display: flex;
   flex-direction: column;
   gap: 42px;
-  padding-top: 36px;
-  padding-bottom: 48px;
+  padding: 36px 0 48px;
 }
 
 .contact-intro {
@@ -30,7 +30,7 @@
 }
 
 /* ------------------------------------------
-   2. Contact form card
+   Contact form card
    ------------------------------------------ */
 
 .motivo-contact-form {
@@ -41,6 +41,8 @@
   box-sizing: border-box;
   width: 100%;
   max-width: 760px;
+  min-width: 0;
+
   margin: 0 auto;
   padding: 40px;
 
@@ -65,16 +67,23 @@
   line-height: 1.75;
 }
 
+.motivo-contact-form .contact-form-description {
+  max-width: 620px;
+}
+
 /* ------------------------------------------
-   3. Form labels and fields
+   Labels and inputs
    ------------------------------------------ */
 
-.motivo-contact-form label {
+.motivo-contact-form > label,
+.motivo-contact-form .contact-grid > label {
   display: flex;
   flex-direction: column;
   gap: 10px;
 
+  min-width: 0;
   margin: 0;
+
   color: inherit;
   font-size: 0.9rem;
   font-weight: 650;
@@ -92,7 +101,9 @@
 .motivo-contact-form textarea {
   box-sizing: border-box;
   width: 100%;
+  min-width: 0;
   min-height: 48px;
+
   padding: 14px 16px;
 
   border: 1px solid #91b6a0;
@@ -118,37 +129,83 @@
 }
 
 /* ------------------------------------------
-   4. Privacy consent
+   Privacy consent - fixed layout
    ------------------------------------------ */
 
-.motivo-contact-form .privacy-line {
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  gap: 14px;
+.motivo-contact-form .contact-privacy {
+  display: grid !important;
+  grid-template-columns: 20px minmax(0, 1fr) !important;
+  align-items: start !important;
+  justify-content: start !important;
+  gap: 14px !important;
 
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+}
+
+.motivo-contact-form .contact-privacy input[type="checkbox"] {
+  display: block !important;
+
+  grid-column: 1;
+  grid-row: 1;
+
+  box-sizing: border-box;
+  width: 20px !important;
+  height: 20px !important;
+  min-width: 20px !important;
+  min-height: 20px !important;
+
+  margin: 4px 0 0 !important;
+  padding: 0 !important;
+
+  border-radius: 4px;
+  accent-color: #2b765a;
+  cursor: pointer;
+}
+
+.motivo-contact-form .contact-privacy label {
+  display: block !important;
+
+  grid-column: 2;
+  grid-row: 1;
+
+  width: auto !important;
+  min-width: 0 !important;
+  max-width: none !important;
+
+  margin: 0 !important;
+  padding: 0 !important;
+
+  color: inherit;
+  font-size: 0.9rem;
   font-weight: 400;
-  line-height: 1.7;
+  line-height: 1.75;
+  text-align: left;
+
+  overflow-wrap: break-word;
+  cursor: pointer;
 }
 
-.motivo-contact-form .privacy-line input {
-  flex-shrink: 0;
-  margin-top: 6px;
-}
+.motivo-contact-form .contact-privacy a {
+  display: inline !important;
+  width: auto !important;
 
-.motivo-contact-form a {
   color: #155d3a;
   text-decoration: underline;
   text-underline-offset: 3px;
+  white-space: normal;
 }
 
 /* ------------------------------------------
-   5. Submit button and feedback
+   Submit button
    ------------------------------------------ */
 
-.motivo-contact-form button {
+.motivo-contact-form button[type="submit"] {
   align-self: flex-start;
   min-height: 48px;
+
   margin: 4px 0 0;
   padding: 14px 26px;
 
@@ -163,16 +220,17 @@
   cursor: pointer;
 }
 
-.motivo-contact-form button:hover {
+.motivo-contact-form button[type="submit"]:hover {
   background: #194b34;
 }
 
-.motivo-contact-form button:focus-visible {
+.motivo-contact-form button[type="submit"]:focus-visible,
+.motivo-contact-form .contact-privacy input:focus-visible {
   outline: 3px solid #4dab7b;
   outline-offset: 3px;
 }
 
-.motivo-contact-form button:disabled {
+.motivo-contact-form button[type="submit"]:disabled {
   opacity: 0.6;
   cursor: wait;
 }
@@ -180,20 +238,25 @@
 .motivo-contact-form .feedback {
   min-height: 24px;
   margin: 0;
+
   font-weight: 600;
   line-height: 1.6;
 }
 
-/* Honeypot for basic spam prevention */
+/* ------------------------------------------
+   Honeypot
+   ------------------------------------------ */
+
 .motivo-contact-form .contact-hp {
   position: absolute !important;
   left: -9999px !important;
+
   opacity: 0 !important;
   pointer-events: none !important;
 }
 
 /* ------------------------------------------
-   6. Additional contact information
+   Additional contact information
    ------------------------------------------ */
 
 .contact-page .contact-layout {
@@ -223,7 +286,6 @@
   margin-bottom: 0;
 }
 
-/* Image and caption */
 .contact-page .overview-feature-image {
   margin-top: 16px;
 }
@@ -241,7 +303,7 @@
 }
 
 /* ------------------------------------------
-   7. Dark mode
+   Dark mode
    ------------------------------------------ */
 
 body.dark-mode .motivo-contact-form {
@@ -258,12 +320,12 @@ body.dark-mode .motivo-contact-form textarea {
   border-color: #567e60;
 }
 
-body.dark-mode .motivo-contact-form a {
+body.dark-mode .motivo-contact-form .contact-privacy a {
   color: #a0ebba;
 }
 
 /* ------------------------------------------
-   8. Developer inbox
+   Developer inbox
    ------------------------------------------ */
 
 .platform-inbox-controls {
@@ -301,6 +363,7 @@ body.dark-mode .motivo-contact-form a {
 .contact-inbox-item p {
   margin: 12px 0;
   line-height: 1.75;
+
   white-space: pre-wrap;
   overflow-wrap: anywhere;
 }
@@ -324,8 +387,10 @@ body.dark-mode .motivo-contact-form a {
   width: 100%;
   max-width: 100%;
   min-height: 100px;
+
   margin-top: 14px;
   padding: 12px 14px;
+
   resize: vertical;
   line-height: 1.6;
 }
@@ -339,14 +404,13 @@ body.dark-mode .motivo-contact-form a {
 }
 
 /* ------------------------------------------
-   9. Mobile responsiveness
+   Mobile responsiveness
    ------------------------------------------ */
 
 @media (max-width: 640px) {
   .contact-page {
     gap: 28px;
-    padding-top: 24px;
-    padding-bottom: 32px;
+    padding: 24px 0 32px;
   }
 
   .motivo-contact-form {
@@ -360,9 +424,13 @@ body.dark-mode .motivo-contact-form a {
     gap: 20px;
   }
 
-  .motivo-contact-form button {
+  .motivo-contact-form button[type="submit"] {
     width: 100%;
     align-self: stretch;
+  }
+
+  .motivo-contact-form .contact-privacy {
+    gap: 12px !important;
   }
 
   .contact-page .contact-layout {
@@ -394,7 +462,7 @@ body.dark-mode .motivo-contact-form a {
 }
 
 /* ------------------------------------------
-   10. Reduced motion
+   Reduced motion
    ------------------------------------------ */
 
 @media (prefers-reduced-motion: reduce) {

@@ -8,14 +8,17 @@
   <title>Contact | Motivo</title>
 
   <link rel="stylesheet" href="/styles-reworked.css?v=motivo-legal22">
-  <link rel="stylesheet" href="/contact-inbox.css?v=2">
+  <link rel="stylesheet" href="/contact-inbox.css?v=4">
 </head>
 
 <body class="motivo-public-page">
 
   <!-- Navigation -->
   <div class="header">
-    <div class="brand" onclick="window.location.href='/?screen=landingSection'">
+    <div
+      class="brand"
+      onclick="window.location.href='/?screen=landingSection'"
+    >
       <img
         class="brand-logo"
         src="/images/Motivo-white-word-transparent.png"
@@ -37,15 +40,29 @@
     </button>
 
     <div class="header-nav" id="motivo-side-menu">
+
       <div class="motivo-drawer-heading">
-        <img src="/images/Motivo-white-word-transparent.png" alt="Motivo">
+        <img
+          src="/images/Motivo-white-word-transparent.png"
+          alt="Motivo"
+        >
         <span>Navigation</span>
       </div>
 
       <div class="header-links">
-        <a class="header-link" href="/?screen=landingSection">Home</a>
-        <a class="header-link" href="/overview.html">How It Works</a>
-        <a class="header-link" href="/contact.html" aria-current="page">Contact</a>
+        <a class="header-link" href="/?screen=landingSection">
+          Home
+        </a>
+        <a class="header-link" href="/overview.html">
+          How It Works
+        </a>
+        <a
+          class="header-link"
+          href="/contact.html"
+          aria-current="page"
+        >
+          Contact
+        </a>
       </div>
 
       <div class="header-actions">
@@ -71,7 +88,9 @@
         aria-label="Switch to dark mode"
       >
         <span aria-hidden="true">◐</span>
-        <span class="motivo-menu-theme-label">Switch to dark mode</span>
+        <span class="motivo-menu-theme-label">
+          Switch to dark mode
+        </span>
       </button>
     </div>
   </div>
@@ -87,8 +106,9 @@
         <h1>Get in Touch</h1>
 
         <p>
-          Have a question about Motivo, need assistance, or want to
-          learn more about our platform? We'd love to hear from you.
+          Have a question about Motivo, need assistance,
+          or want to learn more about our platform?
+          We'd love to hear from you.
         </p>
       </div>
 
@@ -100,12 +120,13 @@
       >
         <h2 id="contactFormTitle">Send a Message</h2>
 
-        <p>
-          Complete the form below and our team will review your inquiry.
-          Please avoid including passwords, payment details, or
-          sensitive personal information.
+        <p class="contact-form-description">
+          Complete the form below and our team will review your
+          inquiry. Please avoid including passwords, payment details,
+          or sensitive personal information.
         </p>
 
+        <!-- Name and Email -->
         <div class="contact-grid">
           <label>
             Your Name
@@ -130,6 +151,7 @@
           </label>
         </div>
 
+        <!-- Topic -->
         <label>
           Topic
           <select name="category" required>
@@ -142,6 +164,7 @@
           </select>
         </label>
 
+        <!-- Subject -->
         <label>
           Subject
           <input
@@ -152,6 +175,7 @@
           >
         </label>
 
+        <!-- Message -->
         <label>
           Message
           <textarea
@@ -163,7 +187,7 @@
           ></textarea>
         </label>
 
-        <!-- Spam prevention -->
+        <!-- Honeypot: spam prevention -->
         <label class="contact-hp" aria-hidden="true">
           Website
           <input
@@ -174,23 +198,29 @@
           >
         </label>
 
-        <!-- Privacy Consent -->
-        <label class="privacy-line">
+        <!-- Privacy consent -->
+        <div class="contact-privacy">
           <input
+            id="contactPrivacy"
             name="privacy_ack"
             type="checkbox"
             required
           >
 
-          <span>
+          <label for="contactPrivacy">
             I understand that my message and contact information
-            will be stored so the Motivo team can review my inquiry.
-            See our
-            <a href="/notice.html">Privacy, Terms &amp; California Notice</a>.
-          </span>
-        </label>
+            will be stored so the Motivo team can review my
+            inquiry. See our
+            <a href="/notice.html">
+              Privacy, Terms &amp; California Notice
+            </a>.
+          </label>
+        </div>
 
-        <button type="submit">Send Message</button>
+        <!-- Submit -->
+        <button type="submit" class="contact-submit">
+          Send Message
+        </button>
 
         <p
           id="contactFormStatus"
@@ -200,12 +230,13 @@
         ></p>
       </form>
 
-      <!-- Additional Contact Information -->
+      <!-- Additional Information -->
       <div class="contact-layout">
         <section
           class="contact-details"
           aria-labelledby="contact-status-heading"
         >
+
           <div class="contact-detail">
             <div>
               <h2 id="contact-status-heading">
@@ -213,9 +244,9 @@
               </h2>
 
               <p>
-                Whether you're exploring Motivo for your business,
-                have a technical question, or want to share feedback,
-                our team welcomes your inquiry.
+                Whether you're exploring Motivo for your
+                business, have a technical question, or want
+                to share feedback, our team welcomes your inquiry.
               </p>
 
               <p>
@@ -236,6 +267,7 @@
               Built around real automotive service workflows.
             </figcaption>
           </figure>
+
         </section>
       </div>
 
@@ -254,7 +286,7 @@
     </footer>
   </div>
 
-  <!-- Hide account actions for signed-in users -->
+  <!-- Hide login links for authenticated users -->
   <script>
     if (localStorage.getItem('token')) {
       document.querySelector('.header-signup')
@@ -265,7 +297,7 @@
     }
   </script>
 
-  <!-- Existing Motivo functionality -->
+  <!-- Existing functionality -->
   <script src="/theme.js?v=motivo-22"></script>
   <script src="/contact-inbox.js?v=1" defer></script>
 
