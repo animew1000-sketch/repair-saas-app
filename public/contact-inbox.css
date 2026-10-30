@@ -129,3 +129,59 @@ html[data-console-theme="dark"] body.motivo-console-v15 #page-contact .contact-i
 @media(prefers-reduced-motion:reduce) {
   .motivo-contact-form *,.contact-inbox-item * { scroll-behavior:auto;transition-duration:.01ms;animation-duration:.01ms; }
 }
+
+/* ==========================================================
+   Motivo developer console - full DIM canvas v6
+   Scoped to Display > Dim; System/Light remain unchanged.
+   ========================================================== */
+html[data-console-theme="dark"] {
+  background: #0c1713 !important;
+  color-scheme: dark;
+}
+html[data-console-theme="dark"] body.motivo-console-v15 {
+  --c15-bg: #0c1713;
+  --c15-panel: #15251f;
+  --c15-surface: #1b3027;
+  --c15-elevated: #22392e;
+  --c15-topbar: #111e19;
+  --c15-border: #334d3e;
+  --c15-divider: #2b4236;
+  --c15-ink: #e7f1e9;
+  --c15-subtle: #b8d0c0;
+  --c15-faint: #a3bdac;
+  --c15-hover: #264334;
+  --c15-shadow: 0 8px 28px rgba(0,0,0,.13);
+  background: #0c1713 !important;
+  background-image: none !important;
+  color: var(--c15-ink) !important;
+}
+html[data-console-theme="dark"] body.motivo-console-v15 main,
+html[data-console-theme="dark"] body.motivo-console-v15 #workspace,
+html[data-console-theme="dark"] body.motivo-console-v15 #page-contact {
+  background: transparent !important;
+  color: var(--c15-ink) !important;
+}
+html[data-console-theme="dark"] body.motivo-console-v15 #page-contact > .panel {
+  background: #15251f !important;
+  border-color: #334d3e !important;
+}
+html[data-console-theme="dark"] body.motivo-console-v15 #page-contact .contact-inbox-item {
+  background: #1b3027 !important;
+  border-color: #3a5a47 !important;
+  color: #e7f1e9 !important;
+}
+html[data-console-theme="dark"] body.motivo-console-v15 #page-contact :is(h2,h3,p,span,label) {
+  color: #e7f1e9;
+}
+html[data-console-theme="dark"] body.motivo-console-v15 #page-contact :is(.meta,#contactInboxCount,.section-header p) {
+  color: #b8d0c0 !important;
+}
+html[data-console-theme="dark"] body.motivo-console-v15 #page-contact :is(input,select,textarea) {
+  background: #111f19 !important;
+  border-color: #43604d !important;
+  color: #eef6f0 !important;
+}
+html[data-console-theme="dark"] body.motivo-console-v15 #page-contact :is(input,textarea)::placeholder {
+  color: #a8bdae !important;
+  opacity: 1;
+}
