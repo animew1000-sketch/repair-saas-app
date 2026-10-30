@@ -1,0 +1,72 @@
+/* Motivo developer console v10 - last-loaded theme correction. */
+/* The theme initialization script sets data-console-theme to light or dark. */
+html[data-console-theme="light"] { background:#edf2ee !important; color-scheme:light; }
+html[data-console-theme="light"] body.motivo-console-v15 {
+ --c15-bg:#edf2ee; --c15-ink:#22362c; --c15-subtle:#526a5b;
+ --c15-faint:#63796b; --c15-panel:#f8fbf8; --c15-surface:#f1f6f1;
+ --c15-elevated:#fff; --c15-border:#d1ded3; --c15-divider:#dfebe1;
+ --c15-hover:#e9f2ec; --c15-topbar:#e6efe8;
+ background:#edf2ee !important; background-image:none !important; color:#22362c !important;
+}
+html[data-console-theme="light"] body.motivo-console-v15 :is(.panel,.metric,.drawer,.drawer-header,dialog.confirm) {
+ background:#f8fbf8 !important; background-image:none !important; border-color:#d1ded3 !important; color:#22362c !important;
+}
+html[data-console-theme="light"] body.motivo-console-v15 :is(.contact-inbox-item,.footprint>div,.mini-metrics>div) {
+ background:#f1f6f1 !important; background-image:none !important; border-color:#d1ded3 !important; color:#22362c !important;
+}
+html[data-console-theme="light"] body.motivo-console-v15 :is(.pageheading h1,.section-header h2,.panel h1,.panel h2,.panel h3,.metric strong,.contact-inbox-item h3,.contact-inbox-item p) {
+ color:#22362c !important; opacity:1 !important;
+}
+html[data-console-theme="light"] body.motivo-console-v15 :is(.pageheading p,.pageheading p span,.section-header p,.metric span,.metric small,.tab:not(.selected),.contact-inbox-item .meta,.eyebrow) {
+ color:#526a5b !important; opacity:1 !important;
+}
+html[data-console-theme="light"] body.motivo-console-v15 :is(input,select,textarea) {
+ background:#fff !important; color:#22362c !important; border-color:#c9d8ce !important;
+}
+html[data-console-theme="light"] body.motivo-console-v15 :is(input,textarea)::placeholder {color:#607469 !important;opacity:1 !important;}
+html[data-console-theme="light"] body.motivo-console-v15 .tab.selected {background:#e3ede6 !important;color:#22362c !important;}
+html[data-console-theme="light"] body.motivo-console-v15 .topbar {background:#e6efe8 !important;color:#22362c !important;}
+
+/* Dim mode: dark full-page emerald gradient and translucent glass panels. */
+html[data-console-theme="dark"] {background:#0d1c16 !important;color-scheme:dark;min-height:100%;}
+html[data-console-theme="dark"] body.motivo-console-v15 {
+ --c15-bg:#0d1c16; --c15-ink:#eaf5ed; --c15-subtle:#c2d8c9;
+ --c15-faint:#a9c3b1; --c15-panel:rgba(26,52,39,.74);
+ --c15-surface:rgba(42,76,55,.56); --c15-elevated:rgba(51,86,62,.73);
+ --c15-border:rgba(166,211,180,.34); --c15-divider:rgba(166,211,180,.22);
+ --c15-topbar:rgba(12,29,22,.94); --c15-hover:rgba(77,128,93,.36);
+ --c15-shadow:0 12px 32px rgba(0,0,0,.17);
+ min-height:100vh; color:#eaf5ed !important; background-color:#0d1c16 !important;
+ background-image:radial-gradient(ellipse 65% 60% at 93% 4%,rgba(41,103,69,.27),transparent 80%),
+ radial-gradient(ellipse 60% 75% at 8% 96%,rgba(27,88,64,.24),transparent 80%),
+ linear-gradient(150deg,#0c1a15 0%,#17372a 53%,#0c1d17 100%) !important;
+ background-repeat:no-repeat !important;background-size:cover !important;background-attachment:fixed !important;
+}
+html[data-console-theme="dark"] body.motivo-console-v15 :is(main,#workspace,.page) {
+ background:transparent !important; background-image:none !important;
+}
+html[data-console-theme="dark"] body.motivo-console-v15 :is(.panel,.metric,.drawer,.drawer-header,dialog.confirm) {
+ background:rgba(26,52,39,.74) !important;
+ background-image:linear-gradient(145deg,rgba(255,255,255,.055),rgba(255,255,255,.008)) !important;
+ border:1px solid var(--c15-border) !important;
+ box-shadow:0 12px 32px rgba(0,0,0,.13),inset 0 1px rgba(255,255,255,.055) !important;
+ color:#eaf5ed !important;
+}
+html[data-console-theme="dark"] body.motivo-console-v15 :is(.contact-inbox-item,.footprint>div,.mini-metrics>div) {
+ background:rgba(42,76,55,.56) !important;border:1px solid var(--c15-border) !important;color:#eaf5ed !important;
+}
+html[data-console-theme="dark"] body.motivo-console-v15 :is(.pageheading h1,.section-header h2,.panel h1,.panel h2,.panel h3,.metric strong,.contact-inbox-item h3,.contact-inbox-item p) {
+ color:#f0faf2 !important; opacity:1 !important;
+}
+html[data-console-theme="dark"] body.motivo-console-v15 :is(.pageheading p,.pageheading p span,.section-header p,.metric span,.metric small,.tab:not(.selected),.contact-inbox-item .meta) {
+ color:#c2d8c9 !important;opacity:1 !important;
+}
+html[data-console-theme="dark"] body.motivo-console-v15 .eyebrow {color:#a3ddb3 !important;}
+html[data-console-theme="dark"] body.motivo-console-v15 :is(input,select,textarea) {
+ background:rgba(10,28,20,.80) !important;color:#f0faf2 !important;border-color:rgba(169,215,181,.48) !important;
+}
+html[data-console-theme="dark"] body.motivo-console-v15 :is(input,textarea)::placeholder {color:#b5cdbc !important;opacity:1 !important;}
+html[data-console-theme="dark"] body.motivo-console-v15 .tab.selected {background:rgba(55,99,71,.72) !important;color:#f0faf2 !important;}
+html[data-console-theme="dark"] body.motivo-console-v15 .topbar {background:rgba(12,29,22,.94) !important;color:#eaf5ed !important;}
+html body.motivo-console-v15 :is(input,select,textarea,button,a):focus-visible {outline:2px solid var(--c15-focus) !important;outline-offset:2px;}
+@media(max-width:640px){html[data-console-theme="dark"] body.motivo-console-v15{background-attachment:scroll !important;}}

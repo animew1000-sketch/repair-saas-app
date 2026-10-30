@@ -187,141 +187,132 @@ html[data-console-theme="dark"] body.motivo-console-v15 #page-contact :is(input,
 }
 
 
-/* ===========================================================
-   v7 - Developer console Dim-mode contrast and subtle gradient
-   Scoped to the authenticated developer console only.
-   The public page and light appearance retain their old styles.
-   =========================================================== */
-html[data-console-theme="dark"] body.motivo-console-v15 {
-  --c15-bg: #0d1b16;
-  --c15-ink: #eef7f0;
-  --c15-subtle: #c0d4c5;
-  --c15-faint: #adc5b5;
-  --c15-panel: #172920;
-  --c15-surface: #21382b;
-  --c15-elevated: #294536;
-  --c15-border: #42604b;
-  --c15-divider: #34503e;
-  --c15-hover: #2b4737;
-  --c15-topbar: #12231b;
-  --c15-accent: #9fdfb6;
-  --c15-accent-text: #102419;
-  background: radial-gradient(ellipse 85% 65% at 95% 0%, rgba(37,95,64,.23), transparent 68%),
-              radial-gradient(ellipse 70% 70% at 0% 95%, rgba(20,74,56,.2), transparent 70%),
-              linear-gradient(145deg,#0d1b16 0%,#13271d 52%,#0b1915 100%) !important;
-  background-attachment: fixed !important;
-  color: var(--c15-ink) !important;
+/* ===============================================================
+   Motivo Developer Console / Theme Repair v9
+   Keep the public contact form unchanged. Override only the
+   developer dashboard, keyed to the existing theme controller.
+   =============================================================== */
+
+/* Restore the original airy LIGHT console when System resolves to
+   light, or the visitor explicitly selects Light. Earlier releases
+   accidentally painted dark surfaces even with a pale canvas. */
+html[data-console-theme="light"] {
+  color-scheme: light;
+  background: #edf2ee !important;
 }
-html[data-console-theme="dark"] body.motivo-console-v15 :is(
-  .pageheading h1,.pageheading p,.pageheading p span,
-  .section-header h2,.section-header p,
-  #page-contact h2,#page-contact h3,
-  .metric strong,.footprint strong,.legend strong,
-  .shop-label strong,.activity-entry strong
-) {
+html[data-console-theme="light"] body.motivo-console-v15 {
+  --c15-bg: #edf2ee;
+  --c15-ink: #22362c;
+  --c15-subtle: #526a5b;
+  --c15-faint: #63796b;
+  --c15-panel: #f8fbf8;
+  --c15-surface: #f1f6f1;
+  --c15-elevated: #fff;
+  --c15-border: #d1ded3;
+  --c15-divider: #dfebe1;
+  --c15-topbar: #e6efe8;
+  --c15-shadow: 0 6px 20px rgba(21,52,35,.045);
   color: var(--c15-ink) !important;
+  background: #edf2ee !important;
+  background-image: none !important;
+}
+html[data-console-theme="light"] body.motivo-console-v15 :is(.panel,.metric,.drawer,.drawer-header,dialog.confirm) {
+  background: #f8fbf8 !important;
+  background-image: none !important;
+  border-color: #d1ded3 !important;
+  color: #22362c !important;
+  box-shadow: 0 6px 20px rgba(21,52,35,.045) !important;
+}
+html[data-console-theme="light"] body.motivo-console-v15 :is(.footprint > div,.mini-metrics > div,.contact-inbox-item) {
+  background: #f1f6f1 !important;
+  border: 1px solid #d1ded3 !important;
+  color: #22362c !important;
+}
+html[data-console-theme="light"] body.motivo-console-v15 :is(.pageheading h1,.pageheading p,.pageheading p span,.eyebrow,.tab,.metric strong,.panel h2,.panel h3,.contact-inbox-item h3) {
+  color: #22362c !important;
   opacity: 1 !important;
 }
-html[data-console-theme="dark"] body.motivo-console-v15 :is(
-  .eyebrow,.tab:not(.selected),.metric span,.metric small,
-  .footprint span,.shop-label small,.activity-entry small,
-  .activity-entry time,.bar-label,.bar-value,#directoryCount,
-  #contactInboxCount,#contactInboxFeedback
-) { color: var(--c15-subtle) !important; opacity: 1 !important; }
-html[data-console-theme="dark"] body.motivo-console-v15 :is(
-  .panel,.metric,.drawer,.drawer-header,dialog.confirm,
-  #page-contact > .panel
-) {
-  background: var(--c15-panel) !important;
-  border-color: var(--c15-border) !important;
-  color: var(--c15-ink) !important;
+html[data-console-theme="light"] body.motivo-console-v15 :is(.tab:not(.selected),.section-header p,.metric span,.metric small,.contact-inbox-item .meta) {
+  color: #526a5b !important;
+  opacity: 1 !important;
 }
-html[data-console-theme="dark"] body.motivo-console-v15 :is(
-  .footprint > div,.mini-metrics > div,.contact-inbox-item
-) { background: var(--c15-surface) !important; border-color:var(--c15-border) !important; color:var(--c15-ink) !important; }
-html[data-console-theme="dark"] body.motivo-console-v15 :is(
-  input,select,textarea,.contact-inbox-item textarea,.contact-inbox-item select,
-  #contactInboxSearch,#contactInboxStatus
-) { background:#10251b !important; color:#edf6ef !important; border-color:#58755f !important; }
-html[data-console-theme="dark"] body.motivo-console-v15 :is(input,textarea)::placeholder {color:#b3c9b9 !important; opacity:1 !important;}
-html[data-console-theme="dark"] body.motivo-console-v15 .contact-inbox-item :is(h3,p) {color:#edf6ef !important;}
-html[data-console-theme="dark"] body.motivo-console-v15 .contact-inbox-item .meta {color:#bcd4c3 !important;opacity:1 !important;}
-html[data-console-theme="dark"] body.motivo-console-v15 .tab.selected {background:#243b2e !important;color:#eff9f1 !important;}
-html[data-console-theme="dark"] body.motivo-console-v15 .tab:hover {background:var(--c15-hover) !important;color:#f2fff4 !important;}
-html[data-console-theme="dark"] body.motivo-console-v15 :is(button:not(.tab),button.outline) {border-color:var(--c15-border);}
-html[data-console-theme="dark"] body.motivo-console-v15 :is(input,select,textarea,button,a):focus-visible {outline:2px solid #a7e6b7 !important;outline-offset:3px;}
-@media(max-width:640px){html[data-console-theme="dark"] body.motivo-console-v15{background-attachment:scroll !important;}}
+html[data-console-theme="light"] body.motivo-console-v15 :is(input,select,textarea) {
+  background: #fff !important;
+  color: #22362c !important;
+  border-color: #c9d8ce !important;
+}
 
-
-/* ==========================================================
-   v8 - Full-page Dim canvas + restored translucent glass
-   Explicitly targets the root canvas, not only message cards.
-   No light-mode rules are changed.
-   ========================================================== */
+/* DIM is a full canvas treatment, not just dark cards on a light page. */
 html[data-console-theme="dark"] {
-  background: #0a1712 !important;
+  background: #0c1915 !important;
   color-scheme: dark;
   min-height: 100%;
 }
 html[data-console-theme="dark"] body.motivo-console-v15 {
-  --c15-bg: #0c1d16;
-  --c15-ink: #e9f5eb;
-  --c15-subtle: #bbd1c1;
-  --c15-faint: #a6beaF;
-  --c15-panel: rgba(28, 55, 41, .73);
-  --c15-surface: rgba(45, 80, 59, .57);
-  --c15-elevated: rgba(57, 94, 68, .65);
-  --c15-border: rgba(154, 199, 166, .33);
-  --c15-divider: rgba(164, 204, 171, .22);
-  --c15-hover: rgba(78, 130, 91, .35);
-  --c15-topbar: rgba(12, 29, 22, .90);
-  --c15-shadow: 0 12px 36px rgba(0,0,0,.13);
-  min-height: 100vh;
+  --c15-bg: #0c1915;
+  --c15-ink: #edf7f0;
+  --c15-subtle: #bfd5c5;
+  --c15-faint: #b1c9b9;
+  --c15-panel: rgba(27,57,42,.66);
+  --c15-surface: rgba(47,88,63,.51);
+  --c15-elevated: rgba(52,94,67,.69);
+  --c15-border: rgba(174,219,183,.32);
+  --c15-divider: rgba(174,219,183,.24);
+  --c15-hover: rgba(93,147,108,.28);
+  --c15-topbar: rgba(12,31,24,.88);
+  --c15-shadow: 0 12px 32px rgba(0,0,0,.16);
   color: var(--c15-ink) !important;
-  background-color: #0c1d16 !important;
-  background-image:
-    radial-gradient(ellipse 100% 75% at 95% 0%, rgba(36, 109, 69, .23), transparent 68%),
-    radial-gradient(ellipse 75% 75% at 5% 100%, rgba(21, 87, 60, .24), transparent 72%),
-    linear-gradient(150deg, #0b1913 0%, #183728 52%, #0b1c17 100%) !important;
-  background-repeat: no-repeat !important;
-  background-size: cover !important;
+  min-height: 100vh;
+  background: radial-gradient(ellipse at 82% 8%, rgba(49,119,73,.26) 0%, transparent 56%),
+              radial-gradient(ellipse at 6% 90%, rgba(35,100,80,.21) 0%, transparent 58%),
+              linear-gradient(150deg,#0b1814,#153427 54%,#0c1d18) !important;
   background-attachment: fixed !important;
+  background-repeat: no-repeat !important;
 }
-/* Neutralize legacy overlays that paint over the page backdrop. */
-html[data-console-theme="dark"] body.motivo-console-v15::before,
-html[data-console-theme="dark"] body.motivo-console-v15::after { content:none !important; display:none !important; }
 html[data-console-theme="dark"] body.motivo-console-v15 :is(main,#workspace,.page) {
   background: transparent !important;
   background-image: none !important;
 }
-/* Glass surfaces are deliberately translucent, never solid black/green. */
 html[data-console-theme="dark"] body.motivo-console-v15 :is(.panel,.metric,.drawer,.drawer-header,dialog.confirm) {
-  background: rgba(28, 55, 41, .73) !important;
-  background-image: linear-gradient(155deg,rgba(238,255,240,.065),rgba(238,255,240,.012)) !important;
-  border: 1px solid var(--c15-border) !important;
-  box-shadow: 0 10px 30px rgba(0,0,0,.13), inset 0 1px rgba(248,255,247,.055) !important;
+  background: rgba(28,57,42,.67) !important;
+  background-image: linear-gradient(145deg,rgba(242,255,244,.055),rgba(242,255,244,.008)) !important;
+  border-color: var(--c15-border) !important;
+  box-shadow: var(--c15-shadow), inset 0 1px rgba(255,255,255,.055) !important;
   color: var(--c15-ink) !important;
 }
-html[data-console-theme="dark"] body.motivo-console-v15 :is(.footprint>div,.mini-metrics>div,.contact-inbox-item) {
-  background: rgba(48, 84, 61, .60) !important;
+html[data-console-theme="dark"] body.motivo-console-v15 :is(.footprint > div,.mini-metrics > div,.contact-inbox-item) {
+  background: rgba(39,75,54,.56) !important;
   border: 1px solid var(--c15-border) !important;
-  box-shadow: inset 0 1px rgba(250,255,250,.045) !important;
   color: var(--c15-ink) !important;
 }
-html[data-console-theme="dark"] body.motivo-console-v15 :is(.pageheading h1,.section-header h2,.panel h1,.panel h2,.panel h3,.metric strong) {
-  color: #f0faf2 !important;
-  opacity:1 !important;
+html[data-console-theme="dark"] body.motivo-console-v15 :is(.pageheading h1,.pageheading p,.pageheading p span,.eyebrow,.panel h2,.panel h3,.metric strong,.shop-label strong,.contact-inbox-item h3) {
+  color: #edf7f0 !important;
+  opacity: 1 !important;
 }
-html[data-console-theme="dark"] body.motivo-console-v15 :is(.pageheading p,.section-header p,.metric span,.metric small,.tab:not(.selected),.contact-inbox-item .meta) {
-  color: #c4d9c9 !important;
-  opacity:1 !important;
+html[data-console-theme="dark"] body.motivo-console-v15 :is(.tab:not(.selected),.metric span,.metric small,.section-header p,.shop-label small,.contact-inbox-item .meta,#directoryCount) {
+  color: #bfd5c5 !important;
+  opacity: 1 !important;
+}
+html[data-console-theme="dark"] body.motivo-console-v15 .tab.selected {
+  background: rgba(43,85,59,.67) !important;
+  color: #f3fff5 !important;
 }
 html[data-console-theme="dark"] body.motivo-console-v15 :is(input,select,textarea) {
-  background: rgba(11,29,21,.72) !important;
-  border-color: rgba(169,215,181,.48) !important;
+  background: rgba(10,29,21,.78) !important;
+  color: #f1fcf3 !important;
+  border-color: rgba(174,219,183,.40) !important;
+}
+html[data-console-theme="dark"] body.motivo-console-v15 :is(input,textarea)::placeholder {
+  color: #b5cebc !important;
+  opacity: 1 !important;
+}
+html[data-console-theme="dark"] body.motivo-console-v15 .contact-inbox-item :is(h3,p) {
   color: #f0faf2 !important;
 }
-html[data-console-theme="dark"] body.motivo-console-v15 :is(input,textarea)::placeholder {color: #b5cdbc !important;opacity:1 !important;}
+html[data-console-theme="dark"] body.motivo-console-v15 :is(button,input,select,textarea,a):focus-visible {
+  outline: 2px solid #b2e9c0 !important;
+  outline-offset: 3px;
+}
 @media (max-width:640px) {
-  html[data-console-theme="dark"] body.motivo-console-v15 {background-attachment:scroll !important;}
+  html[data-console-theme="dark"] body.motivo-console-v15 {background-attachment: scroll !important;}
 }
