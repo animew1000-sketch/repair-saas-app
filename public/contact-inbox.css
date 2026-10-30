@@ -1,475 +1,131 @@
+/* Motivo contact form and protected platform inbox. Theme-aware release v5. */
 
-/* ==========================================
-   MOTIVO CONTACT FORM + DEVELOPER INBOX
-   Version 4
-   ========================================== */
+/* Public contact page */
+.contact-page { display:flex;flex-direction:column;gap:42px;padding:36px 0 48px; }
+.contact-intro { margin-bottom:0; }
+.contact-intro h1 { margin:16px 0 20px;line-height:1.15; }
+.contact-intro p { max-width:650px;line-height:1.8; }
+.motivo-contact-form { display:flex;flex-direction:column;gap:24px;box-sizing:border-box;width:100%;max-width:760px;min-width:0;margin:0 auto;padding:40px;border:1px solid rgba(44,119,76,.35);border-radius:20px;background:rgba(231,246,232,.93);box-shadow:0 18px 42px rgba(7,39,24,.07);color:#163b2b; }
+.motivo-contact-form h2 { margin:0;color:inherit;font-size:1.5rem;line-height:1.3; }
+.motivo-contact-form p { margin:0;line-height:1.75; }
+.motivo-contact-form .contact-form-description { max-width:620px; }
+.motivo-contact-form > label, .motivo-contact-form .contact-grid > label { display:flex;flex-direction:column;gap:10px;min-width:0;margin:0;color:inherit;font-size:.9rem;font-weight:650;line-height:1.5; }
+.motivo-contact-form .contact-grid { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px; }
+.motivo-contact-form input:not([type="checkbox"]),.motivo-contact-form select,.motivo-contact-form textarea { box-sizing:border-box;width:100%;min-width:0;min-height:48px;padding:14px 16px;border:1px solid #91b6a0;border-radius:10px;background:#fff;color:#152b20;font:inherit;line-height:1.5; }
+.motivo-contact-form textarea { min-height:180px;resize:vertical; }
+.motivo-contact-form input:focus-visible,.motivo-contact-form select:focus-visible,.motivo-contact-form textarea:focus-visible { outline:3px solid #4dab7b;outline-offset:2px; }
+/* Fixed privacy grid prevents the global label/input rules from squeezing consent. */
+.motivo-contact-form .contact-privacy { display:grid!important;grid-template-columns:20px minmax(0,1fr)!important;align-items:start!important;justify-content:start!important;gap:14px!important;width:100%;min-width:0;margin:0;padding:0; }
+.motivo-contact-form .contact-privacy input[type="checkbox"] { display:block!important;grid-column:1;grid-row:1;box-sizing:border-box;width:20px!important;height:20px!important;min-width:20px!important;min-height:20px!important;margin:4px 0 0!important;padding:0!important;accent-color:#2b765a;cursor:pointer; }
+.motivo-contact-form .contact-privacy label { display:block!important;grid-column:2;grid-row:1;width:auto!important;min-width:0!important;max-width:none!important;margin:0!important;padding:0!important;color:inherit;font-size:.9rem;font-weight:400;line-height:1.75;text-align:left;overflow-wrap:break-word;cursor:pointer; }
+/* Also support the earlier label-based privacy markup, if still deployed. */
+.motivo-contact-form label.privacy-line { display:flex!important;flex-direction:row!important;align-items:flex-start!important;gap:14px!important;width:100%;font-weight:400;line-height:1.75; }
+.motivo-contact-form label.privacy-line input[type="checkbox"] { flex:0 0 20px!important;width:20px!important;height:20px!important;min-width:20px!important;min-height:20px!important;margin:4px 0 0!important;padding:0!important;accent-color:#2b765a; }
+.motivo-contact-form label.privacy-line span { flex:1 1 auto;min-width:0;width:auto!important;max-width:none!important; }
+.motivo-contact-form a { color:#155d3a;text-decoration:underline;text-underline-offset:3px; }
+.motivo-contact-form button[type="submit"] { align-self:flex-start;min-height:48px;margin:4px 0 0;padding:14px 26px;border:0;border-radius:11px;background:#215f42;color:#fff;font:inherit;font-weight:700;cursor:pointer; }
+.motivo-contact-form button[type="submit"]:hover { background:#194b34; }
+.motivo-contact-form button[type="submit"]:focus-visible,.motivo-contact-form .contact-privacy input:focus-visible { outline:3px solid #4dab7b;outline-offset:3px; }
+.motivo-contact-form button[type="submit"]:disabled { opacity:.6;cursor:wait; }
+.motivo-contact-form .feedback { min-height:24px;margin:0;font-weight:600;line-height:1.6; }
+.motivo-contact-form .contact-hp { position:absolute!important;left:-9999px!important;opacity:0!important;pointer-events:none!important; }
+.contact-page .contact-layout { margin-top:24px; }
+.contact-page .contact-details { gap:36px; }
+.contact-page .contact-detail { padding:12px 0; }
+.contact-page .contact-detail h2 { margin:0 0 20px;line-height:1.3; }
+.contact-page .contact-detail p { max-width:600px;margin:0 0 20px;line-height:1.85; }
+.contact-page .contact-detail p:last-child { margin-bottom:0; }
+.contact-page .overview-feature-image { margin-top:16px; }
+.contact-page .overview-feature-image img { display:block;width:100%;height:auto;border-radius:16px; }
+.contact-page .overview-feature-image figcaption { margin-top:14px;line-height:1.6; }
+body.dark-mode .motivo-contact-form { background:rgba(12,39,27,.95);border-color:rgba(102,183,126,.44);color:#e7f6eb; }
+body.dark-mode .motivo-contact-form input:not([type="checkbox"]),body.dark-mode .motivo-contact-form select,body.dark-mode .motivo-contact-form textarea { background:#132f22;color:#f2fff4;border-color:#567e60; }
+body.dark-mode .motivo-contact-form a { color:#a0ebba; }
 
-/* ------------------------------------------
-   Contact page layout
-   ------------------------------------------ */
+/* Developer inbox - base layout; adopts the actual console v15 theme tokens. */
+.platform-inbox-controls { display:flex;flex-wrap:wrap;align-items:center;gap:14px;margin:20px 0 28px; }
+.platform-inbox-controls select,.platform-inbox-controls input { max-width:260px; }
+.contact-inbox-list { display:grid;gap:20px; }
+.contact-inbox-item { padding:24px;border-radius:14px;border:1px solid var(--c15-border,#a4c0ae);background:var(--c15-surface,#f1f6f1);color:var(--c15-ink,#22362c); }
+.contact-inbox-item h3 { margin:12px 0;line-height:1.4; }
+.contact-inbox-item p { margin:12px 0;line-height:1.75;white-space:pre-wrap;overflow-wrap:anywhere; }
+.contact-inbox-item .meta { font-size:.85rem;line-height:1.6;opacity:1; }
+.contact-inbox-item .inbox-actions { display:flex;flex-wrap:wrap;align-items:center;gap:14px;margin-top:20px; }
+.contact-inbox-item textarea { box-sizing:border-box;width:100%;max-width:100%;min-height:100px;margin-top:14px;padding:12px 14px;resize:vertical;line-height:1.6; }
+.contact-inbox-item button { margin:0; }
+.contact-inbox-item a { overflow-wrap:anywhere; }
 
-.contact-page {
-  display: flex;
-  flex-direction: column;
-  gap: 42px;
-  padding: 36px 0 48px;
+/* Specific enough to beat older platform.css and platform-comfort rules. */
+html body.motivo-console-v15 #page-contact {
+  color:var(--c15-ink)!important;
 }
-
-.contact-intro {
-  margin-bottom: 0;
+html body.motivo-console-v15 #page-contact > .panel {
+  background:var(--c15-panel)!important;
+  border-color:var(--c15-border)!important;
+  color:var(--c15-ink)!important;
 }
-
-.contact-intro h1 {
-  margin: 16px 0 20px;
-  line-height: 1.15;
+html body.motivo-console-v15 #page-contact .section-header h2,
+html body.motivo-console-v15 #page-contact .section-header p,
+html body.motivo-console-v15 #contactInboxCount,
+html body.motivo-console-v15 #contactInboxFeedback {
+  color:var(--c15-ink)!important;
+  opacity:1!important;
 }
-
-.contact-intro p {
-  max-width: 650px;
-  line-height: 1.8;
+html body.motivo-console-v15 #page-contact .section-header p,
+html body.motivo-console-v15 #contactInboxCount { color:var(--c15-subtle)!important; }
+html body.motivo-console-v15 .contact-inbox-list { gap:20px; }
+html body.motivo-console-v15 .contact-inbox-item {
+  background:var(--c15-surface)!important;
+  color:var(--c15-ink)!important;
+  border:1px solid var(--c15-border)!important;
+  border-radius:16px;
+  padding:26px;
+  box-shadow:none!important;
 }
-
-/* ------------------------------------------
-   Contact form card
-   ------------------------------------------ */
-
-.motivo-contact-form {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-
-  box-sizing: border-box;
-  width: 100%;
-  max-width: 760px;
-  min-width: 0;
-
-  margin: 0 auto;
-  padding: 40px;
-
-  border: 1px solid rgba(44, 119, 76, 0.35);
-  border-radius: 20px;
-
-  background: rgba(231, 246, 232, 0.93);
-  box-shadow: 0 18px 42px rgba(7, 39, 24, 0.07);
-
-  color: #163b2b;
+html body.motivo-console-v15 .contact-inbox-item h3,
+html body.motivo-console-v15 .contact-inbox-item p:not(.meta) { color:var(--c15-ink)!important;opacity:1!important; }
+html body.motivo-console-v15 .contact-inbox-item .meta { color:var(--c15-subtle)!important;opacity:1!important; }
+html body.motivo-console-v15 .contact-inbox-item textarea,
+html body.motivo-console-v15 .contact-inbox-item select,
+html body.motivo-console-v15 .platform-inbox-controls select,
+html body.motivo-console-v15 .platform-inbox-controls input {
+  background:var(--c15-panel)!important;
+  color:var(--c15-ink)!important;
+  border:1px solid var(--c15-border)!important;
+  border-radius:10px;
 }
-
-.motivo-contact-form h2 {
-  margin: 0;
-  color: inherit;
-  font-size: 1.5rem;
-  line-height: 1.3;
+html body.motivo-console-v15 .contact-inbox-item textarea::placeholder,
+html body.motivo-console-v15 .platform-inbox-controls input::placeholder { color:var(--c15-faint)!important;opacity:1; }
+html body.motivo-console-v15 .contact-inbox-item :is(textarea,select):focus-visible,
+html body.motivo-console-v15 .platform-inbox-controls :is(input,select):focus-visible {
+  outline:2px solid var(--c15-focus)!important;outline-offset:2px;
 }
+/* Fix extremely faint console headings shown in the screenshot, on both themes. */
+html body.motivo-console-v15 .pageheading h1 { color:var(--c15-ink)!important;opacity:1!important; }
+html body.motivo-console-v15 .pageheading .eyebrow { color:var(--c15-accent)!important;opacity:1!important; }
+html body.motivo-console-v15 .pageheading p { color:var(--c15-subtle)!important;opacity:1!important; }
+html body.motivo-console-v15 .pageheading p span { color:var(--c15-ink)!important; }
+html body.motivo-console-v15 .tabs .tab:not(.selected) { color:var(--c15-subtle)!important;opacity:1!important; }
+html body.motivo-console-v15 .tabs .tab.selected { color:var(--c15-ink)!important; }
+/* Slightly soften the light setting, while respecting the actual dark theme setting. */
+html[data-console-theme="light"] body.motivo-console-v15 #page-contact .contact-inbox-item { background:#eff5f0!important; }
+html[data-console-theme="dark"] body.motivo-console-v15 #page-contact .contact-inbox-item { background:#20342d!important;border-color:#395548!important; }
+html[data-console-theme="dark"] body.motivo-console-v15 #page-contact .contact-inbox-item :is(textarea,select) { background:#182824!important;color:#dde9e0!important;border-color:#395548!important; }
 
-.motivo-contact-form p {
-  margin: 0;
-  line-height: 1.75;
+@media(max-width:640px) {
+  .contact-page { gap:28px;padding:24px 0 32px; }
+  .motivo-contact-form { gap:20px;padding:26px 20px;border-radius:16px; }
+  .motivo-contact-form .contact-grid { grid-template-columns:1fr;gap:20px; }
+  .motivo-contact-form button[type="submit"] { width:100%;align-self:stretch; }
+  .motivo-contact-form .contact-privacy { gap:12px!important; }
+  .contact-page .contact-layout { margin-top:12px; }
+  .contact-page .contact-details { gap:24px; }
+  .contact-page .overview-feature-image { margin-top:8px; }
+  .platform-inbox-controls { flex-direction:column;align-items:stretch; }
+  .platform-inbox-controls select,.platform-inbox-controls input { width:100%;max-width:none; }
+  .contact-inbox-item { padding:20px; }
+  html body.motivo-console-v15 .contact-inbox-item { padding:20px; }
 }
-
-.motivo-contact-form .contact-form-description {
-  max-width: 620px;
-}
-
-/* ------------------------------------------
-   Labels and inputs
-   ------------------------------------------ */
-
-.motivo-contact-form > label,
-.motivo-contact-form .contact-grid > label {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-
-  min-width: 0;
-  margin: 0;
-
-  color: inherit;
-  font-size: 0.9rem;
-  font-weight: 650;
-  line-height: 1.5;
-}
-
-.motivo-contact-form .contact-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 24px;
-}
-
-.motivo-contact-form input:not([type="checkbox"]),
-.motivo-contact-form select,
-.motivo-contact-form textarea {
-  box-sizing: border-box;
-  width: 100%;
-  min-width: 0;
-  min-height: 48px;
-
-  padding: 14px 16px;
-
-  border: 1px solid #91b6a0;
-  border-radius: 10px;
-
-  background: #ffffff;
-  color: #152b20;
-
-  font: inherit;
-  line-height: 1.5;
-}
-
-.motivo-contact-form textarea {
-  min-height: 180px;
-  resize: vertical;
-}
-
-.motivo-contact-form input:focus-visible,
-.motivo-contact-form select:focus-visible,
-.motivo-contact-form textarea:focus-visible {
-  outline: 3px solid #4dab7b;
-  outline-offset: 2px;
-}
-
-/* ------------------------------------------
-   Privacy consent - fixed layout
-   ------------------------------------------ */
-
-.motivo-contact-form .contact-privacy {
-  display: grid !important;
-  grid-template-columns: 20px minmax(0, 1fr) !important;
-  align-items: start !important;
-  justify-content: start !important;
-  gap: 14px !important;
-
-  width: 100%;
-  min-width: 0;
-  margin: 0;
-  padding: 0;
-}
-
-.motivo-contact-form .contact-privacy input[type="checkbox"] {
-  display: block !important;
-
-  grid-column: 1;
-  grid-row: 1;
-
-  box-sizing: border-box;
-  width: 20px !important;
-  height: 20px !important;
-  min-width: 20px !important;
-  min-height: 20px !important;
-
-  margin: 4px 0 0 !important;
-  padding: 0 !important;
-
-  border-radius: 4px;
-  accent-color: #2b765a;
-  cursor: pointer;
-}
-
-.motivo-contact-form .contact-privacy label {
-  display: block !important;
-
-  grid-column: 2;
-  grid-row: 1;
-
-  width: auto !important;
-  min-width: 0 !important;
-  max-width: none !important;
-
-  margin: 0 !important;
-  padding: 0 !important;
-
-  color: inherit;
-  font-size: 0.9rem;
-  font-weight: 400;
-  line-height: 1.75;
-  text-align: left;
-
-  overflow-wrap: break-word;
-  cursor: pointer;
-}
-
-.motivo-contact-form .contact-privacy a {
-  display: inline !important;
-  width: auto !important;
-
-  color: #155d3a;
-  text-decoration: underline;
-  text-underline-offset: 3px;
-  white-space: normal;
-}
-
-/* ------------------------------------------
-   Submit button
-   ------------------------------------------ */
-
-.motivo-contact-form button[type="submit"] {
-  align-self: flex-start;
-  min-height: 48px;
-
-  margin: 4px 0 0;
-  padding: 14px 26px;
-
-  border: 0;
-  border-radius: 11px;
-
-  background: #215f42;
-  color: #ffffff;
-
-  font: inherit;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.motivo-contact-form button[type="submit"]:hover {
-  background: #194b34;
-}
-
-.motivo-contact-form button[type="submit"]:focus-visible,
-.motivo-contact-form .contact-privacy input:focus-visible {
-  outline: 3px solid #4dab7b;
-  outline-offset: 3px;
-}
-
-.motivo-contact-form button[type="submit"]:disabled {
-  opacity: 0.6;
-  cursor: wait;
-}
-
-.motivo-contact-form .feedback {
-  min-height: 24px;
-  margin: 0;
-
-  font-weight: 600;
-  line-height: 1.6;
-}
-
-/* ------------------------------------------
-   Honeypot
-   ------------------------------------------ */
-
-.motivo-contact-form .contact-hp {
-  position: absolute !important;
-  left: -9999px !important;
-
-  opacity: 0 !important;
-  pointer-events: none !important;
-}
-
-/* ------------------------------------------
-   Additional contact information
-   ------------------------------------------ */
-
-.contact-page .contact-layout {
-  margin-top: 24px;
-}
-
-.contact-page .contact-details {
-  gap: 36px;
-}
-
-.contact-page .contact-detail {
-  padding: 12px 0;
-}
-
-.contact-page .contact-detail h2 {
-  margin: 0 0 20px;
-  line-height: 1.3;
-}
-
-.contact-page .contact-detail p {
-  max-width: 600px;
-  margin: 0 0 20px;
-  line-height: 1.85;
-}
-
-.contact-page .contact-detail p:last-child {
-  margin-bottom: 0;
-}
-
-.contact-page .overview-feature-image {
-  margin-top: 16px;
-}
-
-.contact-page .overview-feature-image img {
-  display: block;
-  width: 100%;
-  height: auto;
-  border-radius: 16px;
-}
-
-.contact-page .overview-feature-image figcaption {
-  margin-top: 14px;
-  line-height: 1.6;
-}
-
-/* ------------------------------------------
-   Dark mode
-   ------------------------------------------ */
-
-body.dark-mode .motivo-contact-form {
-  background: rgba(12, 39, 27, 0.95);
-  border-color: rgba(102, 183, 126, 0.44);
-  color: #e7f6eb;
-}
-
-body.dark-mode .motivo-contact-form input:not([type="checkbox"]),
-body.dark-mode .motivo-contact-form select,
-body.dark-mode .motivo-contact-form textarea {
-  background: #132f22;
-  color: #f2fff4;
-  border-color: #567e60;
-}
-
-body.dark-mode .motivo-contact-form .contact-privacy a {
-  color: #a0ebba;
-}
-
-/* ------------------------------------------
-   Developer inbox
-   ------------------------------------------ */
-
-.platform-inbox-controls {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 14px;
-  margin: 20px 0 28px;
-}
-
-.platform-inbox-controls select,
-.platform-inbox-controls input {
-  max-width: 260px;
-}
-
-.contact-inbox-list {
-  display: grid;
-  gap: 20px;
-}
-
-.contact-inbox-item {
-  padding: 24px;
-
-  border: 1px solid var(--border, #a4c0ae);
-  border-radius: 14px;
-
-  background: var(--surface, #ffffff);
-}
-
-.contact-inbox-item h3 {
-  margin: 12px 0;
-  line-height: 1.4;
-}
-
-.contact-inbox-item p {
-  margin: 12px 0;
-  line-height: 1.75;
-
-  white-space: pre-wrap;
-  overflow-wrap: anywhere;
-}
-
-.contact-inbox-item .meta {
-  font-size: 0.85rem;
-  line-height: 1.6;
-  opacity: 0.8;
-}
-
-.contact-inbox-item .inbox-actions {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 14px;
-  margin-top: 20px;
-}
-
-.contact-inbox-item textarea {
-  box-sizing: border-box;
-  width: 100%;
-  max-width: 100%;
-  min-height: 100px;
-
-  margin-top: 14px;
-  padding: 12px 14px;
-
-  resize: vertical;
-  line-height: 1.6;
-}
-
-.contact-inbox-item button {
-  margin: 0;
-}
-
-.contact-inbox-item a {
-  overflow-wrap: anywhere;
-}
-
-/* ------------------------------------------
-   Mobile responsiveness
-   ------------------------------------------ */
-
-@media (max-width: 640px) {
-  .contact-page {
-    gap: 28px;
-    padding: 24px 0 32px;
-  }
-
-  .motivo-contact-form {
-    gap: 20px;
-    padding: 26px 20px;
-    border-radius: 16px;
-  }
-
-  .motivo-contact-form .contact-grid {
-    grid-template-columns: 1fr;
-    gap: 20px;
-  }
-
-  .motivo-contact-form button[type="submit"] {
-    width: 100%;
-    align-self: stretch;
-  }
-
-  .motivo-contact-form .contact-privacy {
-    gap: 12px !important;
-  }
-
-  .contact-page .contact-layout {
-    margin-top: 12px;
-  }
-
-  .contact-page .contact-details {
-    gap: 24px;
-  }
-
-  .contact-page .overview-feature-image {
-    margin-top: 8px;
-  }
-
-  .platform-inbox-controls {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .platform-inbox-controls select,
-  .platform-inbox-controls input {
-    width: 100%;
-    max-width: none;
-  }
-
-  .contact-inbox-item {
-    padding: 20px;
-  }
-}
-
-/* ------------------------------------------
-   Reduced motion
-   ------------------------------------------ */
-
-@media (prefers-reduced-motion: reduce) {
-  .motivo-contact-form *,
-  .contact-inbox-item * {
-    scroll-behavior: auto;
-    transition-duration: 0.01ms;
-    animation-duration: 0.01ms;
-  }
+@media(prefers-reduced-motion:reduce) {
+  .motivo-contact-form *,.contact-inbox-item * { scroll-behavior:auto;transition-duration:.01ms;animation-duration:.01ms; }
 }
