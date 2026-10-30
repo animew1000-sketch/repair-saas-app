@@ -251,3 +251,77 @@ html[data-console-theme="dark"] body.motivo-console-v15 .tab:hover {background:v
 html[data-console-theme="dark"] body.motivo-console-v15 :is(button:not(.tab),button.outline) {border-color:var(--c15-border);}
 html[data-console-theme="dark"] body.motivo-console-v15 :is(input,select,textarea,button,a):focus-visible {outline:2px solid #a7e6b7 !important;outline-offset:3px;}
 @media(max-width:640px){html[data-console-theme="dark"] body.motivo-console-v15{background-attachment:scroll !important;}}
+
+
+/* ==========================================================
+   v8 - Full-page Dim canvas + restored translucent glass
+   Explicitly targets the root canvas, not only message cards.
+   No light-mode rules are changed.
+   ========================================================== */
+html[data-console-theme="dark"] {
+  background: #0a1712 !important;
+  color-scheme: dark;
+  min-height: 100%;
+}
+html[data-console-theme="dark"] body.motivo-console-v15 {
+  --c15-bg: #0c1d16;
+  --c15-ink: #e9f5eb;
+  --c15-subtle: #bbd1c1;
+  --c15-faint: #a6beaF;
+  --c15-panel: rgba(28, 55, 41, .73);
+  --c15-surface: rgba(45, 80, 59, .57);
+  --c15-elevated: rgba(57, 94, 68, .65);
+  --c15-border: rgba(154, 199, 166, .33);
+  --c15-divider: rgba(164, 204, 171, .22);
+  --c15-hover: rgba(78, 130, 91, .35);
+  --c15-topbar: rgba(12, 29, 22, .90);
+  --c15-shadow: 0 12px 36px rgba(0,0,0,.13);
+  min-height: 100vh;
+  color: var(--c15-ink) !important;
+  background-color: #0c1d16 !important;
+  background-image:
+    radial-gradient(ellipse 100% 75% at 95% 0%, rgba(36, 109, 69, .23), transparent 68%),
+    radial-gradient(ellipse 75% 75% at 5% 100%, rgba(21, 87, 60, .24), transparent 72%),
+    linear-gradient(150deg, #0b1913 0%, #183728 52%, #0b1c17 100%) !important;
+  background-repeat: no-repeat !important;
+  background-size: cover !important;
+  background-attachment: fixed !important;
+}
+/* Neutralize legacy overlays that paint over the page backdrop. */
+html[data-console-theme="dark"] body.motivo-console-v15::before,
+html[data-console-theme="dark"] body.motivo-console-v15::after { content:none !important; display:none !important; }
+html[data-console-theme="dark"] body.motivo-console-v15 :is(main,#workspace,.page) {
+  background: transparent !important;
+  background-image: none !important;
+}
+/* Glass surfaces are deliberately translucent, never solid black/green. */
+html[data-console-theme="dark"] body.motivo-console-v15 :is(.panel,.metric,.drawer,.drawer-header,dialog.confirm) {
+  background: rgba(28, 55, 41, .73) !important;
+  background-image: linear-gradient(155deg,rgba(238,255,240,.065),rgba(238,255,240,.012)) !important;
+  border: 1px solid var(--c15-border) !important;
+  box-shadow: 0 10px 30px rgba(0,0,0,.13), inset 0 1px rgba(248,255,247,.055) !important;
+  color: var(--c15-ink) !important;
+}
+html[data-console-theme="dark"] body.motivo-console-v15 :is(.footprint>div,.mini-metrics>div,.contact-inbox-item) {
+  background: rgba(48, 84, 61, .60) !important;
+  border: 1px solid var(--c15-border) !important;
+  box-shadow: inset 0 1px rgba(250,255,250,.045) !important;
+  color: var(--c15-ink) !important;
+}
+html[data-console-theme="dark"] body.motivo-console-v15 :is(.pageheading h1,.section-header h2,.panel h1,.panel h2,.panel h3,.metric strong) {
+  color: #f0faf2 !important;
+  opacity:1 !important;
+}
+html[data-console-theme="dark"] body.motivo-console-v15 :is(.pageheading p,.section-header p,.metric span,.metric small,.tab:not(.selected),.contact-inbox-item .meta) {
+  color: #c4d9c9 !important;
+  opacity:1 !important;
+}
+html[data-console-theme="dark"] body.motivo-console-v15 :is(input,select,textarea) {
+  background: rgba(11,29,21,.72) !important;
+  border-color: rgba(169,215,181,.48) !important;
+  color: #f0faf2 !important;
+}
+html[data-console-theme="dark"] body.motivo-console-v15 :is(input,textarea)::placeholder {color: #b5cdbc !important;opacity:1 !important;}
+@media (max-width:640px) {
+  html[data-console-theme="dark"] body.motivo-console-v15 {background-attachment:scroll !important;}
+}
