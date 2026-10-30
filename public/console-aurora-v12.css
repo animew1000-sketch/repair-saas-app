@@ -1,0 +1,176 @@
+
+/* Motivo developer console v11: SINGLE FINAL theme resolver.
+   Loaded after the other styles. Only the resolved mode controls the palette.
+   Does not touch the public contact page, JS, backend, or database. */
+
+/* Light mode: readable, understated original palette. */
+html[data-console-theme="light"],
+html[data-console-theme="light"] body.motivo-console-v15 {
+  color-scheme: light;
+  background: #edf2ee !important;
+}
+html[data-console-theme="light"] body.motivo-console-v15 {
+  --c15-ink: #22362c; --c15-subtle: #526a5b; --c15-faint: #63796b;
+  --c15-panel: #f8fbf8; --c15-surface: #f1f6f1;
+  --c15-border: #d1ded3; --c15-divider: #dfebe1;
+  --c15-topbar: #e6efe8;
+  color: #22362c !important;
+}
+html[data-console-theme="light"] body.motivo-console-v15 :is(.panel,.metric,.contact-inbox-item) {
+  background: #f8fbf8 !important; background-image: none !important;
+  border-color: #d1ded3 !important; color: #22362c !important;
+}
+html[data-console-theme="light"] body.motivo-console-v15 :is(.pageheading h1,.panel h1,.panel h2,.panel h3,.metric strong,.shop-label strong,.contact-inbox-item h3,.contact-inbox-item p) {
+  color: #22362c !important; opacity: 1 !important;
+}
+html[data-console-theme="light"] body.motivo-console-v15 :is(.pageheading p,.pageheading p span,.section-header p,.eyebrow,.metric span,.metric small,.tab:not(.selected),.shop-label small,.contact-inbox-item .meta) {
+  color: #526a5b !important; opacity: 1 !important;
+}
+html[data-console-theme="light"] body.motivo-console-v15 :is(input,select,textarea) {
+  color: #22362c !important; background: #fff !important; border-color: #c8d9cd !important;
+}
+html[data-console-theme="light"] body.motivo-console-v15 :is(.footprint>div,.mini-metrics>div) {
+  color: #22362c !important; background: #f1f6f1 !important;
+}
+html[data-console-theme="light"] body.motivo-console-v15 :is(.footprint strong,.legend strong,td,.shop-label strong) {
+  color: #22362c !important; opacity: 1 !important;
+}
+
+/* Dim mode: dark page, translucent glass, legible text everywhere. */
+html[data-console-theme="dark"] {
+  color-scheme: dark !important;
+  background-color: #0b1913 !important;
+  background-image: linear-gradient(135deg,#0b1913,#183427 55%,#0b1e18) !important;
+  min-height: 100%;
+}
+html[data-console-theme="dark"] body.motivo-console-v15 {
+  --c15-bg: #0b1913;
+  --c15-ink: #edf7ef;
+  --c15-subtle: #c2d9c8;
+  --c15-faint: #abc5b2;
+  --c15-panel: rgba(27,52,40,.80);
+  --c15-surface: rgba(48,83,63,.58);
+  --c15-elevated: rgba(53,90,67,.78);
+  --c15-border: rgba(164,206,175,.40);
+  --c15-divider: rgba(164,206,175,.28);
+  --c15-topbar: #13261c;
+  --c15-hover: rgba(77,128,93,.40);
+  --c15-shadow: 0 10px 26px rgba(0,0,0,.18);
+  min-height: 100vh;
+  color: #edf7ef !important;
+  background-color: #0b1913 !important;
+  background-image: radial-gradient(ellipse at 88% 7%,rgba(48,113,72,.25),transparent 55%),
+                    radial-gradient(ellipse at 4% 97%,rgba(20,83,58,.22),transparent 58%),
+                    linear-gradient(140deg,#0b1913,#193b2a 53%,#0d211a) !important;
+  background-attachment: fixed !important;
+}
+html[data-console-theme="dark"] body.motivo-console-v15 > main,
+html[data-console-theme="dark"] body.motivo-console-v15 #workspace,
+html[data-console-theme="dark"] body.motivo-console-v15 .page {
+  background: transparent !important;
+  background-image: none !important;
+}
+html[data-console-theme="dark"] body.motivo-console-v15 :is(.panel,.metric,.drawer,.drawer-header,dialog.confirm) {
+  background: rgba(27,52,40,.80) !important;
+  background-image: linear-gradient(150deg,rgba(255,255,255,.045),rgba(255,255,255,.006)) !important;
+  border: 1px solid var(--c15-border) !important;
+  box-shadow: 0 10px 25px rgba(0,0,0,.15), inset 0 1px rgba(255,255,255,.05) !important;
+  color: #edf7ef !important;
+}
+html[data-console-theme="dark"] body.motivo-console-v15 :is(.contact-inbox-item,.footprint>div,.mini-metrics>div) {
+  background: rgba(44,78,59,.58) !important;
+  border: 1px solid rgba(164,206,175,.34) !important;
+  color: #edf7ef !important;
+}
+html[data-console-theme="dark"] body.motivo-console-v15 :is(.pageheading h1,.panel h1,.panel h2,.panel h3,.metric strong,.footprint strong,.legend strong,.shop-label strong,.contact-inbox-item h3,.contact-inbox-item p) {
+  color: #f4fcf5 !important; opacity: 1 !important;
+}
+html[data-console-theme="dark"] body.motivo-console-v15 :is(.pageheading p,.pageheading p span,.section-header p,.metric span,.metric small,.tab:not(.selected),.shop-label small,.contact-inbox-item .meta,.legend,.bar-label,.bar-value,#directoryCount,td,th) {
+  color: #c7dacb !important; opacity: 1 !important;
+}
+html[data-console-theme="dark"] body.motivo-console-v15 .eyebrow {
+  color: #a8dfb6 !important; opacity: 1 !important;
+}
+html[data-console-theme="dark"] body.motivo-console-v15 :is(input,select,textarea) {
+  background: rgba(10,27,20,.83) !important;
+  border-color: rgba(174,216,185,.48) !important;
+  color: #edf7ef !important;
+}
+html[data-console-theme="dark"] body.motivo-console-v15 :is(input,textarea)::placeholder {
+  color: #b4cbba !important; opacity: 1 !important;
+}
+html[data-console-theme="dark"] body.motivo-console-v15 .tab.selected {
+  background: rgba(58,105,75,.66) !important;
+  color: #f4fcf5 !important;
+  border-color: var(--c15-border) !important;
+}
+html[data-console-theme="dark"] body.motivo-console-v15 .topbar {
+  background: #13261c !important; color: #edf7ef !important;
+}
+html[data-console-theme="dark"] body.motivo-console-v15 .flash {
+  color: #b0e0bf !important;
+}
+html body.motivo-console-v15 :is(button,input,select,textarea,a):focus-visible {
+  outline: 2px solid var(--c15-focus,#9de0b0) !important;
+  outline-offset: 2px;
+}
+@media(max-width:640px) {
+  html[data-console-theme="dark"] body.motivo-console-v15 { background-attachment: scroll !important; }
+}
+
+
+/* ======================================================================
+   EXISTING MOTIVO AURORA IMAGES - final cascade rule
+   This stylesheet is loaded LAST. The developer console display script
+   sets data-console-theme=light or dark (System resolves to either).
+   ====================================================================== */
+html[data-console-theme="dark"],
+html[data-console-theme="dark"] body.motivo-console-v15 {
+  background-color: #091811 !important;
+  background-image: linear-gradient(rgba(4,17,12,.38),rgba(4,17,12,.52)),
+                    url('/images/motivo-aurora-dark-v9.webp') !important;
+  background-position: center center !important;
+  background-size: cover !important;
+  background-repeat: no-repeat !important;
+  background-attachment: fixed !important;
+}
+html[data-console-theme="light"],
+html[data-console-theme="light"] body.motivo-console-v15 {
+  background-color: #edf2ee !important;
+  background-image: url('/images/motivo-aurora-light-v9.webp') !important;
+  background-position: center center !important;
+  background-size: cover !important;
+  background-repeat: no-repeat !important;
+  background-attachment: fixed !important;
+}
+/* Preserve the existing glass: translucent, not opaque blocks. */
+html[data-console-theme="dark"] body.motivo-console-v15 :is(.panel,.metric,.drawer,.drawer-header,dialog.confirm) {
+  background-color: rgba(23,48,35,.70) !important;
+  background-image: linear-gradient(130deg,rgba(255,255,255,.055),rgba(255,255,255,.01)) !important;
+  border-color: rgba(174,216,187,.36) !important;
+  color: #edf8ef !important;
+}
+html[data-console-theme="dark"] body.motivo-console-v15 :is(.contact-inbox-item,.footprint>div,.mini-metrics>div) {
+  background: rgba(29,65,45,.56) !important;
+  border-color: rgba(174,216,187,.31) !important;
+  color: #edf8ef !important;
+}
+html[data-console-theme="dark"] body.motivo-console-v15 :is(.pageheading h1,.panel h1,.panel h2,.panel h3,.metric strong,.footprint strong,.shop-label strong,.legend strong,.contact-inbox-item h3) {
+  color: #f4fff5 !important;
+  opacity: 1 !important;
+}
+html[data-console-theme="dark"] body.motivo-console-v15 :is(.pageheading p,.pageheading p span,.section-header p,.metric span,.metric small,.shop-label small,.tab:not(.selected),.contact-inbox-item .meta,td,th) {
+  color: #cbded0 !important;
+  opacity: 1 !important;
+}
+/* Do not let other styles add a pale pseudo-element over the image. */
+html[data-console-theme="dark"] body.motivo-console-v15::before,
+html[data-console-theme="dark"] body.motivo-console-v15::after {
+  display: none !important;
+  content: none !important;
+}
+@media (max-width: 640px) {
+  html[data-console-theme] body.motivo-console-v15 {
+    background-attachment: scroll !important;
+  }
+}
