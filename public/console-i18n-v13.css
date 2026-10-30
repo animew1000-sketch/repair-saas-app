@@ -1,0 +1,9 @@
+/* Console-only language/preferences presentation. No public-site design imports. */
+body.motivo-console-v15 .motivo-preferences-popover { position:relative; display:inline-block; z-index:150; font-size:12px; }
+body.motivo-console-v15 .motivo-preferences-popover > summary { cursor:pointer; list-style:none; border:1px solid var(--c15-border); border-radius:9px; padding:9px 12px; color:var(--c15-ink); background:var(--c15-panel); font-weight:700; }
+body.motivo-console-v15 .motivo-preferences-popover > summary::-webkit-details-marker { display:none; }
+body.motivo-console-v15 .motivo-preferences-popover .motivo-language-control { position:absolute; top:calc(100% + 8px); right:0; width:245px; max-width:min(245px,calc(100vw - 20px)); background:var(--c15-panel); color:var(--c15-ink); border:1px solid var(--c15-border); border-radius:12px; box-shadow:0 15px 40px rgba(0,0,0,.2); padding:16px; display:grid; gap:9px; z-index:155; }
+body.motivo-console-v15 .motivo-preferences-popover .motivo-language-control label,
+body.motivo-console-v15 .motivo-preferences-popover .motivo-preference-heading { color:var(--c15-ink); font-size:12px; font-weight:700; }
+body.motivo-console-v15 .motivo-preferences-popover .motivo-language-control select { width:100%; background:var(--c15-surface); color:var(--c15-ink); border:1px solid var(--c15-border); border-radius:8px; padding:9px; }
+@media(max-width:640px) {body.motivo-console-v15 .motivo-preferences-popover .motivo-language-control { right:-5px; }}
